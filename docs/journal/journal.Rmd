@@ -1,0 +1,41 @@
+---
+title: "Analysis Journal---RAC Parking Report Automation"
+author: mz
+output:
+  pdf_document: default
+---
+
+# Saturday 9.3.2019
+
+* Initialised public github repo.
+
+* Setup folder structure, currenlty looks like this (output of `tree --charset=ascii -d`):
+```
+|-- code
+|-- data
+|   |-- 01-raw
+|   |-- 02-interim
+|   `-- 03-processed
+|-- docs
+|   |-- admin
+|   |-- journal
+|   `-- original-reports
+|-- figures
+`-- outputs
+    |-- instructions
+    |-- reports
+    `-- technical-appendix
+```
+
+* available reports used for development:
+
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- " 
+| country     | 2014/15  |2015/16  | 2016/17 | 2017/18 |
+|-------------|:--------:|--------:|--------:|--------:|
+| Scotland    |html+pdf  | html+pdf|        |         |
+| Wales       |          |html+pdf  |html+pdf  |html+pdf  |
+| England     |       |html+pdf+app  |html+pdf  |html+pdf+app |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```
