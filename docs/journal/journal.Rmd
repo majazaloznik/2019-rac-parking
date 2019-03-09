@@ -27,7 +27,7 @@ output:
     `-- technical-appendix
 ```
 
-* available reports used for development:
+* available reports used for development, downloaded from RAC press website, stored in `/docs/original-reports`:
 
 ```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
 tabl <- " 
@@ -35,7 +35,20 @@ tabl <- "
 |-------------|:--------:|--------:|--------:|--------:|
 | Scotland    |html+pdf  | html+pdf|        |         |
 | Wales       |          |html+pdf  |html+pdf  |html+pdf  |
-| England     |       |html+pdf+app  |html+pdf  |html+pdf+app |
+| England     |       |html+pdf+app  |html+app |html+pdf+app |
 "
 cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 ```
+
+
+Next steps: find data
+
+Scotland 
+
+* https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats
+
+Wales: 
+
+* https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Transport/RoadsAndTransportRevenueExpenditure-by-authority
+
+England: https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing#2015-to-2016
