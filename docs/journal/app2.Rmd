@@ -1,0 +1,62 @@
+
+## England--Outturn
+```{r, echo = FALSE}
+library(kableExtra)
+
+year <- c("2008/09", "2009/10", "2010/11", "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", "2017/18")
+
+
+link <- c("\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/397002/Revenue_Outturn__RO2__data_2008-09_by_LA_-_Revised_17-Nov-2011.xls}{xls}",
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/387065/RO2.xls}{xls}",
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/16448/Revenue_Outturn__RO2__data_2010-11_by_LA_-_27-Nov-2012-v2.xls}{xls}",
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/262061/Revenue_Outturn__RO2__data_2011-12_by_LA_-_Revised_28-Nov-2013.xls}{xls}",
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/282558/Revenue_Outturn__RO2__data_2012-13_by_LA__Revised__-_18-Feb-2014.xls}{xls}",
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/381066/Revenue_Outturn__RO2__data_2013-14_by_LA.xls}{xls}",
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/497099/Revenue_Outturn__RO2__data_2014-15_by_LA_-_02-Feb-2016.xls}{xls}",
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/659790/RO2_2015-16_data_by_LA_-_Revision.xlsx}{xlsx}",
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/659775/RO2_2016-17_data_by_LA.xlsx}{xlsx}",
+          "\\href{https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/757366/RO2_2017-18_data_by_LA.xlsx}{xlsx}")
+              
+ 
+rows <- c(405,370, 371, 371, 371, 371, 371, 444, 446, 445)
+
+first <- c(0, 0, 0, 0, 12, 12, 12, 8, 8, 8)
+
+e.sh <- c(3, 3, 3, 3, 3, 3, 3, 3, 3, 3) 
+e.on <- c("CU", "BH", "BH", "BH", "BH", "BH", "BE", "CU", "CU", "CU")
+e.off <- c("DB", "BL", "BL", "BL", "BL", "BL", "BI", "DB", "DB", "DB")
+
+i.sh <- c(3, 4, 4, 4, 4, 4, 3, 3, 3, 3) 
+i.on <- c("CX", "BH", "BH", "BH", "BH", "BH", "BE", "CX", "CX", "CX")
+i.off <- c("DE", "BL", "BL", "BL", "BL", "BL", "BI", "DE", "DE", "DE")
+
+pen.sh <- c(NA, NA, NA, NA, NA, NA, NA, 3, 3, 3) 
+pen.on <- c("--", "--", "--", "--", "--", "--", "--", "FX", "FX", "FX")
+
+pen.1 <- c("G64", "G64", "G64", "G64", "G65", "G65", "I68", "H67", "H67", "H67")
+
+tot.1 <- c("J45", "J45", "J45", "J45", "J46", "J46", "L49", "K48", "K48", "K48")
+
+df <- data.frame(year,link, rows, first,
+                 e.sh, e.on, e.off, 
+                 i.sh, i.on, i.off, 
+                 pen.on, pen.1, tot.1)
+kable(df, "latex", booktabs = T, escape = F) %>%
+  collapse_rows(columns = 1)
+```
+
+  
+* *year*--period covered in report
+* *link*--link to data file
+* *rows*--number of local authorities
+* *first*--first row of data on sheets 3,4 and 5
+* *e.sh*--which sheet are expenditures on
+* *e.on*--which column on street expenditures
+* *e.off*--which column are off street expenditures
+* *i.sh*--which sheet are incomes on
+* *i.on*--which column on street incomes
+* *i.off*--which column are off street incomes
+* *pen.sh*--which sheet are penalty charge incomes on
+* *pen.on*--which column are penalty charge incomes
+* *pen.1*--which cell is the  Penalty charge notice income for on street parking data on in sheet 2
+* *tot.1*--which cell is the Net current expenditures for Total transport and Highways services on in sheet 2

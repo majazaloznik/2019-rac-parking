@@ -1,0 +1,33 @@
+---
+title: "RAC Parking Report Automation---Queries for Ivo 01"
+author: mz
+output:
+  pdf_document: default
+---
+  
+At the end of this document there is a table with all the reports I could find, with links to the html (press release), the pdf reports, and the additional tables (for England). At least one of these was not immediately available on the RAC website. I am not sure if I am missing any others?
+
+1. Is the last Scotland report really for 2015/16?
+2. Is the England 2016/2017 pdf report really missing?
+
+Data
+
+I am assuming the England data will continute to be released in the form of Excel files following the same basic pattern as those on [https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing](this link)
+
+Backwards compatibility: presumably you won't rerun all the reports that are already out there? See what I mean in an example:
+
+* From 2014/2015 onwards England stops reporting data on *capital charges*. 
+* Until that point Leibling's reports give both `Surplus before capital charges` and `Net surplus after capital charges`. Afterwards they only report the former, even when reporting data for previous years. I will do the same. That means if you use my code to produce reports on 2013/14 or earlier, they will have less information than the actual reports did. Is that OK?
+
+Additional data sources: 
+* in the 17/18 England report there is a footnote listing the penalty tarrifs for London and the rest of the UK. Should I remove it or should I add this  as manual entry?
+* The England reports also mention the totals for the Nottingham workplace parking levy, and that's not data that I have been able to find?
+
+
+
+
+
+
+## Appendix 1---links to all reports online
+```{r appendix, child = 'app1.Rmd'}
+```

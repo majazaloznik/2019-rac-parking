@@ -1,0 +1,96 @@
+```{r, echo = FALSE}
+library(kableExtra)
+
+country <- c(rep("England", 8), rep("Scotland", 8),rep("Wales", 8))
+
+year <- rep(c("2010/11", "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", "2017/18"),3)
+
+htmls <- c("\\href{https://www.racfoundation.org/media-centre/councils-make-500-million-pounds-from-parking}{link}",
+           "\\href{https://www.racfoundation.org/media-centre/councils-make-record-profit-parking-2012}{link}",
+           "\\href{https://www.racfoundation.org/media-centre/council-parking-profits-surge-new-high}{link}",
+           "\\href{https://www.racfoundation.org/media-centre/english-council-parking-profits-new-high-2013-2014-press-release}{link}",
+           "\\href{https://www.racfoundation.org/research/mobility/council-parking-revenue-in-england-2014-15-david-leibling}{link}*",
+           "\\href{https://www.racfoundation.org/media-centre/parking-profits-break-three-quarters-of-a-billion}{link}",
+           "\\href{https://www.racfoundation.org/media-centre/english-council-parking-profits-up-ten-percent-2016-17}{link}",
+           "\\href{https://www.racfoundation.org/media-centre/english-council-parking-profits-rise-again}{link}",
+           
+           "",
+           "\\href{https://www.racfoundation.org/media-centre/parking-profits-in-scotland-revealed}{link}",
+           "",
+           "\\href{https://www.racfoundation.org/media-centre/scottish-council-parking-accounts-2013-14-press-release}{link}",
+           "\\href{https://www.racfoundation.org/media-centre/scottish-council-parking-profit-up-again-2014-15}{link}",
+           "\\href{https://www.racfoundation.org/media-centre/scottish-councils-parking-profits-top-40m-2015-16}{link}",
+           "",
+           "",
+           
+           "",
+           "",
+           "\\href{https://www.racfoundation.org/media-centre/welsh-councils-parking-accounts-2012-13-press-release}{link}",
+           "",
+           "",
+           "\\href{https://www.racfoundation.org/media-centre/welsh-council-parking-profits-up-for-third-year}{link}",
+           "\\href{https://www.racfoundation.org/media-centre/welsh-councils-parking-profits-inch-upwards-2016-2017}{link}",
+           "\\href{https://www.racfoundation.org/media-centre/welsh-council-parking-profits-up-five-years-running}{link}")
+
+pdfs <- c("",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/local_authority_parking_finances_report_david_leibling_010813.pdf}{link}",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/council_parking_accounts_2012-13_report_david_leibling.pdf}{link}",
+          "\\href{https://www.racfoundation.org/assets/rac_foundation/content/downloadables/Local_Authority_Parking_Finances_England_2014_David_Leibling_December_2013-14.pdf}{link}",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/Local_authority_parking_finances_England_2014-15_report_David_Leibling_December_2015.pdf}{link}",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/Local_Authority_Finances_2015-16_Leibling_Nov_2016_final.pdf}{link}",
+          "",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/Local_Authority_Parking_Finances_England_2017-18-Leibling_Final.pdf}{link}",
+          
+          "",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/local_authority_parking_finances_scotland.pdf}{link}",
+          "",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/Local_authority_parking_finances_Scotland_2013-14_report_David_Leibling_May_2015.pdf}{link}",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/local_authority_parking_finances_Scotland_2014-15_leibling_March_2016.pdf}{link}",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/Local_authority_parking_finances_Scotland_2015-16.pdf}{link}",
+          "",
+          "",
+          
+          "",
+          "",
+          "\\href{https://www.racfoundation.org/assets/rac_foundation/content/downloadables/local_parking_finances_wales_2012-13_leibling.pdf}{link}",
+          "",
+          "",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/Local_authority_parking_finances_Wales-2015-16_Leibling.pdf}{link}",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/Local_authority_parking_finances_Wales_2016-17_final_report.pdf}{link}",
+          "\\href{https://www.racfoundation.org/wp-content/uploads/Local_authority_parking_finances_Wales_2017-18_final.pdf}{link}")
+
+tab <- c("\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/council-parking-revenue-outturn-summary-10-11.pdf}{link}",
+         "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/parking_operations_revenue_outturn_for_all_english_councils_2011-12_data_table.pdf}{link}",
+         "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/council_parking_accounts_2012-13_tables.pdf}{link}",
+         "<-",
+         "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/Local_Authority_Parking_Operations_Revenue_Outturn_for_England_2014-15_listed_by_size_of_surplus_and_alphabetic.pdf}{link}",
+         "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/Local_Authority_Parking_Operations_Revenue_Outturn_for_England_2015-16_listed_by_size_of_surplus_and_alphabetically.pdf}{link}",
+         "\\href{https://www.racfoundation.org/wp-content/uploads/2017/11/Local_Authority_Parking_Operations_Revenue_Outturn_for_England_2016-17_listed_by_size_of_surplus_and_alphabetically.pdf}{link}",
+         "\\href{https://www.racfoundation.org/wp-content/uploads/English-council-parking-surpluses-2017-18-all-councils-ranked-A-Z.pdf}{link}",
+         rep("",16))
+
+# forecast <- c(rep("",7),
+#               "\\href{https://www.racfoundation.org/media-centre/english-councils-predict-huge-hike-in-parking-surplus}{link}**",
+#               rep("", 16))
+
+window <- c("", "2(4)", "3(5)", "4", "4", "4", "4", "4",
+            "", "1", "", "3", "4", "4", "", "",
+            "", "", "5", "", "", "4", "4", "4")
+window <- 
+df <- data.frame(country, year,htmls, pdfs, tab, window)
+kable(df, "latex", booktabs = T, escape = F) %>%
+  collapse_rows(columns = 1)
+```
+`*` link missing from RAC press releases page
+
+`**` pdf report missing
+
+
+Columns headings:
+
+* *country*
+* *year*--period covered in report
+* *html*--link to press release on RAC website
+* *pdf*--link to pdf report if exists
+* *tab*--link to additional tables if exist (only England)
+* *window*--number of previous years' data included in report, number in brackets is for aggregates, not at LA level

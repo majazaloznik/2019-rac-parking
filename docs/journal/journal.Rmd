@@ -27,28 +27,119 @@ output:
     `-- technical-appendix
 ```
 
-* available reports used for development, downloaded from RAC press website, stored in `/docs/original-reports`:
-
-```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
-tabl <- " 
-| country     | 2014/15  |2015/16  | 2016/17 | 2017/18 |
-|-------------|:--------:|--------:|--------:|--------:|
-| Scotland    |html+pdf  | html+pdf|        |         |
-| Wales       |          |html+pdf  |html+pdf  |html+pdf  |
-| England     |       |html+pdf+app  |html+app |html+pdf+app |
-"
-cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
-```
-
+* available reports used for development, downloaded from RAC press website, pdfs stored in `/docs/original-reports`, see appendix for full table
 
 Next steps: find data
 
-Scotland 
+# Thursday 14.3.2019
 
-* https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats
+* Look through back reports available, saving all and saving links here, in appendix 1
 
-Wales: 
+* Start query file for Ivo. 
 
-* https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Transport/RoadsAndTransportRevenueExpenditure-by-authority
+* OK, got all reports, despite missing years, it looks like most of the data is included in other reports as they have a window of usually 4 years previous that they include data for. 
 
-England: https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing#2015-to-2016
+* Now figure out data sources. 
+
+* Outline typical England report
+
+### England
+
+#### 1. Introduction
+
+* Mainly pure text chunk.
+* Available data: fisc.year
+* Missing data: national parks, Notthingham workplace parking levy? (17/18)
+
+#### 2. Summary
+
+##### Table 1 - Parking income and expenditure England
+
+* Unit: whole country
+* Available data:
+  + Off-street: expenditures (sum from LA tables)
+  + Off-street: incomes (sum from LA tables)
+  + On-street: expenditures (sum from LA tables)
+  + On-street: incomes (sum from LA tables)
+  + On-street: penalties - single cell on summary sheet
+  + Net expenditure on transport - single cell on summary sheet
+* That's all, everything else is calculated from this
+* Except for the next year budget estimate, that would require importing the budget excel file as well? Indeed, budget estimates are a part of the report elsewhere as well... 
+
+##### Text
+
+* Conditional tree based on data from Table 1. 
+
+##### Figure 1
+
+* Simple line chart based on data from Table 1.
+
+##### Table 2
+
+* Data from Table 1 for current year, split by London and non-London. 
+
+##### Text
+
+* Conditional tree based on data from Table 2.
+
+#### 3. Income
+
+##### Text
+
+* Conditional tree based on data from Tables 1 and 2
+* Includes footnote on penalty tarrifs. 
+
+#### 4. Expenditure
+
+##### Text
+
+* Conditional tree based on data from Tables 1 and 2
+
+#### 5. Surpluses
+
+
+
+
+
+
+## England data requirements and availability?
+
+* 2017/18 uses "MHCLG tables on parking income and expenditure"
+
+This looks like the data [https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing](here). 
+
+* For each year there is normally budget, provisional outturn and outturn data, the latter needs to be for individual local authorities, which does not seem to exist for 2007/08, but is available for all other years. 
+* The files are grouped under the title *Local authority revenue expenditure and financing England: 2010 to 2011 individual local authority data - outturn* for each year
+* The relevant Excel file is usually called `Revenue outturn RO2 (highways and transport services) + year.xls`.
+* There are three columns we are interested in: expenditures, incomes and capital charges, these are usually on separate sheets. There is one of these for both on street and off street parking. So that's 6 columns in total.
+* There are also summaries, but I don't need them, maybe only for manually double-checking.
+* Appendix 2 lists all the files, their links, the number or rows (local authorities) in the table and the sheets on which the data can be found.
+* TODO Add the starting row and the actual columns where the data in question can be found and I can write a funciton to extract the data automatically. 
+* Download all `.xls` files to `/data/raw`
+
+* "Earlier, councils also submitted budgets for the 2018-19financial year but on a less detailed basis." where are these budgets? Do I need to include them as well? Ah, yes.
+
+* At one point the England data stops including capital charges..2013/14 is last one. This means current reports are less data rich, and if I stick to the brief, it means that the code won't be able to replicate the old reports. 
+* At one point the Englad data starts including penalty charges for individual Local authorities, although the reports don't do anything special with that, just use the aggregates 
+
+* England totals do not include the national parks and the Nottingham levy. Not sure what to do with that!?
+
+
+
+
+* link [https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats](Scotland)
+
+
+* link [https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Transport/RoadsAndTransportRevenueExpenditure-by-authority](Wales:)
+
+
+
+# Appendix 1
+## links to all reports online
+```{r appendix, child = 'app1.Rmd'}
+```
+
+# Appendix 2
+## data overview 
+```{r appendix, child = 'app2.Rmd'}
+```
