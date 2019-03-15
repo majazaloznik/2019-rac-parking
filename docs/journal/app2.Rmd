@@ -19,6 +19,7 @@ link <- c("\\href{https://www.gov.uk/government/uploads/system/uploads/attachmen
               
  
 rows <- c(405,370, 371, 371, 371, 371, 371, 444, 446, 445)
+las <- c( 0, 0, 0, 0, 0, 0, 0, 0, 0, 353)
 
 first <- c(0, 0, 0, 0, 12, 12, 12, 8, 8, 8)
 
@@ -37,10 +38,62 @@ pen.1 <- c("G64", "G64", "G64", "G64", "G65", "G65", "I68", "H67", "H67", "H67")
 
 tot.1 <- c("J45", "J45", "J45", "J45", "J46", "J46", "L49", "K48", "K48", "K48")
 
-df <- data.frame(year,link, rows, first,
+df <- data.frame(year,link, rows, las, first,
                  e.sh, e.on, e.off, 
                  i.sh, i.on, i.off, 
-                 pen.on, pen.1, tot.1)
+                 pen.sh,pen.on, pen.1, tot.1)
+kable(df, "latex", booktabs = T, escape = F) %>%
+  collapse_rows(columns = 1)
+```
+
+  
+* *year*--period covered in report
+* *link*--link to data file
+* *rows*--number of rows (not all are local authorities though!)
+* *las*--number of local authorities (i.e. not ones with class "O"
+* *first*--first row of data on sheets 3,4 and 5
+* *e.sh*--which sheet are expenditures on
+* *e.on*--which column on street expenditures
+* *e.off*--which column are off street expenditures
+* *i.sh*--which sheet are incomes on
+* *i.on*--which column on street incomes
+* *i.off*--which column are off street incomes
+* *pen.sh*--which sheet are penalty charge incomes for LAs on
+* *pen.on*--which column are penalty charge incomes for LAs
+* *pen.1*--which cell is the totaL Penalty charge notice income for on street parking data on in sheet 2
+* *tot.1*--which cell is the Net current expenditures for Total transport and Highways services on in sheet 2
+
+
+## England--Budget
+```{r, echo = FALSE}
+library(kableExtra)
+
+year <- c("2008/09", "2009/10", "2010/11", "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", "2017/18", "2018/19")
+
+
+link <- c("", 
+          "", 
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/7367/1934015.xls}{xls}", 
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/7369/2179334.xls}{xls}", 
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/78647/RA_2012-13_data_by_LA_-_Nat_Stats_Release_-_Revised_31-Jul-2013.xls}{xls}", 
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/225875/RA_2013-14_data_by_LA_-_Nat_Stats_Release_-_31-Jul-2013.xls}{xls}", 
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/365591/RA_2014-15_data_by_LA_-_Nat_Stats_Release_-_Revised_22-Oct-2014.xls}{xls}", 
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/444910/RA_2015-16_data_by_LA_-_Nat_Stats_Release_-_15-Jul-2015.xls}{xls}", 
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/532962/RA_2016-17_data_by_LA.xlsx}{xlsx}", 
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/623097/RA_2017-18_data_by_LA.xlsx}{xlsx}",
+          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/720343/RA_2018-19_data_by_LA.xlsx}{xlsx}")
+              
+ 
+rows <- c(0, 0, 444, 444, 444, 444, 444, 444, 443, 446, 443)
+las <- c( 0, 0,353, 353,353, 353, 353, 353, 353, 353, 353)
+first <- c(0, 0, 10, 10, 10, 10, 9, 9, 8, 8, 8)
+
+budg.tot <- c("-", "-", "E27", "E28", "E28", "E28", "F34", "F34", "E35", "E35", "E35") 
+
+budg.la <- c("-", "-", "U", "V", "V", "V", "U", "U", "U",  "V", "V") 
+
+df <- data.frame(year,link, rows, first, las,
+                 budg.tot, budg.la)
 kable(df, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
@@ -49,14 +102,5 @@ kable(df, "latex", booktabs = T, escape = F) %>%
 * *year*--period covered in report
 * *link*--link to data file
 * *rows*--number of local authorities
-* *first*--first row of data on sheets 3,4 and 5
-* *e.sh*--which sheet are expenditures on
-* *e.on*--which column on street expenditures
-* *e.off*--which column are off street expenditures
-* *i.sh*--which sheet are incomes on
-* *i.on*--which column on street incomes
-* *i.off*--which column are off street incomes
-* *pen.sh*--which sheet are penalty charge incomes on
-* *pen.on*--which column are penalty charge incomes
-* *pen.1*--which cell is the  Penalty charge notice income for on street parking data on in sheet 2
-* *tot.1*--which cell is the Net current expenditures for Total transport and Highways services on in sheet 2
+* *budg.tot*--wich cell on sheet 2 is the total budgeted surplus in
+* *budg.la*--which column on sheet 3 are the LA parking budgeted surpluses on
