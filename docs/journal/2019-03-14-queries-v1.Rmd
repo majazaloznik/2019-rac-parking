@@ -23,9 +23,11 @@ Additional data sources:
 * in the 17/18 England report there is a footnote listing the penalty tarrifs for London and the rest of the UK. Should I remove it or should I add this  as manual entry?
 * The England reports also mention the totals for the Nottingham workplace parking levy, and that's not data that I have been able to find?
 
+Errors or unexplained discrepancies between the data and Leibling's reports? What do I do with them? 
 
+OK, so Leibling seems to subtract the Nottingham levy and the National park data from the off-street parking totals. I can do the latter, but for the Nottingham levy I don't know the numbers. What should I do?
 
-
+Input: because the excel tables are inconsistent from one year to another, columns change, number of rows in headers change, number of sheets change, there is no reasonlable way to automate finding relevant cells, and the most straightforward thing to do is have you manually input the relevant ranges. For the England report that would involve downloading two excel files and manually looking up about 16 values e.g. which sheet are the expenditures on (3) which column is on street parking on (BV) etc..
 
 
 ## Appendix 1---links to all reports online

@@ -26,10 +26,12 @@ first <- c(0, 0, 0, 0, 12, 12, 12, 8, 8, 8)
 e.sh <- c(3, 3, 3, 3, 3, 3, 3, 3, 3, 3) 
 e.on <- c("CU", "BH", "BH", "BH", "BH", "BH", "BE", "CU", "CU", "CU")
 e.off <- c("DB", "BL", "BL", "BL", "BL", "BL", "BI", "DB", "DB", "DB")
+e.cc <- c("BZ", "AV", "AV", "AV", "AV", "AV", "AS", "BS", "BS", "BS")
 
-i.sh <- c(3, 4, 4, 4, 4, 4, 3, 3, 3, 3) 
+i.sh <- c(3, 4, 4, 4, 4, 4, 4, 3, 3, 3) 
 i.on <- c("CX", "BH", "BH", "BH", "BH", "BH", "BE", "CX", "CX", "CX")
 i.off <- c("DE", "BL", "BL", "BL", "BL", "BL", "BI", "DE", "DE", "DE")
+i.cc <- c("CC", "AV", "AV", "AV", "AV", "AV", "AS", "BV", "BV", "BV")
 
 pen.sh <- c(NA, NA, NA, NA, NA, NA, NA, 3, 3, 3) 
 pen.on <- c("--", "--", "--", "--", "--", "--", "--", "FX", "FX", "FX")
@@ -55,14 +57,15 @@ kable(df, "latex", booktabs = T, escape = F) %>%
 * *e.sh*--which sheet are expenditures on
 * *e.on*--which column on street expenditures
 * *e.off*--which column are off street expenditures
+* *e.cc*--which column are congestion charge expenditures on (row = Greater London Authority)
 * *i.sh*--which sheet are incomes on
 * *i.on*--which column on street incomes
 * *i.off*--which column are off street incomes
+* *i.cc*--which column are congestion charge incomes on (row = Greater London Authority)
 * *pen.sh*--which sheet are penalty charge incomes for LAs on
 * *pen.on*--which column are penalty charge incomes for LAs
 * *pen.1*--which cell is the totaL Penalty charge notice income for on street parking data on in sheet 2
 * *tot.1*--which cell is the Net current expenditures for Total transport and Highways services on in sheet 2
-
 
 ## England--Budget
 ```{r, echo = FALSE}

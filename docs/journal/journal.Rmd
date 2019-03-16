@@ -77,10 +77,24 @@ This looks like the data [https://www.gov.uk/government/collections/local-author
 * OK, England budget files are all saved and relevant info extracted manually. 
 * Now back to outlining the England report as it stands.
 * E17/18 says national park surplus is 1.7 million, sum of cells DF405:411 is 1.774. 
-* Comparing Table 1 for E17/18 to excel file:
+* Comparing Table 1 for E17/18 to excel file 17/18:
   + on street parking is all the same
-  + off street parking: there is a discrepancy. Income is the same, but Leibling's expenditure value is higher than the Excel one (making the surplus lower): 362 vs 356?! 
+  + off street parking: there is a discrepancy. Income is the same, but Leibling's expenditure value is higher than the Excel one (making the surplus lower): 362 vs 356?!
+  
+# Saturday 16.3.2019
 
+* Comparing Table 1 for E17/18 to excel file 16/17
+  + on street parking is all the same
+  + off street parking: there is a discrepancy. Leibling's income is 693 vs 689 in the table, and Leibling's expenditures are are 349 vs 343 in the table. 
+* Comparing Table 1 for E17/18 to excel file 15/16
+  + on street parking is all the same
+  + off street parking: there is a discrepancy. Leibling's income is 670 vs 674 in the table, and Leibling's expenditures are are 340 vs 337 in the table. 
+
+* Trying to figure out where these discrepancies come from: It must be the nottingham workplace levy? Which I don't have data for. 
+* Second thing, presumably the difference is also due to not including the national parks. Although I have the data for that, I cannot confirm, because I don't know the levy numbers. 
+
+* TODO write (find) a funtion to convert excel column names to column numbers. 
+* Oh, congestion charge data needs to be read as well, that's in a different couple of cells than what i've been looking at until now, so add that to the appendix. 
 
 ### England
 
@@ -146,8 +160,37 @@ This looks like the data [https://www.gov.uk/government/collections/local-author
 * Additionally there is the total for on national parks, that data is also available
 * Missing data: the total for Nottingham workplace levy. 
 
+##### Table 3a surpluses for London councils
 
+* Individual LA data for 33 London councils
 
+##### Table 3b surpluses for top 20 non London councils
+
+* Individual LA data for 33 London councils
+
+##### Text
+
+* Conditional tree based on data from Tables 3a and 3b
+
+#### 6. Comparison with budgets for2017-18and 2018-19
+
+* Conditional text based on comparison of indovidual LA surpluses with individual LA budgets
+
+#### 7. Congestion charge
+
+##### Text 
+* Conditional text based on table below
+
+##### Table
+* Simple table based on data from outturn table. 
+
+#### Appendix 1
+
+* Table of all LA surpluses for 5 years, alphabetical 
+
+#### Appendix 2
+
+* Table of all LA surpluses for 5 years, by surplus size. 
 
 
 
