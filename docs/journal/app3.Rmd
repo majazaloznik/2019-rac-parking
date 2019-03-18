@@ -1,0 +1,74 @@
+
+```{r, echo = FALSE}
+library(kableExtra)
+
+year <- c( "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", "2017/18")
+
+report <- c("yes", "-", "yes", "yes", "yes", "-", "-")
+
+file.name <- c("", rep("Annex A", 5), "LFR 05")
+link <- c("--", 
+          "\\href{https://www2.gov.scot/Resource/0044/00446440.xlsx}{xlsx}", 
+          "\\href{https://www2.gov.scot/Resource/0047/00475683.xlsx}{xlsx}",
+          "\\href{https://www2.gov.scot/Resource/0049/00494926.xlsx}{xlsx}",
+          "\\href{https://www2.gov.scot/Resource/0051/00515383.xlsx}{xlsx}",
+          "\\href{https://www2.gov.scot/Resource/0053/00536018.xlsx}{xlsx}",
+          "\\href{https://www2.gov.scot/Resource/0054/00546675.xlsx}{xlsx}")
+
+start.sh <- c(NA,0,2,2,2,2,3)
+end.sh<- c(NA,0,33,33,33,33,34)
+
+exp.cell <- c("-", "F57", "F40", "E40", "B41", "B41", "L13")
+inc.cell <- c("-", "G57", "G40", "F40", "C41", "C41", "L23")
+
+t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34", "U13")
+t.inc.cell <- c("-", "G50", "G33", "F33", "C34", "C34", "U23")
+
+df <- data.frame(year,report, file.name, link, start.sh, end.sh, exp.cell,
+                 inc.cell, t.exp.cell, t.inc.cell)
+kable(df, "latex", booktabs = T, escape = F) %>%
+  collapse_rows(columns = 1)
+```
+
+* *year*--period covered in report
+* *report*--does the report exist for this year?
+* *file.name*--name on link to file on the website
+* *link*--link to data file
+* *start.sh*--number of first sheet with LA data
+* *end.sh*--number of last sheet with LA data
+* *exp.cell*--cell with expenditure data
+* *inc.cell*--cell with income data
+* *t.exp.cell*--total expenditure for all transport and roads cell
+* *t.exp.cell*--total income for all transport and roads cell
+
+#### DPE and PNC data
+
+```{r, echo = FALSE}
+library(kableExtra)
+
+year <- c( "2011/12","2012/13", "2013/14/15/16", "2016/17", "2017/18")
+
+
+file.type <- c("--","--", "scan", "pdf", "pdf")
+link <- c("--", 
+          "--",
+          "\\href{http://www.parliament.scot/S5_Rural/Meeting%20Papers/20161221_REC_Committee_Public_Paper.pdf}{pdf}",
+          "\\href{https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/}{pdf}",
+          "\\href{https://www.transport.gov.scot/media/43636/decriminalised-parking-enforcement-income-expenditure-annual-report-2017-18.pdf}{pdf}")
+
+dpe.tab <- c(NA, NA, NA, 2, 2)
+pcn.tab <- c(NA, NA, NA, 3, 3)
+e.i.tab <- c(NA, NA, NA, 4, 4)
+
+df <- data.frame(year, file.type, link, dpe.tab,pcn.tab, e.i.tab)
+kable(df, "latex", booktabs = T, escape = F) %>%
+  collapse_rows(columns = 1)
+```
+
+* *year*--period covered in report
+* *report*--does the report exist for this year?
+* *file.name*--name on link to file on the website
+* *link*--link to data file
+* *dpe.tab*--which table (including the table of contents) contains the table of LAs that have/haven't DPE
+* *pcn.tab*--which table (including the table of contents) contains data on no of PCNs issued
+* *i.e.tab*--which table (including the table of contents) contains data on incomes and expenditures of DPE LAs

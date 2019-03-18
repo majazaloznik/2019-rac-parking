@@ -1,35 +1,66 @@
 ---
-title: "RAC Parking Report Automation---Queries for Ivo 01"
+title: "RAC Parking Report Automation---Queries for Ivo, round 1"
 author: mz
+date: 18.3.2019
 output:
   pdf_document: default
 ---
-  
-At the end of this document there is a table with all the reports I could find, with links to the html (press release), the pdf reports, and the additional tables (for England). At least one of these was not immediately available on the RAC website. I am not sure if I am missing any others?
+Dear Ivo
+
+Here is a first round of queries and notes after checking all the available reports and going through the data prep for the England reports. More questions will of course arise, but your responses to these asap would be appreciated, even if not all at the same time. The questions are numbered. Ones in bold are more important.  
+
+#### Existing reports
+
+At the end of this document (Appendix 1) there is a table with all the reports I could find, with links to the html (press release), the pdf reports, and the additional tables (for England). At least one of these was not immediately available on the RAC website, but I found it hidden and I am not sure if I am missing any others that I couldn't find.
 
 1. Is the last Scotland report really for 2015/16?
 2. Is the England 2016/2017 pdf report really missing?
 
-Data
+#### Data--England
 
-I am assuming the England data will continute to be released in the form of Excel files following the same basic pattern as those on [https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing](this link)
+I am assuming the England data will continue to be released in the form of Excel files following the same basic pattern as those on [this link](https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing). 
 
-Backwards compatibility: presumably you won't rerun all the reports that are already out there? See what I mean in an example:
+At the end of this document (Appendix 2) are two tables with information on all the relevant columns and cells that will need to be extracted to compile the England reports. Because the excel tables are inconsistent from one year to another (columns change, number of rows in headers change, number of sheets change... see the tables to get an idea of this) there really is no easy way to automate finding relevant cells. 
+
+Of course we can set the defaults to what they were last year, since at least the last 3 years have been pretty consistent. I can also add some error handling that checks if some totals match, or make sense, and if they don't, issue a warning telling you to check the Excel files manually, but in the end you have to be prepared to manually update these cell ranges.
+
+3. Does this make sense and is it acceptable?
+
+#### Additional data sources: 
+
+4. in the 17/18 England report there is a footnote listing the penalty tariffs for London and the rest of the UK. I can either remove it or I can add this as manual entry?
+
+Comparing the reports with the Excel files there are some inconsistencies for the aggregate off street parking. There seem to be two sources of this: one is that Leibling does not include national parks in his totals, but reports them separately. The second one is that he doesn't include the Nottingham workplace levy, also reporting it separately. The data files however only have the park data, but not the data for the Nottingham levy. (Which means I am only guessing that these are the only two sources of the discrepancy, there might be something else as well.)
+
+5. Do you want to continue separating out the national parks?
+
+**6. Do you want to continue separating out the Nottingham levy?**
+
+**7. If yes, where can I get the data for the Nottingham levy: I would need both expenditures and incomes?**
+
+#### Backwards compatibility
+
+The code that I produce is based on the most recent 2017/18 report for England. If you run it on earlier data, it will work fine, and produce a report of the 17/18 type. However this might be different than the existing earlier reports. For example:
 
 * From 2014/2015 onwards England stops reporting data on *capital charges*. 
-* Until that point Leibling's reports give both `Surplus before capital charges` and `Net surplus after capital charges`. Afterwards they only report the former, even when reporting data for previous years. I will do the same. That means if you use my code to produce reports on 2013/14 or earlier, they will have less information than the actual reports did. Is that OK?
+* Until that point Leibling's reports give both `Surplus before capital charges` and `Net surplus after capital charges`. Afterwards they only report the former, even when reporting data for previous years. 
 
-Additional data sources: 
-* in the 17/18 England report there is a footnote listing the penalty tarrifs for London and the rest of the UK. Should I remove it or should I add this  as manual entry?
-* The England reports also mention the totals for the Nottingham workplace parking levy, and that's not data that I have been able to find?
+I will do the same. That means if you use my code to produce reports on 2013/14 or earlier, they will have less information than the actual reports did. 
 
-Errors or unexplained discrepancies between the data and Leibling's reports? What do I do with them? 
+8. Is that OK?
 
-OK, so Leibling seems to subtract the Nottingham levy and the National park data from the off-street parking totals. I can do the latter, but for the Nottingham levy I don't know the numbers. What should I do?
 
-Input: because the excel tables are inconsistent from one year to another, columns change, number of rows in headers change, number of sheets change, there is no reasonlable way to automate finding relevant cells, and the most straightforward thing to do is have you manually input the relevant ranges. For the England report that would involve downloading two excel files and manually looking up about 16 values e.g. which sheet are the expenditures on (3) which column is on street parking on (BV) etc..
+##### 
+
+
 
 
 ## Appendix 1---links to all reports online
 ```{r appendix, child = 'app1.Rmd'}
+```
+
+
+# Appendix 2
+## data overview 
+```{r appendix, child = 'app2.Rmd'}
 ```

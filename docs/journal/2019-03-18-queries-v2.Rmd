@@ -1,0 +1,59 @@
+---
+title: "RAC Parking Report Automation---Queries for Ivo, round 2"
+author: mz
+date: 18.3.2019
+output:
+  pdf_document: default
+---
+
+Dear Ivo,
+
+Now Scotland. Again the table in the appendix summarises the data (currenlty available to me).
+
+#### reports 
+
+The relevant data seems to be on this [Scottish local government finance statistics site](https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats). See the table in the appendix, but I am confused by the following:
+
+1. Although there is a report for 2011/12, the tables on the website do not have individual LA level data, so I have no idea where the data came from?
+2. The data does exist for 2016/17, including LA level data, but there was no report?
+
+#### data
+
+I manually crosschecked the 2015/16 data vs the data published in the report. There are a few annoying discrepancies, like so:
+
+```{r, echo = FALSE, messages = FALSE}
+suppressMessages(library(dplyr))
+library(knitr)
+library(kableExtra)
+account <- c("expednitures", "expednitures",
+             "income", "income",
+             "surplus")
+la <- c("Aberdeen city", "South Ayrshire", 
+        "Aberdeen city", "South Ayrshire", 
+        "Aberdeen city")
+leibling <- c(4320,470,9200,80,4890)
+gov.scot <- c(0,-327,0,0,0)
+df <- data.frame(account, la, leibling, gov.scot)
+kable(df, "latex", booktabs = T, escape = F) %>%
+  collapse_rows(columns = 1)
+```
+
+In fact Aberdeen City has zeros in all the Excel tables, but clearly there must be another source for this data. Apart from that there are just a few small rounding errors, so in the end after finding these big errors, everything else adds up OK. I won't go manually checking the rest, but I'm not sure what to do with this..
+
+3. Where can I get the Aberdeen City data?
+
+4. Any idea what is wrong with the South Ayrshire data for 15/16? 
+
+5. Apart from Aberdeen City, am I OK to use all other 31 authorities as they are reported in the Excel files?
+
+Penalty Notice Charge data exists in pdf format. In fact, the data for 2013/14/15/16 is in the form of a scanned pdf. 16/17 and 17/18 are regular pdf. These can actually be extracted manually, but this will still probably require a bit of manual oversight.. I can again assume the next report will be the same as the 17/18 one, e.g. where the relevant tables are in the same positions, or you can pick the page where it's on?
+
+
+
+
+
+
+## Appendix 1---Scotland data
+```{r appendix, child = 'app3.Rmd'}
+```
+
