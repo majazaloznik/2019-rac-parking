@@ -138,19 +138,138 @@ This looks like the data [https://www.gov.uk/government/collections/local-author
 * Saving the tables into rds? Probably, it is serialised, and as opposed to csv it retains the data types. Let's me cleanly load individual objects and assign then names, and there's no danger of overwriting an object of the same name. But is not human readable. 
 * This also involves using here::here() to load the data in the child .rmd documents for the appendices. 
 
+* **mapping England**: OK, so the data is for 353 "local authorities", or are they actually "councils"? Shapefiles seem to have 326 shapes. Wikipedia says there are 27 county and 201 district councils, *which cover the same physical area*. plus 55 UAs, 36 met burroughs and 32 London ones, plus the city, plus scilly. But they overlap..
+* SO e.g. you have Oxford council and Oxfodshire council. The first only does off street parking, while the county one does both. Do I add them up? If I want to map them I have to. But in the tables are they separate?
+* OK, found lookup table for counties and districts, that will be useful! 
+* There are counties in the lookup table that are not county councils though, these eight: Greater Manchester, Inner London, Merseyside, Northamptonshire, Outer London, Tyne and Wear, West Midlands, West Yorkshire. 
+* Download UK map shapefile: *Local Administrative Units Level 1 (January 2018) Super Generalised Clipped Boundaries in United Kingdom * [this link](https://data.gov.uk/dataset/e892da8a-bf06-4d00-a8fd-a578b30b1dca/local-administrative-units-level-1-january-2018-super-generalised-clipped-boundaries-in-united-kingdom)
+* install `sf` package.
+* Get basic maps to work, hooray. 
+* Probably want ultra generalised, this is too fine. Yeah. 
 
+* OK, now back to outlining Scotland data. 
+* OK, so there is crossover in the scottish report, and requires picking up data from the other two reports...
+* Check conditional formatting of tables that work in pdf. `condformat` might work. Do they want it?
+* Actually cell_spec in kableExtra probably does the trick [see here](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf). 
 
-### Scotland 
+### Scotland (based on 16/17)
 
 * Mainly pure text chunk.
-* Available data: fisc.year
+* Available data: fiscal year, link to income and expenditure data, link to PNC data, link to SPRECC report with previous data. 
 * Paragraph on data availability on Penalty Charne Notices, incl. source, which is a scanned pdf...
 
 
 #### 1. Introduction
 
+##### Text
 
-  
+* Text based on table 1. Conditional tree could get complicated as the table becomes simpler, but can make it simple I think. 
+
+##### Table 1
+
+* exact same table as in pcn.pdf, can be extracted directly from pdf and cleaned up. 
+
+##### Text
+
+* Pure text
+
+#### 2. Summary 
+
+##### Text
+
+* based on table 2. Conditoinal tree must be able to describe temporal trend..
+
+##### Table 2
+
+* Based on first summary sheet in Scotland income and expenditure data files. But it is inconsistent, partially because of Aberdeen, but something else is also going on..
+* Based also on total transport expenditure from same sheet, but numbers don't match. 
+##### Figure 1
+
+* Based on Table 2, OK
+
+##### Table 3
+
+* Based on summary data in table 2, BUT also data for England and Wales, which historically is already available by the time Scotland's report is due. 
+
+##### Table 4
+
+* Again, crossover with other two countries, additionally this one is 12/13 to 16/17, not sure what to do next window wise. 
+
+##### Text
+
+* Based on calculation based on data used in table 4. 
+
+#### 3. Income
+
+##### Text
+
+* Based on data in table 5
+
+##### Table 5
+
+* Based on data in income and expendidure files, except for Aberdeen City.. And possibly some other local authorities?
+* Also includes data from Table 1, i.e. the pdf scraped table.
+
+##### Text
+
+* Text based on table 6.
+
+
+
+##### Table 6
+
+* NUmbers of PNCs are from the table scraped in the pdf. 
+* Additionally the calculated average cost of a PNC is from the income table also scraped from the PNC. 
+* 3 year window in 16/17
+
+
+##### Text
+
+* Based on numbers in table 7
+
+##### Table 7
+
+* Proportions calculated from PCN data in pdf, and income data from xls. 
+* Except for Aberdeen..
+* Including crossover with England data
+
+#### 4. Expenditure
+
+##### Text
+
+* Text based on table 8, potentially tricky conditional tree...
+
+##### Table 8
+
+* Expenditure data from excel files only. 
+* Proportion calculated from income also from xls files. 
+* Additionally DPE in operaction data from first scraped table from pdf. 
+
+#### 5. Surpluses
+
+##### Text
+
+* Text based on nice conditional tree from table 9
+* Also national ranking!!
+
+##### Table 9
+ * Surplus data calculated from incomes and expenditures in xls
+ * changes also. 
+ * again DPE data drom table 1 in the pdf
+ 
+##### Table 10
+
+* Contribution of surplus towards total transport expenditure. 
+* OK, but which one is the total transport expenditure!?
+
+#### 6 Comparison between Local Government Finance figures and Transport Scotland decriminalised parking enforcement figures
+
+* OOh, interesting! But should it really be in this report, haha
+* So combine data from xls and pdf and look at discrepancies, which should be mainly off street parking, but maybe are not just that. 
+
+### Appendix
+
+* Map based on Table 1
 
 ### England
 

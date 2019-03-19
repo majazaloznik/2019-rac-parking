@@ -229,7 +229,7 @@ scotland.i.e. <- data.frame(year,report, file.name, link,
                             inc.cell, t.exp.cell, t.inc.cell)
 
 ## commented out to stop overwriting!
-# saveRDS(scotland.i.e., "data/02-interim/scotland.i.e.17.18")
+# saveRDS(scotland.i.e., "data/02-interim/scotland.i.e.17.18.rds")
 
 ## 3.2 SCOTLAND penalty notice charges #########################################
 
@@ -252,4 +252,4 @@ e.i.tab <- c(NA, NA, NA, 4, 4)
 scotland.pnc <- data.frame(year, file.type, link, dpe.tab,pcn.tab, e.i.tab)
 
 ## commented out to stop overwriting!
-# saveRDS(scotland.pnc, "data/02-interim/scotland.pnc.17.18")
+# saveRDS(scotland.pnc, "data/02-interim/scotland.pnc.17.18.rds")

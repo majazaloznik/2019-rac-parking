@@ -48,9 +48,29 @@ In fact Aberdeen City has zeros in all the Excel tables, but clearly there must 
 
 Penalty Notice Charge data exists in pdf format. In fact, the data for 2013/14/15/16 is in the form of a scanned pdf. 16/17 and 17/18 are regular pdf. These can actually be extracted manually, but this will still probably require a bit of manual oversight.. I can again assume the next report will be the same as the 17/18 one, e.g. where the relevant tables are in the same positions, or you can pick the page where it's on?
 
+#### Crossover
+
+So the Scotland report includes data on England and Wales, presumably because historically both country reports are already long done by the time Scotland data becomes available, that's fine. Table 4 in the 16/17 report compares incomes et al. between 12/13 and 16/17, while in the 15/16 report it compares 10/11 to 15/16. So one goes back 4, the other 5 years (previous reports don't have this table). 
+
+1. How many years should the comparison window be?
 
 
 
+## England mapping
+
+OK, so if I've got this right, the data is for 353 local authorities, of different types. This includes both 27 county councils and 201 district councils, however these both *cover the same area*. And both collect parking income. 
+
+So how do you map that? When it comes to income, expenditure or surplus, i.e. ££, I guess you could e.g. take the county numbers and divide them equally between the districts? Equally though? Might there be a reason for a different type of division?
+
+Alternatively I could add the sub-districts with the county total, and just plot those 27 + and then there are the other 8 counties that are not double counted, and merge them as well, so the England map has 35 LAs. But that's not consistent with the rest of the report..
+
+1. Do you have a preference, alternative idea, suggestion? Otherwise there will be no England maps..
+
+#### General aesthetic question
+
+Some of the tables get pretty dense. At least in some cases (e.g. %) it might make sense to use conditional formatting to colour the cells. 
+
+1. Would you be interested in that, I can give it a go?
 
 
 ## Appendix 1---Scotland data
