@@ -1,32 +1,8 @@
 
 ```{r, echo = FALSE}
 library(kableExtra)
-
-year <- c( "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", "2017/18")
-
-report <- c("yes", "-", "yes", "yes", "yes", "-", "-")
-
-file.name <- c("", rep("Annex A", 5), "LFR 05")
-link <- c("--", 
-          "\\href{https://www2.gov.scot/Resource/0044/00446440.xlsx}{xlsx}", 
-          "\\href{https://www2.gov.scot/Resource/0047/00475683.xlsx}{xlsx}",
-          "\\href{https://www2.gov.scot/Resource/0049/00494926.xlsx}{xlsx}",
-          "\\href{https://www2.gov.scot/Resource/0051/00515383.xlsx}{xlsx}",
-          "\\href{https://www2.gov.scot/Resource/0053/00536018.xlsx}{xlsx}",
-          "\\href{https://www2.gov.scot/Resource/0054/00546675.xlsx}{xlsx}")
-
-start.sh <- c(NA,0,2,2,2,2,3)
-end.sh<- c(NA,0,33,33,33,33,34)
-
-exp.cell <- c("-", "F57", "F40", "E40", "B41", "B41", "L13")
-inc.cell <- c("-", "G57", "G40", "F40", "C41", "C41", "L23")
-
-t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34", "U13")
-t.inc.cell <- c("-", "G50", "G33", "F33", "C34", "C34", "U23")
-
-df <- data.frame(year,report, file.name, link, start.sh, end.sh, exp.cell,
-                 inc.cell, t.exp.cell, t.inc.cell)
-kable(df, "latex", booktabs = T, escape = F) %>%
+scotland.i.e. <- readRDS(here::here("data/02-interim/scotland.i.e.17.18.rds"))
+kable(scotland.i.e., "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
 
@@ -44,24 +20,9 @@ kable(df, "latex", booktabs = T, escape = F) %>%
 #### DPE and PNC data
 
 ```{r, echo = FALSE}
-library(kableExtra)
+scotland.pnc <- readRDS(here::here("data/02-interim/scotland.pnc.17.18.rds"))
 
-year <- c( "2011/12","2012/13", "2013/14/15/16", "2016/17", "2017/18")
-
-
-file.type <- c("--","--", "scan", "pdf", "pdf")
-link <- c("--", 
-          "--",
-          "\\href{http://www.parliament.scot/S5_Rural/Meeting%20Papers/20161221_REC_Committee_Public_Paper.pdf}{pdf}",
-          "\\href{https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/}{pdf}",
-          "\\href{https://www.transport.gov.scot/media/43636/decriminalised-parking-enforcement-income-expenditure-annual-report-2017-18.pdf}{pdf}")
-
-dpe.tab <- c(NA, NA, NA, 2, 2)
-pcn.tab <- c(NA, NA, NA, 3, 3)
-e.i.tab <- c(NA, NA, NA, 4, 4)
-
-df <- data.frame(year, file.type, link, dpe.tab,pcn.tab, e.i.tab)
-kable(df, "latex", booktabs = T, escape = F) %>%
+kable(scotland.pnc, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
 

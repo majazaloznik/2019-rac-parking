@@ -130,7 +130,16 @@ This looks like the data [https://www.gov.uk/government/collections/local-author
 
 *Todo: outline scotland data. 
 
-  
+# Tuesday 19.3.2019
+
+* Found the 16/17 scotland files, they're not under press, but under publications...
+* Add them to app1
+* Actually clean up the data source tables and move them to code, these are manual data entry files. 
+* Saving the tables into rds? Probably, it is serialised, and as opposed to csv it retains the data types. Let's me cleanly load individual objects and assign then names, and there's no danger of overwriting an object of the same name. But is not human readable. 
+* This also involves using here::here() to load the data in the child .rmd documents for the appendices. 
+
+
+
 ### Scotland 
 
 * Mainly pure text chunk.

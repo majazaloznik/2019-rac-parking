@@ -2,49 +2,8 @@
 ## England--Outturn
 ```{r, echo = FALSE}
 library(kableExtra)
-
-year <- c("2008/09", "2009/10", "2010/11", "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", "2017/18")
-
-
-link <- c("\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/397002/Revenue_Outturn__RO2__data_2008-09_by_LA_-_Revised_17-Nov-2011.xls}{xls}",
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/387065/RO2.xls}{xls}",
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/16448/Revenue_Outturn__RO2__data_2010-11_by_LA_-_27-Nov-2012-v2.xls}{xls}",
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/262061/Revenue_Outturn__RO2__data_2011-12_by_LA_-_Revised_28-Nov-2013.xls}{xls}",
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/282558/Revenue_Outturn__RO2__data_2012-13_by_LA__Revised__-_18-Feb-2014.xls}{xls}",
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/381066/Revenue_Outturn__RO2__data_2013-14_by_LA.xls}{xls}",
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/497099/Revenue_Outturn__RO2__data_2014-15_by_LA_-_02-Feb-2016.xls}{xls}",
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/659790/RO2_2015-16_data_by_LA_-_Revision.xlsx}{xlsx}",
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/659775/RO2_2016-17_data_by_LA.xlsx}{xlsx}",
-          "\\href{https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/757366/RO2_2017-18_data_by_LA.xlsx}{xlsx}")
-              
- 
-rows <- c(405,370, 371, 371, 371, 371, 371, 444, 446, 445)
-las <- c( 388, 353, 353, 353, 353, 353, 353, 353, 353, 353)
-
-first <- c(0, 0, 0, 0, 12, 12, 12, 8, 8, 8)
-
-e.sh <- c(3, 3, 3, 3, 3, 3, 3, 3, 3, 3) 
-e.on <- c("CU", "BH", "BH", "BH", "BH", "BH", "BE", "CU", "CU", "CU")
-e.off <- c("DB", "BL", "BL", "BL", "BL", "BL", "BI", "DB", "DB", "DB")
-e.cc <- c("BZ", "AV", "AV", "AV", "AV", "AV", "AS", "BS", "BS", "BS")
-
-i.sh <- c(3, 4, 4, 4, 4, 4, 4, 3, 3, 3) 
-i.on <- c("CX", "BH", "BH", "BH", "BH", "BH", "BE", "CX", "CX", "CX")
-i.off <- c("DE", "BL", "BL", "BL", "BL", "BL", "BI", "DE", "DE", "DE")
-i.cc <- c("CC", "AV", "AV", "AV", "AV", "AV", "AS", "BV", "BV", "BV")
-
-pen.sh <- c(NA, NA, NA, NA, NA, NA, NA, 3, 3, 3) 
-pen.on <- c("--", "--", "--", "--", "--", "--", "--", "FX", "FX", "FX")
-
-pen.1 <- c("G64", "G64", "G64", "G64", "G65", "G65", "I68", "H67", "H67", "H67")
-
-tot.1 <- c("J45", "J45", "J45", "J45", "J46", "J46", "L49", "K48", "K48", "K48")
-
-df <- data.frame(year,link, rows, las, first,
-                 e.sh, e.on, e.off, 
-                 i.sh, i.on, i.off, 
-                 pen.sh,pen.on, pen.1, tot.1)
-kable(df, "latex", booktabs = T, escape = F) %>%
+england.outturn <- readRDS(here::here("data/02-interim/england.outturn.17.18.rds"))
+kable(england.outturn, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
 
@@ -69,35 +28,8 @@ kable(df, "latex", booktabs = T, escape = F) %>%
 
 ## England--Budget
 ```{r, echo = FALSE}
-library(kableExtra)
-
-year <- c("2008/09", "2009/10", "2010/11", "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", "2017/18", "2018/19")
-
-
-link <- c("", 
-          "", 
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/7367/1934015.xls}{xls}", 
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/7369/2179334.xls}{xls}", 
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/78647/RA_2012-13_data_by_LA_-_Nat_Stats_Release_-_Revised_31-Jul-2013.xls}{xls}", 
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/225875/RA_2013-14_data_by_LA_-_Nat_Stats_Release_-_31-Jul-2013.xls}{xls}", 
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/365591/RA_2014-15_data_by_LA_-_Nat_Stats_Release_-_Revised_22-Oct-2014.xls}{xls}", 
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/444910/RA_2015-16_data_by_LA_-_Nat_Stats_Release_-_15-Jul-2015.xls}{xls}", 
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/532962/RA_2016-17_data_by_LA.xlsx}{xlsx}", 
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/623097/RA_2017-18_data_by_LA.xlsx}{xlsx}",
-          "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/720343/RA_2018-19_data_by_LA.xlsx}{xlsx}")
-              
- 
-rows <- c(0, 0, 444, 444, 444, 444, 444, 444, 443, 446, 443)
-las <- c( 0, 0,353, 353,353, 353, 353, 353, 353, 353, 353)
-first <- c(0, 0, 10, 10, 10, 10, 9, 9, 8, 8, 8)
-
-budg.tot <- c("-", "-", "E27", "E28", "E28", "E28", "F34", "F34", "E35", "E35", "E35") 
-
-budg.la <- c("-", "-", "U", "V", "V", "V", "U", "U", "U",  "V", "V") 
-
-df <- data.frame(year,link, rows, first, las,
-                 budg.tot, budg.la)
-kable(df, "latex", booktabs = T, escape = F) %>%
+england.budget <- readRDS(here::here("data/02-interim/england.budget.18.19.rds"))
+kable(england.budget, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
 
