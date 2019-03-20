@@ -39,3 +39,19 @@ kable(england.budget, "latex", booktabs = T, escape = F) %>%
 * *rows*--number of local authorities
 * *budg.tot*--wich cell on sheet 2 is the total budgeted surplus in
 * *budg.la*--which column on sheet 3 are the LA parking budgeted surpluses on
+
+
+
+## England--Nottingham WPL
+```{r, echo = FALSE}
+nottingham.wpl <- readRDS(here::here("data/02-interim/nottingham.wpl.17.18.rds"))
+kable(nottingham.wpl, "latex", booktabs = T, escape = F) %>%
+  collapse_rows(columns = 1)
+```
+
+  
+* *year*--period covered in report
+* *link*--link to data file
+* *rows*--number of local authorities
+* *budg.tot*--wich cell on sheet 2 is the total budgeted surplus in
+* *budg.la*--which column on sheet 3 are the LA parking budgeted surpluses on

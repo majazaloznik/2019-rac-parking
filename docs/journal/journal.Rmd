@@ -151,6 +151,11 @@ This looks like the data [https://www.gov.uk/government/collections/local-author
 * OK, so there is crossover in the scottish report, and requires picking up data from the other two reports...
 * Check conditional formatting of tables that work in pdf. `condformat` might work. Do they want it?
 * Actually cell_spec in kableExtra probably does the trick [see here](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf). 
+* OK, now queries for Ivo. 
+* I also now have a much better oveview of how much manual tweaking the reports will require (not too much), so I have the idea of highlighting all the spots that need a manual double check (e.g. in red) so that nothing like that gets accidentally published. 
+* Add the four Nottingham workplace levy files to data. Need to try if extracting the tables works there as well. 
+
+
 
 ### Scotland (based on 16/17)
 

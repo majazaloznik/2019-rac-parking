@@ -1,25 +1,25 @@
 ---
-title: "RAC Parking Report Automation---Queries for Ivo, round 2"
+title: "RAC Parking Report Automation---Queries for RAC, round 2"
 author: mz
-date: 18.3.2019
+date: 19.3.2019
 output:
   pdf_document: default
 ---
 
-Dear Ivo,
+Previous queries: all good, thanks especially for the Nottingham data! Here's a new round, maily Scotland based. 
 
-Now Scotland. Again the table in the appendix summarises the data (currenlty available to me).
+#### Scotland- existing reports 
 
-#### reports 
+The relevant data seems to be on this [Scottish local government finance statistics site](https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats). See the table in the appendix, but I am confused by the following, although this is completely irrelevant right now:
 
-The relevant data seems to be on this [Scottish local government finance statistics site](https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats). See the table in the appendix, but I am confused by the following:
+9. Although there is a report for 2011/12, the tables on the website do not have individual LA level data, so I have no idea where the data came from?
 
-1. Although there is a report for 2011/12, the tables on the website do not have individual LA level data, so I have no idea where the data came from?
-2. The data does exist for 2016/17, including LA level data, but there was no report?
 
-#### data
+#### Scotland-Available data
 
-I manually crosschecked the 2015/16 data vs the data published in the report. There are a few annoying discrepancies, like so:
+The available data is summarised in the appendix.
+
+Because there were some obvious differences in the totals, I manually cross-checked the 2015/16 income and expenditure data vs the data published in the Leibling report. There are a few annoying discrepancies, like so:
 
 ```{r, echo = FALSE, messages = FALSE}
 suppressMessages(library(dplyr))
@@ -38,21 +38,24 @@ kable(df, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
 
-In fact Aberdeen City has zeros in all the Excel tables, but clearly there must be another source for this data. Apart from that there are just a few small rounding errors, so in the end after finding these big errors, everything else adds up OK. I won't go manually checking the rest, but I'm not sure what to do with this..
+In fact Aberdeen City has zeros in all the Excel tables, but clearly there must be another source for this data. Apart from that there are just a few small rounding errors, so in the end after finding these big errors, everything else adds up OK. I don't want to go manually checking the rest, but I'm not sure what to do with this..
 
-3. Where can I get the Aberdeen City data?
+The Penalty Charge Notice data also has expenditures and incomes.But these apparently do not include off street parking, and possibly have other reasons to be different than the first set of tables. For 2016/17 the Aberdeen income data in Leibling is the same as the PCN one, but not the expenditure data. For previous years even that doesn't match. So still not sure where the source of Aberdeen City data is. 
 
-4. Any idea what is wrong with the South Ayrshire data for 15/16? 
+10. Where can I get the Aberdeen City data?
 
-5. Apart from Aberdeen City, am I OK to use all other 31 authorities as they are reported in the Excel files?
+11. Any idea what is wrong with the South Ayrshire data for 15/16? 
 
-Penalty Notice Charge data exists in pdf format. In fact, the data for 2013/14/15/16 is in the form of a scanned pdf. 16/17 and 17/18 are regular pdf. These can actually be extracted manually, but this will still probably require a bit of manual oversight.. I can again assume the next report will be the same as the 17/18 one, e.g. where the relevant tables are in the same positions, or you can pick the page where it's on?
+12. Apart from Aberdeen City, am I OK to use all other 31 authorities as they are reported in the Excel files?
 
-#### Crossover
+On several occasions Leibling uses "Total transport expenditure" data, either directly or as a denominator. I cannot figure out what that is. In the Excel files it is not the total "Roads and Transport", nor is it the sum of "Roads and transport" minus parking, which he does in the England report. 
 
-So the Scotland report includes data on England and Wales, presumably because historically both country reports are already long done by the time Scotland data becomes available, that's fine. Table 4 in the 16/17 report compares incomes et al. between 12/13 and 16/17, while in the 15/16 report it compares 10/11 to 15/16. So one goes back 4, the other 5 years (previous reports don't have this table). 
+13. Any idea what Leibling is using as the total transport expenditure value? Or rather what do you want me to use?
 
-1. How many years should the comparison window be?
+14. Also, do you want to continue the comparison between the incomes and expenditures reported in both sets of files like Leibling did in the 2016/17 report (section 6)?
+
+
+
 
 
 
@@ -64,16 +67,19 @@ So how do you map that? When it comes to income, expenditure or surplus, i.e. £
 
 Alternatively I could add the sub-districts with the county total, and just plot those 27 + and then there are the other 8 counties that are not double counted, and merge them as well, so the England map has 35 LAs. But that's not consistent with the rest of the report..
 
-1. Do you have a preference, alternative idea, suggestion? Otherwise there will be no England maps..
+15. Do you have a preference, alternative idea, suggestion? Otherwise there will be no England maps..
 
 #### General aesthetic question
 
 Some of the tables get pretty dense. At least in some cases (e.g. %) it might make sense to use conditional formatting to colour the cells. 
 
-1. Would you be interested in that, I can give it a go?
+16. Would you be interested in that, I can give it a go?
 
 
-## Appendix 1---Scotland data
+## Appendix 1
+
+### Scotland data - incomes and expenditures
+
 ```{r appendix, child = 'app3.Rmd'}
 ```
 

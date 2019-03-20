@@ -194,6 +194,25 @@ england.budget <- data.frame(year,link, rows, first, las,
 ## commented out to stop overwriting!
 # saveRDS(england.budget, "data/02-interim/england.budget.18.19.rds")
 
+
+## 2.3 Nottingham WPL data #####################################################
+
+
+year <- c("2014/15", "2015/16", "2016/17", "2017/18")
+
+
+link <- c("\\href{https://www.nottinghaminsight.org.uk/d/aAXEaM3}{link}", 
+          "\\href}https://www.nottinghaminsight.org.uk/d/aAXD6dh}{link}",
+          "\\href{https://www.nottinghaminsight.org.uk/d/aAXEbNy}{link}", 
+          "\\href{https://www.nottinghaminsight.org.uk/d/aAXEduG_}{link}")
+          
+page <- c(69,79, 84, 86) 
+nottingham.wpl <- data.frame(year,link, page)
+
+## commented out to stop overwriting!
+# saveRDS(nottingham.wpl, "data/02-interim/nottingham.wpl.17.18.rds")
+
+
 ## 3. SCOTLAND DATA SOURCES ####################################################
 ## 3.1 SCOTLAND incomes and expenditures #######################################
 
