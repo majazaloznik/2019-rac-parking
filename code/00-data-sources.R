@@ -202,7 +202,7 @@ year <- c("2014/15", "2015/16", "2016/17", "2017/18")
 
 
 link <- c("\\href{https://www.nottinghaminsight.org.uk/d/aAXEaM3}{link}", 
-          "\\href}https://www.nottinghaminsight.org.uk/d/aAXD6dh}{link}",
+          "\\href{https://www.nottinghaminsight.org.uk/d/aAXD6dh}{link}",
           "\\href{https://www.nottinghaminsight.org.uk/d/aAXEbNy}{link}", 
           "\\href{https://www.nottinghaminsight.org.uk/d/aAXEduG_}{link}")
           

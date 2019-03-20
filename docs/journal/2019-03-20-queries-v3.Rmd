@@ -1,0 +1,35 @@
+---
+title: "RAC Parking Report Automation---Queries for RAC, round 3"
+author: mz
+date: 20.3.2019
+output:
+  pdf_document: default
+---
+
+### Wales data
+
+The reports include a map with a legend that indicates which councils participate in the *Wales Penalty Processing Partnership* and councils where "on-street parking is controlled by Gwent Police who are planning to transfer it to the councils". I'm not sure what the source of this information is. 
+
+17. Do you want to have these councils highlighted on the map?
+18. If so, what is the data source, or should it be updated manually?
+
+The Wales income table also adds two columns at the end of the population of each council and the income per head. Now this is fine I guess, I mean the data is easily available on the same platform. I mention it because (i) the author himself notes that this does not take account of commuters, (ii) I generally worry about tables that are too wide, although that can be overcome by splitting them up if need be, (iii) it is not consistent with the other two reports. 
+
+19. Do you want to report parking income per population in Wales?
+
+The Wales report also includes data on PCNs. There are a few issues with this table: (i) The data source seems to have a two year lag: in the 17/18 report, the data is for 2015/16, (ii) There is no data on PNC incomes, just the number issued, so in order to estimate the income from PNCs and their share in the total parking income, some assumptions are made by Leibling in the calculation.. (iii) this data is available in pdf format only, and unfortunately the package to extract the numbers automatically fails in this case, which means the numbers would have to be input manually. 
+
+20. Given all this, do you want to continue including the PNC data in the report?
+21. If yes, do you want to continue estimating the PNC income using the formula No.PNCs `*` (£50+£70)/2 `*` 0.75 % recovery?
+
+The last section in the Leibling reports, "Reporting on parking" seems for all intents and purposes completely un-automatable. I can leave a skeleton section in the report, along with an empty table of appropriate dimensions, so it could be filled manually, but I can't think of any other solution. 
+
+22. Is that OK or do you have any other preferences?
+
+#### England (non)mapping
+
+Re the mapping of England question and the overlapping geographies. Like Ivo suggested we can add a (foot)note somewhere at the start warning that this is so, and we can also add a lookup table in an appendix to make it easier for people to know which ones are overlapping. 
+
+Re15. Is that OK?
+
+

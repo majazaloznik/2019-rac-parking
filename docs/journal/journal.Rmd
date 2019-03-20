@@ -156,8 +156,24 @@ This looks like the data [https://www.gov.uk/government/collections/local-author
 * Add the four Nottingham workplace levy files to data. Need to try if extracting the tables works there as well. 
 
 
+# Wednesday 20.3.2019
 
-### Scotland (based on 16/17)
+* OUTLINE the whole project scheme. 
+* Try extracting the WPL data. No, it doens't work. There are two other tables on the page and this table is too small I guess, or sth, so it will have to be manually input. 
+* Actually, I need to have a look at Wales quickly before I do this. For 2017/18
+* OK, summary looks cool: income, expenditure and total transport as well, all match
+* Participation in the *Wales Penalty Processing Partnership* and councils where "on-street parking controlled by Gwent Police who are planning to transfer it to the
+councils" probably requires an external source, this is in a map legend. 
+* Population data is available on same platform [on this link](https://statswales.gov.wales/Catalogue/Population-and-Migration/Population/Estimates/Local-Authority/populationestimates-by-localauthority-year)
+* There is additional penalty charge notice data, but that seems to be two years behind i.e. the 17/18 report has data for 15/16
+* source for PCNs [is here](https://www.trafficpenaltytribunal.gov.uk/Publications/)
+* Unfortunately `tabulizer` does not extract the tables properly. 
+* meanwhile have a look at importing json objects..
+* OK, so figured out how to extract the json file, and even the table, but that's only the first 1000 records. In order to get what I want I need to query it. 
+* hmm, ok, massive issues with fromJSON giving different results each time. If i don't figure it out, then it will have to me manual downloading of csv files. Not the worst thing in the world, it's still probably better than the ENgland and Scotland data..
+
+
+### Scotland (based on 16/17) ###################################################
 
 * Mainly pure text chunk.
 * Available data: fiscal year, link to income and expenditure data, link to PNC data, link to SPRECC report with previous data. 
@@ -272,11 +288,11 @@ This looks like the data [https://www.gov.uk/government/collections/local-author
 * OOh, interesting! But should it really be in this report, haha
 * So combine data from xls and pdf and look at discrepancies, which should be mainly off street parking, but maybe are not just that. 
 
-### Appendix
+#### Appendix
 
 * Map based on Table 1
 
-### England
+### England ######################################################################
 
 #### 1. Introduction
 
