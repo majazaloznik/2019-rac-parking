@@ -263,9 +263,14 @@ scotland.i.e. <- data_frame(fisc.year,year,report, file.name, link,
 
 ## 3.2 SCOTLAND penalty notice charges #########################################
 
-year <- c( "2011/12","2012/13", "2013/14/15/16", "2016/17", "2017/18")
+fisc.year <- c( "2011/12","2012/13", "2013/14/15/16", "2016/17", "2017/18")
+
+year <- as.numeric(substr(fisc.year, 1, 4))
 
 file.type <- c("--","--", "scan", "pdf", "pdf")
+
+file.name <- c("--","--", "data/01-raw/orig.sco-13-14-15-16-pcn.pdf", "data/01-raw/orig.sco-16-17-pcn.pdf", 
+               "data/01-raw/orig.sco-17-18-pcn.pdf")
 
 link <- c("--", 
           "--",
@@ -273,13 +278,13 @@ link <- c("--",
           "\\href{https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/}{pdf}",
           "\\href{https://www.transport.gov.scot/media/43636/decriminalised-parking-enforcement-income-expenditure-annual-report-2017-18.pdf}{pdf}")
 
-dpe.tab <- c(NA, NA, NA, 2, 2)
+dpe.tab <- c(NA, NA, NA, 4, 4)
 
-pcn.tab <- c(NA, NA, NA, 3, 3)
+pcn.tab <- c(NA, NA, NA, 5, 5)
 
-e.i.tab <- c(NA, NA, NA, 4, 4)
+e.i.tab <- c(NA, NA, NA, 6, 6)
 
-scotland.pnc <- data.frame(year, file.type, link, dpe.tab,pcn.tab, e.i.tab)
+scotland.pnc <- data.frame(fisc.year, year,file.name, file.type, link, dpe.tab,pcn.tab, e.i.tab)
 
 ## commented out to stop overwriting!
 # saveRDS(scotland.pnc, "data/02-interim/scotland.pnc.17.18.rds")

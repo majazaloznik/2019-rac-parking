@@ -25,6 +25,8 @@
 library(tidyr)
 library(dplyr)
 library(readxl)
+library(tabulizer)
+options(stringsAsFactors = FALSE)
 ## 0. MASTER TABLE SETUP #######################################################
 original.data <- data.frame(country = character(),
                             year = integer(),
@@ -115,6 +117,32 @@ bind_rows(original.data, original.scotland.i.e) -> original.data
 
 
 ## 2.2 SCOTLAND penalty notice charges #########################################
+# load meta data
+scotland.pnc.17.18 <- readRDS("data/02-interim/scotland.pnc.17.18.rds")
+
+# extract DPE type table
+scotland.pnc.dpe.16 <- extract_tables(here::here(scotland.pnc.17.18$file.name[4]), 
+                    pages = scotland.pnc.17.18$dpe.tab[4])
+
+# turn into data.frame, remove header row and add column names
+scotland.pnc.dpe.16 <- data.frame(scotland.pnc.dpe.16[[1]])[-1,]
+colnames(scotland.pnc.dpe.16) <- c("dpe.now", "dpe.soon", "dpe.not")
+
+# regex the first column to get out year of introduction
+scotland.pnc.dpe.16 %>% 
+  separate(dpe.now, into = c("dpe.now", "year"), sep = "\\(")  %>% 
+  separate(year, into = c("year", "x"), sep = "\\)") %>% 
+  separate(dpe.now, into = c("dpe.now", "x"), sep = "\\\r") %>% 
+  select( -x) %>% 
+  select(year, dpe.now, dpe.soon, dpe.not) -> x
+
+# now gather 
+
+x %>% 
+  gather(key = dpe.status, value = la)
+
+
+
 ## 3. WALES DATA IMPORT ########################################################
 # read all expenditure data, remove extra row and column
 wal.expend.total <- read.csv("data/01-raw/orig.wal-exp-17-18.csv")[-1,-1]

@@ -207,6 +207,7 @@ councils" probably requires an external source, this is in a map legend.
 * Now to loop everything it would be nice to have all the data in the meta summary tables, including the year (not fiscal year) and the file name. So I'll fix that 
 * A, ffs, the name of the local authority also changes cell, and in 16/17 doesn't even have its own cell
 * OK, it's not pretty, but it's working: Scotland income and expenditure original data is done!
+* Next up: Scotland PCN data
 
 ### Wales (based on 17/18) #####################################################
 
