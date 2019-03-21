@@ -37,16 +37,18 @@ query <- paste0("http://open.statswales.gov.wales/en-gb/dataset/lgfs0009?$filter
  
 x <- jsonlite::fromJSON(query)
 data <- x[[2]]
-unique(data$Year
-
-
-query1 <- "Year_Code"
-query1.value <- "201718"
-
-query.2 <- paste0("http://open.statswales.gov.wales/en-gb/dataset/lgfs0009?$filter=",
-                  query1, "%20eq%20%27", query1.value, "%27")
-
-x <- jsonlite::fromJSON(query.2)
+unique(data$Year)
 
 
 
+
+## extracting wales csv files #####################
+library(tidyr)
+z <- read.csv("data/01-raw/wal-exp-17-18.csv")
+# remove total row on top and first column
+z <- z[-1, -1]
+
+# make long
+z %>% 
+  gather(key = year, value = expenditure, 2:(ncol(z))) %>% 
+  separate(year, into = c("X", "year"), sep = "(?<=[A-Z])(?=[0-9])", perl = TRUE)

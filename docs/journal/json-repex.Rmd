@@ -1,0 +1,45 @@
+
+I'm attempting to extract data from the Wales government statistics services OData API. Details on the API can be found [here](https://statswales.gov.wales/Help/Catalogue#APIEndpointsExplained), including an example of how to filter the data. 
+
+However I seem to be getting a non-deterministic subset of the data i.e. each attempt results in a different number of records returned. 
+
+Below is a simple reproducible example. 
+
+Additionally I have also tried:
+* using `RJSONIO::fromJSON()`, which has the same result.
+* attempting to use the `odata.nextLink` url, if it is returned in the json object, to keep extracting more data. Again, each attempt results in a different sized object.
+
+
+
+```{r}
+## preliminaries
+library(jsonlite)
+
+# prepare filters
+filter1 <- "Column_ItemName_ENG"
+filter1.value <- "Gross%20expenditure"
+filter2 <- "Row_ItemName_ENG"
+filter2.value <- "Parking%20of%20vehicles"
+
+query <- paste0("http://open.statswales.gov.wales/en-gb/dataset/lgfs0009?$filter=",
+                filter1, "%20eq%20%27", filter1.value, "%27%20and%20",
+                filter2, "%20eq%20%27", filter2.value, "%27")
+
+# test 1
+test1 <- jsonlite::fromJSON(query)
+test1 <- test1[[2]]
+
+# test 2
+test2 <- jsonlite::fromJSON(query)
+test2 <- test2[[2]]
+
+# test 3
+test3 <- jsonlite::fromJSON(query)
+test3 <- test3[[2]]
+
+# compare results
+nrow(test1)
+nrow(test2)
+nrow(test3)
+
+```

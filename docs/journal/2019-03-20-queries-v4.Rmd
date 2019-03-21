@@ -1,0 +1,17 @@
+---
+title: "RAC Parking Report Automation---Queries for RAC, round 4"
+author: mz
+date: 21.3.2019
+output:
+  pdf_document: default
+---
+  
+Both the Wales and the Scotland reports there is a sentence along the lines of "a, b and c collect XX% of the parking income, event thought they only have YY % of the population". The England report instead has the sentence ending with "ZZ % of the cars". 
+
+23. Is this potentially something you might want to remove from the reports?
+
+24. If not, is this something you might want to make consistent between the reports i.e. comparing to population or to cars in all three reports?
+
+25. If the comparator is cars, is it OK if this value is manually inserted?
+
+ 26. General (rethorical) question: If I find similar inconsistencies, e.g. where one report is missing a sentence/paragraph that the others have, should I aim to make the three reports as similar to eachother, to the extent possible? 

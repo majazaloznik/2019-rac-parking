@@ -172,6 +172,78 @@ councils" probably requires an external source, this is in a map legend.
 * OK, so figured out how to extract the json file, and even the table, but that's only the first 1000 records. In order to get what I want I need to query it. 
 * hmm, ok, massive issues with fromJSON giving different results each time. If i don't figure it out, then it will have to me manual downloading of csv files. Not the worst thing in the world, it's still probably better than the ENgland and Scotland data..
 
+# Thursday, 21.3.2019
+
+* created json-reprex.Rmd file, tested by Anneka and Martin as well, all get same non-deterministic results. Posted on rstudio community, tomorrow will crosspost on stackoverflow if there isn't any solution. 
+* OK, start Wales outline including replies from Ivo. 
+* worry about tables being too large. [this stackoverflow answer](https://stackoverflow.com/questions/44490209/how-to-change-font-size-of-table-in-rmarkdown-latex-and-pdf) seems useful
+* OK, Wales outline complete.
+* Now back to plotting out the whole thing. 
+* Download Wales data. csvs directly from the [wales stats website](https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Transport/RoadsAndTransportRevenueExpenditure-by-authority).
+* cross-post the question to [stackoverlfow](https://stackoverflow.com/questions/55277363/r-extracting-json-data-from-an-odata-api-gives-inconsistent-results)
+
+**Downloading Wales Data**
+* Export to .csv, without headers, without metadata!
+* Gross Expenditure X Parking of vehicles -> wal-exp-17-18.csv [link](https://statswales.gov.wales/v/FMKX)
+* Total Income X Parking of vehicles -> wal-inc-17-18.csv [link](https://statswales.gov.wales/v/FMKY)
+* Net current cost X Total transport planning, highways, rows and transport -> wal-trans-17-18.csv [link](https://statswales.gov.wales/v/FMKW)
+
+**Consolidating all data**
+* Start new file `02-import-data-original.R`
+* Design table that will accommodate all 3 countries. 
+* figure out how to rename all files in a folder
+* `for file in *; do mv "$file" "$(basename "$file").orig"; done;` this didn't work
+* `rename 's/\.orig$//' *.orig` this fixed it. 
+* haha `for file in *; do mv "$file" "$orig.(basename "$file")"; done;` also fucked it up
+* christ, anyway, now manually fixed..
+
+**MASTER TABLE**
+* Start by listing all variables required
+* Start by importing Wales data
+* Decide that the year variable will simply be the first year e.g. for 13/14 it is 2013. Anything can be done with that if needed. 
+* Wales data done!
+
+### Wales (based on 17/18) #####################################################
+
+#### 1. Introduction
+
+* Text, only fiscal year
+* Text with named councils that have free parking, manual input. 
+
+#### 2. Summary
+
+* Table 1 based on Wales statistics data, all checks out
+* Text based on table 1
+* Crossover value from England report.
+* Figure 1 from table 1
+* Map, is a map, but potentially unnecessary.
+
+#### 3. Income (there is no separate section?)
+
+* text based on table 2, 
+* Some conditionals. 
+* Sentence on proportion of the population.. Do I have to get the data for that?
+* Paragraph on income per population removed, since data also removed.
+* Table 2, data from Wales statistics data, ignore the population measures, cf Ivo: it is a meaningless measure
+
+#### 3.1 PNCs
+
+This data is massively time lagged, Ivo suggested removing it?
+
+#### 4. Expenditures
+
+* Text based on table 4, some conditionals too much for automation
+* Table 4 based on Wales stats data. 
+
+#### 5. Surpluses
+
+* Table based on Tables 3 and4
+* Text based on table
+* Some text has explanations for the reducitons/increases that are too tricky to write conditionally. But could potentially be done. 
+
+#### 6. reporting
+
+* Non automatable, can leave skeleton text/table if required. 
 
 ### Scotland (based on 16/17) ###################################################
 

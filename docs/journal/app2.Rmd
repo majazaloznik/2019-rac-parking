@@ -52,6 +52,4 @@ kable(nottingham.wpl, "latex", booktabs = T, escape = F) %>%
   
 * *year*--period covered in report
 * *link*--link to data file
-* *rows*--number of local authorities
-* *budg.tot*--wich cell on sheet 2 is the total budgeted surplus in
-* *budg.la*--which column on sheet 3 are the LA parking budgeted surpluses on
+* *page*--which page is the WPL income table on 
