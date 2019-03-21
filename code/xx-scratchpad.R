@@ -52,3 +52,11 @@ z <- z[-1, -1]
 z %>% 
   gather(key = year, value = expenditure, 2:(ncol(z))) %>% 
   separate(year, into = c("X", "year"), sep = "(?<=[A-Z])(?=[0-9])", perl = TRUE)
+
+
+## substr scotland 16/17 la name cell
+
+x<- "Annex A – Service Analysis of Revenue Expenditure and Income, Argyll & Bute, 2016-17"
+library(stringr)
+
+gsub("^.+?, |, 2016-17", "", A1)

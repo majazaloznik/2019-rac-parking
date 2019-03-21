@@ -24,6 +24,7 @@
 
 library(tidyr)
 library(dplyr)
+library(readxl)
 ## 0. MASTER TABLE SETUP #######################################################
 original.data <- data.frame(country = character(),
                             year = integer(),
@@ -48,8 +49,69 @@ original.data <- data.frame(country = character(),
 ## 1.2 ENGLAND budget data #####################################################
 ## 2. SCOTLAND DATA IMPORT #####################################################
 ## 2.1 SCOTLAND incomes and expenditures #######################################
+# load metadta
+scotland.i.e.17.18 <- readRDS("data/02-interim/scotland.i.e.17.18.rds")
 
+# function for extracting income and expenditure from relevant cells
+FunScotlandLACels <- function(file, sheet, expend.total, income.total, auth.cell) {
+  auth.name <- colnames(read_excel(file, sheet, auth.cell))
+  expend.total <- colnames(read_excel(file, sheet, expend.total))
+  income.total <- colnames(read_excel(file, sheet, income.total))
+  c(auth.name, expend.total, income.total)
+}
+ 
 
+# Function that loops through all sheets and extracts relevant cell data 
+FunScotandLoopIE <- function(row) {
+  # get metadata for this year
+  year = scotland.i.e.17.18$year[row]
+  file.name = scotland.i.e.17.18$file.name[row]
+  start.sh =  scotland.i.e.17.18$start.sh[row]
+  end.sh =  scotland.i.e.17.18$end.sh[row]
+  exp.cell =  scotland.i.e.17.18$exp.cell[row]
+  inc.cell =  scotland.i.e.17.18$inc.cell[row]
+  auth.cell = scotland.i.e.17.18$auth.cell[row]
+
+  # prepare empty data frame for the data
+  df <- data.frame(auth.name = character(),
+                   expend.total = character(),
+                   income.total = character())
+  
+  # loop through all the sheets
+  for (sheet in start.sh:end.sh){
+    x <- FunScotlandLACels(file.name, sheet, exp.cell, inc.cell, auth.cell)
+    names(x) <- colnames(df)
+    if(year == 2016) 
+      x[1] <- gsub("^.+?, |, 2016-17", "", x)
+    df <- bind_rows(df, x)
+  }
+  
+  # change values to numeric type and add the year variable
+  df %>% 
+    mutate(expend.total = as.numeric(expend.total),
+           income.total = as.numeric(income.total)) -> df
+  df$year <- year
+  df
+}
+
+# prepare empty data frame for the final data
+original.scotland.i.e <- data.frame(auth.name = character(),
+                 expend.total = numeric(),
+                 income.total = numeric(),
+                 year = numeric())
+
+for (row in 2:nrow(scotland.i.e.17.18)){
+  x <- FunScotandLoopIE(row)
+  original.scotland.i.e <- bind_rows(original.scotland.i.e, x)
+}
+
+original.scotland.i.e %>% 
+  mutate(country = "Scotland",
+         auth.type = "LA" ,
+         wpl.logical = FALSE)  -> original.scotland.i.e
+
+# merge with original data
+bind_rows(original.data, original.scotland.i.e) -> original.data 
 
 
 ## 2.2 SCOTLAND penalty notice charges #########################################

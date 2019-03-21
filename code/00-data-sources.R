@@ -216,12 +216,20 @@ nottingham.wpl <- data.frame(year,link, page)
 ## 3. SCOTLAND DATA SOURCES ####################################################
 ## 3.1 SCOTLAND incomes and expenditures #######################################
 
-year <- c( "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", 
+fisc.year <- c( "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", 
            "2017/18")
+
+year <- as.numeric(substr(fisc.year, 1, 4))
 
 report <- c("yes", "-", "yes", "yes", "yes", "-", "-")
 
-file.name <- c("", rep("Annex A", 5), "LFR 05")
+file.name <- c("", 
+               "data/01-raw/orig.sco-12-13.xlsx",
+               "data/01-raw/orig.sco-13-14.xlsx",
+               "data/01-raw/orig.sco-14-15.xlsx",
+               "data/01-raw/orig.sco-15-16.xlsx",
+               "data/01-raw/orig.sco-16-17.xlsx",
+               "data/01-raw/orig.sco-17-18.xlsx")
 
 link <- c("--", 
           "\\href{https://www2.gov.scot/Resource/0044/00446440.xlsx}{xlsx}", 
@@ -231,9 +239,9 @@ link <- c("--",
           "\\href{https://www2.gov.scot/Resource/0053/00536018.xlsx}{xlsx}",
           "\\href{https://www2.gov.scot/Resource/0054/00546675.xlsx}{xlsx}")
 
-start.sh <- c(NA,0,2,2,2,2,3)
+start.sh <- c(NA,2,2,2,2,2,3)
 
-end.sh<- c(NA,0,33,33,33,33,34)
+end.sh<- c(NA,33,33,33,33,33,34)
 
 exp.cell <- c("-", "F57", "F40", "E40", "B41", "B41", "L13")
 
@@ -243,9 +251,12 @@ t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34", "U13")
 
 t.inc.cell <- c("-", "G50", "G33", "F33", "C34", "C34", "U23")
 
-scotland.i.e. <- data.frame(year,report, file.name, link, 
+auth.cell <- c("-", "A2", "A2", "A2", "A2", "A1", "E2")
+scotland.i.e. <- data_frame(fisc.year,year,report, file.name, link, 
                             start.sh, end.sh, exp.cell,
-                            inc.cell, t.exp.cell, t.inc.cell)
+                            inc.cell, t.exp.cell, t.inc.cell,
+                            auth.cell)
+
 
 ## commented out to stop overwriting!
 # saveRDS(scotland.i.e., "data/02-interim/scotland.i.e.17.18.rds")

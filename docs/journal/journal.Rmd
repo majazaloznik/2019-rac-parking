@@ -202,6 +202,11 @@ councils" probably requires an external source, this is in a map legend.
 * Start by importing Wales data
 * Decide that the year variable will simply be the first year e.g. for 13/14 it is 2013. Anything can be done with that if needed. 
 * Wales data done!
+* Scotland Excel files. OK, so looks like cell-specification for readxl cannot handle noncontiguous cells. 
+* Also cannot handle single cells - they are treated as the column header.. just leads to ugly code.
+* Now to loop everything it would be nice to have all the data in the meta summary tables, including the year (not fiscal year) and the file name. So I'll fix that 
+* A, ffs, the name of the local authority also changes cell, and in 16/17 doesn't even have its own cell
+* OK, it's not pretty, but it's working: Scotland income and expenditure original data is done!
 
 ### Wales (based on 17/18) #####################################################
 
