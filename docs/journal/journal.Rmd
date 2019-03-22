@@ -183,12 +183,14 @@ councils" probably requires an external source, this is in a map legend.
 * cross-post the question to [stackoverlfow](https://stackoverflow.com/questions/55277363/r-extracting-json-data-from-an-odata-api-gives-inconsistent-results)
 
 **Downloading Wales Data**
+
 * Export to .csv, without headers, without metadata!
 * Gross Expenditure X Parking of vehicles -> wal-exp-17-18.csv [link](https://statswales.gov.wales/v/FMKX)
 * Total Income X Parking of vehicles -> wal-inc-17-18.csv [link](https://statswales.gov.wales/v/FMKY)
 * Net current cost X Total transport planning, highways, rows and transport -> wal-trans-17-18.csv [link](https://statswales.gov.wales/v/FMKW)
 
 **Consolidating all data**
+
 * Start new file `02-import-data-original.R`
 * Design table that will accommodate all 3 countries. 
 * figure out how to rename all files in a folder
@@ -198,6 +200,7 @@ councils" probably requires an external source, this is in a map legend.
 * christ, anyway, now manually fixed..
 
 **MASTER TABLE**
+
 * Start by listing all variables required
 * Start by importing Wales data
 * Decide that the year variable will simply be the first year e.g. for 13/14 it is 2013. Anything can be done with that if needed. 
@@ -208,6 +211,30 @@ councils" probably requires an external source, this is in a map legend.
 * A, ffs, the name of the local authority also changes cell, and in 16/17 doesn't even have its own cell
 * OK, it's not pretty, but it's working: Scotland income and expenditure original data is done!
 * Next up: Scotland PCN data
+
+# Friday 22.3.2019
+
+OK, back to the Scotland PNC data scraped from the pdf
+
+* Becasue the 13-16 data is aleady transcribed in the old Leibling reports, i can try using tabulizer on them instead of dealing with the scanned pdf file. Actually, no they're not htere, and it isn't even important. 
+* Next the PCN tables with tabulizer
+* Nah, actually these all have to be written as funcitons, so they can be reused..
+* So extra file with functions now. Which will be reused in the templates
+* OK, so extracting PCN numbers. The reusable funciton will only pick out the last year. But I also need to pick out the previous years. So I need a function that picks one or more columns based on the year passed as an argument?
+* And of course the numbers have commas in them, so they need to be regexed to become numeric. Actually remove all non-numeric characters. 
+* OK, PCN tables done, phew. 
+* Next, PCN income from pdf
+* OK, now all the tables from the pdfs are done
+* Merge them by year, for 14 and 15 there is only one, and there are three for the years 16 and 17
+* Then merge all the pdf tables together
+* The add the excel data.
+* Ah, there are some spaces in the authority names.. in the DPE tables. Fixed
+* Additionally five LAs have non-standard name spellings. Need to figure out which ones are standard.. 
+* Additionally there is an empty row in the ie table. Damn, this is getting kludgy..
+* OK, no3 there is a funciton for changing spellings of scottish LAs, I'll add it to all the funcitons. Fixed
+* Now go back to scotland excel import and rewrite as funcitons. I mean move them to the funcitons.R file 
+* OK, all of scotland works now, there are only some column type issues . fixed
+* Oh, and welsh income is negative .
 
 ### Wales (based on 17/18) #####################################################
 

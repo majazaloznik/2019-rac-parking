@@ -60,3 +60,22 @@ x<- "Annex A – Service Analysis of Revenue Expenditure and Income, Argyll & Bu
 library(stringr)
 
 gsub("^.+?, |, 2016-17", "", A1)
+
+
+## creating pnc table for scotland
+
+# spread
+scotland.pnc.dpe.16 %>% 
+  mutate(id = rep(1:19, 3)) %>% 
+  spread(key = key, value = value) %>% 
+  select(dpe.now, dpe.next, dpe.not) %>% 
+  separate(dpe.now, into = c("dpe.now", "year"), sep = "\\(")  %>% 
+  separate(year, into = c("year", "x"), sep = "\\)") %>% 
+  separate(dpe.now, into = c("dpe.now", "x"), sep = "\\\r") %>% 
+  select( -x) %>% 
+  select(year, dpe.now, dpe.next, dpe.not) 
+
+
+## extract tables from leibling
+
+extract_tables("docs/original-reports/sco-13-14.pdf")

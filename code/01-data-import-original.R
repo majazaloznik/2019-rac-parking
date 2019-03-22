@@ -27,6 +27,8 @@ library(dplyr)
 library(readxl)
 library(tabulizer)
 options(stringsAsFactors = FALSE)
+source("code/functions.R")
+
 ## 0. MASTER TABLE SETUP #######################################################
 original.data <- data.frame(country = character(),
                             year = integer(),
@@ -35,15 +37,20 @@ original.data <- data.frame(country = character(),
                             income.on = integer(),
                             income.off = integer(),
                             income.pcn = integer(),
+                            income.tfs = integer(),
                             income.cong.ch = integer(),
                             income.total = integer(),
                             expend.on = integer(),
                             expend.off = integer(),
+                            expend.tfs = integer(),
                             expend.cong.ch = integer(),
                             expend.total = integer(),
                             surplus.budget = integer(),
                             transport.total = integer(),
-                            wpl.logical = logical())
+                            wpl.logical = logical(),
+                            dpe.status = character(),
+                            dpe.year = integer(),
+                            pcn.number = integer())
                             
 
 ## 1. ENGLAND DATA IMPORT ######################################################
@@ -54,94 +61,108 @@ original.data <- data.frame(country = character(),
 # load metadta
 scotland.i.e.17.18 <- readRDS("data/02-interim/scotland.i.e.17.18.rds")
 
-# function for extracting income and expenditure from relevant cells
-FunScotlandLACels <- function(file, sheet, expend.total, income.total, auth.cell) {
-  auth.name <- colnames(read_excel(file, sheet, auth.cell))
-  expend.total <- colnames(read_excel(file, sheet, expend.total))
-  income.total <- colnames(read_excel(file, sheet, income.total))
-  c(auth.name, expend.total, income.total)
-}
- 
-
-# Function that loops through all sheets and extracts relevant cell data 
-FunScotandLoopIE <- function(row) {
-  # get metadata for this year
-  year = scotland.i.e.17.18$year[row]
-  file.name = scotland.i.e.17.18$file.name[row]
-  start.sh =  scotland.i.e.17.18$start.sh[row]
-  end.sh =  scotland.i.e.17.18$end.sh[row]
-  exp.cell =  scotland.i.e.17.18$exp.cell[row]
-  inc.cell =  scotland.i.e.17.18$inc.cell[row]
-  auth.cell = scotland.i.e.17.18$auth.cell[row]
-
-  # prepare empty data frame for the data
-  df <- data.frame(auth.name = character(),
-                   expend.total = character(),
-                   income.total = character())
-  
-  # loop through all the sheets
-  for (sheet in start.sh:end.sh){
-    x <- FunScotlandLACels(file.name, sheet, exp.cell, inc.cell, auth.cell)
-    names(x) <- colnames(df)
-    if(year == 2016) 
-      x[1] <- gsub("^.+?, |, 2016-17", "", x)
-    df <- bind_rows(df, x)
-  }
-  
-  # change values to numeric type and add the year variable
-  df %>% 
-    mutate(expend.total = as.numeric(expend.total),
-           income.total = as.numeric(income.total)) -> df
-  df$year <- year
-  df
-}
-
 # prepare empty data frame for the final data
 original.scotland.i.e <- data.frame(auth.name = character(),
                  expend.total = numeric(),
                  income.total = numeric(),
                  year = numeric())
 
+# loop through each excel file running FunScotandLoopIE which loops
+# through each sheet and extracts income and expenditure data
 for (row in 2:nrow(scotland.i.e.17.18)){
   x <- FunScotandLoopIE(row)
   original.scotland.i.e <- bind_rows(original.scotland.i.e, x)
 }
 
-original.scotland.i.e %>% 
+## 2.2 SCOTLAND PCN data from pdf ##############################################
+# load meta data
+scotland.pdf.17.18 <- readRDS("data/02-interim/scotland.pnc.17.18.rds")
+
+## 2.2.1 Scotland DPE table ####################################################
+# extract DPE type table for 2016/17
+scotland.dpe.16 <- extract_tables(here::here(scotland.pdf.17.18$file.name[4]), 
+                    pages = scotland.pdf.17.18$dpe.tab[4])
+
+# extract DPE type table for 2017/18
+scotland.dpe.17 <- extract_tables(here::here(scotland.pdf.17.18$file.name[5]), 
+                                      pages = scotland.pdf.17.18$dpe.tab[5])
+
+# clean DPE type table for 2016/17 # don't worry about the warnings
+scotland.dpe.16 <- FunScotlandDPE(scotland.dpe.16, 2016)
+
+# clean DPE type table for 2017/18 # don't worry about the warnings
+scotland.dpe.17 <- FunScotlandDPE(scotland.dpe.17, 2017)
+
+## 2.2.31 Scotland PNC table ###################################################
+
+# extract PCN type table for 14/15, 15/16, 16/17 directly into a data.frame
+scotland.pcn.14.15.16 <- extract_tables(here::here(scotland.pdf.17.18$file.name[4]), 
+                                      pages = scotland.pdf.17.18$pcn.tab[4],
+                     output = "data.frame")[[1]]
+
+# extract PCN type table for 14/15, 15/16, 16/17 directly into a data.frame
+scotland.pcn.17 <- extract_tables(here::here(scotland.pdf.17.18$file.name[5]), 
+                                        pages = scotland.pdf.17.18$pcn.tab[5],
+                                        output = "data.frame")[[1]]
+
+# clean PCN tables for 14/15, 15/16, 16/17
+scotland.pcn.14 <- FunScotlandPCN(scotland.pcn.14.15.16, 2014)
+scotland.pcn.15 <- FunScotlandPCN(scotland.pcn.14.15.16, 2015)
+scotland.pcn.16 <- FunScotlandPCN(scotland.pcn.14.15.16, 2016)
+
+# clean PCN tables for 17/18
+scotland.pcn.17 <- FunScotlandPCN(scotland.pcn.17, 2017)
+
+## 2.2.3 Scotland PNC income table #############################################
+
+# extract PCN type table for 16/17 directly into a data.frame
+scotland.tfs.i.e.16 <- extract_tables(here::here(scotland.pdf.17.18$file.name[4]), 
+                                        pages = scotland.pdf.17.18$e.i.tab[4],
+                                        output = "data.frame")[[1]]
+
+# extract PCN type table for 17/18 directly into a data.frame
+scotland.tfs.i.e.17 <- extract_tables(here::here(scotland.pdf.17.18$file.name[5]), 
+                                      pages = scotland.pdf.17.18$e.i.tab[5],
+                                      output = "data.frame")[[1]]
+
+
+# clean TFS income expenditure tables for 16/17
+scotland.tfs.i.e.16 <- FunScotlandTFSIE(scotland.tfs.i.e.16, 2016)
+
+# clean TFS income expenditure tables for 17/18
+scotland.tfs.i.e.17 <- FunScotlandTFSIE(scotland.tfs.i.e.17, 2017)
+
+## 2.3. Merge all Scotland data together #######################################
+
+# first merge by year
+scotland.pdf.14 <- scotland.pcn.14
+scotland.pdf.15 <- scotland.pcn.15
+scotland.pdf.16 <- full_join(full_join(scotland.dpe.16,
+                                       scotland.pcn.16,by = c("auth.name", "year")),
+                             scotland.tfs.i.e.16,  by = c("auth.name", "year"))
+
+scotland.pdf.17 <- full_join(full_join(scotland.dpe.17,
+                                       scotland.pcn.17,by = c("auth.name", "year")),
+                             scotland.tfs.i.e.17,  by = c("auth.name", "year"))
+
+# now row bind all pdf data together
+original.scotland.pdf <- bind_rows(scotland.pdf.14,
+                                   scotland.pdf.15,
+                                   scotland.pdf.16,
+                                   scotland.pdf.17)
+
+
+# now merge income exp data from the Excel files with the pdf data
+
+original.scotland <- full_join(original.scotland.i.e, original.scotland.pdf)
+
+original.scotland %>% 
   mutate(country = "Scotland",
          auth.type = "LA" ,
-         wpl.logical = FALSE)  -> original.scotland.i.e
+         wpl.logical = FALSE)  -> original.scotland
 
 # merge with original data
-bind_rows(original.data, original.scotland.i.e) -> original.data 
-
-
-## 2.2 SCOTLAND penalty notice charges #########################################
-# load meta data
-scotland.pnc.17.18 <- readRDS("data/02-interim/scotland.pnc.17.18.rds")
-
-# extract DPE type table
-scotland.pnc.dpe.16 <- extract_tables(here::here(scotland.pnc.17.18$file.name[4]), 
-                    pages = scotland.pnc.17.18$dpe.tab[4])
-
-# turn into data.frame, remove header row and add column names
-scotland.pnc.dpe.16 <- data.frame(scotland.pnc.dpe.16[[1]])[-1,]
-colnames(scotland.pnc.dpe.16) <- c("dpe.now", "dpe.soon", "dpe.not")
-
-# regex the first column to get out year of introduction
-scotland.pnc.dpe.16 %>% 
-  separate(dpe.now, into = c("dpe.now", "year"), sep = "\\(")  %>% 
-  separate(year, into = c("year", "x"), sep = "\\)") %>% 
-  separate(dpe.now, into = c("dpe.now", "x"), sep = "\\\r") %>% 
-  select( -x) %>% 
-  select(year, dpe.now, dpe.soon, dpe.not) -> x
-
-# now gather 
-
-x %>% 
-  gather(key = dpe.status, value = la)
-
-
+bind_rows(original.data, original.scotland) -> original.data 
 
 ## 3. WALES DATA IMPORT ########################################################
 # read all expenditure data, remove extra row and column
@@ -151,19 +172,6 @@ wal.income.total <- read.csv("data/01-raw/orig.wal-inc-17-18.csv")[-1,-1]
 # read all transport total data, remove extra row and column
 wal.transport.total <- read.csv("data/01-raw/orig.wal-trans-17-18.csv")[-1,-1]
 
-# reshape and clean function 
-FunWalesReshape <- function(DF) {
-  var <- deparse(substitute(DF))
-  var <- substring(var, 5)
-  DF %>% 
-    gather(key = year, value = !!var, 2:(ncol(DF))) %>% 
-    separate(year, into = c("X", "year"), sep = "(?<=[A-Z])(?=[0-9])", perl = TRUE) %>% 
-    separate (year, into = c("year", "XX")) %>% 
-    mutate(year = as.integer(year)) %>% 
-    select(-X, -XX) %>% 
-    rename(auth.name = X.1)
-}
-
 # reshape all three dfs
 wal.expend.total<- FunWalesReshape(wal.expend.total)
 wal.income.total<- FunWalesReshape(wal.income.total)
@@ -172,7 +180,8 @@ wal.transport.total<- FunWalesReshape(wal.transport.total)
 # join them together. 
 wal.expend.total %>% 
   left_join(wal.income.total) %>% 
-  left_join(wal.transport.total) -> original.wales
+  left_join(wal.transport.total) %>% 
+  mutate(income.total = -income.total) -> original.wales
 
 # add Wales specific data
 original.wales %>% 
@@ -182,3 +191,6 @@ original.wales %>%
 
 # merge with original data
 bind_rows(original.data, original.wales) -> original.data 
+
+write.csv(original.data, "data/03-processed/original.data.csv")
+rm(list=setdiff(ls(), "original.data"))
