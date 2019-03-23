@@ -78,19 +78,11 @@ for (row in 2:nrow(england.outturn.17.18)){
   pen.sh = england.outturn.17.18$pen.sh[row]
   pen.on = england.outturn.17.18$pen.on[row]
   year = england.outturn.17.18$year[row]
-  country = "England"
   x <- FunEnglandOutturn(file, first, last, e.sh, e.on, e.off, e.cc,
                          i.sh, i.on, i.off,i.cc, pen.sh, pen.on,
-                         auth.name, auth.type, year,
-                         country)
+                         auth.name, auth.type, year)
   england.outturn <- bind_rows(england.outturn, x)
 }
-
-# remove authorities we're not interested in:
-england.outturn %>% 
-  filter(auth.type != "O" | 
-           grepl("National Park", auth.name) |
-           auth.name == "Greater London Authority") -> england.outturn
 
 ## 1.1.1. ENGLAND outturn totals ###############################################
 # initialise data frame
@@ -107,17 +99,93 @@ for (row in 2:nrow(england.outturn.17.18)){
   england.outturn.totals <- bind_rows(england.outturn.totals, x)
 }
 england.outturn.totals$auth.name <- "England"
-england.outturn.totals$country <- "England"
 england.outturn.totals$auth.type <- "X"
 
 ## 1.2 ENGLAND budget data #####################################################
 
+# load metadta
+england.budget.18.19 <- readRDS("data/02-interim/england.budget.18.19.rds")
 
+# initialise data frame
+england.budget <- data.frame()
 
+# loop through all excel files extracting budget surplus data
+for (row in 3:nrow(england.budget.18.19)){
+  file = england.budget.18.19$file.name[row]
+  first = england.budget.18.19$first[row]
+  last = england.budget.18.19$rows[row] + england.budget.18.19$first[row] - 1
+  auth.name = england.budget.18.19$la.name[row]
+  auth.type = england.budget.18.19$la.type[row]
+  sheet = 3
+  budg.la = england.budget.18.19$budg.la[row]
+  year = england.budget.18.19$year[row]
+  x <- FunEnglandBudget(file, first, last, sheet,
+                        budg.la,auth.name,
+                        auth.type, year)
+  england.budget <- bind_rows(england.budget, x)
+}
 
+## 2.3 WPL data - manual input #################################################
+
+wpl <- data.frame()
+
+wpl.year <- 2017
+wpl.income <- 9178
+wpl.expend <- 219
+wpl.row <- c(wpl.year, wpl.income, wpl.expend)
+names(wpl.row) <- c("wpl.year", "wpl.income", "wpl.expend")
+
+wpl <- bind_rows(wpl, wpl.row)
+
+wpl.year <- 2016
+wpl.income <- 9422
+wpl.expend <- 588
+wpl.row <- c(wpl.year, wpl.income, wpl.expend)
+names(wpl.row) <- c("wpl.year", "wpl.income", "wpl.expend")
+
+wpl <- bind_rows(wpl, wpl.row)
+
+wpl.year <- 2015
+  wpl.income <- 9336
+  wpl.expend <- 713
+  wpl.row <- c(wpl.year, wpl.income, wpl.expend)
+names(wpl.row) <- c("wpl.year", "wpl.income", "wpl.expend")
+
+wpl <- bind_rows(wpl, wpl.row)
+
+wpl.year <- 2014
+  wpl.income <- 9089
+  wpl.expend <- 837
+  wpl.row <- c(wpl.year, wpl.income, wpl.expend)
+names(wpl.row) <- c("wpl.year", "wpl.income", "wpl.expend")
+
+wpl <- bind_rows(wpl, wpl.row)
+
+wpl$auth.name <- "Nottingham"
+wpl$auth.type <- "WPL"
+wpl$wpl.logical <- TRUE
+
+wpl
+
+## 2.4. MERGE all england data together ########################################
+# remove authorities we're not interested in:
+england.outturn %>% 
+  filter(auth.type != "O" | 
+           grepl("National Park", auth.name) |
+           auth.name == "Greater London Authority") -> england.outturn
+
+england.budget %>% 
+  filter(auth.type != "O" | 
+           grepl("National Park", auth.name) |
+           auth.name == "Greater London Authority") -> england.budget
+
+full_join(england.outturn, england.budget) -> england.outturn.and.budget
+england.outturn.and.budget$wpl.logical <- FALSE
 
 bind_rows(original.data, england.outturn.totals) -> original.data 
-bind_rows(original.data, england.outturn) -> original.data 
+bind_rows(original.data, england.outturn.and.budget) -> original.data 
+bind_rows(original.data, wpl) -> original.data
+original.data$country <- "England"
 
 
 
@@ -132,7 +200,7 @@ original.scotland.i.e <- data.frame(auth.name = character(),
                  income.total = numeric(),
                  year = numeric())
 
-# loop through each excel file running FunScotandLoopIE which loops
+# loop through each excel file running FunScotlandLoopIE which loops
 # through each sheet and extracts income and expenditure data
 for (row in 2:nrow(scotland.i.e.17.18)){
   # get metadata for this year
@@ -143,7 +211,7 @@ for (row in 2:nrow(scotland.i.e.17.18)){
   exp.cell =  scotland.i.e.17.18$exp.cell[row]
   inc.cell =  scotland.i.e.17.18$inc.cell[row]
   auth.cell = scotland.i.e.17.18$auth.cell[row]
-  x <- FunScotandLoopIE(row)
+  x <- FunScotlandLoopIE(row)
   original.scotland.i.e <- bind_rows(original.scotland.i.e, x)
 }
 

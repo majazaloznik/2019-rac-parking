@@ -184,6 +184,18 @@ fisc.year <- c("2008/09", "2009/10", "2010/11", "2011/12","2012/13", "2013/14",
 
 year <- as.numeric(substr(fisc.year, 1, 4))
 
+file.name <- c("", "",
+               "data/01-raw/orig.eng-10-11-budget.xls",
+               "data/01-raw/orig.eng-11-12-budget.xls",   
+               "data/01-raw/orig.eng-12-13-budget.xls",   
+               "data/01-raw/orig.eng-13-14-budget.xls", 
+               "data/01-raw/orig.eng-14-15-budget.xls", 
+               "data/01-raw/orig.eng-15-16-budget.xls", 
+               "data/01-raw/orig.eng-16-17-budget.xlsx",
+               "data/01-raw/orig.eng-17-18-budget.xlsx",
+               "data/01-raw/orig.eng-18-19-budget.xlsx")
+  
+  
 link <- c("", 
           "", 
           "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/7367/1934015.xls}{xls}", 
@@ -196,7 +208,11 @@ link <- c("",
           "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/623097/RA_2017-18_data_by_LA.xlsx}{xlsx}",
           "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/720343/RA_2018-19_data_by_LA.xlsx}{xlsx}")
 
-rows <- c(0, 0, 444, 444, 444, 444, 444, 444, 443, 446, 443)
+la.name <- c(rep("B", 9), rep("C", 2))
+
+la.type <- c(rep("D", 9), rep("E", 2))
+
+rows <- c(0, 0, 443, 444, 444, 444, 444, 444, 443, 446, 443)
 
 las <- c( 0, 0,353, 353,353, 353, 353, 353, 353, 353, 353)
 
@@ -206,11 +222,11 @@ budg.tot <- c("-", "-", "E27", "E28", "E28", "E28", "F34", "F34", "E35", "E35", 
 
 budg.la <- c("-", "-", "U", "V", "V", "V", "U", "U", "U",  "V", "V") 
 
-england.budget <- data.frame(fisc.year, year,link, rows, first, las,
-                             budg.tot, budg.la)
+england.budget.18.19 <- data.frame(fisc.year, year, file.name, link, rows, first, las,
+                             budg.tot, budg.la, la.name, la.type)
 
 ## commented out to stop overwriting!
-# saveRDS(england.budget, "data/02-interim/england.budget.18.19.rds")
+# saveRDS(england.budget.18.19, "data/02-interim/england.budget.18.19.rds")
 
 
 ## 2.3 Nottingham WPL data #####################################################

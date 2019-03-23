@@ -239,6 +239,7 @@ OK, back to the Scotland PNC data scraped from the pdf
 ** ENGLAND IMPORT ORIGINAL DATA**
 
 * First add actual file names to the metadata table. 
+* Also, start with 2009, not 2008, because there were 388 LAs then
 * So the trick now is to write code to import the original data that will also be useful for updating new data for RAC..
 * Turns out the columns with the la names and classes also change from one year to another, have to add them to the metadata
 * WHY doesn't this work? Because one cell has "..." in it instead of numbers..
@@ -258,9 +259,21 @@ OK, back to the Scotland PNC data scraped from the pdf
 * But now i see that some other authorities are kept, ones with WM and YH, and one that's even n/a, this is all 2014 data...Ah, I had the auth.name and auth.type wrong in the metadata, fixed.
 * Double check no of authorities: 9 \* 353 = 3177, that's perfect! In addition also 9\* Greater London and  The national parks, 9 of them each year, except in 2008/09, so that's another 80 records, total of 3266 records. 
 
-
 * Budget data next
+* actually the auth.name columns change as well, so need to add them to the metadata. * Also have to add file.names to the metadata. OK
+* Budget data all OK. 
+* Manual input of WPL data OK
 
+** Merge England **
+
+* Full_join not working - too many rows result.. is it a name thing?
+* Yeah, in 2014 the outturn data e.g. says "Worcestershire CC" instead of "Worcestershire" etc.. SO probably safest thing to do is to remove all capitalised two letter words at the end of `auth.name` with some regex magic. or three letter words. 
+* Still 30 doubles... variant spellings. 
+* SO new FunEnglandFixNames for manually changing names...
+
+* so 3266 authorities in the outturn data, and another 366 from the budget data, since it has an extra year, and finally 4 wpl years plus 9 england totals = 3642 england rows
+* plus scotland and wales is 4046.
+* DONE
 
 ### Wales (based on 17/18) #####################################################
 

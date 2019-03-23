@@ -1,5 +1,28 @@
 ################################################################################
 ## ENGLAND IMPORT FUNCTIONS ####################################################
+
+# lookup  to manually fix LA names that are inconsistent...
+england.name.lookup <- c("City of Nottingham" = "Nottingham",
+                       "Nottingham City" = "Nottingham",
+                       "Middlesbrough" =  "Middlesborough", 
+                       "County Durham" =  "Durham",
+                       "Hyndburn B C" = "Hyndburn",
+                       "Kingston-upon-Hull" = "Kingston upon Hull",
+                       "Kingston Upon Thames" =  "Kingston upon Thames",
+                       "Lincoln City" =  "Lincoln",
+                       "MaIdon" = "Maldon",
+                       "The Medway Towns"= "Medway",
+                       "Medway Towns" = "Medway",
+                       "Newcastle" = "Newcastle upon Tyne",
+                       "Norwich City" = "Norwich",
+                       "Reigate & Banstead" = "Reigate and Banstead",
+                       "South Buckinghamshire" = "South Bucks",
+                       "South Downs National Park" = "South Downs National Park Authority",
+                       "Telford & the Wrekin" = "Telford and Wrekin",
+                       "Telford and the Wrekin" = "Telford and Wrekin")
+    
+                                
+
 # function to extract expenditure data from England outturn excel file
 FunEnglandOutturn <- function(file =file, 
                               first = first, 
@@ -16,11 +39,12 @@ FunEnglandOutturn <- function(file =file,
                               pen.on = pen.on,
                               auth.name = auth.name,
                               auth.type = auth.type,
-                              year = year,
-                              country = country) {
+                              year = year) {
   cell.range <- paste0(auth.name, first-1, ":",auth.name, last)
   auth.name <- read_excel(file, e.sh, cell.range)
   colnames(auth.name) <- "auth.name"
+  auth.name <- mutate(auth.name, auth.name = sub(" [A-Z]{2,3}$", "", auth.name))
+  auth.name <- mutate(auth.name, auth.name = recode(auth.name, !!!england.name.lookup)) 
   cell.range <- paste0(auth.type, first-1, ":",auth.type, last)
   auth.type <- read_excel(file, e.sh, cell.range)
   colnames(auth.type) <- "auth.type"
@@ -35,10 +59,10 @@ FunEnglandOutturn <- function(file =file,
   expend.off <- ifelse(!grepl("^-?[0-9.]+$", expend.off$expend.off), NA, 
                        as.numeric(expend.off$expend.off))
   cell.range <- paste0(e.cc, first-1, ":", e.cc, last)
-  expend.cong.c <- read_excel(file, e.sh, cell.range)
-  colnames(expend.cong.c) <- "expend.cong.c"
-  expend.cong.c <- ifelse(!grepl("^-?[0-9.]+$", expend.cong.c$expend.cong.c), NA, 
-                       as.numeric(expend.cong.c$expend.cong.c))
+  expend.cong.ch <- read_excel(file, e.sh, cell.range)
+  colnames(expend.cong.ch) <- "expend.cong.ch"
+  expend.cong.ch <- ifelse(!grepl("^-?[0-9.]+$", expend.cong.ch$expend.cong.ch), NA, 
+                       as.numeric(expend.cong.ch$expend.cong.ch))
   cell.range <- paste0(i.on, first-1, ":", i.on, last)
   income.on <- read_excel(file, i.sh, cell.range)
   colnames(income.on) <- "income.on"
@@ -50,10 +74,10 @@ FunEnglandOutturn <- function(file =file,
   income.off <- ifelse(!grepl("^-?[0-9.]+$", income.off$income.off), NA, 
                        as.numeric(income.off$income.off))
   cell.range <- paste0(i.cc, first-1, ":", i.cc, last)
-  income.cong.c <- read_excel(file, i.sh, cell.range)
-  colnames(income.cong.c) <- "income.cong.c"
-  income.cong.c <- ifelse(!grepl("^-?[0-9.]+$", income.cong.c$income.cong.c), NA, 
-                       as.numeric(income.cong.c$income.cong.c))
+  income.cong.ch <- read_excel(file, i.sh, cell.range)
+  colnames(income.cong.ch) <- "income.cong.ch"
+  income.cong.ch <- ifelse(!grepl("^-?[0-9.]+$", income.cong.ch$income.cong.ch), NA, 
+                       as.numeric(income.cong.ch$income.cong.ch))
   if(!is.na(pen.sh)){
     cell.range <- paste0(pen.on, first-1, ":", pen.on, last)
     income.pcn <- read_excel(file, pen.sh, cell.range)
@@ -63,8 +87,8 @@ FunEnglandOutturn <- function(file =file,
   else {income.pcn <- NA }
   df <- data.frame(auth.name, auth.type,expend.on, expend.off, 
                    income.on, income.off, income.pcn, 
-                   expend.cong.c, income.cong.c,
-                   year = year, country = country)
+                   expend.cong.ch, income.cong.ch,
+                   year = year)
   df
 }
 
@@ -81,7 +105,36 @@ FunEnglandOutturnTotals <- function(file ,
   vec
 }
 
+## England budget surplus import function
 
+FunEnglandBudget <- function(file =file, 
+                             first = first, 
+                             last = last,
+                             sheet = 3,
+                             budg.la = budg.la,
+                             auth.name = auth.name,
+                             auth.type = auth.type,
+                             year = year) {
+  cell.range <- paste0(auth.name, first-1, ":",auth.name, last)
+  auth.name <- read_excel(file, sheet, cell.range)
+  colnames(auth.name) <- "auth.name"
+  auth.name <- mutate(auth.name, auth.name = sub(" [A-Z]{2,3}$", "", auth.name))
+  auth.name <- mutate(auth.name, auth.name = recode(auth.name, !!!england.name.lookup)) 
+  cell.range <- paste0(auth.type, first-1, ":",auth.type, last)
+  auth.type <- read_excel(file, sheet, cell.range)
+  colnames(auth.type) <- "auth.type"
+  cell.range <- paste0(budg.la, first-1, ":", budg.la, last)
+  surplus.budget <- read_excel(file, sheet, cell.range)
+  colnames(surplus.budget) <- "surplus.budget"
+  surplus.budget <- ifelse(!grepl("^-?[0-9.]+$", surplus.budget$surplus.budget), NA, 
+                           as.numeric(surplus.budget$surplus.budget))
+  df <- data.frame(auth.name, auth.type, surplus.budget,
+                   year = year)
+  df
+}
+
+################################################################################
+## SCOTLAND IMPORT FUNCTIONS ###################################################
 
 # function to 'manually' fix local authority names that are inconsistent
 # between the pdf tables. If new inconsistencies crop up, you can add them here:
@@ -112,7 +165,7 @@ FunScotlandLACels <- function(file, sheet, expend.total, income.total, auth.cell
 }
 
 # Function that loops through all sheets and extracts relevant cell data 
-FunScotandLoopIE <- function(row, year = year, 
+FunScotlandLoopIE <- function(row, year = year, 
                              file.name = file.name, 
                              start.sh = start.sh, 
                              end.sh = end.sh, 

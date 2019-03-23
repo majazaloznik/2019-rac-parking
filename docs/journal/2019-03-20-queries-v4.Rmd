@@ -15,3 +15,7 @@ Both the Wales and the Scotland reports there is a sentence along the lines of "
 25. If the comparator is cars, is it OK if this value is manually inserted?
 
  26. General (rethorical) question: If I find similar inconsistencies, e.g. where one report is missing a sentence/paragraph that the others have, should I aim to make the three reports as similar to eachother, to the extent possible? 
+ 
+In the Nottingham reports there is an inconsistency in the numbers, since each report has data for the current and previous years. In the 2015/16 report the levy expenditure is down as 787, while in the 2016/17 the previous year's expenditure is down as 713 (restated). I will use the restated data, and make a general note that restated data is used if available.
+
+27. Is that OK?

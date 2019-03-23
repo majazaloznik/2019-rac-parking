@@ -1,13 +1,13 @@
 ## mapping test ###############################################################
-library(sf)
 library(tidyverse)
+library(sf)
 
 uc <- st_read("data/01-raw/maps/Local_Administrative_Units_Level_1_January_2018_Ultra_Generalised_Clipped_Boundaries_in_United_Kingdom.shp")
 
 uc %>% 
   filter(grepl("^E", lau118cd)) -> eng
 plot(st_geometry(eng))
-
+sort(eng$lau118nm )
 uc %>% 
   filter(grepl("^S", lau118cd)) -> sco
 plot(st_geometry(sco))
@@ -79,3 +79,25 @@ scotland.pnc.dpe.16 %>%
 ## extract tables from leibling
 
 extract_tables("docs/original-reports/sco-13-14.pdf")
+
+## regex the autority class abreviations off the auth.name
+
+x <- "Worcestershire UA"
+
+sub(" [A-Z]{2}$", "", x)
+
+
+auth.name <- mutate(auth.name, auth.name = sub(" [A-Z]{2}$", "", auth.name))
+
+## lookup table to recode
+
+data <- sample(c("a", "b", "c", "d"), 10, replace = T) 
+lookup <- list(a = "Apple", b = "Pear") 
+# do.call(dplyr::recode, c(list(data), lookup))
+v1 <- unlist(lookup)[data]
+ifelse(is.na(v1), data, v1)
+
+x <- c("hh" = "jh")
+c(x, c("lkj" = "LKk"))  
+
+auth.name <- mutate(auth.name, auth.name = recode(auth.name, !!!EnglandNameLookup)) 
