@@ -236,6 +236,15 @@ OK, back to the Scotland PNC data scraped from the pdf
 * OK, all of scotland works now, there are only some column type issues . fixed
 * Oh, and welsh income is negative .
 
+** ENGLAND IMPORT ORIGINAL DATA**
+
+* First add actual file names to the metadata table. 
+* So the trick now is to write code to import the original data that will also be useful for updating new data for RAC..
+* Turns out the columns with the la names and classes also change from one year to another, have to add them to the metadata
+* WHY doesn't this work? Because one cell has "..." in it instead of numbers..
+* FFS, ok, this now works for expend.on and expend. off. Now extend to incomes as well. 
+
+
 ### Wales (based on 17/18) #####################################################
 
 #### 1. Introduction

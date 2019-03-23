@@ -106,9 +106,10 @@ reports <- data.frame(country, year,htmls, pdfs, tab, window)
 ## 2. ENGLAND DATA SOURCES #####################################################
 ## 2.1 ENGLAND outturn data ####################################################
 
-year <- c("2008/09", "2009/10", "2010/11", "2011/12","2012/13", "2013/14", 
+fisc.year <- c("2008/09", "2009/10", "2010/11", "2011/12","2012/13", "2013/14", 
           "2014/15", "2015/16", "2016/17", "2017/18")
 
+year <- as.numeric(substr(fisc.year, 1, 4))
 
 link <- c("\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/397002/Revenue_Outturn__RO2__data_2008-09_by_LA_-_Revised_17-Nov-2011.xls}{xls}",
           "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/387065/RO2.xls}{xls}",
@@ -121,11 +122,27 @@ link <- c("\\href{https://www.gov.uk/government/uploads/system/uploads/attachmen
           "\\href{https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/659775/RO2_2016-17_data_by_LA.xlsx}{xlsx}",
           "\\href{https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/757366/RO2_2017-18_data_by_LA.xlsx}{xlsx}")
 
+file.name <- c(  "data/01-raw/orig.eng-08-09.xls",         
+                 "data/01-raw/orig.eng-09-10.xls",          
+                 "data/01-raw/orig.eng-10-11.xls",         
+                 "data/01-raw/orig.eng-11-12.xls",          
+                 "data/01-raw/orig.eng-12-13.xls",       
+                 "data/01-raw/orig.eng-13-14.xls",       
+                 "data/01-raw/orig.eng-14-15.xls",        
+                 "data/01-raw/orig.eng-15-16.xlsx",         
+                 "data/01-raw/orig.eng-16-17.xlsx",    
+                 "data/01-raw/orig.eng-17-18.xlsx")
+  
+  
 rows <- c(405,370, 371, 371, 371, 371, 371, 444, 446, 445)
 
 las <- c( 388, 353, 353, 353, 353, 353, 353, 353, 353, 353)
 
-first <- c(0, 0, 0, 0, 12, 12, 12, 8, 8, 8)
+first <- c(0, 12, 12, 12, 12, 12, 12, 8, 8, 8)
+
+la.name <- c(rep("B", 7), rep("C", 3))
+
+la.type <- c(rep("D", 7), rep("E", 3))
 
 e.sh <- c(3, 3, 3, 3, 3, 3, 3, 3, 3, 3) 
 
@@ -151,10 +168,10 @@ pen.1 <- c("G64", "G64", "G64", "G64", "G65", "G65", "I68", "H67", "H67", "H67")
 
 tot.1 <- c("J45", "J45", "J45", "J45", "J46", "J46", "L49", "K48", "K48", "K48")
 
-england.outturn <- data.frame(year,link, rows, las, first,
-                              e.sh, e.on, e.off, 
+england.outturn <- data.frame(fisc.year, year,link, rows, las, first,
+                              e.sh, e.on, e.off, la.name, la.type,
                               i.sh, i.on, i.off, 
-                              pen.sh,pen.on, pen.1, tot.1)
+                              pen.sh,pen.on, pen.1, tot.1, file.name)
 
 ## commented out to stop overwriting!
 # saveRDS(england.outturn, "data/02-interim/england.outturn.17.18.rds")
@@ -162,9 +179,10 @@ england.outturn <- data.frame(year,link, rows, las, first,
 ## 2.2 ENGLAND budget data #####################################################
 
 
-year <- c("2008/09", "2009/10", "2010/11", "2011/12","2012/13", "2013/14", 
+fisc.year <- c("2008/09", "2009/10", "2010/11", "2011/12","2012/13", "2013/14", 
           "2014/15", "2015/16", "2016/17", "2017/18", "2018/19")
 
+year <- as.numeric(substr(fisc.year, 1, 4))
 
 link <- c("", 
           "", 
@@ -188,7 +206,7 @@ budg.tot <- c("-", "-", "E27", "E28", "E28", "E28", "F34", "F34", "E35", "E35", 
 
 budg.la <- c("-", "-", "U", "V", "V", "V", "U", "U", "U",  "V", "V") 
 
-england.budget <- data.frame(year,link, rows, first, las,
+england.budget <- data.frame(fisc.year, year,link, rows, first, las,
                              budg.tot, budg.la)
 
 ## commented out to stop overwriting!

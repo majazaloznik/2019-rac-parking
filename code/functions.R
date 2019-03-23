@@ -1,3 +1,52 @@
+# function to extract expenditure data from England outturn excel file
+
+
+FunEnglandOutturn <- function(file=file, 
+                              first=first, 
+                              last=last, 
+                              e.sh=e.sh, 
+                              e.on=e.on, 
+                              e.off=e.off,
+                              i.sh = i.sh,
+                              i.on = i.on,
+                              i.off = i.off,
+                              auth.name = auth.name,
+                              auth.type = auth.type) {
+  cell.range <- paste0(auth.name, first-1, ":",auth.name, last)
+  auth.name <- read_excel(file, e.sh, cell.range)
+  colnames(auth.name) <- "auth.name"
+  cell.range <- paste0(auth.type, first-1, ":",auth.type, last)
+  auth.type <- read_excel(file, e.sh, cell.range)
+  colnames(auth.type) <- "auth.type"
+  cell.range <- paste0(e.on, first-1, ":", e.on, last)
+  expend.on <- read_excel(file, e.sh, cell.range)
+  colnames(expend.on) <- "expend.on"
+  expend.on <- ifelse(!grepl("^-?[0-9.]+$", expend.on$expend.on), NA, 
+                      as.numeric(expend.on$expend.on))
+  cell.range <- paste0(e.off, first-1, ":", e.off, last)
+  expend.off <- read_excel(file, e.sh, cell.range)
+  colnames(expend.off) <- "expend.off"
+  expend.off <- ifelse(!grepl("^-?[0-9.]+$", expend.off$expend.off), NA, 
+                       as.numeric(expend.off$expend.off))
+  
+  cell.range <- paste0(i.on, first-1, ":", i.on, last)
+  income.on <- read_excel(file, i.sh, cell.range)
+  colnames(income.on) <- "income.on"
+  income.on <- ifelse(!grepl("^-?[0-9.]+$", income.on$income.on), NA, 
+                      as.numeric(income.on$income.on))
+  cell.range <- paste0(i.off, first-1, ":", i.off, last)
+  income.off <- read_excel(file, i.sh, cell.range)
+  colnames(income.off) <- "income.off"
+  income.off <- ifelse(!grepl("^-?[0-9.]+$", income.off$income.off), NA, 
+                       as.numeric(income.off$income.off))
+  
+  df <- data.frame(auth.name, auth.type,expend.on, expend.off, income.on, income.off)
+  df
+}
+
+
+#debugonce(FunEnglandOutturn)
+
 # function to 'manually' fix local authority names that are inconsistent
 # between the pdf tables. If new inconsistencies crop up, you can add them here:
 
@@ -27,15 +76,13 @@ FunScotlandLACels <- function(file, sheet, expend.total, income.total, auth.cell
 }
 
 # Function that loops through all sheets and extracts relevant cell data 
-FunScotandLoopIE <- function(row) {
-  # get metadata for this year
-  year = scotland.i.e.17.18$year[row]
-  file.name = scotland.i.e.17.18$file.name[row]
-  start.sh =  scotland.i.e.17.18$start.sh[row]
-  end.sh =  scotland.i.e.17.18$end.sh[row]
-  exp.cell =  scotland.i.e.17.18$exp.cell[row]
-  inc.cell =  scotland.i.e.17.18$inc.cell[row]
-  auth.cell = scotland.i.e.17.18$auth.cell[row]
+FunScotandLoopIE <- function(row, year = year, 
+                             file.name = file.name, 
+                             start.sh = start.sh, 
+                             end.sh = end.sh, 
+                             exp.cell = exp.cell, 
+                             inc.cell = inc.cell, 
+                             auth.cell = auth.cell) {
   
   # prepare empty data frame for the data
   df <- data.frame(auth.name = character(),

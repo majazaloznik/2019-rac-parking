@@ -54,6 +54,38 @@ original.data <- data.frame(country = character(),
                             
 
 ## 1. ENGLAND DATA IMPORT ######################################################
+# load metadta
+england.outturn.17.18 <- readRDS("data/02-interim/england.outturn.17.18.rds")
+
+england.outturn <-  data.frame(auth.name = character(),
+                               auth.type = character(),
+                               expend.on = numeric(),
+                               expend.off = numeric(),
+                               income.on = numeric(),
+                               income.off = numeric(),
+                               year = numeric())
+
+# extract on and off street parking expenditures 
+for (row in 2:nrow(england.outturn.17.18)){
+  file = england.outturn.17.18$file.name[row]
+  first = england.outturn.17.18$first[row]
+  last = england.outturn.17.18$rows[row] + england.outturn.17.18$first[row] - 1
+  auth.name = england.outturn.17.18$la.name[row]
+  auth.type = england.outturn.17.18$la.type[row]
+  e.sh = england.outturn.17.18$e.sh[row]
+  e.on = england.outturn.17.18$e.on[row]
+  e.off =  england.outturn.17.18$e.off[row]
+  i.sh = england.outturn.17.18$i.sh[row]
+  i.on = england.outturn.17.18$i.on[row]
+  i.off =  england.outturn.17.18$i.off[row]
+  x <- FunEnglandOutturn(file, first, last, e.sh, e.on, e.off, 
+                         i.sh, i.on, i.off, auth.name, auth.type)
+  x$year =  england.outturn.17.18$year[row]
+  england.outturn <- bind_rows(england.outturn, x)
+}
+
+bind_rows(original.data, england.outturn) -> original.data 
+
 ## 1.1 ENGLAND outturn data ####################################################
 ## 1.2 ENGLAND budget data #####################################################
 ## 2. SCOTLAND DATA IMPORT #####################################################
@@ -70,6 +102,14 @@ original.scotland.i.e <- data.frame(auth.name = character(),
 # loop through each excel file running FunScotandLoopIE which loops
 # through each sheet and extracts income and expenditure data
 for (row in 2:nrow(scotland.i.e.17.18)){
+  # get metadata for this year
+  year = scotland.i.e.17.18$year[row]
+  file.name = scotland.i.e.17.18$file.name[row]
+  start.sh =  scotland.i.e.17.18$start.sh[row]
+  end.sh =  scotland.i.e.17.18$end.sh[row]
+  exp.cell =  scotland.i.e.17.18$exp.cell[row]
+  inc.cell =  scotland.i.e.17.18$inc.cell[row]
+  auth.cell = scotland.i.e.17.18$auth.cell[row]
   x <- FunScotandLoopIE(row)
   original.scotland.i.e <- bind_rows(original.scotland.i.e, x)
 }
@@ -93,7 +133,7 @@ scotland.dpe.16 <- FunScotlandDPE(scotland.dpe.16, 2016)
 # clean DPE type table for 2017/18 # don't worry about the warnings
 scotland.dpe.17 <- FunScotlandDPE(scotland.dpe.17, 2017)
 
-## 2.2.31 Scotland PNC table ###################################################
+## 2.2.2 Scotland PNC table ###################################################
 
 # extract PCN type table for 14/15, 15/16, 16/17 directly into a data.frame
 scotland.pcn.14.15.16 <- extract_tables(here::here(scotland.pdf.17.18$file.name[4]), 
