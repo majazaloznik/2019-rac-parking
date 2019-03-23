@@ -140,9 +140,9 @@ las <- c( 388, 353, 353, 353, 353, 353, 353, 353, 353, 353)
 
 first <- c(0, 12, 12, 12, 12, 12, 12, 8, 8, 8)
 
-la.name <- c(rep("B", 7), rep("C", 3))
+la.name <- c(rep("B", 6), rep("C", 4))
 
-la.type <- c(rep("D", 7), rep("E", 3))
+la.type <- c(rep("D", 6), rep("E", 4))
 
 e.sh <- c(3, 3, 3, 3, 3, 3, 3, 3, 3, 3) 
 
@@ -168,13 +168,13 @@ pen.1 <- c("G64", "G64", "G64", "G64", "G65", "G65", "I68", "H67", "H67", "H67")
 
 tot.1 <- c("J45", "J45", "J45", "J45", "J46", "J46", "L49", "K48", "K48", "K48")
 
-england.outturn <- data.frame(fisc.year, year,link, rows, las, first,
+england.outturn.17.18 <- data.frame(fisc.year, year,link, rows, las, first,
                               e.sh, e.on, e.off, la.name, la.type,
-                              i.sh, i.on, i.off, 
+                              i.sh, i.on, i.off, e.cc, i.cc,
                               pen.sh,pen.on, pen.1, tot.1, file.name)
 
 ## commented out to stop overwriting!
-# saveRDS(england.outturn, "data/02-interim/england.outturn.17.18.rds")
+# saveRDS(england.outturn.17.18, "data/02-interim/england.outturn.17.18.rds")
 
 ## 2.2 ENGLAND budget data #####################################################
 

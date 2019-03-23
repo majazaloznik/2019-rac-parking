@@ -1,17 +1,23 @@
+################################################################################
+## ENGLAND IMPORT FUNCTIONS ####################################################
 # function to extract expenditure data from England outturn excel file
-
-
-FunEnglandOutturn <- function(file=file, 
-                              first=first, 
-                              last=last, 
-                              e.sh=e.sh, 
-                              e.on=e.on, 
-                              e.off=e.off,
+FunEnglandOutturn <- function(file =file, 
+                              first = first, 
+                              last = last, 
+                              e.sh = e.sh, 
+                              e.on = e.on, 
+                              e.off = e.off,
+                              e.cc = e.cc,
                               i.sh = i.sh,
                               i.on = i.on,
                               i.off = i.off,
+                              i.cc = i.cc,
+                              pen.sh = pen.sh,
+                              pen.on = pen.on,
                               auth.name = auth.name,
-                              auth.type = auth.type) {
+                              auth.type = auth.type,
+                              year = year,
+                              country = country) {
   cell.range <- paste0(auth.name, first-1, ":",auth.name, last)
   auth.name <- read_excel(file, e.sh, cell.range)
   colnames(auth.name) <- "auth.name"
@@ -28,7 +34,11 @@ FunEnglandOutturn <- function(file=file,
   colnames(expend.off) <- "expend.off"
   expend.off <- ifelse(!grepl("^-?[0-9.]+$", expend.off$expend.off), NA, 
                        as.numeric(expend.off$expend.off))
-  
+  cell.range <- paste0(e.cc, first-1, ":", e.cc, last)
+  expend.cong.c <- read_excel(file, e.sh, cell.range)
+  colnames(expend.cong.c) <- "expend.cong.c"
+  expend.cong.c <- ifelse(!grepl("^-?[0-9.]+$", expend.cong.c$expend.cong.c), NA, 
+                       as.numeric(expend.cong.c$expend.cong.c))
   cell.range <- paste0(i.on, first-1, ":", i.on, last)
   income.on <- read_excel(file, i.sh, cell.range)
   colnames(income.on) <- "income.on"
@@ -39,13 +49,39 @@ FunEnglandOutturn <- function(file=file,
   colnames(income.off) <- "income.off"
   income.off <- ifelse(!grepl("^-?[0-9.]+$", income.off$income.off), NA, 
                        as.numeric(income.off$income.off))
-  
-  df <- data.frame(auth.name, auth.type,expend.on, expend.off, income.on, income.off)
+  cell.range <- paste0(i.cc, first-1, ":", i.cc, last)
+  income.cong.c <- read_excel(file, i.sh, cell.range)
+  colnames(income.cong.c) <- "income.cong.c"
+  income.cong.c <- ifelse(!grepl("^-?[0-9.]+$", income.cong.c$income.cong.c), NA, 
+                       as.numeric(income.cong.c$income.cong.c))
+  if(!is.na(pen.sh)){
+    cell.range <- paste0(pen.on, first-1, ":", pen.on, last)
+    income.pcn <- read_excel(file, pen.sh, cell.range)
+    colnames(income.pcn) <- "income.pcn"
+    income.pcn <- ifelse(!grepl("^-?[0-9.]+$", income.pcn$income.pcn), NA, 
+                         as.numeric(income.pcn$income.pcn))} 
+  else {income.pcn <- NA }
+  df <- data.frame(auth.name, auth.type,expend.on, expend.off, 
+                   income.on, income.off, income.pcn, 
+                   expend.cong.c, income.cong.c,
+                   year = year, country = country)
   df
 }
 
+## England outturn totals for transport and penalty charge income.
+FunEnglandOutturnTotals <- function(file , 
+                                    transport.total ,
+                                    pcn.total,
+                                    year,
+                                    sheet = 2 ) {
+  transport.total <- colnames(read_excel(file, sheet, transport.total))
+  pcn.total <- colnames(read_excel(file, sheet, pcn.total))
+  vec <- as.numeric(c(year, transport.total, pcn.total))
+  names(vec) <- c("year", "transport.total", "pcn.total")
+  vec
+}
 
-#debugonce(FunEnglandOutturn)
+
 
 # function to 'manually' fix local authority names that are inconsistent
 # between the pdf tables. If new inconsistencies crop up, you can add them here:

@@ -50,22 +50,17 @@ original.data <- data.frame(country = character(),
                             wpl.logical = logical(),
                             dpe.status = character(),
                             dpe.year = integer(),
-                            pcn.number = integer())
+                            pcn.number = integer(),
+                            pcn.total = integer())
                             
 
 ## 1. ENGLAND DATA IMPORT ######################################################
+## 1.1 ENGLAND outturn data ####################################################
 # load metadta
 england.outturn.17.18 <- readRDS("data/02-interim/england.outturn.17.18.rds")
 
-england.outturn <-  data.frame(auth.name = character(),
-                               auth.type = character(),
-                               expend.on = numeric(),
-                               expend.off = numeric(),
-                               income.on = numeric(),
-                               income.off = numeric(),
-                               year = numeric())
-
-# extract on and off street parking expenditures 
+england.outturn <- data.frame()
+# # extract on and off street parking expenditures 
 for (row in 2:nrow(england.outturn.17.18)){
   file = england.outturn.17.18$file.name[row]
   first = england.outturn.17.18$first[row]
@@ -75,19 +70,57 @@ for (row in 2:nrow(england.outturn.17.18)){
   e.sh = england.outturn.17.18$e.sh[row]
   e.on = england.outturn.17.18$e.on[row]
   e.off =  england.outturn.17.18$e.off[row]
+  e.cc =  england.outturn.17.18$e.cc[row]
   i.sh = england.outturn.17.18$i.sh[row]
   i.on = england.outturn.17.18$i.on[row]
   i.off =  england.outturn.17.18$i.off[row]
-  x <- FunEnglandOutturn(file, first, last, e.sh, e.on, e.off, 
-                         i.sh, i.on, i.off, auth.name, auth.type)
-  x$year =  england.outturn.17.18$year[row]
+  i.cc =  england.outturn.17.18$i.cc[row]
+  pen.sh = england.outturn.17.18$pen.sh[row]
+  pen.on = england.outturn.17.18$pen.on[row]
+  year = england.outturn.17.18$year[row]
+  country = "England"
+  x <- FunEnglandOutturn(file, first, last, e.sh, e.on, e.off, e.cc,
+                         i.sh, i.on, i.off,i.cc, pen.sh, pen.on,
+                         auth.name, auth.type, year,
+                         country)
   england.outturn <- bind_rows(england.outturn, x)
 }
 
+# remove authorities we're not interested in:
+england.outturn %>% 
+  filter(auth.type != "O" | 
+           grepl("National Park", auth.name) |
+           auth.name == "Greater London Authority") -> england.outturn
+
+## 1.1.1. ENGLAND outturn totals ###############################################
+# initialise data frame
+england.outturn.totals <- data.frame()
+
+# loop through excel files extracting two cells each time
+for (row in 2:nrow(england.outturn.17.18)){
+  file = england.outturn.17.18$file.name[row]
+  tot.1 = england.outturn.17.18$tot.1[row]
+  pen.1 = england.outturn.17.18$pen.1[row]
+  year = england.outturn.17.18$year[row]
+  x <- FunEnglandOutturnTotals(file, transport.total = tot.1,
+                               pcn.total = pen.1, year)
+  england.outturn.totals <- bind_rows(england.outturn.totals, x)
+}
+england.outturn.totals$auth.name <- "England"
+england.outturn.totals$country <- "England"
+england.outturn.totals$auth.type <- "X"
+
+## 1.2 ENGLAND budget data #####################################################
+
+
+
+
+
+bind_rows(original.data, england.outturn.totals) -> original.data 
 bind_rows(original.data, england.outturn) -> original.data 
 
-## 1.1 ENGLAND outturn data ####################################################
-## 1.2 ENGLAND budget data #####################################################
+
+
 ## 2. SCOTLAND DATA IMPORT #####################################################
 ## 2.1 SCOTLAND incomes and expenditures #######################################
 # load metadta

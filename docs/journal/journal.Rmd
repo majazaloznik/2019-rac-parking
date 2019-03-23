@@ -242,7 +242,24 @@ OK, back to the Scotland PNC data scraped from the pdf
 * So the trick now is to write code to import the original data that will also be useful for updating new data for RAC..
 * Turns out the columns with the la names and classes also change from one year to another, have to add them to the metadata
 * WHY doesn't this work? Because one cell has "..." in it instead of numbers..
-* FFS, ok, this now works for expend.on and expend. off. Now extend to incomes as well. 
+* FFS, ok, this now works for expend.on and expend. off. Now extend to incomes as well. Done.
+
+# Satyrday 23.3.2019
+
+* prealocating a data.frame does not need to list columns, this are small applications anyway, so it's not necessary to worry about efficiency. 
+* Now add the totals for ENgland, transport and PCN totals, so only one row for the whole country, for each year. `auth.type` classed as "X"
+* Now again, because these are single cells, they get exported as the column headers..Same as the scotland data. 
+* Totals import OK.
+* Forgot to add country var to England. OK.
+* Add the penalty ranges to the I.E. outturn code as well. This possibly requires checking if the data is there..because it's only there for the last three years.  OK.
+* Remove authorities we don't need. That's all the ones with an O type, except ones with Naitonal park in the name?OK
+* Congestion charges. 
+* OK, added congestion charges from the main otturn import, so the whole column is imported for everyone, it doesn't matter, since we only use Greater London. 
+* But now i see that some other authorities are kept, ones with WM and YH, and one that's even n/a, this is all 2014 data...Ah, I had the auth.name and auth.type wrong in the metadata, fixed.
+* Double check no of authorities: 9 \* 353 = 3177, that's perfect! In addition also 9\* Greater London and  The national parks, 9 of them each year, except in 2008/09, so that's another 80 records, total of 3266 records. 
+
+
+* Budget data next
 
 
 ### Wales (based on 17/18) #####################################################
@@ -504,8 +521,6 @@ This data is massively time lagged, Ivo suggested removing it?
 
 
 
-
-* link [https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Transport/RoadsAndTransportRevenueExpenditure-by-authority](Wales:)
 
 
 
