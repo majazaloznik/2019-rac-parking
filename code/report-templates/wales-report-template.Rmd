@@ -1,0 +1,75 @@
+---
+output:
+  pdf_document: default
+header-includes:
+  - \usepackage{xcolor}
+  - \usepackage{framed}
+---
+```{r, echo = FALSE}
+# change the year variable 
+current.year <- 2016
+```
+
+---
+title: "`r paste("Local Authority Parking Finances in Wales", current.year, "-", current.year-1999)`"
+---
+
+
+```{r, echo = FALSE}
+# preliminaries
+library(kableExtra)
+suppressWarnings(suppressMessages(library(dplyr)))
+options(knitr.kable.NA = '')
+# load data
+data <- readRDS(here::here("data/03-processed/master.rds"))
+
+# extract relevans subset of data
+data %>% 
+  filter(country == "Wales") %>% 
+  filter(year >= current.year -4 & year <= current.year) %>% 
+  mutate(surplus.total = income.total - expend.total) -> data
+```
+
+
+# 1. Introduction
+  
+This note covers parking finances for the 22 local authorities in Wales. As in England and Scotland, local authorities are required to submit details of all their finances to the Welsh Government in a standard format. They are normally published in October, seven months after the financial year end. This report looks at the section on parking income and expenditure from `r paste0(current.year-4, "-", current.year-1999-4)` to `r paste0(current.year, "-", current.year-1999)`.
+
+The published data is less comprehensive than in England and does not split out on- and off-street parking or show penalty income separately. The figures do not include any commercial off-street parking. In `r paste0(current.year, "-", current.year-1999)`, *19 councils showed surpluses and
+three showed deficits (the same three councils as 2016-17).* All councils are now receiving income from parking, \color{red} although councils such as Blaenau Gwent (Ebbw Vale and Abertillery) and Torfaen (Pontypool and Cwmbran) offer free parking but still issue penalty charge notices. \color{black}
+
+# 2. Summary
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-", (current.year-4-1999):(current.year-1999),"}")
+
+data %>% 
+  select(year, income.total, expend.total, surplus.total, transport.total) %>% 
+  group_by(year) %>% 
+  summarise_at(vars(income.total:transport.total), sum) %>% 
+  mutate_at(vars(income.total:transport.total), list(~./1000)) %>% 
+  mutate(surplus.of.transport = 100 * surplus.total/transport.total) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column() %>%
+  mutate(change = V5/V4 *100 -100)  %>% 
+  mutate(change = ifelse(rowname == "surplus.of.transport", NA, change)) %>% 
+  filter(rowname != "year") %>%
+  mutate(rowname = c("Income", "Expenditure", "Surplus", "Net cost", "Parking surplus as \\% of all transport costs")) %>% 
+  mutate(collapsed = c(rep("Parking", 3), "Total transport", "")) %>% 
+  select(collapsed, rowname:change) %>% 
+  kable( "latex", booktabs = T, digits = 2, escape = F,
+         caption = "Summary of parking accounts for Wales",
+         col.names = c("", "", yearz, paste0("Change ", current.year, "-", 
+current.year-1999, " on ", current.year-1, "-", current.year-1999-1))) %>% 
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>% 
+  kable_styling(full_width = TRUE, latex_options =c("hold_position")) %>% 
+   column_spec(1:2, width = "3cm")
+```
+
+Table 1 above shows the summary accounts for local authorities in Wales. Income
+(parking charges and penalty income both for on- and off-street parking),
+expenditure and net surplus have all risen by around 3%. Total transport
+expenditure 2 has fallen by 1.9 % so the surplus now represents 5.4% of transport
+costs. Parking makes a much smaller contribution to overall transport costs in Wales
+compared with England where it is around 12% of total transport.

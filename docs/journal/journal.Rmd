@@ -286,15 +286,32 @@ OK, back to the Scotland PNC data scraped from the pdf
 * ToDo: for consistency, all the original data files names should end with the single year, not the double ones as they do now.. that means also changing all the metadata...
 * Clean up code to read all meta .rds files at once? OK
 * Looks like this mass import using assign and lapply is changing the character columns into factors. fixed (stringsasfactors option was off in 00-manual-data-input.R)
-* move WPL manual entry to 00-manual-data-input.R 
-* Also add year to the manual WPL entry instead of wpl.year, because it gets added using bind.row anyway. Oh, actually it should get added using full_join, so they are not separate rows. 
+* move WPL manual entry to 00-manual-data-input.R . OK
+* Also add year to the manual WPL entry instead of wpl.year, because it gets added using bind.row anyway. Oh, actually it should get added using full_join, so they are not separate rows. OK
 * And now full join the wpl data by auth.name and year. but wpl logical actually doesn't need to be there anymore, you can tell who has wpl simply if they have a wpl.income value. OK
 * So now there are 4 fewer rows than before. 
 * so 3266 authorities in the outturn data, and another 366 from the budget data, since it has an extra year, plus 9 england totals = 3638 england rows.
-* plus scotland and wales is 4046.
 * Scotland has 6 years of i.e. data * 32 = 192, pdf data is for 96 of the same rows, so 192 in total. 
 * Wales has 308 rows, that's 14 years by 22 LAs. 
-* Now that should be 3638 + 192 + 308 = 4138
+* Now that should be 3638 + 192 + 308 = 4138.
+* OK!!
+
+** start wales report template **
+* how do i get the year into the title?
+* get colours to work (include in header)
+* now, i import the whole table at the start, from rds?
+* where are the surpluses calculated? maybe i should do all the calculations in the reports.Let's try that. 
+* creating tables..
+  + empty cells?
+  + column headers that are numbers (2018-19)
+  + hlines
+  + alignment
+  + multirows 
+  + alingment if you have mutlirows...
+
+
+
+
 
 ### Wales (based on 17/18) #####################################################
 

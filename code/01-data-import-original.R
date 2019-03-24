@@ -285,4 +285,8 @@ original.wales %>%
 bind_rows(original.data, original.wales) -> original.data 
 
 write.csv(original.data, "data/02-interim/original.data.csv")
+saveRDS(original.data, "data/02-interim/original.data.rds")
+
+
+
 rm(list=setdiff(ls(), "original.data"))
