@@ -271,9 +271,30 @@ OK, back to the Scotland PNC data scraped from the pdf
 * Still 30 doubles... variant spellings. 
 * SO new FunEnglandFixNames for manually changing names...
 
-* so 3266 authorities in the outturn data, and another 366 from the budget data, since it has an extra year, and finally 4 wpl years plus 9 england totals = 3642 england rows
+* so 3266 authorities in the outturn data, and another 366 from the budget data, since it has an extra year, and finally 4 wpl years plus 9 england totals = 3642 england rows.
 * plus scotland and wales is 4046.
 * DONE
+
+# Sunday 24.3.2019
+
+* Change Scotland lookup tables to the same style as the England one. OK
+* move both to separete rds files. OK
+* rename data sources file to 00-manual-data-input.R. OIK
+* move the .rds files for metadata into /data/01-raw. OK
+* also rename all of these to start with orig. OK. 
+* ToDo : Wales doens't have a metadata file, should update that 
+* ToDo: for consistency, all the original data files names should end with the single year, not the double ones as they do now.. that means also changing all the metadata...
+* Clean up code to read all meta .rds files at once? OK
+* Looks like this mass import using assign and lapply is changing the character columns into factors. fixed (stringsasfactors option was off in 00-manual-data-input.R)
+* move WPL manual entry to 00-manual-data-input.R 
+* Also add year to the manual WPL entry instead of wpl.year, because it gets added using bind.row anyway. Oh, actually it should get added using full_join, so they are not separate rows. 
+* And now full join the wpl data by auth.name and year. but wpl logical actually doesn't need to be there anymore, you can tell who has wpl simply if they have a wpl.income value. OK
+* So now there are 4 fewer rows than before. 
+* so 3266 authorities in the outturn data, and another 366 from the budget data, since it has an extra year, plus 9 england totals = 3638 england rows.
+* plus scotland and wales is 4046.
+* Scotland has 6 years of i.e. data * 32 = 192, pdf data is for 96 of the same rows, so 192 in total. 
+* Wales has 308 rows, that's 14 years by 22 LAs. 
+* Now that should be 3638 + 192 + 308 = 4138
 
 ### Wales (based on 17/18) #####################################################
 

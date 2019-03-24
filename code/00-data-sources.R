@@ -1,29 +1,36 @@
 ################################################################################
-## DESCRIPTION OF DATA SOURCES -- MANUAL DATA ENTRY ############################
+## MANUAL DATA ENTRY FOR ORIGINAL DATA IMPORT ##################################
 ################################################################################
 ## This file contains manually entered info on the main data sources for the 
-## RAC parking reports. 
+## RAC parking reports, and the manually entered lookup tables for mistyped or
+## inconsistent LA names for England and Scotland 
 ################################################################################
 ## Original data entry March 2019. 
 ## DO NOT MODIFY THIS FILE & DO NOT SOURCE THIS FILE
 ## This file contains data on where relevant ranges can be found in the original
 ## data sources. The resulting data.frames are saved as tables into 
-## /data/02-interim/. They are then used 
+## /data/01-raw/. They are then used 
 ## * in the documentation and journals
 ## * in the report compilation. 
 ## For descsriptions of variables, see them printed in the appendix of the 
 ## journal in docs/journal/journal.pdf
+##T his file also contains manually entered naming lookup tables, also saved as 
+## data frames in /data/01-raw/
 ################################################################################
 ## 1. EXISTING REPORTS #########################################################
 ## 2. ENGLAND DATA SOURCES #####################################################
 ## 2.1 ENGLAND outturn data ####################################################
 ## 2.2 ENGLAND budget data #####################################################
+## 2.3 Nottingham WPL data #####################################################
+## 2.3.1. manual input of original WPL data for Nottingham #####################
 ## 3. SCOTLAND DATA SOURCES ####################################################
 ## 3.1 SCOTLAND incomes and expenditures #######################################
 ## 3.2 SCOTLAND penalty notice charges #########################################
 ## 4. WALES DATA SOURCES #######################################################
+## 5. NAME LOOKUP TABLE FOR LAs ################################################
 ################################################################################
-
+library(dplyr)
+options(stringsAsFactors = FALSE)
 
 ## 1. EXISTING REPORTS #########################################################
 country <- c(rep("England", 8), rep("Scotland", 8),rep("Wales", 8))
@@ -101,7 +108,7 @@ window <- c("", "2(4)", "3(5)", "4", "4", "4", "4", "4",
 reports <- data.frame(country, year,htmls, pdfs, tab, window)
 
 ## commented out to stop overwriting!
-# saveRDS(reports, "data/02-interim/reports.rds")
+saveRDS(reports, "data/01-raw/orig.reports.rds")
 
 ## 2. ENGLAND DATA SOURCES #####################################################
 ## 2.1 ENGLAND outturn data ####################################################
@@ -174,7 +181,7 @@ england.outturn.17.18 <- data.frame(fisc.year, year,link, rows, las, first,
                               pen.sh,pen.on, pen.1, tot.1, file.name)
 
 ## commented out to stop overwriting!
-# saveRDS(england.outturn.17.18, "data/02-interim/england.outturn.17.18.rds")
+saveRDS(england.outturn.17.18, "data/01-raw/orig.eng.meta.outturn.17.rds")
 
 ## 2.2 ENGLAND budget data #####################################################
 
@@ -226,7 +233,7 @@ england.budget.18.19 <- data.frame(fisc.year, year, file.name, link, rows, first
                              budg.tot, budg.la, la.name, la.type)
 
 ## commented out to stop overwriting!
-# saveRDS(england.budget.18.19, "data/02-interim/england.budget.18.19.rds")
+saveRDS(england.budget.18.19, "data/01-raw/orig.eng.meta.budget.18.rds")
 
 
 ## 2.3 Nottingham WPL data #####################################################
@@ -244,7 +251,49 @@ page <- c(69,79, 84, 86)
 nottingham.wpl <- data.frame(year,link, page)
 
 ## commented out to stop overwriting!
-# saveRDS(nottingham.wpl, "data/02-interim/nottingham.wpl.17.18.rds")
+saveRDS(nottingham.wpl, "data/01-raw/orig.eng.meta.nott.wpl.17.rds")
+
+## 2.3.1. manual input of original WPL data for Nottingham #####################
+
+# initialise empty data frame
+wpl <- data.frame()
+
+# manual entry 2017
+year <- 2017
+income.wpl <- 9178
+wpl.expend <- 219
+wpl.row <- c(year, income.wpl, wpl.expend)
+names(wpl.row) <- c("year", "income.wpl", "wpl.expend")
+
+wpl <- bind_rows(wpl, wpl.row)
+
+year <- 2016
+income.wpl <- 9422
+wpl.expend <- 588
+wpl.row <- c(year, income.wpl, wpl.expend)
+names(wpl.row) <- c("year", "income.wpl", "wpl.expend")
+
+wpl <- bind_rows(wpl, wpl.row)
+
+year <- 2015
+income.wpl <- 9336
+wpl.expend <- 713
+wpl.row <- c(year, income.wpl, wpl.expend)
+names(wpl.row) <- c("year", "income.wpl", "wpl.expend")
+
+wpl <- bind_rows(wpl, wpl.row)
+
+year <- 2014
+income.wpl <- 9089
+wpl.expend <- 837
+wpl.row <- c(year, income.wpl, wpl.expend)
+names(wpl.row) <- c("year", "income.wpl", "wpl.expend")
+
+wpl <- bind_rows(wpl, wpl.row)
+
+wpl$auth.name <- "Nottingham"
+
+saveRDS(wpl, "data/01-raw/orig.eng.nott.wpl.17.rds")
 
 
 ## 3. SCOTLAND DATA SOURCES ####################################################
@@ -286,14 +335,14 @@ t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34", "U13")
 t.inc.cell <- c("-", "G50", "G33", "F33", "C34", "C34", "U23")
 
 auth.cell <- c("-", "A2", "A2", "A2", "A2", "A1", "E2")
-scotland.i.e. <- data_frame(fisc.year,year,report, file.name, link, 
+scotland.i.e. <- data.frame(fisc.year,year,report, file.name, link, 
                             start.sh, end.sh, exp.cell,
                             inc.cell, t.exp.cell, t.inc.cell,
                             auth.cell)
 
 
 ## commented out to stop overwriting!
-# saveRDS(scotland.i.e., "data/02-interim/scotland.i.e.17.18.rds")
+saveRDS(scotland.i.e., "data/01-raw/orig.sco.meta.i.e.17.rds")
 
 ## 3.2 SCOTLAND penalty notice charges #########################################
 
@@ -318,7 +367,48 @@ pcn.tab <- c(NA, NA, NA, 5, 5)
 
 e.i.tab <- c(NA, NA, NA, 6, 6)
 
-scotland.pnc <- data.frame(fisc.year, year,file.name, file.type, link, dpe.tab,pcn.tab, e.i.tab)
+scotland.pdf <- data.frame(fisc.year, year,file.name, file.type, link, dpe.tab,pcn.tab, e.i.tab)
 
 ## commented out to stop overwriting!
-# saveRDS(scotland.pnc, "data/02-interim/scotland.pnc.17.18.rds")
+saveRDS(scotland.pdf, "data/01-raw/orig.sco.meta.pdf.17.rds")
+
+## 4. WALES DATA SOURCES #######################################################
+# missing atm, only need to add the links, since the files are all simple
+
+## 5. NAME LOOKUP TABLE FOR LAs ################################################
+# lookup  to manually fix LA names that are inconsistent...
+england.name.lookup <- c("City of Nottingham" = "Nottingham",
+                         "Nottingham City" = "Nottingham",
+                         "Middlesbrough" =  "Middlesborough", 
+                         "County Durham" =  "Durham",
+                         "Hyndburn B C" = "Hyndburn",
+                         "Kingston-upon-Hull" = "Kingston upon Hull",
+                         "Kingston Upon Thames" =  "Kingston upon Thames",
+                         "Lincoln City" =  "Lincoln",
+                         "MaIdon" = "Maldon",
+                         "The Medway Towns"= "Medway",
+                         "Medway Towns" = "Medway",
+                         "Newcastle" = "Newcastle upon Tyne",
+                         "Norwich City" = "Norwich",
+                         "Reigate & Banstead" = "Reigate and Banstead",
+                         "South Buckinghamshire" = "South Bucks",
+                         "South Downs National Park" = "South Downs National Park Authority",
+                         "Telford & the Wrekin" = "Telford and Wrekin",
+                         "Telford and the Wrekin" = "Telford and Wrekin")
+
+saveRDS(england.name.lookup, "data/01-raw/orig.eng.name.lookup.rds")
+
+scotland.name.lookup  <- c("Argyll  Bute" = "Argyll and Bute",
+                           "Argyll & Bute" = "Argyll and Bute",
+                           "Perth & Kinross" = "Perth and Kinross",
+                           "Perth  Kinross" = "Perth and Kinross",
+                           "Edinburgh, City of" = "Edinburgh City",
+                           "Edinburgh, city of" = "Edinburgh City",
+                           "City of Edinburgh" = "Edinburgh City",
+                           "Dundee" =  "Dundee City",
+                           "Glasgow" = "Glasgow City",
+                           "East" =  "East Dunbartonshire",
+                           "Comhairle nan Eilean Siar"  = "Eilean Siar",
+                           "Western Isles" = "Eilean Siar")
+                                                                 
+saveRDS(scotland.name.lookup, "data/01-raw/orig.sco.name.lookup.rds")

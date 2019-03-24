@@ -1,28 +1,6 @@
 ################################################################################
 ## ENGLAND IMPORT FUNCTIONS ####################################################
 
-# lookup  to manually fix LA names that are inconsistent...
-england.name.lookup <- c("City of Nottingham" = "Nottingham",
-                       "Nottingham City" = "Nottingham",
-                       "Middlesbrough" =  "Middlesborough", 
-                       "County Durham" =  "Durham",
-                       "Hyndburn B C" = "Hyndburn",
-                       "Kingston-upon-Hull" = "Kingston upon Hull",
-                       "Kingston Upon Thames" =  "Kingston upon Thames",
-                       "Lincoln City" =  "Lincoln",
-                       "MaIdon" = "Maldon",
-                       "The Medway Towns"= "Medway",
-                       "Medway Towns" = "Medway",
-                       "Newcastle" = "Newcastle upon Tyne",
-                       "Norwich City" = "Norwich",
-                       "Reigate & Banstead" = "Reigate and Banstead",
-                       "South Buckinghamshire" = "South Bucks",
-                       "South Downs National Park" = "South Downs National Park Authority",
-                       "Telford & the Wrekin" = "Telford and Wrekin",
-                       "Telford and the Wrekin" = "Telford and Wrekin")
-    
-                                
-
 # function to extract expenditure data from England outturn excel file
 FunEnglandOutturn <- function(file =file, 
                               first = first, 
@@ -44,7 +22,7 @@ FunEnglandOutturn <- function(file =file,
   auth.name <- read_excel(file, e.sh, cell.range)
   colnames(auth.name) <- "auth.name"
   auth.name <- mutate(auth.name, auth.name = sub(" [A-Z]{2,3}$", "", auth.name))
-  auth.name <- mutate(auth.name, auth.name = recode(auth.name, !!!england.name.lookup)) 
+  auth.name <- mutate(auth.name, auth.name = recode(auth.name, !!!orig.eng.name.lookup)) 
   cell.range <- paste0(auth.type, first-1, ":",auth.type, last)
   auth.type <- read_excel(file, e.sh, cell.range)
   colnames(auth.type) <- "auth.type"
@@ -119,7 +97,7 @@ FunEnglandBudget <- function(file =file,
   auth.name <- read_excel(file, sheet, cell.range)
   colnames(auth.name) <- "auth.name"
   auth.name <- mutate(auth.name, auth.name = sub(" [A-Z]{2,3}$", "", auth.name))
-  auth.name <- mutate(auth.name, auth.name = recode(auth.name, !!!england.name.lookup)) 
+  auth.name <- mutate(auth.name, auth.name = recode(auth.name, !!!orig.eng.name.lookup)) 
   cell.range <- paste0(auth.type, first-1, ":",auth.type, last)
   auth.type <- read_excel(file, sheet, cell.range)
   colnames(auth.type) <- "auth.type"
@@ -136,26 +114,6 @@ FunEnglandBudget <- function(file =file,
 ################################################################################
 ## SCOTLAND IMPORT FUNCTIONS ###################################################
 
-# function to 'manually' fix local authority names that are inconsistent
-# between the pdf tables. If new inconsistencies crop up, you can add them here:
-
-FunScotlandFixNames <- function(df) {
-  df %>% 
-    mutate(auth.name = ifelse(auth.name == "Argyll  Bute" |
-                                auth.name == "Argyll & Bute", "Argyll and Bute",
-                              ifelse(auth.name == "Perth & Kinross", "Perth and Kinross",
-                                     ifelse(auth.name == "Edinburgh, City of" |
-                                              auth.name == "Edinburgh City"|
-                                              auth.name == "Edinburgh, city of", "City of Edinburgh",
-                                            ifelse(auth.name == "Dundee", "Dundee City",
-                                                   ifelse(auth.name == "Glasgow", "Glasgow City",
-                                                          ifelse(auth.name == "Perth  Kinross", "Perth and Kinross",
-                                                                 ifelse(auth.name == "East", "East Dunbartonshire",
-                                                                        ifelse(auth.name =="Comhairle nan Eilean Siar" |
-                                                                                 auth.name == "Western Isles", "Eilean Siar",
-                                                                               auth.name)))))))))
-}
-
 # function for extracting Scotlandn income and expenditure from relevant cells
 FunScotlandLACels <- function(file, sheet, expend.total, income.total, auth.cell) {
   auth.name <- colnames(read_excel(file, sheet, auth.cell))
@@ -165,19 +123,21 @@ FunScotlandLACels <- function(file, sheet, expend.total, income.total, auth.cell
 }
 
 # Function that loops through all sheets and extracts relevant cell data 
-FunScotlandLoopIE <- function(row, year = year, 
-                             file.name = file.name, 
-                             start.sh = start.sh, 
-                             end.sh = end.sh, 
-                             exp.cell = exp.cell, 
-                             inc.cell = inc.cell, 
-                             auth.cell = auth.cell) {
+FunScotlandLoopIE <- function(row,
+                              year,
+                              file.name,
+                              start.sh,
+                              end.sh,
+                              exp.cell,
+                              inc.cell,
+                              auth.cell) {
+  
   
   # prepare empty data frame for the data
   df <- data.frame(auth.name = character(),
                    expend.total = character(),
                    income.total = character())
-  
+
   # loop through all the sheets
   for (sheet in start.sh:end.sh){
     x <- FunScotlandLACels(file.name, sheet, exp.cell, inc.cell, auth.cell)
@@ -192,9 +152,10 @@ FunScotlandLoopIE <- function(row, year = year,
     mutate(expend.total = as.numeric(expend.total),
            income.total = as.numeric(income.total)) -> df
   df$year <- year
-  df <- FunScotlandFixNames(df)
+  df <- df %>% mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   df
 }
+
 # Function to clean up the DPE table extracted from the pdf using tabulizer:
 FunScotlandDPE <- function(list, year) {
   #  remove header row and add column names
@@ -215,7 +176,7 @@ FunScotlandDPE <- function(list, year) {
     select( -x)  %>% 
     mutate( year = year,
             dpe.year = as.numeric(dpe.year)) -> df
-  df <- FunScotlandFixNames(df)
+  df <- df %>% mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   df
 }
 
@@ -229,16 +190,15 @@ FunScotlandPCN <- function(df, year) {
            year = year) %>% 
     mutate(pnc.number = ifelse( pnc.number == "", NA, as.numeric(pnc.number))) %>% 
     select(year, auth.name, pnc.number) -> df
-  df <- FunScotlandFixNames(df)
+  df <- df %>% mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   df
 }  
-
 
 # Function to clean up the PNC income and expenditure table extracted 
 # from the pdf using tabulizer:
 # Careful, this funciton removes an "empty row" because East Dunmartonshire
 # is in two rows, and that also removes half its name. This is fixed using
-# the FunScotlandFixNames() function. 
+# the scotland lookup table 
 FunScotlandTFSIE <- function(df, year) {
   df %>% 
     filter(Local.Authority != "") %>% 
@@ -255,7 +215,8 @@ FunScotlandTFSIE <- function(df, year) {
            income.tfs = ifelse( income.pcn == "", NA, as.numeric(income.tfs)),
            expend.tfs = ifelse( income.pcn == "", NA, as.numeric(expend.tfs))) %>% 
     filter(!is.na(income.pcn)) -> df
-  df <- FunScotlandFixNames(df)
+  df <- df %>%  mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
+  
   df
 }
 
