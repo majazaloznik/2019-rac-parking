@@ -67,19 +67,21 @@ FunEnglandOutturn <- function(file =file,
                    income.on, income.off, income.pcn, 
                    expend.cong.ch, income.cong.ch,
                    year = year)
+  df <- df %>%  mutate(auth.type = ifelse(auth.name == "Greater London Authority", 
+                                  "GLA", auth.type))
   df
 }
 
 ## England outturn totals for transport and penalty charge income.
 FunEnglandOutturnTotals <- function(file , 
                                     transport.total ,
-                                    pcn.total,
+                                    income.pcn,
                                     year,
                                     sheet = 2 ) {
   transport.total <- colnames(read_excel(file, sheet, transport.total))
-  pcn.total <- colnames(read_excel(file, sheet, pcn.total))
-  vec <- as.numeric(c(year, transport.total, pcn.total))
-  names(vec) <- c("year", "transport.total", "pcn.total")
+  income.pcn <- colnames(read_excel(file, sheet, income.pcn))
+  vec <- as.numeric(c(year, transport.total, income.pcn))
+  names(vec) <- c("year", "transport.total", "income.pcn")
   vec
 }
 
@@ -108,6 +110,8 @@ FunEnglandBudget <- function(file =file,
                            as.numeric(surplus.budget$surplus.budget))
   df <- data.frame(auth.name, auth.type, surplus.budget,
                    year = year)
+  df <- df %>%  mutate(auth.type = ifelse(auth.name == "Greater London Authority", 
+                                  "GLA", auth.type))
   df
 }
 
@@ -164,7 +168,7 @@ FunScotlandDPE <- function(list, year) {
   rows <- nrow(df)
   # turn into single column
   df <- data.frame(value = c(df[,1], df[,2], df[,3]),
-                   key = c(rep("dpe.now", rows),
+                   dpe.status = c(rep("dpe.now", rows),
                            rep("dpe.next", rows),
                            rep("dpe.not", rows)))
   # clean up 
@@ -185,11 +189,11 @@ FunScotlandDPE <- function(list, year) {
 FunScotlandPCN <- function(df, year) {
   column <- paste0("X", year, ".", year-1999)
   df %>% 
-    mutate(pnc.number = gsub("[^1-9]", "", (!!as.name(column))),
+    mutate(pcn.number = gsub("[^1-9]", "", (!!as.name(column))),
            auth.name = gsub("[^A-Za-z ]", "", Local.Authority),
            year = year) %>% 
-    mutate(pnc.number = ifelse( pnc.number == "", NA, as.numeric(pnc.number))) %>% 
-    select(year, auth.name, pnc.number) -> df
+    mutate(pcn.number = ifelse( pcn.number == "", NA, as.numeric(pcn.number))) %>% 
+    select(year, auth.name, pcn.number) -> df
   df <- df %>% mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   df
 }  
@@ -214,6 +218,7 @@ FunScotlandTFSIE <- function(df, year) {
     mutate(income.pcn = ifelse( income.pcn == "", NA, as.numeric(income.pcn)),
            income.tfs = ifelse( income.pcn == "", NA, as.numeric(income.tfs)),
            expend.tfs = ifelse( income.pcn == "", NA, as.numeric(expend.tfs))) %>% 
+    mutate_at(vars(income.pcn:expend.tfs), list(~./1000)) %>% 
     filter(!is.na(income.pcn)) -> df
   df <- df %>%  mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   

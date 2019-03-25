@@ -3,7 +3,6 @@ output:
   pdf_document: default
 header-includes:
   - \usepackage{xcolor}
-  - \usepackage{framed}
 ---
 ```{r, echo = FALSE}
 # change the year variable 

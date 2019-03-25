@@ -264,6 +264,7 @@ OK, back to the Scotland PNC data scraped from the pdf
 * Budget data all OK. 
 * Manual input of WPL data OK
 
+
 ** Merge England **
 
 * Full_join not working - too many rows result.. is it a name thing?
@@ -309,7 +310,23 @@ OK, back to the Scotland PNC data scraped from the pdf
   + multirows 
   + alingment if you have mutlirows...
 
+# Monday 25.3.2019
 
+* Write up technical background - metadata for original data file. 
+* Continue the Wales report 
+* Add % symbols to table
+* metadata for master - turns out it would be great to have greater london authority separated out from the other london ones.. So i need to fix that in the import. OK, it's now GLA. OK
+* Ah, collapsing rows in kable extra is not working as expected.. like buggy. OK
+* But updating the package worked! OK
+* OK, the row table took 1:26 h haha. But it's done now. And I learned a tonne..
+* Now column names. OK
+* Oh, dpe.status is empty, and the relevant info is in key instead..fix it!OK
+* Oh, and also wpl.expend should be expend.wpl, fix it. OK
+* So make sure all the income data is in thousands.. i.e. the Scotland PCN data isn't, so fix it. OK
+* AND the England total PCN incomes don't need to be in their own column, htey should be in the income.pcn one. OK
+* Finished rows and columns in tehcnical documentation for master data. Commit.
+
+* TODO maybe figure out thos NA warnings in the import..
 
 
 

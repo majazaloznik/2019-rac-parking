@@ -55,8 +55,7 @@ original.data <- data.frame(country = character(),
                             transport.total = integer(),
                             dpe.status = character(),
                             dpe.year = integer(),
-                            pcn.number = integer(),
-                            pcn.total = integer())
+                            pcn.number = integer())
                             
 
 ## 1. ENGLAND DATA IMPORT ######################################################
@@ -99,7 +98,7 @@ for (row in 2:nrow(orig.eng.meta.outturn.17)){
   pen.1 = orig.eng.meta.outturn.17$pen.1[row]
   year = orig.eng.meta.outturn.17$year[row]
   x <- FunEnglandOutturnTotals(file, transport.total = tot.1,
-                               pcn.total = pen.1, year)
+                               income.pcn = pen.1, year)
   england.outturn.totals <- bind_rows(england.outturn.totals, x)
 }
 england.outturn.totals$auth.name <- "England"
@@ -187,7 +186,7 @@ scotland.dpe.16 <- FunScotlandDPE(scotland.dpe.16, 2016)
 # clean DPE type table for 2017/18 # don't worry about the warnings
 scotland.dpe.17 <- FunScotlandDPE(scotland.dpe.17, 2017)
 
-## 2.2.2 Scotland PNC table ###################################################
+## 2.2.2 Scotland PCN table ###################################################
 
 # extract PCN type table for 14/15, 15/16, 16/17 directly into a data.frame
 scotland.pcn.14.15.16 <- extract_tables(here::here(orig.sco.meta.pdf.17$file.name[4]), 
@@ -207,7 +206,7 @@ scotland.pcn.16 <- FunScotlandPCN(scotland.pcn.14.15.16, 2016)
 # clean PCN tables for 17/18
 scotland.pcn.17 <- FunScotlandPCN(scotland.pcn.17, 2017)
 
-## 2.2.3 Scotland PNC income table #############################################
+## 2.2.3 Scotland PCN income table #############################################
 
 # extract PCN type table for 16/17 directly into a data.frame
 scotland.tfs.i.e.16 <- extract_tables(here::here(orig.sco.meta.pdf.17$file.name[4]), 

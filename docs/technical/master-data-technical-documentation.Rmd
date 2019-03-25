@@ -1,0 +1,106 @@
+---
+title: "Parking Master Data File Technical Documentation"
+author: mz
+output:
+  pdf_document: default
+---
+
+```{r echo = FALSE}
+suppressMessages(suppressWarnings(library(dplyr)))
+suppressMessages(suppressWarnings(library(tidyr)))
+suppressMessages(suppressWarnings(library(kableExtra)))
+options(knitr.kable.NA = '')
+master <- readRDS(here::here("data/03-processed/master.rds"))
+```
+This document describes the master data file used for producing the parking reports for England, Scotland and Wales. 
+
+*This is a draft version of the document. It currenlty describes the `original.data.csv` file, which was produced at the start of the report automation. This file is also the current `master.data.csv` file, but in the future it will be updated with new data as it comes in.*
+
+*In fact, I think I will hand the whole thing over after removing the last sets of data for each of the three countries, so that you can run the code on each of the countries updating the `original.data` each time to a new `master.data`.*
+
+
+# Variables
+```{r, message = FALSE, echo = FALSE}
+
+master %>% 
+  colnames %>% 
+  as.data.frame() %>% 
+  mutate(Description = c(
+    "Country",
+    "Year (in which fiscal year begins)",
+    "Type of authority: LA, National Park, Greater London Authority or country (England)",
+    "Name of authority",
+    "Income from on-street parking, only reported for England (£ thousand)",
+    "Income from off-street parking, only reported for England(£ thousand)",
+    "Income from Penalty Charge Notices (£ thousand)",
+    "Income from on-street parking as reported by Transport for Scotland from 2016 onwards* (£ thousand)",
+    "Income from the Workplace Parking Levy, only reported for Nottingham (£ thousand)",
+    "Income from the Congestion Charge, only reported for the Greater London Authority (£ thousand)",
+    "Income from parking as reported by Scotland and Wales",
+    "Expenditure for on-street parking, only reported for England (£ thousand)",
+    "Expenditure for off-street parking, only reported for England(£ thousand)",
+    "Expenditure for on-street parking as reported by Transport for Scotland from 2016 onwards* (£ thousand)",
+    "Expenditure for the Workplace Parking Levy, only reported for Nottingham (£ thousand)",
+    "Expenditure for the Congestion Charge, only reported for the Greater London Authority (£ thousand)",
+    "Expenditure for parking as reported by Scotland and Wales",
+    "The estimated surplus as in the budget, only reported by England from 2010/11 onward",
+    "Total transport expenditures**",
+    "Whether or not a Decriminalised Parking Enforcement (DPE) regime is operated in the (Scottish) LA",
+    "Which year did the DPE regime start operating in the (Scottish) LA",
+    "Number of Penalty Charge Notices (PCN) issued")) %>% 
+kable( "latex", booktabs = T, escape = F, longtable = T,
+         caption = "Columns in master table") %>% 
+  kable_styling(full_width = TRUE, latex_options =c("hold_position", "repeat_header")) %>% 
+   column_spec(1, width = "2cm")
+
+
+```
+
+* The data for 2013-16 is in a scanned pdf..
+** List different definitions?
+
+
+# Rows
+
+Each row in the master table epresents a single *authority-year* combination.
+
+The file currenlty has 4138 rows as shown in Table 1. Note that the most recent year for England is actually just the budgeted surplus data, which is why there is no row for the national transport totals. 
+
+```{r, message = FALSE, echo = FALSE}
+master %>% 
+  select(country, year, auth.type) %>% 
+  mutate(auth.type = recode(auth.type, "L" = "Local Authority",
+                            "O" = "National Park",
+                            "X" = "National Total",
+                            "MD" = "Local Authority",
+                            "SC" = "Local Authority",
+                            "SD" = "Local Authority",
+                            "UA" = "Local Authority",
+                            "LA" = "Local Authority")) %>% 
+  group_by(country, year, auth.type)  %>% 
+  summarise(n = n()) %>% 
+  spread(key = auth.type, value = n) %>% 
+  ungroup() %>% 
+  mutate(`Sum by year` = rowSums(.[3:6], na.rm = TRUE)) %>% 
+  group_by(country) %>% 
+  mutate(`Sum by country` = sum(`Sum by year`)) %>% 
+  bind_rows(group_by(.,country) %>%
+              ungroup() %>% 
+              summarise(`Sum by country`=sum(`Sum by year`)) %>%
+              mutate(country='Total')) %>% 
+  kable( "latex", booktabs = T, escape = F, longtable = T,
+         caption = "Rows in master table") %>% 
+  collapse_rows(columns = c(1,8), latex_hline = "major", valign = "middle") %>% 
+  kable_styling(full_width = TRUE, latex_options =c("hold_position", "repeat_header")) %>% 
+   column_spec(1, width = "3.5cm")
+
+```
+
+
+# Sources
+
+
+
+
+
+

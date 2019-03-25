@@ -261,33 +261,33 @@ wpl <- data.frame()
 # manual entry 2017
 year <- 2017
 income.wpl <- 9178
-wpl.expend <- 219
-wpl.row <- c(year, income.wpl, wpl.expend)
-names(wpl.row) <- c("year", "income.wpl", "wpl.expend")
+expend.wpl <- 219
+wpl.row <- c(year, income.wpl, expend.wpl)
+names(wpl.row) <- c("year", "income.wpl", "expend.wpl")
 
 wpl <- bind_rows(wpl, wpl.row)
 
 year <- 2016
 income.wpl <- 9422
-wpl.expend <- 588
-wpl.row <- c(year, income.wpl, wpl.expend)
-names(wpl.row) <- c("year", "income.wpl", "wpl.expend")
+expend.wpl <- 588
+wpl.row <- c(year, income.wpl, expend.wpl)
+names(wpl.row) <- c("year", "income.wpl", "expend.wpl")
 
 wpl <- bind_rows(wpl, wpl.row)
 
 year <- 2015
 income.wpl <- 9336
-wpl.expend <- 713
-wpl.row <- c(year, income.wpl, wpl.expend)
-names(wpl.row) <- c("year", "income.wpl", "wpl.expend")
+expend.wpl <- 713
+wpl.row <- c(year, income.wpl, expend.wpl)
+names(wpl.row) <- c("year", "income.wpl", "expend.wpl")
 
 wpl <- bind_rows(wpl, wpl.row)
 
 year <- 2014
 income.wpl <- 9089
-wpl.expend <- 837
-wpl.row <- c(year, income.wpl, wpl.expend)
-names(wpl.row) <- c("year", "income.wpl", "wpl.expend")
+expend.wpl <- 837
+wpl.row <- c(year, income.wpl, expend.wpl)
+names(wpl.row) <- c("year", "income.wpl", "expend.wpl")
 
 wpl <- bind_rows(wpl, wpl.row)
 
@@ -411,4 +411,7 @@ scotland.name.lookup  <- c("Argyll  Bute" = "Argyll and Bute",
                            "Comhairle nan Eilean Siar"  = "Eilean Siar",
                            "Western Isles" = "Eilean Siar")
                                                                  
+saveRDS(scotland.name.lookup, "data/01-raw/orig.sco.name.lookup.rds")
+
+
 saveRDS(scotland.name.lookup, "data/01-raw/orig.sco.name.lookup.rds")
