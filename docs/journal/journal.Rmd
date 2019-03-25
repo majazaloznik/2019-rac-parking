@@ -354,17 +354,30 @@ OK, back to the Scotland PNC data scraped from the pdf
 
 * OK, another detour. First I'll have to manually add the info. 
 * Let's do some more text first. 
-* Now table 2,
+* Now table 2, OK
 * Thousands separator. OK
 * Actually, might as well do all three tables while i'm at it :)
 * There are these odd gaps in the table. turns out there is an `\addlinespace` added randomly because of booktabs beign true. but i have striped anyway, so it looks ugly. using `linesep = ""` fixed that, thanks stackoverflow! OK. 
-* Forgot the total line. 
+* Forgot the total line. OK
 * Make sure the percent change for the total is also calculated. OK
 * add hline on last row. OK
-* arraystretch to loosen it up a bit. 
+* arraystretch to loosen it up a bit. OK
 * Expenditure tables is OK, although last column needs to be changed
 * Also getting exactly two decimal points in R is tricky! You need to use `format(round(x, 2), nsmall = 2)` apparenlty !
-
+* have to find a better solution than the font_add_google function, since this downloads it every time..OK, font now in data/01-raw and automatically loaded, all good. 
+* Expenditure table done. Added change on previous year. 
+* Now the surplus table. OK
+* Conditionally format cells where the change is in deficit, not surplus.OK
+* Add footnote to make that clear. OK
+* Now some text..
+* Oh, just in case anyone wants to redo old reports I have to limit full data to stop at current.year. OK
+* Now I need to convert numbers to words. `xfun::numbers_to_words()` does the trick.
+* Now I need to capitalise these words as well 
+* Just did a summersault to exclude Torfaen or any other LA with an income under 30,000 from a condiotnal text tree. 
+* More conditional trees... 
+* Damn, the auth.names have spaces at the end.. I need to strip them. Update function and rerun data import. OK
+* maybe a page break would be nice for each new section? OK
+* had to move the surplus calculations to the top because they are used in the intro. OK
 
 ### Wales (based on 17/18) #####################################################
 

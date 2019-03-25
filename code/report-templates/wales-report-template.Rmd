@@ -2,7 +2,7 @@
 output:
   bookdown::pdf_document2: 
     toc: FALSE
-fontsize: 11pt
+fontsize: 12pt
 header-includes:
   - \usepackage{xcolor}
 ---
@@ -25,16 +25,20 @@ suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(tidyr)))
 suppressWarnings(suppressMessages(library(showtext)))
 options(knitr.kable.NA = '')
-font_add_google("Merriweather", "meri")
+# font_add_google("Merriweather", "meri")
+font_add(family = "meri", regular = here::here("data/01-raw/fonts/merriweather.google.ttf"))
 showtext_auto()
+# source functions
+source(here::here("code/functions.R"))
 # load data
 master <- readRDS(here::here("data/03-processed/master.rds"))
 
-# extract relevant subset of data
+# extract relevant subsets of data
 # for all years
 master %>% 
   filter(country == "Wales") %>% 
-  mutate(surplus.total = income.total - expend.total) -> data.full
+  mutate(surplus.total = income.total - expend.total) %>% 
+  filter(year <= current.year) -> data.full
 
 # only for the last four years
 data.full %>% 
@@ -44,12 +48,42 @@ data.full %>%
 ```
 
 
+```{r wal.surplus, echo = FALSE, message = FALSE, warning = FALSE}
+
+data %>% 
+  select(auth.name, year, surplus.total) %>% 
+  spread(key = year, value = surplus.total) %>% 
+  full_join(data %>% 
+              select(auth.name, year, transport.total) %>% 
+              filter(year == current.year)) %>% 
+  select(-year) %>% 
+  arrange(desc(.[[6]])) %>% 
+  bind_rows(group_by(. ,auth.name) %>%
+              ungroup() %>% 
+              summarise_at(vars(-auth.name), list(~sum)) %>%
+              mutate(auth.name='Total'))%>% 
+    mutate(change =100*(.[[6]]/.[[5]]-1),
+           prop.transp = 100*.[[6]]/.[[7]]) %>% 
+  select(-transport.total)-> wal.surplus
+
+
+wal.surplus %>% 
+  filter(auth.name != "Total") %>% 
+  mutate(change = ifelse(.[[6]] >=0, TRUE, FALSE)) %>% 
+  group_by(change) %>% 
+  summarise(n = n()) %>% 
+  pull() -> surplus.bin
+
+
+```
+
 # Introduction
   
 This note covers parking finances for the 22 local authorities in Wales. As in England and Scotland, local authorities are required to submit details of all their finances to the Welsh Government in a standard format. They are normally published in October, seven months after the financial year end. This report looks at the section on parking income and expenditure from `r paste0(current.year-4, "-", current.year-1999-4)` to `r paste0(current.year, "-", current.year-1999)`.
 
-The published data is less comprehensive than in England and does not split out on- and off-street parking or show penalty income separately. The figures do not include any commercial off-street parking. In `r paste0(current.year, "-", current.year-1999)`, *19 councils showed surpluses and
-three showed deficits (the same three councils as 2016-17).* All councils are now receiving income from parking, \color{red} although councils such as Blaenau Gwent (Ebbw Vale and Abertillery) and Torfaen (Pontypool and Cwmbran) offer free parking but still issue penalty charge notices. \color{black}
+The published data is less comprehensive than in England and does not split out on- and off-street parking or show penalty income separately. The figures do not include any commercial off-street parking. In `r paste0(current.year, "-", current.year-1999)`, 
+
+`r FunFirstup(xfun::numbers_to_words(surplus.bin[2]))` councils showed surpluses and `r xfun::numbers_to_words(surplus.bin[1])` showed deficits \color{red}(the same three councils as 2016-17). \color{black} All councils are now receiving income from parking, \color{red} although councils such as Blaenau Gwent (Ebbw Vale and Abertillery) and Torfaen (Pontypool and Cwmbran) offer free parking but still issue penalty charge notices. \color{black}
 
 # Summary
 
@@ -84,7 +118,7 @@ wal.summary %>%
 current.year-1999, " on ", current.year-1, "-", current.year-1999-1))) %>% 
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>% 
   kable_styling(full_width = TRUE, 
-                latex_options =c("hold_position", "striped"), 
+                latex_options =c("HOLD_position", "striped"), 
                 font_size = 10) %>% 
    column_spec(1:2, width = "3cm") 
 ```
@@ -158,19 +192,14 @@ legend("topleft",
        lwd = 2, cex = 0.7)
 ```
 
+\newpage
+
 # Income
 
-Total council parking income from all sources in `r paste0(current.year, "-", current.year-1999)` was £`r format(wal.summary$V5[1], digits = 2)` million, `r format(wal.summary$change[1], digits = 2)` % `r ifelse (wal.summary$change[1] > 0, "higher", "lower")` than `r paste0(current.year-1, "-", current.year-1999-1)`. Note that this includes penalty income, which is not shown separately, but does not include off-street income received by commercial off-street parking facilities. 
+Total council parking income from all sources in `r paste0(current.year, "-", current.year-1999)` was £`r format(wal.summary$V5[1], digits = 2)` million, `r format(wal.summary$change[1], digits = 2)` % `r ifelse (wal.summary$change[1] > 0, "higher", "lower")` than `r paste0(current.year-1, "-", current.year-1999-1)`. Note that this includes penalty income, which is not shown separately, but does not include off-street income received by commercial off-street parking facilities. Table @ref(tab:income) ranks the Welsh councils in terms of parking income. 
 
-
-*Eleven councils increased their income over the past year and a
-similar number decreased their income. Merthyr Tydfil saw income increase by 19%
-while Cardiff and Wrexham increased by 14%. The largest falls were Rhondda Cynon
-Taf (18%) Denbighshire (11%) (excluding Torfaen where the income is very low).*
-
-\renewcommand{\arraystretch}{1.2}
-```{r income, echo = FALSE, message = FALSE, warning = FALSE}
-
+```{r wal.income, echo = FALSE, message = FALSE, warning = FALSE}
+# clean up income data
 data %>% 
   select(auth.name, year, income.total) %>% 
   spread(key = year, value = income.total) %>% 
@@ -182,8 +211,37 @@ data %>%
     mutate(change =100*(.[[6]]/.[[5]]-1)) -> wal.income
 
 wal.income %>% 
+  mutate(change = ifelse(change >=0, TRUE, FALSE)) %>% 
+  filter(auth.name != "Total") %>% 
+  group_by(change) %>% 
+  summarise(n = n()) %>% 
+  pull() -> income.bin
+
+wal.income %>% 
+  arrange(desc(change)) %>% 
+  filter(row_number() %in% c(23, 22) &
+           .[[6]] <= 30) -> wal.income.exclude
+
+wal.income %>% 
+  arrange(desc(change)) %>% 
+  filter(row_number() %in% c(1, 2, 23-nrow(wal.income.exclude), 
+                             22-nrow(wal.income.exclude))) %>% 
+  select(auth.name, change, 6) -> top.bottom
+  
+
+```
+
+`r FunFirstup(xfun::numbers_to_words(income.bin[2]))` councils increased their income over the past year and `r xfun::numbers_to_words(income.bin[1])` decreased their income. `r top.bottom[1,1]` saw income increase by `r format(round(top.bottom[1,2], 0), nsmall = 0)` %
+while `r top.bottom[2,1]` increased its income by `r format(round(top.bottom[2,2], 0), nsmall = 0)` %. The largest falls were in `r top.bottom[4,1]` (`r format(round(top.bottom[4,2], 0), nsmall = 0)` %), and `r top.bottom[3,1]` (`r format(round(top.bottom[3,2], 0), nsmall = 0)` %)`r ifelse(nrow(wal.income.exclude) == 0, ".", ifelse(nrow(wal.income.exclude) == 1, paste(", excluding", wal.income.exclude[1], "where the income is very low."), paste(", excluding", wal.income.exclude[1], "and", wal.income.exclude[2], "where the income is very low.")))`
+
+
+
+\renewcommand{\arraystretch}{1.2}
+```{r income, echo = FALSE, message = FALSE, warning = FALSE}
+
+wal.income %>% 
   mutate(change = ifelse(is.na(change), NA, 
-                         paste(format(change, digits = 2), "\\%"))) %>% 
+                         paste(format(round(change, 1), nsmall = 1), "\\%"))) %>% 
    kable( "latex", 
          booktabs = T, 
          digits = c(rep(0, 6), 2), 
@@ -194,30 +252,77 @@ wal.income %>%
          linesep = "",
          col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, paste0("Change ", current.year, "-", current.year-1999, " on ", current.year-1, "-", current.year-1999-1))) %>% 
   kable_styling(full_width = TRUE, 
-                latex_options =c("hold_position", "striped"), 
+                latex_options =c("HOLD_position", "striped"), 
                 font_size = 10) %>% 
    column_spec(1, width = "4cm") %>% 
   row_spec(22, hline_after = TRUE)
   
 ```
 
+\newpage
+
 # Expenditures
 
-```{r expend, echo = FALSE, message = FALSE, warning = FALSE}
+```{r wal.expend, echo = FALSE, message = FALSE, warning = FALSE}
 
 data %>% 
   select(auth.name, year, expend.total) %>% 
   spread(key = year, value = expend.total) %>% 
-  arrange(desc(.[[6]])) %>% 
+  full_join(data %>% 
+              select(auth.name, year, income.total) %>% 
+              filter(year == current.year)) %>% 
+  select(-year) %>% 
+arrange(desc(.[[6]])) %>% 
   bind_rows(group_by(. ,auth.name) %>%
               ungroup() %>% 
               summarise_at(vars(-auth.name), list(~sum)) %>%
               mutate(auth.name='Total')) %>% 
-    mutate(change =100*(.[[6]]/.[[5]]-1)) -> wal.expend
+    mutate(change =100*(.[[6]]/.[[5]]-1),
+           prop.income = 100*.[[6]]/.[[7]]) %>% 
+  select(-income.total)-> wal.expend
 
 wal.expend %>% 
-  mutate(change = ifelse(is.na(change), NA, 
-                         paste(format(round(change, 2),nsmall = 2), "\\%"))) %>% 
+  filter(auth.name == "Total") %>% 
+  mutate(current.change = format(round((.[[6]]-.[[5]])/1000,1), nsmall = 1),
+         last.change = format(round((.[[5]]-.[[4]])/1000,1), nsmall = 1),
+         change = format(round(change,1),nsmall = 1)) %>% 
+  select(change, current.change, last.change) -> wal.expend.t
+
+wal.expend %>% 
+  filter(auth.name != "Total") %>% 
+  mutate(change = ifelse(change >=0, TRUE, FALSE)) %>% 
+  group_by(change) %>% 
+  summarise(n = n()) %>% 
+  pull() -> expend.bin
+
+wal.expend %>% 
+  filter(auth.name != "Total") %>% 
+  arrange(desc(change)) %>% 
+  filter(row_number() %in% c(1, 2, 3, 21, 22)) %>% 
+  select(auth.name, change, 6) -> top.bottom
+
+wal.expend %>% 
+  select(auth.name, prop.income) %>% 
+  filter(auth.name %in% c("Total", "Cardiff")) %>% 
+  pull(prop.income) -> wal.expend.p
+
+```
+Table @ref(tab:expend) ranks the councils in terms of expenditure on parking.
+
+Overall expenditure has risen by £`r wal.expend.t[2]`m (`r wal.expend.t[1]` %) after a `r ifelse( wal.expend.t[3] > 0, paste0("rise of £", wal.expend.t[3], "m last year"), paste0("fall of £", wal.expend.t[3], "m last year"))`, with `r xfun::numbers_to_words(expend.bin[2])` councils having increased their and `r xfun::numbers_to_words(expend.bin[1])` reduced their costs.  
+
+`r top.bottom[1,1]` increased expenditure by `r format(round(top.bottom[1,2], 0), nsmall = 0)` %
+while `r top.bottom[2,1]` and `r top.bottom[3,1]` increased  by `r format(round(top.bottom[2,2], 0), nsmall = 0)` % and `r format(round(top.bottom[3,2], 0), nsmall = 0)` % respectively. The biggest decreases were in `r top.bottom[5,1]` (`r format(round(top.bottom[5,2], 0), nsmall = 0)` %), and `r top.bottom[4,1]` (`r format(round(top.bottom[4,2], 0), nsmall = 0)` %). \color{red} Newport’s expenditure is likely to rise when they take over parking
+management from Gwent Police.\color{black}
+
+The table also shows the proportion of income taken up by costs in 2017-18.
+Nationally in Wales it is `r format(round(wal.expend.p[2],1), nsmall = 1)` % with Cardiff at `r format(round(wal.expend.p[1],1), nsmall = 1)` .
+
+```{r expend, echo = FALSE, message = FALSE, warning = FALSE}
+
+wal.expend %>% 
+  mutate(change = paste(format(round(change, 1),nsmall = 1), "\\%"),
+         prop.income = paste(format(round(prop.income, 1),nsmall = 1), "\\%")) %>% 
    kable( "latex", 
          booktabs = T, 
          digits = 0, 
@@ -226,11 +331,49 @@ wal.expend %>%
          caption = "Parking expenditure for Wales (£,000)",
          format.args = list(big.mark = ","),
          linesep = "",
-         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, paste0("Change ", current.year, "-", current.year-1999, " on ", current.year-1, "-", current.year-1999-1))) %>% 
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", current.year, "-", current.year-1999, 
+                              " on ", current.year-1, "-", current.year-1999-1), "Expenditure as proportion of income")) %>% 
   kable_styling(full_width = TRUE, 
-                latex_options =c("hold_position", "striped"), 
+                latex_options =c("HOLD_position", "striped"), 
                 font_size = 10) %>% 
-   column_spec(1, width = "4cm") %>% 
+   column_spec(1, width = "3.3cm") %>% 
+  column_spec(8, width = "1.8cm") %>% 
   row_spec(22, hline_after = TRUE)
   
 ```
+
+\newpage
+
+# Surpluses
+
+```{r surplus, echo = FALSE, message = FALSE, warning = FALSE}
+
+wal.surplus %>% 
+  mutate(change = paste(format(round(change, 1),nsmall = 1), "%"),
+         prop.transp = paste(format(round(prop.transp, 1),nsmall = 1), "\\%")) %>% 
+  mutate(change =cell_spec(change, "latex", italic =ifelse(.[[6]] < 0, TRUE, FALSE))) %>% 
+   kable( "latex", 
+         booktabs = T, 
+         digits = 0, 
+         escape = F,
+         align = c("r"),
+         caption = "Parking surpluses for Wales (£,000)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", current.year, "-", current.year-1999, 
+                              " on ", current.year-1, "-", current.year-1999-1), "Surplus as proportion of transport spending")) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped"), 
+                font_size = 10) %>% 
+   column_spec(1, width = "3.3cm") %>% 
+  row_spec(22, hline_after = TRUE) %>% 
+  footnote(symbol = "Where the change in surplus is actually a change in deficit, the values are in italics")
+  
+ 
+```
+
+## References {-}
+
+*Still to come*

@@ -27,3 +27,15 @@ Sometimes the manually written text can do human things like e.g. describe the n
 29. WOuld you say "fallen by 3 %" or "fallen by -3 %"?
 
 30. In tables I kept 2 decimal points, in the text only one, is that OK?
+
+The Wales 2017/18 report has incomes and expenditures for the previous 4 years, but only the income table has the change 17/18 on 16/17 (probably because it insted had the expenditure per population columns, which we've now thrown out. I've added it now.
+
+31. Is that OK, to add the change on previous year to the expenditures?
+
+The surpluses table for Wales has two columns at the end: one for change in *surpluses* and one for change in *deficits*. And they are non-overlapping. So it seems a bit wastefull. It is clear which is which anyway, since the deficits are all at the bottom of the table. I thought I would instead conditionally format the changes in the deficits to be italic, that should be clear enough. I can add a footnote.
+
+32. Is that cool?
+
+In the text for all three main tables there are lists of the councils with the largest increases and decreases. I can automate this to list e.g the top 2, but it is going to get really complicated if e.g. the third largest one is really similar to the second one, which a human would note. I have kept it simple with top 2 and bottom 2. 
+
+33. Is that acceptable?

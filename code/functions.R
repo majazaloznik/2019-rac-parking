@@ -237,5 +237,13 @@ FunWalesReshape <- function(DF) {
     separate (year, into = c("year", "XX")) %>% 
     mutate(year = as.integer(year)) %>% 
     select(-X, -XX) %>% 
-    rename(auth.name = X.1)
+    rename(auth.name = X.1) %>% 
+    mutate(auth.name = sub("\\s+$", "", auth.name))
+  
+}
+
+# function to capitalise the first letter in a workd
+FunFirstup <- function(x) {
+  substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+  x
 }
