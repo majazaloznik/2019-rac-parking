@@ -283,8 +283,8 @@ OK, back to the Scotland PNC data scraped from the pdf
 * rename data sources file to 00-manual-data-input.R. OIK
 * move the .rds files for metadata into /data/01-raw. OK
 * also rename all of these to start with orig. OK. 
-* ToDo : Wales doens't have a metadata file, should update that 
-* ToDo: for consistency, all the original data files names should end with the single year, not the double ones as they do now.. that means also changing all the metadata...
+* **ToDo : Wales doens't have a metadata file, should update that **
+* **ToDo: for consistency, all the original data files names should end with the single year, not the double ones as they do now.. that means also changing all the metadata...**
 * Clean up code to read all meta .rds files at once? OK
 * Looks like this mass import using assign and lapply is changing the character columns into factors. fixed (stringsasfactors option was off in 00-manual-data-input.R)
 * move WPL manual entry to 00-manual-data-input.R . OK
@@ -314,7 +314,7 @@ OK, back to the Scotland PNC data scraped from the pdf
 
 * Write up technical background - metadata for original data file. 
 * Continue the Wales report 
-* Add % symbols to table
+* ** Add % symbols to table**
 * metadata for master - turns out it would be great to have greater london authority separated out from the other london ones.. So i need to fix that in the import. OK, it's now GLA. OK
 * Ah, collapsing rows in kable extra is not working as expected.. like buggy. OK
 * But updating the package worked! OK
@@ -325,9 +325,45 @@ OK, back to the Scotland PNC data scraped from the pdf
 * So make sure all the income data is in thousands.. i.e. the Scotland PCN data isn't, so fix it. OK
 * AND the England total PCN incomes don't need to be in their own column, htey should be in the income.pcn one. OK
 * Finished rows and columns in tehcnical documentation for master data. Commit.
+* **The data for 2013-16 is in a scanned pdf..**
+* **List different definitions?**
+* **TODO maybe figure out thos NA warnings in the import..**
+* cross-referencing tables.. bookdown seems to be the easiest way.OK
+* **ToDO: sources in tecnical documentation**
+* OK, back to Wales, add % symbols
+* Conditional text, seems to work fine. A bit wooden though.. 
+* Now have to pull out england's surplus as proportion of transport costs.
 
-* TODO maybe figure out thos NA warnings in the import..
+* OK, I get England surplus/transport to be 21% not Leibling's 12 %. Additionally if I go directly to the 17/18 file I can confirm that my totals are correct, or rather that the Excel files have an error: the off-street column does not add up to the total they have down (cell DF455 is wrong), probably something to do with Copeland? But the difference is 250 only (thoushands), so it doens't affect the 21 % I get. 
+* Next the plot.
+* Ahh, the ugly fonts.. was it install.packages("extrafont") that did the trick before? 
+* I think if you use extrafonts you have to upon installation also run `import_fonts()`, but only once, this needs to be in the instructions!
+* This [here](https://stackoverflow.com/questions/36453126/embedding-fonts-in-ggplot2-charts-in-rmarkdown-documents) says you need to specify dev = cairo_pdf to make sure the fonts are embedded. 
+* Hmm, can't figure out how to use extrafont in knitr, only directly to pdf. 
+* OK, shotext seems to be working. But you have to add family to each text bit..OK
+* the labels are still too large. OK
+* legned. OK
+* OK, also fixed axis ticks so they are all there. OK
+* Now remove ToC from bookdown OK
+* gridlines?OK
+* fontsize is too tiny. OK
+* But now table font is too large. OK
 
+
+**map wales**
+
+* OK, another detour. First I'll have to manually add the info. 
+* Let's do some more text first. 
+* Now table 2,
+* Thousands separator. OK
+* Actually, might as well do all three tables while i'm at it :)
+* There are these odd gaps in the table. turns out there is an `\addlinespace` added randomly because of booktabs beign true. but i have striped anyway, so it looks ugly. using `linesep = ""` fixed that, thanks stackoverflow! OK. 
+* Forgot the total line. 
+* Make sure the percent change for the total is also calculated. OK
+* add hline on last row. OK
+* arraystretch to loosen it up a bit. 
+* Expenditure tables is OK, although last column needs to be changed
+* Also getting exactly two decimal points in R is tricky! You need to use `format(round(x, 2), nsmall = 2)` apparenlty !
 
 
 ### Wales (based on 17/18) #####################################################

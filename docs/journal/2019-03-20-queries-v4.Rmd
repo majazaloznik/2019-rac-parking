@@ -19,3 +19,11 @@ Both the Wales and the Scotland reports there is a sentence along the lines of "
 In the Nottingham reports there is an inconsistency in the numbers, since each report has data for the current and previous years. In the 2015/16 report the levy expenditure is down as 787, while in the 2016/17 the previous year's expenditure is down as 713 (restated). I will use the restated data, and make a general note that restated data is used if available.
 
 27. Is that OK?
+
+Sometimes the manually written text can do human things like e.g. describe the numbers 2.74 %, 2.9 % and 3.15 % as all being around 3 %. I cannot code a decision tree to do that. Instead individual values will be listed, which makes the text flow a bit less. Of course this can always be manually overwritten by a human. There are also nuances like "much smaller" vs "smaller" which again are too fine-grained to code up. One question is when to say something has gone up, gone down or stayed the same?
+
+28. Should e.g. -0.2 % - 0.2 % count as staying the same or would you prefer a different range?
+
+29. WOuld you say "fallen by 3 %" or "fallen by -3 %"?
+
+30. In tables I kept 2 decimal points, in the text only one, is that OK?
