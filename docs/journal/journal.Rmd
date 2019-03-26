@@ -416,15 +416,14 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 
 * clean up original wales file names, and replace in 01-orig-data-import.R OK.
 * Wales update template ready and setup!!! Works great. 
-* Committ
+* Commit
+* Oh, and delete the annoying empty folder that keeps cropping up. OK
+
+* Now clean up the Wales references as well! 
+
+* ** OK, now Scotland **
 
 
-
-Processwise, I imagined you guys for each new round of data:
-1. downloading the data or fiding the correct links
-2. entering relevant data (file locations, urls, or manual unput in some cases) into an R script template. 
-3. Running said script, which updates the master data file.
-4. Opening an .Rmd template
 
 ### Wales (based on 17/18) #####################################################
 

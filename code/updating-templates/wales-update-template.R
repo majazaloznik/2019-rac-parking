@@ -88,23 +88,24 @@ master %>%
 saveRDS(master, "data/03-processed/master.rds")
 
 # new report name
-report.name <- paste0("code/report-rmds/wales-report-", current.year, "-",
+report.name <- paste0("wales-report-", current.year, "-",
                       current.year - 1999)
 
 # create a copy of the wales report template
 file.copy("code/report-templates/wales-report-template.Rmd",
-          paste0(report.name, ".Rmd"))
+          paste0("code/report-rmds/", report.name, ".Rmd"))
 
 ################################################################################
 ## COMPILE REPORT -  THIS IS THE ONLY PART OF THE SCRIPT THAT CAN BE RE-RUN   ##
 ################################################################################
 # compile the report - you can repeat this as many times as you like after 
 # updating the .Rmd file 
-rmarkdown::render(paste0(report.name, ".Rmd"),
+rmarkdown::render(paste0("code/report-rmds/", report.name, ".Rmd"),
                   output_file = paste0(report.name, ".pdf"),
                   output_dir = "outputs/reports",
                   params = list(current.year = current.year))
 
+nlink(paste0("outputs/reports/", report.name, "_files"), recursive=TRUE)
 # the report are saved to /outputs/reports/
 ################################################################################
 ################################################################################
