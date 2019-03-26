@@ -36,6 +36,7 @@ The surpluses table for Wales has two columns at the end: one for change in *sur
 
 32. Is that cool?
 
+
 In the text for all three main tables there are lists of the councils with the largest increases and decreases. I can automate this to list e.g the top 2, but it is going to get really complicated if e.g. the third largest one is really similar to the second one, which a human would note. I have kept it simple with top 2 and bottom 2. 
 
 33. Is that acceptable?

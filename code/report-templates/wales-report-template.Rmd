@@ -44,6 +44,7 @@ master %>%
 data.full %>% 
   filter(year >= current.year -4 & year <= current.year) -> data
 
+yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-", (current.year-4-1999):(current.year-1999),"}")
 
 ```
 
@@ -57,15 +58,7 @@ data %>%
               select(auth.name, year, transport.total) %>% 
               filter(year == current.year)) %>% 
   select(-year) %>% 
-  arrange(desc(.[[6]])) %>% 
-  bind_rows(group_by(. ,auth.name) %>%
-              ungroup() %>% 
-              summarise_at(vars(-auth.name), list(~sum)) %>%
-              mutate(auth.name='Total'))%>% 
-    mutate(change =100*(.[[6]]/.[[5]]-1),
-           prop.transp = 100*.[[6]]/.[[7]]) %>% 
-  select(-transport.total)-> wal.surplus
-
+  arrange(desc(.[[6]])) -> wal.surplus
 
 wal.surplus %>% 
   filter(auth.name != "Total") %>% 
@@ -88,7 +81,6 @@ The published data is less comprehensive than in England and does not split out 
 # Summary
 
 ```{r sum, echo = FALSE, message = FALSE, warning = FALSE}
-yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-", (current.year-4-1999):(current.year-1999),"}")
 
 data %>% 
   select(year, income.total, expend.total, surplus.total, transport.total) %>% 
@@ -347,13 +339,50 @@ wal.expend %>%
 
 # Surpluses
 
-```{r surplus, echo = FALSE, message = FALSE, warning = FALSE}
+Table @ref(tab:surplus) shows the parking surpluses from from `r paste0(current.year-4, "-", current.year-1999-4)` to `r paste0(current.year, "-", current.year-1999)` and the change from
+`r paste0(current.year-1, "-", current.year-1999-1)` to `r paste0(current.year, "-", current.year-1999)`. It also shows the proportion that parking surpluses represent of
+total transport expenditure.
 
+```{r surplus, echo = FALSE, message = FALSE, warning = FALSE}
+# create totals row for surpluses and deficits. 
+data %>% 
+  select(auth.name, year, surplus.total, transport.total) %>% 
+  mutate(poz.neg = ifelse(surplus.total >= 0, "poz", "neg")) %>% 
+  group_by(year, poz.neg) %>%
+  summarise_at(vars(-auth.name), list(~sum)) %>%
+  gather(variable, value, -c(year, poz.neg)) %>%
+  unite(temp, year, variable) %>%
+  spread(temp, value) %>% 
+  select(poz.neg, contains("surplus"), paste0(current.year, "_transport.total"))  %>% 
+  mutate(poz.neg = c("Total deficit", "Total surplus")) %>% 
+  rename_all(~ c("auth.name", (current.year-4):(current.year), "transport.total")) %>% 
+  bind_rows(group_by(., auth.name) %>% 
+              ungroup() %>% 
+              summarise_at(vars(-auth.name), list(~sum)) %>%
+              mutate(auth.name = c("Total"))) -> wal.surplus.totals
+
+# bind both tables together
+bind_rows(wal.surplus, wal.surplus.totals) %>% 
+  mutate(change =100*(.[[6]]/.[[5]]-1),
+         prop.transp = 100*.[[6]]/.[[7]]) %>% 
+  select(-transport.total) -> wal.surplus.totals.table
+
+# extract top three proportion 
 wal.surplus %>% 
+  select(auth.name, 6) %>% 
+  filter(.[[2]] >= 0) %>% 
+  mutate(top.three = ifelse(row_number() < 4, "top", "not")) %>% 
+  group_by(top.three) %>% 
+  summarise(sum = sum(!!as.name(current.year)),
+            count = n()) %>% 
+  mutate(prop = sum/sum(sum)) -> wal.surplus.t3
+
+# setup table
+wal.surplus.totals.table %>% 
   mutate(change = paste(format(round(change, 1),nsmall = 1), "%"),
          prop.transp = paste(format(round(prop.transp, 1),nsmall = 1), "\\%")) %>% 
   mutate(change =cell_spec(change, "latex", italic =ifelse(.[[6]] < 0, TRUE, FALSE))) %>% 
-   kable( "latex", 
+  kable( "latex", 
          booktabs = T, 
          digits = 0, 
          escape = F,
@@ -367,12 +396,17 @@ wal.surplus %>%
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped"), 
                 font_size = 10) %>% 
-   column_spec(1, width = "3.3cm") %>% 
-  row_spec(22, hline_after = TRUE) %>% 
+  column_spec(1, width = "3.3cm") %>% 
+  row_spec(c(22, 24), hline_after = TRUE) %>% 
   footnote(symbol = "Where the change in surplus is actually a change in deficit, the values are in italics")
-  
- 
+
 ```
+
+
+Total parking surpluses amount to £`r format(round((wal.surplus.totals.table[24, 6]/1000),1), nsmall = 1)`m between `r  sum(wal.surplus.t3$count) ` authorities of which Cardiff,
+Swansea and Gwynedd contribute `r  format(round(100*wal.surplus.t3$prop[2],1), nsmall = 1)`%. \color{red} Newport increased its surplus significantly because of the sharp reduction in cost. \color{black} `r FunFirstup(xfun::numbers_to_words(surplus.bin[1]))` councils made a loss with the total of parking deficits 
+`r ifelse(wal.surplus.totals.table[23,6] > wal.surplus.totals.table[23,5], "falling", "rising")` to £`r format(round(-wal.surplus.totals.table[23,6]/1000,1), nsmall = 1)`m from `r format(round(-wal.surplus.totals.table[23,5]/1000,1), nsmall = 1)` last year \color{red} mainly because of a reduction
+in the loss in Blaenau Gwent with its big fall in expenditure.\color{black}
 
 ## References {-}
 

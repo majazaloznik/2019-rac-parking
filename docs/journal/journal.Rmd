@@ -379,6 +379,16 @@ OK, back to the Scotland PNC data scraped from the pdf
 * maybe a page break would be nice for each new section? OK
 * had to move the surplus calculations to the top because they are used in the intro. OK
 
+# Tuesday 26.3.2019
+
+* Finish the surplus text in the Wales report. OK
+* Because Leibling splits up the surpluses into surpluses and deficits, I can add two extra rows at the bottom. Hm, but that's not that simple since it is different ones every year...OK. 
+* OMG, that was a heroic effortl, and it worked! To get the sub group sums conditional on each year's surpluses or deficits, and additionally keep the transport data only for the last year in there.. crazy. OK.
+* Now the text requires I extract the proportion that the top three councils contribute to the positive surplus.. OK
+* Foudn an error in Leibling, the 56% is from the total surlpus, not the 15m positive surplus. 
+* Wales report complete. OK
+* Committ
+
 ### Wales (based on 17/18) #####################################################
 
 #### 1. Introduction
