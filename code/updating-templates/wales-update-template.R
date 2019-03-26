@@ -1,25 +1,110 @@
 ################################################################################
 ## WALES UPDATE TEMPLATE #######################################################
 ################################################################################
-##
-##
+## This is the script used to add new data to the master data file and        ##
+## produce the report for Wales for any year available in the file            ##
+################################################################################
+## Instructions (detailed instructions are in /docs/technical):
+## 1. Manual input: input (update) the current year and the three .csv filenames 
+##      you have saved into /data/01-raw
+## 2. Run through the rest of the script that imports the data, cleans it,  
+##      creates an .Rmd file and produces the compiled .pdf report.
+## 3. Optional: you can now modify the .Rmd file in /code/report-rmds and 
+##      compile the .pdf again using the last chunk of code in this script.
+################################################################################
 ################################################################################
 
-original.data <- readRDS("data/02-interim/original.data.rds")
+################################################################################
+## MANUAL DATA INPUT ###########################################################
+################################################################################
+current.year <- 2016
 
+## after dowloading the Wales files into the data/01-raw folder, enter their
+## correct filenames here:
+wal.income.file <-"orig.wal.inc.17.csv"
+wal.expenditure.file <-"orig.wal.exp.17.csv"
+wal.transport.file <-"orig.wal.trans.17.csv"
+
+
+################################################################################
+################################################################################
+##                                                                            ##
+##   THE REST OF THIS SCRIPT IS TO BE RUN ONLY -- NO MODIFICATIONS!           ##
+##                                                                            ##
+################################################################################
+################################################################################
+################################################################################
+## LOAD PACKAGES AND DATA ######################################################
+################################################################################
+source("code/functions.R")
+library(tidyr)
+# load existing master file
+master <- readRDS("data/03-processed/master.rds")
+
+################################################################################
+## AUTOMATIC DATA IMPORT AND CLEANING 
+################################################################################
+path <- "data/01-raw/"
+# read all expenditure data, remove extra row and column
+wal.income.total <- read.csv(paste0(path, wal.income.file))[-1,-1]
+# read all income data, remove extra row and column
+wal.expend.total <- read.csv(paste0(path, wal.expenditure.file))[-1,-1]
+# read all transport total data, remove extra row and column
+wal.transport.total <- read.csv(paste0(path, wal.transport.file))[-1,-1]
+
+# reshape all three dfs - you can ignore the warnigns here!
+wal.expend.total<- FunWalesReshape(wal.expend.total)
+wal.income.total<- FunWalesReshape(wal.income.total)
+wal.transport.total<- FunWalesReshape(wal.transport.total)
+
+# join them together 
+wal.expend.total %>% 
+  left_join(wal.income.total) %>% 
+  left_join(wal.transport.total) %>% 
+  mutate(income.total = -income.total) %>% 
+  filter(year == current.year) -> update
+
+# add Wales specific data
+update %>% 
+  mutate(country = "Wales",
+         auth.type = "LA")  -> update
+
+# double check the update is OK:
+if (nrow(update) != 22) {
+  paste("Something is wrong. The update should have 22 rows, but it has",
+        nrow(update), "instead.")} else {
+          "Everything checks out, the update has 22 rows"}
+
+################################################################################
+## Add (or overwrite) new rows to master #######################################
+################################################################################
+
+# add update for Wales - if that year already exists, it will be overwritten!!!
+master %>% 
+  anti_join(update, by = c("country", "auth.name", "year")) %>% 
+  bind_rows(update) -> master
 
 # save updated datafile to master
-saveRDS(original.data, "data/03-processed/master.rds")
+saveRDS(master, "data/03-processed/master.rds")
 
+# new report name
+report.name <- paste0("code/report-rmds/wales-report-", current.year, "-",
+                      current.year - 1999)
 
+# create a copy of the wales report template
+file.copy("code/report-templates/wales-report-template.Rmd",
+          paste0(report.name, ".Rmd"))
 
-
-
-current.year <- 2015
-
-rmarkdown::render("code/report-templates/wales-report-template.Rmd",
-                  output_file = paste0("wales-report", 
-                                       current.year,
-                                       ".pdf"),
+################################################################################
+## COMPILE REPORT -  THIS IS THE ONLY PART OF THE SCRIPT THAT CAN BE RE-RUN   ##
+################################################################################
+# compile the report - you can repeat this as many times as you like after 
+# updating the .Rmd file 
+rmarkdown::render(paste0(report.name, ".Rmd"),
+                  output_file = paste0(report.name, ".pdf"),
                   output_dir = "outputs/reports",
                   params = list(current.year = current.year))
+
+# the report are saved to /outputs/reports/
+################################################################################
+################################################################################

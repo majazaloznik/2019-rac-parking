@@ -101,3 +101,28 @@ x <- c("hh" = "jh")
 c(x, c("lkj" = "LKk"))  
 
 auth.name <- mutate(auth.name, auth.name = recode(auth.name, !!!EnglandNameLookup)) 
+
+
+
+### test for updating master
+options(stringsAsFactors = FALSE)
+library(dplyr)
+master <- data.frame(a = rep(1, 10),
+                     b = letters[1:10],
+                     c = sample(10))
+
+saveRDS(master, "data/03-processed/m.rds")
+
+
+# update
+x <- 3
+update <- data.frame(a = rep(2, x),
+                     b = LETTERS[1:x],
+                     c = sample(x))
+
+master <- readRDS("data/03-processed/m.rds")
+
+master %>% 
+  anti_join(update, by = c("a", "b")) %>% 
+  bind_rows(update) -> master
+

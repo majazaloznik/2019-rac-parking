@@ -7,7 +7,7 @@
 ## DO NOT MODIFY THIS FILE & DO NOT SOURCE THIS FILE
 ################################################################################
 ## INPUTS:
-## Outputs of 00-data-sources.R (seven .rds files with metadata info and lookup
+## Outputs of 00-orig-data-entry.R (seven .rds files with metadata info and lookup
 ## tables for names all in data/01-raw)
 ## Manually downloaded excel, csv and pdf files in data/01-raw/orig.*.*
 ################################################################################
@@ -258,11 +258,11 @@ bind_rows(original.data, original.scotland) -> original.data
 
 ## 3. WALES DATA IMPORT ########################################################
 # read all expenditure data, remove extra row and column
-wal.expend.total <- read.csv("data/01-raw/orig.wal-exp-17-18.csv")[-1,-1]
+wal.expend.total <- read.csv("data/01-raw/orig.wal.exp.17.csv")[-1,-1]
 # read all income data, remove extra row and column
-wal.income.total <- read.csv("data/01-raw/orig.wal-inc-17-18.csv")[-1,-1]
+wal.income.total <- read.csv("data/01-raw/orig.wal.inc.17.csv")[-1,-1]
 # read all transport total data, remove extra row and column
-wal.transport.total <- read.csv("data/01-raw/orig.wal-trans-17-18.csv")[-1,-1]
+wal.transport.total <- read.csv("data/01-raw/orig.wal.trans.17.csv")[-1,-1]
 
 # reshape all three dfs
 wal.expend.total<- FunWalesReshape(wal.expend.total)
@@ -283,9 +283,7 @@ original.wales %>%
 # merge with original data
 bind_rows(original.data, original.wales) -> original.data 
 
-write.csv(original.data, "data/02-interim/original.data.csv")
+# write.csv(original.data, "data/02-interim/original.data.csv")
 saveRDS(original.data, "data/02-interim/original.data.rds")
 
-
-
-rm(list=setdiff(ls(), "original.data"))
+# rm(list=setdiff(ls(), "original.data"))

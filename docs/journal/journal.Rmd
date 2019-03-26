@@ -397,15 +397,34 @@ OK, back to the Scotland PNC data scraped from the pdf
 * OK, folder is fixed in yaml. 
 * What about name? Looks like you can't change that dynamically if you want to use rstudio - knit. 
 
+* I'm getting an  ! LaTeX Error: Unknown float option `H'. errror.. didn't have it before. [looks like this answe](https://stackoverflow.com/questions/48014265/unable-to-use-format-latex-in-knitrkable-within-a-rmarkdown-document-g?rq=1) is the solution, i need to load the latex packages in the yaml
+* Send off Wales reports. 
+* parametrize the report. but doesn't work - Error in eval(expr, envir, enclos) : object 'params' not found . Sorted
+* Hmm, let's try some updates and read up on param to make sure i;ve got this right, otherwise an repex will be in order. 
+* Aah, RTFM worked. The params can be passed from the rmarkwdown::render function, but they also have to first be specified in the YAML. OK
+
+* OK, what next?
+* Process, figure out how the whole thing will work! 
+* The trickiest bit is getting to add rows to master, but if you fuck up being able to overwrite what you've just added. 
+* If what you're adding always has the same year-auth.name combinations? And then just issue a warning when you are overwriting them? repex.
+
+1. If the anti_join with the master has the same number of rows as master, then you are adding X new rows, and not overwriting anything.
+2. If the anti_join is smaller, you are overwritting. 
+2.1. If the difference is smaller than the update, then you are overwritting X with X+Y rows. 
+2.2. If the difference is larger, than the update, then I can't know.
+Instead I can just make sure that the update is always the correct nrows. e.g. 22 for Wales, 32 for Scotland? What about england? if there are different number of national parks, that will mess things up? 
+
+* clean up original wales file names, and replace in 01-orig-data-import.R OK.
+* Wales update template ready and setup!!! Works great. 
+* Committ
+
+
 
 Processwise, I imagined you guys for each new round of data:
 1. downloading the data or fiding the correct links
 2. entering relevant data (file locations, urls, or manual unput in some cases) into an R script template. 
 3. Running said script, which updates the master data file.
 4. Opening an .Rmd template
-* I'm getting an  ! LaTeX Error: Unknown float option `H'. errror.. didn't have it before. [looks like this answe](https://stackoverflow.com/questions/48014265/unable-to-use-format-latex-in-knitrkable-within-a-rmarkdown-document-g?rq=1) is the solution, i need to load the latex packages in the yaml
-* parametrize the report. but doesn't work - Error in eval(expr, envir, enclos) : object 'params' not found - 
-
 
 ### Wales (based on 17/18) #####################################################
 
