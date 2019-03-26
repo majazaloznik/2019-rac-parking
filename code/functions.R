@@ -247,3 +247,9 @@ FunFirstup <- function(x) {
   substr(x, 1, 1) <- toupper(substr(x, 1, 1))
   x
 }
+
+# funciton to round to n decimal points precisely
+
+FunDec <- function(x,d) {
+  format(round(x, d), nsmall = d)
+}

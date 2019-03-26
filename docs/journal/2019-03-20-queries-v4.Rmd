@@ -1,11 +1,25 @@
 ---
 title: "RAC Parking Report Automation---Queries for RAC, round 4"
 author: mz
-date: 21.3.2019
+date: 26.3.2019
 output:
   pdf_document: default
 ---
-  
+
+Some still outstanding queries from before: 
+
+10. Where can I get the Aberdeen City data?
+
+11. Any idea what is wrong with the South Ayrshire data for 15/16?
+
+12. Apart from Aberdeen City, am I OK to use all other 31 authorities as they are reported in the Excel files?
+
+13. Any idea what Leibling is using as the total transport expenditure value? Or rather what do you want  me to use?
+
+14. Also, do you want to continue the comparison between the incomes and expenditures reported in both datasources like Leibling did in the 2016/17 report (section 6)?
+
+22. what do you want to do about the Wales section "6. reporting on parking" in particular the table *Comparison of Published parking reports and financial data supplied to the Welsh Government*? See also Q14 for a similar issue. 
+
 Both the Wales and the Scotland reports there is a sentence along the lines of "a, b and c collect XX% of the parking income, event thought they only have YY % of the population". The England report instead has the sentence ending with "ZZ % of the cars". 
 
 23. Is this potentially something you might want to remove from the reports?
@@ -14,19 +28,17 @@ Both the Wales and the Scotland reports there is a sentence along the lines of "
 
 25. If the comparator is cars, is it OK if this value is manually inserted?
 
- 26. General (rethorical) question: If I find similar inconsistencies, e.g. where one report is missing a sentence/paragraph that the others have, should I aim to make the three reports as similar to eachother, to the extent possible? 
+26. General (rethorical) question: If I find similar inconsistencies, e.g. where one report is missing a sentence/paragraph that the others have, should I aim to make the three reports as similar to eachother, to the extent possible? 
  
-In the Nottingham reports there is an inconsistency in the numbers, since each report has data for the current and previous years. In the 2015/16 report the levy expenditure is down as 787, while in the 2016/17 the previous year's expenditure is down as 713 (restated). I will use the restated data, and make a general note that restated data is used if available.
+Sometimes the manually written text can do human things like e.g. describe the numbers 2.74 %, 2.9 % and 3.15 % as all being around 3 %. I cannot code a decision tree to do that. Instead individual values will be listed, which makes the text flow a bit less. Of course this can always be manually overwritten by a human. There are also nuances like "much smaller" vs "smaller" which again are too fine-grained to code up. 
 
-27. Is that OK?
+27. I hope this is acceptable?
 
-Sometimes the manually written text can do human things like e.g. describe the numbers 2.74 %, 2.9 % and 3.15 % as all being around 3 %. I cannot code a decision tree to do that. Instead individual values will be listed, which makes the text flow a bit less. Of course this can always be manually overwritten by a human. There are also nuances like "much smaller" vs "smaller" which again are too fine-grained to code up. One question is when to say something has gone up, gone down or stayed the same?
+One question is when to say something has gone up, gone down or stayed the same?
 
-28. Should e.g. -0.2 % - 0.2 % count as staying the same or would you prefer a different range?
+28. Should e.g. -0.2 % - 0.2 % count as *staying the same* or would you prefer a different range?
 
-29. WOuld you say "fallen by 3 %" or "fallen by -3 %"?
-
-30. In tables I kept 2 decimal points, in the text only one, is that OK?
+29. In tables I kept 2 decimal points, in the text only one, is that OK?
 
 The Wales 2017/18 report has incomes and expenditures for the previous 4 years, but only the income table has the change 17/18 on 16/17 (probably because it insted had the expenditure per population columns, which we've now thrown out. I've added it now.
 
@@ -36,7 +48,10 @@ The surpluses table for Wales has two columns at the end: one for change in *sur
 
 32. Is that cool?
 
+In the text for all three main tables there are lists of the councils with the largest increases and decreases. I can automate this to list e.g the top 3, but it is going to get really complicated if e.g. the third largest one is really similar to the fourth one, which a human would note. Similarly when there are extreme increases that a human would flag and explain, this would be terribly tricky to code. 
 
-In the text for all three main tables there are lists of the councils with the largest increases and decreases. I can automate this to list e.g the top 2, but it is going to get really complicated if e.g. the third largest one is really similar to the second one, which a human would note. I have kept it simple with top 2 and bottom 2. 
+33. Is it acceptable that I keep the texts simple and you can manually add any extra explanations that look relevant?
 
-33. Is that acceptable?
+
+
+

@@ -5,16 +5,22 @@ output:
 fontsize: 12pt
 header-includes:
   - \usepackage{xcolor}
+  - \usepackage{float}
+  - \usepackage{tabu}
+  - \usepackage{multirow}
+  - \usepackage{colortbl}
 ---
+
 ```{r, echo = FALSE}
 # change the year variable 
-current.year <- 2017
+current.year <- 2016
+  # params$current.year
 ```
 
 ---
 title: "`r paste("Local Authority Parking Finances in Wales", current.year, "-", current.year-1999)`"
----
 
+---
 
 ```{r setup, echo = FALSE, warning = FALSE, message = FALSE}
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
@@ -76,7 +82,7 @@ This note covers parking finances for the 22 local authorities in Wales. As in E
 
 The published data is less comprehensive than in England and does not split out on- and off-street parking or show penalty income separately. The figures do not include any commercial off-street parking. In `r paste0(current.year, "-", current.year-1999)`, 
 
-`r FunFirstup(xfun::numbers_to_words(surplus.bin[2]))` councils showed surpluses and `r xfun::numbers_to_words(surplus.bin[1])` showed deficits \color{red}(the same three councils as 2016-17). \color{black} All councils are now receiving income from parking, \color{red} although councils such as Blaenau Gwent (Ebbw Vale and Abertillery) and Torfaen (Pontypool and Cwmbran) offer free parking but still issue penalty charge notices. \color{black}
+`r FunFirstup(xfun::numbers_to_words(surplus.bin[2]))` councils showed surpluses and `r xfun::numbers_to_words(surplus.bin[1])` showed deficits \color{red}(the same three councils as `r paste0(current.year-1, "-", current.year-1999-1)`). \color{black} All councils are now receiving income from parking, \color{red} although councils such as Blaenau Gwent (Ebbw Vale and Abertillery) and Torfaen (Pontypool and Cwmbran) offer free parking but still issue penalty charge notices. \color{black}
 
 # Summary
 
@@ -224,7 +230,7 @@ wal.income %>%
 ```
 
 `r FunFirstup(xfun::numbers_to_words(income.bin[2]))` councils increased their income over the past year and `r xfun::numbers_to_words(income.bin[1])` decreased their income. `r top.bottom[1,1]` saw income increase by `r format(round(top.bottom[1,2], 0), nsmall = 0)` %
-while `r top.bottom[2,1]` increased its income by `r format(round(top.bottom[2,2], 0), nsmall = 0)` %. The largest falls were in `r top.bottom[4,1]` (`r format(round(top.bottom[4,2], 0), nsmall = 0)` %), and `r top.bottom[3,1]` (`r format(round(top.bottom[3,2], 0), nsmall = 0)` %)`r ifelse(nrow(wal.income.exclude) == 0, ".", ifelse(nrow(wal.income.exclude) == 1, paste(", excluding", wal.income.exclude[1], "where the income is very low."), paste(", excluding", wal.income.exclude[1], "and", wal.income.exclude[2], "where the income is very low.")))`
+while `r top.bottom[2,1]` increased its income by `r format(round(top.bottom[2,2], 0), nsmall = 0)` %. The largest falls were in `r top.bottom[4,1]` (`r format(round(top.bottom[4,2], 0), nsmall = 0)` %), and `r top.bottom[3,1]` (`r format(round(top.bottom[3,2], 0), nsmall = 0)` %)`r ifelse(nrow(wal.income.exclude) == 0, ".", ifelse(nrow(wal.income.exclude) == 1, paste(", excluding", wal.income.exclude[1], "where the income is very low."), paste(", excluding", wal.income.exclude[1,1], "and", wal.income.exclude[2,1], "where the income is very low.")))`
 
 
 
@@ -275,9 +281,8 @@ arrange(desc(.[[6]])) %>%
 
 wal.expend %>% 
   filter(auth.name == "Total") %>% 
-  mutate(current.change = format(round((.[[6]]-.[[5]])/1000,1), nsmall = 1),
-         last.change = format(round((.[[5]]-.[[4]])/1000,1), nsmall = 1),
-         change = format(round(change,1),nsmall = 1)) %>% 
+  mutate(current.change = (.[[6]]-.[[5]])/1000,
+         last.change = (.[[5]]-.[[4]])/1000) %>% 
   select(change, current.change, last.change) -> wal.expend.t
 
 wal.expend %>% 
@@ -301,14 +306,12 @@ wal.expend %>%
 ```
 Table @ref(tab:expend) ranks the councils in terms of expenditure on parking.
 
-Overall expenditure has risen by £`r wal.expend.t[2]`m (`r wal.expend.t[1]` %) after a `r ifelse( wal.expend.t[3] > 0, paste0("rise of £", wal.expend.t[3], "m last year"), paste0("fall of £", wal.expend.t[3], "m last year"))`, with `r xfun::numbers_to_words(expend.bin[2])` councils having increased their and `r xfun::numbers_to_words(expend.bin[1])` reduced their costs.  
+Overall expenditure has `r ifelse( wal.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(wal.expend.t[2]),1)`m (`r FunDec(abs(wal.expend.t[1]),1)` %) after a `r ifelse( wal.expend.t[3] > 0, paste0("rise of £", FunDec(wal.expend.t[3], 1), "m last year"), paste0("fall of £", FunDec(abs(wal.expend.t[3]),1), "m last year"))`, with `r xfun::numbers_to_words(expend.bin[2])` councils having increased their and `r xfun::numbers_to_words(expend.bin[1])` reduced their costs.  
 
-`r top.bottom[1,1]` increased expenditure by `r format(round(top.bottom[1,2], 0), nsmall = 0)` %
-while `r top.bottom[2,1]` and `r top.bottom[3,1]` increased  by `r format(round(top.bottom[2,2], 0), nsmall = 0)` % and `r format(round(top.bottom[3,2], 0), nsmall = 0)` % respectively. The biggest decreases were in `r top.bottom[5,1]` (`r format(round(top.bottom[5,2], 0), nsmall = 0)` %), and `r top.bottom[4,1]` (`r format(round(top.bottom[4,2], 0), nsmall = 0)` %). \color{red} Newport’s expenditure is likely to rise when they take over parking
-management from Gwent Police.\color{black}
+`r top.bottom[1,1]` increased expenditure by `r FunDec(top.bottom[1,2], 0)` %
+while `r top.bottom[2,1]` and `r top.bottom[3,1]` increased  by `r FunDec(top.bottom[2,2], 0)` % and `r FunDec(top.bottom[3,2], 0)` % respectively. The biggest decreases were in `r top.bottom[5,1]` (`r FunDec(abs(top.bottom[5,2]), 0)` %), and `r top.bottom[4,1]` (`r FunDec(abs(top.bottom[4,2]),0)` %). 
 
-The table also shows the proportion of income taken up by costs in 2017-18.
-Nationally in Wales it is `r format(round(wal.expend.p[2],1), nsmall = 1)` % with Cardiff at `r format(round(wal.expend.p[1],1), nsmall = 1)` .
+The table also shows the proportion of income taken up by costs in `r paste0(current.year, "-", current.year-1999)`. Nationally in Wales it is `r format(round(wal.expend.p[2],1), nsmall = 1)` % with Cardiff at `r format(round(wal.expend.p[1],1), nsmall = 1)` %.
 
 ```{r expend, echo = FALSE, message = FALSE, warning = FALSE}
 
@@ -403,10 +406,8 @@ wal.surplus.totals.table %>%
 ```
 
 
-Total parking surpluses amount to £`r format(round((wal.surplus.totals.table[24, 6]/1000),1), nsmall = 1)`m between `r  sum(wal.surplus.t3$count) ` authorities of which Cardiff,
-Swansea and Gwynedd contribute `r  format(round(100*wal.surplus.t3$prop[2],1), nsmall = 1)`%. \color{red} Newport increased its surplus significantly because of the sharp reduction in cost. \color{black} `r FunFirstup(xfun::numbers_to_words(surplus.bin[1]))` councils made a loss with the total of parking deficits 
-`r ifelse(wal.surplus.totals.table[23,6] > wal.surplus.totals.table[23,5], "falling", "rising")` to £`r format(round(-wal.surplus.totals.table[23,6]/1000,1), nsmall = 1)`m from `r format(round(-wal.surplus.totals.table[23,5]/1000,1), nsmall = 1)` last year \color{red} mainly because of a reduction
-in the loss in Blaenau Gwent with its big fall in expenditure.\color{black}
+The total *net surplus* for Wales was £`r FunDec((wal.surplus.totals.table[25, 6]/1000),1)`m. Total parking surpluses amount to £`r FunDec((wal.surplus.totals.table[24, 6]/1000),1)`m between `r  sum(wal.surplus.t3$count) ` authorities of which Cardiff, Swansea and Gwynedd contribute `r  FunDec(100*wal.surplus.t3$prop[2],1)`%. \color{red} XXXX increased its surplus significantly because of the sharp reduction in cost. \color{black} `r FunFirstup(xfun::numbers_to_words(surplus.bin[1]))` councils made a loss with the total of parking deficits `r ifelse(wal.surplus.totals.table[23,6] > wal.surplus.totals.table[23,5], "falling", "rising")` to £`r FunDec(-wal.surplus.totals.table[23,6]/1000,1)`m from £`r FunDec(-wal.surplus.totals.table[23,5]/1000,1)`m last year \color{red} mainly because of a reduction
+in the loss in XXXX with its big fall in expenditure.\color{black}
 
 ## References {-}
 

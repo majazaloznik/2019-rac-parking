@@ -388,6 +388,24 @@ OK, back to the Scotland PNC data scraped from the pdf
 * Foudn an error in Leibling, the 56% is from the total surlpus, not the 15m positive surplus. 
 * Wales report complete. OK
 * Committ
+* check the 2015/16 report/
+* weird error in the expend table 15-16: Wrexham down as 583 instead of 304 in 2013/14
+* oh, this format round stuff is so ugly, need to make a fucntion.OK
+* surplus as proportion of total transport expenditure is different in 15/16 compared to Leibling. But that's because he's using gross expenditure before parking surplus, although he doesn't say that in the text. error?
+* OK, go through queries and see what is missing. 
+* Saving the reports, can i pick the name and folder?
+* OK, folder is fixed in yaml. 
+* What about name? Looks like you can't change that dynamically if you want to use rstudio - knit. 
+
+
+Processwise, I imagined you guys for each new round of data:
+1. downloading the data or fiding the correct links
+2. entering relevant data (file locations, urls, or manual unput in some cases) into an R script template. 
+3. Running said script, which updates the master data file.
+4. Opening an .Rmd template
+* I'm getting an  ! LaTeX Error: Unknown float option `H'. errror.. didn't have it before. [looks like this answe](https://stackoverflow.com/questions/48014265/unable-to-use-format-latex-in-knitrkable-within-a-rmarkdown-document-g?rq=1) is the solution, i need to load the latex packages in the yaml
+* parametrize the report. but doesn't work - Error in eval(expr, envir, enclos) : object 'params' not found - 
+
 
 ### Wales (based on 17/18) #####################################################
 
