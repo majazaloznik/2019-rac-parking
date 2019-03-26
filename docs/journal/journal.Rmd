@@ -419,9 +419,36 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * Commit
 * Oh, and delete the annoying empty folder that keeps cropping up. OK
 
-* Now clean up the Wales references as well! 
+* *Todo Now clean up the Wales references as well! *
 
 * ** OK, now Scotland **
+* *TODO: shoudl I move all the code out of the Rmds? It would look nicer for sure*
+* *TODO because the TFS reports for 2013-14-15-16 are in a scanned pdf, I have not extracted that data. But I could try getting it out of Leibling's reports.. OK, let's do the regular income/expend/surplus stuff first and deal with PCNs later. *
+* OK, DPE table done! And that was not easy!
+* let's try a map. The scotland map has 41 polygons, I need to colapse them into 32.. 
+* More lookup table updating.. 
+* map works, but for some reason the font won't work - if i leave the par command there it stops working. *todo*?
+* *Ugh, East dunbartonshire has lost it's year.. that's the import of the DPE table..*
+* UGH, turns out i also dont have Scotland total transport data. OK
+* i had originally entered both income and expenditure cells for the total transport into the metadata, but that seems unnecesary, so i'll change that now to just the net revenue expenditure one. fixed in 00-orig-data-entry. OK
+* OK, added funciton for importing scotland transport totals, added the code to 01-orig-data-import, and now reran the whole thing. OK
+* Now need to update the technical doc, to take itno acount new lines, six of them? Aah, nice, code just works! OK
+
+* OK< back to Scotland summary. 
+* After 2013 Scotland started reporting their incomes as negative. LOL. OK, where do I fix this? In the import function I think. best. Yeah, added an abs there. OK
+* Summary table looks great - but (error) it massively disagrees with the Leibling report. No idea how that's possible, although the fact that there is no data for Aberdeen city in the excel files could be the cause!?
+* Still haven't added the percentages to the bottom row. need to fix that in the Wales one as well. OK 
+* Wales as well. OK
+* Instructions: ammending tables with a footnote!
+* scotland summary table and text are now OK
+* plot. OK
+* issues: floats of tables and figures, little control..
+* text and code seem to work fine from Wales, a bit of adjusting.. Like the inf and Nans, I still need to deal with them a bit more *todo* 
+* longtable is maybe better here, trying it out now. 
+* *todo: there are still a lot of old format/round combos need replacing*
+* OK, scotland Expenditures done.
+* *just not sure why clangmanshire is in the text, check that!*
+* commit
 
 
 

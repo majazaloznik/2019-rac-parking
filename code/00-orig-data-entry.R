@@ -330,14 +330,12 @@ exp.cell <- c("-", "F57", "F40", "E40", "B41", "B41", "L13")
 
 inc.cell <- c("-", "G57", "G40", "F40", "C41", "C41", "L23")
 
-t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34", "U13")
-
-t.inc.cell <- c("-", "G50", "G33", "F33", "C34", "C34", "U23")
+t.exp.cell <- c("-", "H50", "H33", "G33", "D34", "D34", "U28")
 
 auth.cell <- c("-", "A2", "A2", "A2", "A2", "A1", "E2")
 scotland.i.e. <- data.frame(fisc.year,year,report, file.name, link, 
                             start.sh, end.sh, exp.cell,
-                            inc.cell, t.exp.cell, t.inc.cell,
+                            inc.cell, t.exp.cell, 
                             auth.cell)
 
 
@@ -409,9 +407,21 @@ scotland.name.lookup  <- c("Argyll  Bute" = "Argyll and Bute",
                            "Glasgow" = "Glasgow City",
                            "East" =  "East Dunbartonshire",
                            "Comhairle nan Eilean Siar"  = "Eilean Siar",
-                           "Western Isles" = "Eilean Siar")
+                           "Western Isles" = "Eilean Siar",
+                           "Na h-Eileanan Siar" = "Eilean Siar",
+                           "Helensburgh and Lomond" = "Argyll and Bute",
+                           "Dumfries & Galloway" = "Dumfries and Galloway",
+                           "North Ayrshire mainland" = "North Ayrshire",
+                           "Ross and Cromarty" = "Highland",
+                           "Caithness and Sutherland" = "Highland",
+                           "Inverness and Nairn" = "Highland",
+                           "Badenoch and Strathspey" = "Highland",
+                           "West Moray" = "Moray",
+                           "North East Moray" = "Moray", 
+                           "Arran and Cumbrae" = "Argyll and Bute",
+                           "Argyll and Bute Islands" = "Argyll and Bute",
+                           "Argyll and Bute Mainland" = "Argyll and Bute",
+                           "Lochaber" = "Highland",
+                           "Skye and Lochalsh" = "Highland")
                                                                  
-saveRDS(scotland.name.lookup, "data/01-raw/orig.sco.name.lookup.rds")
-
-
 saveRDS(scotland.name.lookup, "data/01-raw/orig.sco.name.lookup.rds")

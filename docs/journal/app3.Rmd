@@ -15,7 +15,7 @@ kable(scotland.i.e., "latex", booktabs = T, escape = F) %>%
 * *exp.cell*--cell with expenditure data
 * *inc.cell*--cell with income data
 * *t.exp.cell*--total expenditure for all transport and roads cell
-* *t.exp.cell*--total income for all transport and roads cell
+* *t.inc.cell*--total income for all transport and roads cell
 
 #### DPE and PNC data
 

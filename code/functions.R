@@ -154,11 +154,23 @@ FunScotlandLoopIE <- function(row,
   # change values to numeric type and add the year variable
   df %>% 
     mutate(expend.total = as.numeric(expend.total),
-           income.total = as.numeric(income.total)) -> df
+           income.total = abs(as.numeric(income.total))) -> df
   df$year <- year
   df <- df %>% mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   df
 }
+
+## Scotland tranposrt totals for transport and penalty charge income.
+FunScotlandTransportTotals <- function(file , 
+                                    transport.total,
+                                    year,
+                                    sheet = 1 ) {
+  transport.total <- colnames(read_excel(file, sheet, transport.total))
+  vec <- as.numeric(c(year, transport.total))
+  names(vec) <- c("year", "transport.total")
+  vec
+}
+
 
 # Function to clean up the DPE table extracted from the pdf using tabulizer:
 FunScotlandDPE <- function(list, year) {

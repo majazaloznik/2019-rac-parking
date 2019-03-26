@@ -70,7 +70,7 @@ master %>%
 
 Each row in the master table epresents a single *authority-year* combination.
 
-The file currenlty has 4138 rows as shown in Table \@ref(tab:rows). Note that the most recent year for England is actually just the budgeted surplus data, which is why there is no row for the national transport totals. 
+The file currenlty has `r nrow(master)` rows as shown in Table \@ref(tab:rows). Note that the most recent year for England is actually just the budgeted surplus data, which is why there is no row for the national transport totals. 
 
 ```{r rows, message = FALSE, echo = FALSE}
 master %>% 

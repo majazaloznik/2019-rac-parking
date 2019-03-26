@@ -13,36 +13,37 @@ params:
   current.year: 2017
 ---
 
-```{r, echo = FALSE}
-# change the year variable 
-current.year <- params$current.year
-  # params$current.year
-```
-
 ---
-title: "`r paste("Local Authority Parking Finances in Wales", current.year, "-", current.year-1999)`"
+title: "`r paste("Local Authority Parking Finances in Wales", params$current.year, "-", params$current.year-1999)`"
 
 ---
 
 ```{r setup, echo = FALSE, warning = FALSE, message = FALSE}
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
 
-# preliminaries
+## preliminaries ###############################################################
+# load packages
 suppressWarnings(suppressMessages(library(kableExtra)))
 suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(tidyr)))
 suppressWarnings(suppressMessages(library(showtext)))
 options(knitr.kable.NA = '')
-# font_add_google("Merriweather", "meri")
+
+# add font for plots
 font_add(family = "meri", regular = here::here("data/01-raw/fonts/merriweather.google.ttf"))
 showtext_auto()
+
 # source functions
 source(here::here("code/functions.R"))
+
 # load data
 master <- readRDS(here::here("data/03-processed/master.rds"))
 
-# extract relevant subsets of data
-# for all years
+# change the year variable 
+current.year <- params$current.year
+
+## data preparation ############################################################
+# extract relevant country subset of data for all years
 master %>% 
   filter(country == "Wales") %>% 
   mutate(surplus.total = income.total - expend.total) %>% 
@@ -52,13 +53,11 @@ master %>%
 data.full %>% 
   filter(year >= current.year -4 & year <= current.year) -> data
 
-yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-", (current.year-4-1999):(current.year-1999),"}")
-
 ```
 
 
 ```{r wal.surplus, echo = FALSE, message = FALSE, warning = FALSE}
-
+# needs to be at the start because the intro requires data from here
 data %>% 
   select(auth.name, year, surplus.total) %>% 
   spread(key = year, value = surplus.total) %>% 
@@ -89,6 +88,7 @@ The published data is less comprehensive than in England and does not split out 
 # Summary
 
 ```{r sum, echo = FALSE, message = FALSE, warning = FALSE}
+yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-", (current.year-4-1999):(current.year-1999),"}")
 
 data %>% 
   select(year, income.total, expend.total, surplus.total, transport.total) %>% 
@@ -106,6 +106,8 @@ wal.summary %>%
   mutate(change = ifelse(rowname == "surplus.of.transport", NA, 
                          paste(format(round(change, 2), nsmall = 2), "\\%"))) %>% 
   mutate(rowname = c("Income", "Expenditure", "Surplus", "Net cost", "Parking surplus as percentage of all transport costs")) %>% 
+    mutate_at(vars(V1:V5), function(x) FunDec(x, 2)) %>% 
+    mutate_at(vars(V1:V5), function(x) ifelse(.$rowname == "Parking surplus as percentage of all transport costs", paste0(x, " \\%"), x)) %>%
   mutate(collapsed = c(rep("Parking", 3), "Total transport", "")) %>% 
   select(collapsed, rowname:change) %>% 
   kable( "latex", 
@@ -127,7 +129,7 @@ Table @ref(tab:sum) above shows the summary accounts for local authorities in Wa
 `r ifelse(wal.summary$change[1] < -0.02, paste("fallen by", format(-wal.summary$change[1], digits = 2), "%"), ifelse(wal.summary$change[1] > 0.02, paste("increased by", format(wal.summary$change[1], digits = 2), "%"),"stayed approximately the same"))`, the expenditure has 
 `r ifelse(wal.summary$change[2] < -0.02, paste("fallen by", format(-wal.summary$change[2], digits = 2), "%"), ifelse(wal.summary$change[1] > 0.02, paste("increased by", format(wal.summary$change[2], digits = 2), "%"),"stayed approximately the same"))` and the surplus has
 `r ifelse(wal.summary$change[3] < -0.02, paste("fallen by", format(-wal.summary$change[3], digits = 2), "%"), ifelse(wal.summary$change[1] > 0.02, paste("increased by", format(wal.summary$change[3], digits = 2), "%"),"stayed approximately the same"))`
-compared to the previous fiscal year. Total transport
+compared to the previous fiscal year. Total transport has
 `r ifelse(wal.summary$change[4] < -0.02, paste("fallen by", format(-wal.summary$change[4], digits = 2), "%"), ifelse(wal.summary$change[1] > 0.02, paste("increased by", format(wal.summary$change[4], digits = 2), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(format(wal.summary$V5[5], digits = 2), "%")` of transport costs. 
 
 ```{r echo = FALSE}
@@ -156,7 +158,7 @@ select(year, income.total, expend.total, surplus.total) %>%
   group_by(year) %>% 
   summarise_at(vars(income.total:surplus.total), sum) %>% 
   mutate_at(vars(income.total:surplus.total), list(~./1000)) -> data.plot
-
+old.par <- par(mar = c(5.1, 4.1, 3.1, 2.1))
 plot(data.plot$year, data.plot$income.total, 
      ylim = c(0, max(data.plot$income.total)), 
      type = "l",
@@ -189,7 +191,8 @@ legend("topleft",
        legend = c("Income", "Expenditure", "Surplus"),
        bty = "n",
        col = c("darkblue", "coral3", "chartreuse3"), 
-       lwd = 2, cex = 0.7)
+       lwd = 2, cex = 0.8, xpd= TRUE)
+par(old.par)
 ```
 
 \newpage

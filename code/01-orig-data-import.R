@@ -169,6 +169,22 @@ for (row in 2:nrow(orig.sco.meta.i.e.17)){
   original.scotland.i.e <- bind_rows(original.scotland.i.e, x)
 }
 
+## 2.1.1. SCOTLAND transport totals ###############################################
+# initialise data frame
+scotland.transport.totals <- data.frame()
+
+# loop through excel files extracting two cells each time
+for (row in 2:nrow(orig.sco.meta.i.e.17)){
+  file = orig.sco.meta.i.e.17$file.name[row]
+  tot.1 = orig.sco.meta.i.e.17$t.exp.cell[row]
+  year = orig.sco.meta.i.e.17$year[row]
+  x <- FunScotlandTransportTotals(file, transport.total = tot.1, year)
+  scotland.transport.totals <- bind_rows(scotland.transport.totals, x)
+}
+scotland.transport.totals$country <- "Scotland"
+scotland.transport.totals$auth.name <- "Scotland"
+scotland.transport.totals$auth.type <- "X"
+
 ## 2.2 SCOTLAND PCN data from pdf ##############################################
 
 ## 2.2.1 Scotland DPE table ####################################################
@@ -255,7 +271,7 @@ original.scotland %>%
 
 # merge with original data
 bind_rows(original.data, original.scotland) -> original.data 
-
+bind_rows(original.data, scotland.transport.totals) -> original.data 
 ## 3. WALES DATA IMPORT ########################################################
 # read all expenditure data, remove extra row and column
 wal.expend.total <- read.csv("data/01-raw/orig.wal.exp.17.csv")[-1,-1]
@@ -283,7 +299,12 @@ original.wales %>%
 # merge with original data
 bind_rows(original.data, original.wales) -> original.data 
 
+# sort by country
+original.data %>% 
+  arrange(country, year) -> original.data
+
 # write.csv(original.data, "data/02-interim/original.data.csv")
 saveRDS(original.data, "data/02-interim/original.data.rds")
+saveRDS(original.data, "data/03-processed/master.rds")
 
 # rm(list=setdiff(ls(), "original.data"))
