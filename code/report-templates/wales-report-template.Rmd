@@ -26,6 +26,7 @@ knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
 suppressWarnings(suppressMessages(library(kableExtra)))
 suppressWarnings(suppressMessages(library(dplyr)))
 suppressWarnings(suppressMessages(library(tidyr)))
+suppressWarnings(suppressMessages(library(tibble)))
 suppressWarnings(suppressMessages(library(showtext)))
 options(knitr.kable.NA = '')
 
@@ -213,30 +214,61 @@ data %>%
               mutate(auth.name='Total')) %>% 
     mutate(change =100*(.[[6]]/.[[5]]-1)) -> wal.income
 
+# no income councils
+wal.no.income <- nrow(filter(wal.income, !!as.name(current.year) == 0))
+
+# split into increase/decrease and NA
 wal.income %>% 
   mutate(change = ifelse(change >=0, TRUE, FALSE)) %>% 
   filter(auth.name != "Total") %>% 
   group_by(change) %>% 
   summarise(n = n()) %>% 
-  pull() -> income.bin
+  deframe() -> income.bin
 
+# select only valid
 wal.income %>% 
+  filter(auth.name != "Total") %>% 
   arrange(desc(change)) %>% 
-  filter(row_number() %in% c(23, 22) &
-           .[[6]] <= 30) -> wal.income.exclude
+  filter(!is.nan(change) & !is.infinite(change)) -> wal.income.valid
 
-wal.income %>% 
-  arrange(desc(change)) %>% 
-  filter(row_number() %in% c(1, 2, 23-nrow(wal.income.exclude), 
-                             22-nrow(wal.income.exclude))) %>% 
-  select(auth.name, change, 6) -> top.bottom
-  
+# get top three LAs and proportion they command
+wal.income.valid %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  group_by(row_number() ==1, row_number() ==2, row_number() == 3, row_number() > 3) %>% 
+  mutate(sum = sum(!!as.name(current.year))) %>% 
+  ungroup() %>% 
+  filter(row_number() <= 4) %>% 
+  mutate(auth.name = ifelse(row_number() == 4, "Other", auth.name)) %>% 
+  select(auth.name, sum)  %>% 
+  mutate(total = sum(sum)) %>% 
+  group_by(auth.name == "Other") %>% 
+  mutate(proportion = 100*sum(sum)/total) %>% 
+  ungroup() %>% 
+  select(auth.name, proportion) %>% 
+  deframe() -> wal.income.top3
 
+# extract bottom LAs where income is under 30.000
+wal.income.valid %>% 
+  filter(row_number() %in% c(n(), n()-1) & !!as.name(current.year) <= 30) -> wal.income.exclude.bottom
+
+# extract top LAs where expenditure is under 30.000
+wal.income.valid %>% 
+  filter(row_number() %in% c(1, 2, 3) & !!as.name(current.year) <= 30) -> wal.income.exclude.top
+
+# remove excluded rows and select top 3 and bottom 2
+wal.income.valid %>% 
+  anti_join(wal.income.exclude.top) %>% 
+  anti_join(wal.income.exclude.bottom) %>% 
+  filter(row_number() %in% c(1, 2, 3, n()-1, n())) %>% 
+  select(auth.name, change, !!as.name(current.year)) -> wal.income.top.bottom
 ```
 
-`r FunFirstup(xfun::numbers_to_words(income.bin[2]))` councils increased their income over the past year and `r xfun::numbers_to_words(income.bin[1])` decreased their income. `r top.bottom[1,1]` saw income increase by `r format(round(top.bottom[1,2], 0), nsmall = 0)` %
-while `r top.bottom[2,1]` increased its income by `r format(round(top.bottom[2,2], 0), nsmall = 0)` %. The largest falls were in `r top.bottom[4,1]` (`r format(round(top.bottom[4,2], 0), nsmall = 0)` %), and `r top.bottom[3,1]` (`r format(round(top.bottom[3,2], 0), nsmall = 0)` %)`r ifelse(nrow(wal.income.exclude) == 0, ".", ifelse(nrow(wal.income.exclude) == 1, paste(", excluding", wal.income.exclude[1], "where the income is very low."), paste(", excluding", wal.income.exclude[1,1], "and", wal.income.exclude[2,1], "where the income is very low.")))`
+`r FunFirstup(xfun::numbers_to_words(income.bin[2]))` councils increased their income over the past year and `r xfun::numbers_to_words(income.bin[1])` decreased their income. `r if (wal.no.income > 0 ) {paste0(FunFirstup(xfun::numbers_to_words(wal.no.income)), " councils did not show any income in ", FunFisc(), ".")}`
 
+The top three Welsh councils by income were `r paste0(names(wal.income.top3)[1], ", ", names(wal.income.top3)[2], ", and ", names(wal.income.top3)[3])`, and between them accounted for `r FunDec(wal.income.top3[1], 1)` % of parking income.
+
+`r wal.income.top.bottom[1,1]` increased their income by `r FunDec(wal.income.top.bottom[1,2], 0)` %
+while `r wal.income.top.bottom[2,1]` and `r wal.income.top.bottom[3,1]` increased  by `r FunDec(wal.income.top.bottom[2,2], 0)` % and `r FunDec(wal.income.top.bottom[3,2], 0)` % respectively`r ifelse(nrow(wal.income.exclude.top) == 0, ".", ifelse(nrow(wal.income.exclude.top) == 1, paste(", excluding", wal.income.exclude.top[1], "where the income is very low."), ifelse(nrow(wal.income.exclude.top) == 2,  paste(", excluding", wal.income.exclude.top[1,1], ", and", wal.income.exclude.top[2,1], "where the income is very low."), paste0(", excluding ", wal.income.exclude.top[1,1], ", ", wal.income.exclude.top[2,1], ", and ", wal.income.exclude.top[3,1], " where the income is very low."))))` The biggest decreases were in `r wal.income.top.bottom[5,1]` (`r FunDec(abs(wal.income.top.bottom[5,2]), 0)` %), and `r wal.income.top.bottom[4,1]` (`r FunDec(abs(wal.income.top.bottom[4,2]),0)` %) `r ifelse(nrow(wal.income.exclude.bottom) == 0, ".", ifelse(nrow(wal.income.exclude.bottom) == 1, paste(" (excluding", wal.income.exclude.bottom[1], "where the income is very low)."),   paste(" (excluding", wal.income.exclude.bottom[1,1], ", and", wal.income.exclude.bottom[2,1], "where the income is very low).")))`
 
 
 \renewcommand{\arraystretch}{1.2}
@@ -267,7 +299,8 @@ wal.income %>%
 # Expenditures
 
 ```{r wal.expend, echo = FALSE, message = FALSE, warning = FALSE}
-
+# get wales totals for expenditure for each year in data,
+# caluclate change on previous year and proportion of income
 data %>% 
   select(auth.name, year, expend.total) %>% 
   spread(key = year, value = expend.total) %>% 
@@ -275,34 +308,52 @@ data %>%
               select(auth.name, year, income.total) %>% 
               filter(year == current.year)) %>% 
   select(-year) %>% 
-arrange(desc(.[[6]])) %>% 
+  arrange(desc(.[[6]])) %>% 
   bind_rows(group_by(. ,auth.name) %>%
               ungroup() %>% 
               summarise_at(vars(-auth.name), list(~sum)) %>%
               mutate(auth.name='Total')) %>% 
-    mutate(change =100*(.[[6]]/.[[5]]-1),
-           prop.income = 100*.[[6]]/.[[7]]) %>% 
+  mutate(change =100*(.[[6]]/.[[5]]-1),
+         prop.income = 100*.[[6]]/.[[7]]) %>% 
   select(-income.total)-> wal.expend
 
+# calculate change and prop of income for Scotland total row. 
 wal.expend %>% 
   filter(auth.name == "Total") %>% 
   mutate(current.change = (.[[6]]-.[[5]])/1000,
          last.change = (.[[5]]-.[[4]])/1000) %>% 
   select(change, current.change, last.change) -> wal.expend.t
 
+# count councils with +/- change
 wal.expend %>% 
   filter(auth.name != "Total") %>% 
   mutate(change = ifelse(change >=0, TRUE, FALSE)) %>% 
   group_by(change) %>% 
   summarise(n = n()) %>% 
-  pull() -> expend.bin
+  deframe() -> expend.bin
 
+# select only valid
 wal.expend %>% 
   filter(auth.name != "Total") %>% 
   arrange(desc(change)) %>% 
-  filter(row_number() %in% c(1, 2, 3, 21, 22)) %>% 
-  select(auth.name, change, 6) -> top.bottom
+  filter(!is.nan(change) & !is.infinite(change)) -> wal.expend.valid
+    
+# extract bottom LAs where expenditure is under 30.000
+ wal.expend.valid %>% 
+  filter(row_number() %in% c(n(), n()-1) & !!as.name(current.year) <= 30) -> wal.expend.exclude.bottom
 
+# extract top LAs where expenditure is under 30.000
+ wal.expend.valid %>% 
+  filter(row_number() %in% c(1, 2, 3) & !!as.name(current.year) <= 30) -> wal.expend.exclude.top
+
+# remove excluded rows and select top 3 and bottom 2
+wal.expend.valid %>% 
+  anti_join(wal.expend.exclude.top) %>% 
+  anti_join(wal.expend.exclude.bottom) %>% 
+  filter(row_number() %in% c(1, 2, 3, n()-1, n())) %>% 
+  select(auth.name, change, !!as.name(current.year)) -> wal.expend.top.bottom
+
+# compare Cardif to total by expenditure as prop of income
 wal.expend %>% 
   select(auth.name, prop.income) %>% 
   filter(auth.name %in% c("Total", "Cardiff")) %>% 
@@ -313,8 +364,12 @@ Table @ref(tab:expend) ranks the councils in terms of expenditure on parking.
 
 Overall expenditure has `r ifelse( wal.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(wal.expend.t[2]),1)`m (`r FunDec(abs(wal.expend.t[1]),1)` %) after a `r ifelse( wal.expend.t[3] > 0, paste0("rise of £", FunDec(wal.expend.t[3], 1), "m last year"), paste0("fall of £", FunDec(abs(wal.expend.t[3]),1), "m last year"))`, with `r xfun::numbers_to_words(expend.bin[2])` councils having increased their and `r xfun::numbers_to_words(expend.bin[1])` reduced their costs.  
 
-`r top.bottom[1,1]` increased expenditure by `r FunDec(top.bottom[1,2], 0)` %
-while `r top.bottom[2,1]` and `r top.bottom[3,1]` increased  by `r FunDec(top.bottom[2,2], 0)` % and `r FunDec(top.bottom[3,2], 0)` % respectively. The biggest decreases were in `r top.bottom[5,1]` (`r FunDec(abs(top.bottom[5,2]), 0)` %), and `r top.bottom[4,1]` (`r FunDec(abs(top.bottom[4,2]),0)` %). 
+
+
+The largest increase in expenditure happened in`r wal.expend.top.bottom[1,1]`, where it increased  by `r FunDec(wal.expend.top.bottom[1,2], 0)` %, 
+while `r wal.expend.top.bottom[2,1]` and `r wal.expend.top.bottom[3,1]` increased  by `r FunDec(wal.expend.top.bottom[2,2], 0)` % and `r FunDec(wal.expend.top.bottom[3,2], 0)` % respectively 
+`r ifelse(nrow(wal.expend.exclude.top) == 0, ".", ifelse(nrow(wal.expend.exclude.top) == 1, paste(", excluding", wal.expend.exclude.top[1], "where the expenditure spending is very low."), ifelse(nrow(wal.expend.exclude.top) == 2,  paste(", excluding", wal.expend.exclude.top[1,1], ", and", wal.expend.exclude.top[2,1], "where the expenditure spending is very low."), paste0(", excluding ", wal.expend.exclude.top[1,1], ", ", wal.expend.exclude.top[2,1], ", and ", wal.expend.exclude.top[3,1], " where the expenditure spending is very low."))))` The biggest decreases were in `r wal.expend.top.bottom[5,1]` (`r FunDec(abs(wal.expend.top.bottom[5,2]), 0)` %), and `r wal.expend.top.bottom[4,1]` (`r FunDec(abs(wal.expend.top.bottom[4,2]),0)` %) `r ifelse(nrow(wal.expend.exclude.bottom) == 0, ".", ifelse(nrow(wal.expend.exclude.bottom) == 1, paste(" (excluding", wal.expend.exclude.bottom[1], "where the expenditure spending is very low)."),   paste(" (excluding", wal.expend.exclude.bottom[1,1], ", and", wal.expend.exclude.bottom[2,1], "where the expenditure spending is very low).")))`
+
 
 The table also shows the proportion of income taken up by costs in `r paste0(current.year, "-", current.year-1999)`. Nationally in Wales it is `r format(round(wal.expend.p[2],1), nsmall = 1)` % with Cardiff at `r format(round(wal.expend.p[1],1), nsmall = 1)` %.
 

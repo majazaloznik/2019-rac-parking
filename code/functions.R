@@ -261,7 +261,11 @@ FunFirstup <- function(x) {
 }
 
 # funciton to round to n decimal points precisely
-
 FunDec <- function(x,d) {
   format(round(x, d), nsmall = d)
 }
+
+# function to write out the fiscal year
+FunFisc <- function( x = 0, c.y = current.year){
+paste0(c.y - x, "-", c.y - 1999 - x)
+  }

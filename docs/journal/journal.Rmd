@@ -447,9 +447,33 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * longtable is maybe better here, trying it out now. 
 * *todo: there are still a lot of old format/round combos need replacing*
 * OK, scotland Expenditures done.
+* *todo: deal with the nans and infs*
 * *just not sure why clangmanshire is in the text, check that!*
 * commit
 
+# Wednesday 27.3.2019
+
+* OK, the top/bottom code needs cleaning up. 
+* *Should i consider moving all the code out of the .Rmd files?*
+* top/bottom. first use deframe() instead of pull in order to get a named vector. nice tip!
+* top/bottom: exclude from list if they have under 30,000 income/expenditure.
+* *clean up code: stop using column indices!*
+* in dplyr nrow(.) can be replaced wiht n() .tip
+* excluding rows for under 30.000 is now only done for largest decreases, but should also be for largest increases... That needs to then be fixed in the text.
+* change that in wales as well.. 
+* OK, done for sco.expend. OK
+* OK, repeated for sco.income. OK
+* Hm, sidenote: chunk names where there are tables (used for referencing) cannot have dots or underscores in them? tip!
+* Next: copy to Wales. OK
+* Next: fix that one sentence top three incomes. OK
+* group a df by rownumber: group_by(row_number() <= 3). tip!
+* OK< a bit of wrangling, but i got the top 3 incomes out. OK
+* add to Wales. OK. 
+* need to create function for 2017-18 etc..OK
+* Note: i'm getting latex warnign; label multiply defined, but it seems that's because of longtable meaning the table caption is on two pages. So you can ignore it. tip!
+* OK, income and expenditure codes and texts OK in both Scotland and Wales. 
+* Next: surpluses?
+* *ToDo funfisc, fundec and !!as.name*
 
 
 ### Wales (based on 17/18) #####################################################
