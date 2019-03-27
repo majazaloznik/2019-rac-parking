@@ -514,7 +514,13 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * OK, need to fix the top/bottom code for income and expenditure in Scotland. OK for income.OK for expenditure. 
 * todo: write a function for numbers to words. OK
 * change in all scotland and wales reports. ok.
-* Now DPE east dumbartonshire's lost year
+* Now DPE east dumbartonshire's lost year. OK, fixed. 
+* also cleaned up some of the warnings. all of them actually. OK
+* OK, table 3 - comparing the 3 nations summaries. Can it be generalised, so it can be in every report. Most recent year available. 
+* oops, there might be an error in the england calc in wales forgot to group? NO, it;s OK. 
+* error: the england and london figures in table 3 of scotland report 16/17 don't quite add up, specifically the non London income is about 2mill smaller and the expenditure about 7 million smaller. 
+* OK, table 3 is now done, for both Scotland and copied to Wales as well. OK
+* Next: table 4 missing in Scotland and Wales. Then send it off again?
 
 
 ### Wales (based on 17/18) #####################################################

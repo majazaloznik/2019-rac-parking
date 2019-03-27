@@ -30,38 +30,38 @@ FunEnglandOutturn <- function(file =file,
   expend.on <- read_excel(file, e.sh, cell.range)
   colnames(expend.on) <- "expend.on"
   expend.on <- ifelse(!grepl("^-?[0-9.]+$", expend.on$expend.on), NA, 
-                      as.numeric(expend.on$expend.on))
+                      suppressWarnings(as.numeric(expend.on$expend.on)))
   cell.range <- paste0(e.off, first-1, ":", e.off, last)
   expend.off <- read_excel(file, e.sh, cell.range)
   colnames(expend.off) <- "expend.off"
   expend.off <- ifelse(!grepl("^-?[0-9.]+$", expend.off$expend.off), NA, 
-                       as.numeric(expend.off$expend.off))
+                       suppressWarnings(as.numeric(expend.off$expend.off)))
   cell.range <- paste0(e.cc, first-1, ":", e.cc, last)
   expend.cong.ch <- read_excel(file, e.sh, cell.range)
   colnames(expend.cong.ch) <- "expend.cong.ch"
   expend.cong.ch <- ifelse(!grepl("^-?[0-9.]+$", expend.cong.ch$expend.cong.ch), NA, 
-                       as.numeric(expend.cong.ch$expend.cong.ch))
+                           suppressWarnings(as.numeric(expend.cong.ch$expend.cong.ch)))
   cell.range <- paste0(i.on, first-1, ":", i.on, last)
   income.on <- read_excel(file, i.sh, cell.range)
   colnames(income.on) <- "income.on"
   income.on <- ifelse(!grepl("^-?[0-9.]+$", income.on$income.on), NA, 
-                      as.numeric(income.on$income.on))
+                      suppressWarnings(as.numeric(income.on$income.on)))
   cell.range <- paste0(i.off, first-1, ":", i.off, last)
   income.off <- read_excel(file, i.sh, cell.range)
   colnames(income.off) <- "income.off"
   income.off <- ifelse(!grepl("^-?[0-9.]+$", income.off$income.off), NA, 
-                       as.numeric(income.off$income.off))
+                       suppressWarnings(as.numeric(income.off$income.off)))
   cell.range <- paste0(i.cc, first-1, ":", i.cc, last)
   income.cong.ch <- read_excel(file, i.sh, cell.range)
   colnames(income.cong.ch) <- "income.cong.ch"
   income.cong.ch <- ifelse(!grepl("^-?[0-9.]+$", income.cong.ch$income.cong.ch), NA, 
-                       as.numeric(income.cong.ch$income.cong.ch))
+                           suppressWarnings(as.numeric(income.cong.ch$income.cong.ch)))
   if(!is.na(pen.sh)){
     cell.range <- paste0(pen.on, first-1, ":", pen.on, last)
     income.pcn <- read_excel(file, pen.sh, cell.range)
     colnames(income.pcn) <- "income.pcn"
     income.pcn <- ifelse(!grepl("^-?[0-9.]+$", income.pcn$income.pcn), NA, 
-                         as.numeric(income.pcn$income.pcn))} 
+                         suppressWarnings(as.numeric(income.pcn$income.pcn)))} 
   else {income.pcn <- NA }
   df <- data.frame(auth.name, auth.type,expend.on, expend.off, 
                    income.on, income.off, income.pcn, 
@@ -107,7 +107,7 @@ FunEnglandBudget <- function(file =file,
   surplus.budget <- read_excel(file, sheet, cell.range)
   colnames(surplus.budget) <- "surplus.budget"
   surplus.budget <- ifelse(!grepl("^-?[0-9.]+$", surplus.budget$surplus.budget), NA, 
-                           as.numeric(surplus.budget$surplus.budget))
+                           suppressWarnings(as.numeric(surplus.budget$surplus.budget)))
   df <- data.frame(auth.name, auth.type, surplus.budget,
                    year = year)
   df <- df %>%  mutate(auth.type = ifelse(auth.name == "Greater London Authority", 
@@ -179,12 +179,16 @@ FunScotlandDPE <- function(list, year) {
   # clean up 
   df %>% 
     filter(value != "") %>% 
-    separate(value, into = c("auth.name", "dpe.year"), sep = " \\(")  %>% 
-    separate(dpe.year, into = c("dpe.year", "x"), sep = "\\)") %>% 
-    separate(auth.name, into = c("auth.name", "x"), sep = "\\\r") %>% 
+    separate(value, into = c("auth.name", "x"), sep = "\\\r", fill = "right") %>% 
+    separate(auth.name, into = c("auth.name", "dpe.year"), sep = " \\(", fill = "right")  %>% 
+    separate(x, into = c("x", "e.d"), sep = "\\(", fill = "right") %>% 
+    unite(dpe.year, e.d, dpe.year) %>% 
+    mutate(dpe.year = gsub("NA_", "", dpe.year)) %>% 
+    mutate(dpe.year = gsub("_NA", "", dpe.year)) %>% 
+    separate(dpe.year, into = c("dpe.year", "x"), sep = "\\)", fill = "right") %>% 
     select( -x)  %>% 
     mutate( year = year,
-            dpe.year = as.numeric(dpe.year)) -> df
+            dpe.year = suppressWarnings(as.numeric(dpe.year))) -> df
   df <- df %>% mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   df
 }

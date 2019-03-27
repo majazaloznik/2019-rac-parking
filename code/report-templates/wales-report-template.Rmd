@@ -29,6 +29,7 @@ suppressWarnings(suppressMessages(library(tidyr)))
 suppressWarnings(suppressMessages(library(tibble)))
 suppressWarnings(suppressMessages(library(showtext)))
 options(knitr.kable.NA = '')
+options(stringsAsFactors = FALSE)
 
 # add font for plots
 font_add(family = "meri", regular = here::here("data/01-raw/fonts/merriweather.google.ttf"))
@@ -194,6 +195,85 @@ legend("topleft",
        col = c("darkblue", "coral3", "chartreuse3"), 
        lwd = 2, cex = 0.8, xpd= TRUE)
 par(old.par)
+```
+
+Table @ref(tab:compare) provides a comparison with London, England excluding London, and Wales for the most recent available data. 
+
+\renewcommand{\arraystretch}{1.2}
+```{r compare, echo = FALSE}
+# extract relevant subset of data for england
+master %>% 
+  filter(country == "England") %>% 
+  filter(year == min(current.year, max(year))) %>% 
+  mutate(income.total = income.on + income.off,
+         expend.total = expend.on + expend.off,
+         surplus.total = income.total - expend.total,
+         country = recode(auth.type, "X" = "X", "L" = "London",
+                        .default = "England without London")) %>% 
+  group_by(country) %>% 
+  filter(country != "X") %>% 
+  summarise( sum.year = first(year),
+            income = sum(income.total, na.rm = TRUE),
+            expend = sum(expend.total, na.rm = TRUE),
+             surplus = sum(surplus.total, na.rm = TRUE),
+            prop.of.income = surplus/income) -> eng.sum
+
+# extract relevant subset of data for wales
+master %>% 
+  filter(country == "Wales") %>% 
+  filter(year == min(current.year, max(year))) %>% 
+  mutate(surplus.total = income.total - expend.total)  %>% 
+  group_by(country) %>% 
+  summarise( sum.year = first(year),
+            income = sum(income.total, na.rm = TRUE),
+            expend = sum(expend.total, na.rm = TRUE),
+            surplus = sum(surplus.total, na.rm = TRUE),
+            prop.of.income = surplus/income) -> wal.sum
+
+# extract relevant subset of data for Scotland
+master %>% 
+  filter(country == "Scotland") %>% 
+  filter(year == min(current.year, max(year))) %>% 
+  mutate(surplus.total = income.total - expend.total)  %>% 
+  group_by(country) %>% 
+  summarise( sum.year = first(year),
+            income = sum(income.total, na.rm = TRUE),
+            expend = sum(expend.total, na.rm = TRUE),
+            surplus = sum(surplus.total, na.rm = TRUE),
+            prop.of.income = surplus/income) -> sco.sum
+
+# bind all together and reshape
+bind_rows(eng.sum, wal.sum, sco.sum) %>% 
+  mutate(sum.year = paste0("(", sum.year, "-", sum.year-1999, ")"),
+    surplus = FunDec(surplus/1000, 1), 
+         income = FunDec(income/1000, 1), 
+         expend = FunDec(expend/1000, 1), 
+         prop.of.income = paste0(FunDec(prop.of.income*100, 1),"\\%")) %>% 
+  t() %>% 
+  as.data.frame(stringsAsFactors = FALSE) %>% 
+  tibble::rownames_to_column("var") %>% 
+  setNames(.[1,]) %>% 
+  filter(country != "country") %>% 
+  mutate(country = c("Fiscal year", "Parking income", "Parking expenditure", "Surplus", "Surplus as proportion if income")) -> sum.gb
+
+
+# plot table 
+sum.gb %>% 
+   kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         col.names = c("", "England without London", "London", "Wales", "Scotland"),
+         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain"), 
+         format.args = list(big.mark = ","),
+         linesep = "") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("hold_position", "striped", "repeat_header"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "5cm") %>% 
+  row_spec(c(1, 4), hline_after = TRUE)
 ```
 
 \newpage
