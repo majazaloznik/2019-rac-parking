@@ -421,9 +421,8 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 
 * *Todo Now clean up the Wales references as well! *
 
-* ** OK, now Scotland **
+* OK, now Scotland
 * *TODO: shoudl I move all the code out of the Rmds? It would look nicer for sure*
-* *TODO because the TFS reports for 2013-14-15-16 are in a scanned pdf, I have not extracted that data. But I could try getting it out of Leibling's reports.. OK, let's do the regular income/expend/surplus stuff first and deal with PCNs later. *
 * OK, DPE table done! And that was not easy!
 * let's try a map. The scotland map has 41 polygons, I need to colapse them into 32.. 
 * More lookup table updating.. 
@@ -443,12 +442,12 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * scotland summary table and text are now OK
 * plot. OK
 * issues: floats of tables and figures, little control..
-* text and code seem to work fine from Wales, a bit of adjusting.. Like the inf and Nans, I still need to deal with them a bit more *todo* 
-* longtable is maybe better here, trying it out now. 
-* *todo: there are still a lot of old format/round combos need replacing*
+* text and code seem to work fine from Wales, a bit of adjusting.. Like the inf and Nans, I still need to deal with them a bit more.  OK
+* longtable is maybe better here, trying it out now. OK.
+* todo: there are still a lot of old format/round combos need replacing, OK
 * OK, scotland Expenditures done.
-* *todo: deal with the nans and infs*
-* *just not sure why clangmanshire is in the text, check that!*
+* todo: deal with the nans and infs.OK
+* just not sure why clangmanshire is in the text, check that!. OK
 * commit
 
 # Wednesday 27.3.2019
@@ -467,13 +466,55 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * Next: copy to Wales. OK
 * Next: fix that one sentence top three incomes. OK
 * group a df by rownumber: group_by(row_number() <= 3). tip!
-* OK< a bit of wrangling, but i got the top 3 incomes out. OK
+* OK < a bit of wrangling, but i got the top 3 incomes out. OK
 * add to Wales. OK. 
 * need to create function for 2017-18 etc..OK
 * Note: i'm getting latex warnign; label multiply defined, but it seems that's because of longtable meaning the table caption is on two pages. So you can ignore it. tip!
 * OK, income and expenditure codes and texts OK in both Scotland and Wales. 
+* ToDo funfisc, replace all. OK
+* fundec, replace all. OK
+* !!as.name.. automated using code snippets. tip! OK
 * Next: surpluses?
-* *ToDo funfisc, fundec and !!as.name*
+* I've moved the sco surplus code to the top, because in wales it is used in the text there, don't forget. 
+* surplus totals for deficits and sufficits are different from Wales, since in Scotland we don't have individual level transport totals. So that needs to be rewritten
+* but that isn't actually true, the information is in the IE excel files... Need to rewrite the import.. OK
+* fixed in funcitons.R and 01-import. create new original/master data. OK
+* Now first rerun the technical.rmd. OK
+* OK, back to surplus. table OK
+* First fix the binning function to let you have 0 as well as poz and neg/.OK
+* And do that in all 6 cases. OK
+* Now get table to work. OK
+* width of first column.. OK. 
+* now surplus text. 
+* top three surplus councils need to be named..OK
+* do that in Walse as well. OK
+* Now add the top 3 bottom 2 thing that we did everywhere else, but seems to be missing here. OK
+* HMM, when i exclude the extremes because they have too little income/expenditure/surplus, then I am only looking at the top/bottom 2/3. But what if after excluding them there are still very low values left? OK
+* OK, turn it around. first find the top three and bottom two. Then anti_join, but just below/above, to get the excluded ones out... let's try this. OK
+* OK, this now works. But how do i make the conditional tree simple if there is potentially X number of excluded councils? Where do I do `, and`. OK wrote a function. OK
+* This all works now, need to replicate in all 6.. 
+* Replicated for Wales surpluses. OK
+* still need to replicate for incomes and expenditures. in scotland OK
+* * still need to replicate for incomes and expenditures. in wales*
+* SHit, if surplus goes from poz to neg or vv, there should be no change. OK.
+* *Also, the transport numbers for scotland are definitely wrong. I am using net expenditure, but I should presumably be using gross expenditure? OK, I'll fix that now... BUT still no correspondence with the Leibling report.. *
+* TODO: table of expenditure as proportion of income over the years? That removes the need for the final column in the expend.table
+* SO if a change or proportion is nan or inf it should become NA, right? Yeah, but now the problem seem to be the italics... If it's NA and italic, it won't make it disappear. Because the whole column is now character.. So I need to fix that as well. This is done in Scotland. OK
+* OK, surplus tables with change in sign. Scotland and Wales. OK
+* OK, let[s do a expenditure as proportion of income table for Scotland first. OK
+* OMG, this conditional colouring is super hard!!! Kinda works now, but still have NAs, NANs and Infs....They need different colour codes? OK
+  + NA is empty and whiteOK
+  + Inf means no income. So also white? OK
+  + then gray out the text for the ones with too small numbers? Nah, a footnote will do.
+* Now repeat for Wales. OK
+* *Now the PCNs. first need to extract the old pdf data from the Leibling report.NO, they're not there. The data would have to be manually input... Maybe later* 
+* LOL, i had a [1-9] gsub line, which stripped out all the zeros from the Scotland PCN data, eeek! OK
+* OK, just the last two years for PCN incomes then. OK
+* Manually correct the 2016/17 Argyll and Bute no on PCNs from 3018 to 13018? Make sure it's in the tech doc. 
+* OK, need to fix the top/bottom code for income and expenditure in Scotland. OK for income.OK for expenditure. 
+* todo: write a function for numbers to words. OK
+* change in all scotland and wales reports. ok.
+* Now DPE east dumbartonshire's lost year
 
 
 ### Wales (based on 17/18) #####################################################

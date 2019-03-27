@@ -162,28 +162,14 @@ for (row in 2:nrow(orig.sco.meta.i.e.17)){
   end.sh =  orig.sco.meta.i.e.17$end.sh[row]
   exp.cell =  orig.sco.meta.i.e.17$exp.cell[row]
   inc.cell =  orig.sco.meta.i.e.17$inc.cell[row]
+  transp.cell = orig.sco.meta.i.e.17$t.exp.cell[row]
   auth.cell = orig.sco.meta.i.e.17$auth.cell[row]
   x <- FunScotlandLoopIE(row, year, file.name, 
                          start.sh, end.sh, 
-                         exp.cell, inc.cell,  auth.cell)
+                         exp.cell, inc.cell,  transp.cell, auth.cell)
   original.scotland.i.e <- bind_rows(original.scotland.i.e, x)
 }
 
-## 2.1.1. SCOTLAND transport totals ###############################################
-# initialise data frame
-scotland.transport.totals <- data.frame()
-
-# loop through excel files extracting two cells each time
-for (row in 2:nrow(orig.sco.meta.i.e.17)){
-  file = orig.sco.meta.i.e.17$file.name[row]
-  tot.1 = orig.sco.meta.i.e.17$t.exp.cell[row]
-  year = orig.sco.meta.i.e.17$year[row]
-  x <- FunScotlandTransportTotals(file, transport.total = tot.1, year)
-  scotland.transport.totals <- bind_rows(scotland.transport.totals, x)
-}
-scotland.transport.totals$country <- "Scotland"
-scotland.transport.totals$auth.name <- "Scotland"
-scotland.transport.totals$auth.type <- "X"
 
 ## 2.2 SCOTLAND PCN data from pdf ##############################################
 
@@ -219,6 +205,10 @@ scotland.pcn.14 <- FunScotlandPCN(scotland.pcn.14.15.16, 2014)
 scotland.pcn.15 <- FunScotlandPCN(scotland.pcn.14.15.16, 2015)
 scotland.pcn.16 <- FunScotlandPCN(scotland.pcn.14.15.16, 2016)
 
+# manually correct Argyll and Bute's number following Leibling
+scotland.pcn.16  %>% 
+  mutate(pcn.number = ifelse(auth.name == "Argyll and Bute", 
+                             13018, pcn.number)) -> scotland.pcn.16
 # clean PCN tables for 17/18
 scotland.pcn.17 <- FunScotlandPCN(scotland.pcn.17, 2017)
 
@@ -228,6 +218,7 @@ scotland.pcn.17 <- FunScotlandPCN(scotland.pcn.17, 2017)
 scotland.tfs.i.e.16 <- extract_tables(here::here(orig.sco.meta.pdf.17$file.name[4]), 
                                         pages = orig.sco.meta.pdf.17$e.i.tab[4],
                                         output = "data.frame")[[1]]
+
 
 # extract PCN type table for 17/18 directly into a data.frame
 scotland.tfs.i.e.17 <- extract_tables(here::here(orig.sco.meta.pdf.17$file.name[5]), 
@@ -271,7 +262,7 @@ original.scotland %>%
 
 # merge with original data
 bind_rows(original.data, original.scotland) -> original.data 
-bind_rows(original.data, scotland.transport.totals) -> original.data 
+
 ## 3. WALES DATA IMPORT ########################################################
 # read all expenditure data, remove extra row and column
 wal.expend.total <- read.csv("data/01-raw/orig.wal.exp.17.csv")[-1,-1]

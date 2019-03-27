@@ -330,7 +330,9 @@ exp.cell <- c("-", "F57", "F40", "E40", "B41", "B41", "L13")
 
 inc.cell <- c("-", "G57", "G40", "F40", "C41", "C41", "L23")
 
-t.exp.cell <- c("-", "H50", "H33", "G33", "D34", "D34", "U28")
+# t.exp.cell <- c("-", "H50", "H33", "G33", "D34", "D34", "U28") #(net expenditure)
+
+t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34", "U13") # gross revenue expenditure
 
 auth.cell <- c("-", "A2", "A2", "A2", "A2", "A1", "E2")
 scotland.i.e. <- data.frame(fisc.year,year,report, file.name, link, 

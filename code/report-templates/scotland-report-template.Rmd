@@ -17,7 +17,7 @@ params:
   title: "`r paste("Local Authority Parking Finances in Wales", params$current.year, "-", params$current.year-1999)`"
 ---
 
-#### Careful - there is no Aberdeen data in this report, so the totals won't match. (And there is some other source of errors in the Summary I suspect..){-}
+**Careful - there is no Aberdeen data in this report, so the totals won't match. (And there is some other source of errors in the Summary I suspect..) **
 
 ```{r setup, echo = FALSE, warning = FALSE, message = FALSE}
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
@@ -63,7 +63,7 @@ data %>%
   filter(year == current.year) -> data.current
 ```
 
-This note covers parking finances for the 32 local authorities in Scotland. They are required to submit details of their finances to the Scottish Government annually in a standard format. The figures are normally published in March, nearly a year after the financial year end. This note looks at the section on parking income and expenditure for `r paste0(current.year-4, "-", current.year-1999-4)` to `r paste0(current.year, "-", current.year-1999)`. 
+This note covers parking finances for the 32 local authorities in Scotland. They are required to submit details of their finances to the Scottish Government annually in a standard format. The figures are normally published in March, nearly a year after the financial year end. This note looks at the section on parking income and expenditure for `r FunFisc(4)` to `r FunFisc()`. 
 
 In addition, Transport Scotland is now publishing an annual report on decriminalised parking - the latest being: *Decriminalised Parking Enforcement – Local Authorities’ Income and Expenditure:* `r current.year` to `r current.year + 1`,  which follows on from a report published in 2016 by the Scottish Parliament Rural Economy and Connectivity Committee that showed for the first time the number of Penalty Charge Notices (PCNs) issued and penalty income raised in Scotland for the years 2013-14 to 2015-16. 
 
@@ -72,12 +72,7 @@ The Transport for Scotland report deals with the statutory returns which are req
 
 # Introduction
 
-Table 1 shows that as of \color{red}December \color{black} `r current.year`, *16* councils were operating DPE (using local traffic wardens and civil enforcement), while two more were actively working towards DPE, \color{red}one of which--Midlothian--introduced DPE in January 2018. \color{black} The remaining ten authorities were not currently considering DPE, but still use fixed penalty notices issued instead of fines enforced by the Justice of the Peace courts. 
-
-Police Scotland no longer enforces parking offences but now deals only with dangerous parking (e.g. on pedestrian crossings) by local arrangement. Several of the authorities not using DPE have rejected it because of the cost of setting it up and running it for the small number of parking offences. 
-
-\renewcommand{\arraystretch}{1.1}
-```{r dpe }
+```{r}
 data.current %>% 
   select(auth.name, dpe.status, dpe.year) %>% 
   arrange(dpe.status) %>% 
@@ -95,7 +90,17 @@ data.current %>%
   unite(dpe.now, dpe.now_auth.name, dpe.now_dpe.year, sep = " (") %>% 
   mutate(dpe.now = paste0(dpe.now, ")")) %>% 
   rename(dpe.next = dpe.next_auth.name , dpe.not = dpe.not_auth.name) %>% 
-  select(dpe.now, dpe.next, dpe.not) %>% 
+  select(dpe.now, dpe.next, dpe.not) -> sco.dpe 
+```
+
+Table 1 shows that as of \color{red}December \color{black} `r current.year`, `r nrow(sco.dpe)` councils were operating DPE (using local traffic wardens and civil enforcement), while two more were actively working towards DPE, \color{red}one of which--Midlothian--introduced DPE in January 2018. \color{black} The remaining ten authorities were not currently considering DPE, but still use fixed penalty notices issued instead of fines enforced by the Justice of the Peace courts. 
+
+Police Scotland no longer enforces parking offences but now deals only with dangerous parking (e.g. on pedestrian crossings) by local arrangement. Several of the authorities not using DPE have rejected it because of the cost of setting it up and running it for the small number of parking offences. 
+
+\renewcommand{\arraystretch}{1.1}
+```{r dpe }
+
+sco.dpe %>% 
  kable( "latex", 
          booktabs = T, 
          align = c("l"),
@@ -140,9 +145,32 @@ data %>%
   tibble::rownames_to_column() %>%
   filter(rowname != "year") %>%
   mutate(change = V5/V4 *100 -100)  -> sco.summary
+
+
 ```
 
-Table @ref(tab:sumtab) and Figure X@ref(fig:fig1) show the summary accounts for local authorities in Scotland for fiscal years `r paste0(current.year-4, "-", current.year-1999-4)` to `r paste0(current.year, "-", current.year-1999)`. The income has 
+```{r sco.surplus, echo = FALSE, message = FALSE, warning = FALSE}
+# needs to be at the start because the intro requires data from here
+data %>% 
+  select(auth.name, year, surplus.total) %>% 
+  spread(key = year, value = surplus.total) %>% 
+  full_join(data %>% 
+              select(auth.name, year, transport.total) %>% 
+              filter(year == current.year)) %>% 
+  select(-year) %>% 
+  arrange(desc(.[[6]])) -> sco.surplus
+
+sco.surplus %>% 
+  filter(auth.name != "Total") %>% 
+  mutate(sign = ifelse(!!as.name(current.year) > 0, "poz",
+                         ifelse(!!as.name(current.year) == 0, "zero", "neg"))) %>% 
+  group_by(sign) %>% 
+  summarise(n = n()) %>% 
+  deframe() -> surplus.bin
+
+```
+
+Table @ref(tab:sumtab) and Figure @ref(fig:fig1) show the summary accounts for local authorities in Scotland for fiscal years `r FunFisc(4)` to `r FunFisc()`. The income has 
 `r ifelse(sco.summary$change[1] < -0.02, paste("fallen by", format(-sco.summary$change[1], digits = 2), "%"), ifelse(sco.summary$change[1] > 0.02, paste("increased by", format(sco.summary$change[1], digits = 2), "%"),"stayed approximately the same"))`, the expenditure has 
 `r ifelse(sco.summary$change[2] < -0.02, paste("fallen by", format(-sco.summary$change[2], digits = 2), "%"), ifelse(sco.summary$change[1] > 0.02, paste("increased by", format(sco.summary$change[2], digits = 2), "%"),"stayed approximately the same"))`, and the surplus has
 `r ifelse(sco.summary$change[3] < -0.02, paste("fallen by", format(-sco.summary$change[3], digits = 2), "%"), ifelse(sco.summary$change[1] > 0.02, paste("increased by", format(sco.summary$change[3], digits = 2), "%"),"stayed approximately the same"))`
@@ -154,7 +182,7 @@ yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-", (
 
 sco.summary %>% 
   mutate(change = ifelse(rowname == "surplus.of.transport", NA, 
-                         paste(format(round(change, 2), nsmall = 2), "\\%"))) %>% 
+                         paste(FunDec(change, 2), "\\%"))) %>% 
   mutate(rowname = c("Income", "Expenditure", "Surplus", "Net cost", "Parking surplus as percentage of all transport costs")) %>% 
   mutate_at(vars(V1:V5), function(x) FunDec(x, 2)) %>% 
   mutate_at(vars(V1:V5), function(x) ifelse(.$rowname == "Parking surplus as percentage of all transport costs", paste0(x, " \\%"), x)) %>%
@@ -261,24 +289,28 @@ data %>%
               ungroup() %>% 
               summarise_at(vars(-auth.name), list(~sum)) %>%
               mutate(auth.name='Total')) %>% 
-    mutate(change =100*(.[[6]]/.[[5]]-1)) -> sco.income
+    mutate(change =100*(.[[6]]/.[[5]]-1)) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change))) -> sco.income
 
 # no income councils
 sco.no.income <- nrow(filter(sco.income, !!as.name(current.year) == 0))
 
 # split into increase/decrease and NA
 sco.income %>% 
-  mutate(change = ifelse(change >=0, TRUE, FALSE)) %>% 
-  filter(auth.name != "Total") %>% 
+ mutate(change = ifelse(!!as.name(current.year) > 0, "poz",
+                         ifelse(!!as.name(current.year) == 0, "zero", "neg"))) %>% 
   group_by(change) %>% 
   summarise(n = n()) %>% 
-  tibble::deframe() -> income.bin
+  deframe() -> income.bin
 
 # select only valid
 sco.income %>% 
   filter(auth.name != "Total") %>% 
-  arrange(desc(change)) %>% 
-  filter(!is.nan(change) & !is.infinite(change)) -> sco.income.valid
+  filter(!is.nan(change) & !is.infinite(change) & !is.na(change)) %>% 
+  arrange(desc(change)) %>%
+  rownames_to_column() %>% 
+  mutate(rowname = as.numeric(rowname)) -> sco.income.valid
 
 # get top three LAs and proportion they command
 sco.income.valid %>% 
@@ -296,38 +328,40 @@ sco.income.valid %>%
   select(auth.name, proportion) %>% 
   deframe() -> sco.income.top3
 
-# extract bottom LAs where income is under 30.000
- sco.income.valid %>% 
-  filter(row_number() %in% c(n(), n()-1) & !!as.name(current.year) <= 30) -> sco.income.exclude.bottom
-
-# extract top LAs where expenditure is under 30.000
- sco.income.valid %>% 
-  filter(row_number() %in% c(1, 2, 3) & !!as.name(current.year) <= 30) -> sco.income.exclude.top
-
-# remove excluded rows and select top 3 and bottom 2
+# get top three relevant expenditure changes
 sco.income.valid %>% 
-  anti_join(sco.income.exclude.top) %>% 
-  anti_join(sco.income.exclude.bottom) %>% 
-  filter(row_number() %in% c(1, 2, 3, n()-1, n())) %>% 
-  select(auth.name, change, !!as.name(current.year)) -> sco.income.top.bottom
+   filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() <= 3) -> sco.income.change.top3
 
+# find excluded rows in top of the table 
+sco.income.valid %>% 
+  filter(rowname <= max(sco.income.change.top3$rowname)) %>% 
+  anti_join(sco.income.change.top3) -> sco.income.excluded.top
+
+# get bottom two relevant surplus changes
+sco.income.valid %>% 
+   filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() > n()-2) -> sco.income.change.bottom2
+
+# find excluded rows in bottom of the table 
+sco.income.valid %>% 
+  filter(rowname > min(sco.income.change.bottom2$rowname)) %>% 
+  anti_join(sco.income.change.bottom2) -> sco.income.excluded.bottom
 ```
 
-`r FunFirstup(xfun::numbers_to_words(income.bin[2]))` councils increased their income over the past year and `r xfun::numbers_to_words(income.bin[1])` decreased their income. `r if (sco.no.income > 0 ) {paste0(FunFirstup(xfun::numbers_to_words(sco.no.income)), " councils did not show any income in ", FunFisc(), ".")}`
-
+`r FunFirstup(FunN2W(income.bin[2]))` councils increased their income over the past year and `r FunN2W(income.bin[1])` decreased their income. `r if (sco.no.income > 0 ) {paste0(FunFirstup(FunN2W(sco.no.income)), " councils did not show any income in ", FunFisc(), ".")}`
 
 The top three Scottish cities by income were `r paste0(names(sco.income.top3)[1], ", ", names(sco.income.top3)[2], ", and ", names(sco.income.top3)[3])`, and between them accounted for `r FunDec(sco.income.top3[1], 1)` % of parking income. 
 
-`r sco.income.top.bottom[1,1]` increased their income by `r FunDec(sco.income.top.bottom[1,2], 0)` %
-while `r sco.income.top.bottom[2,1]` and `r sco.income.top.bottom[3,1]` increased  by `r FunDec(sco.income.top.bottom[2,2], 0)` % and `r FunDec(sco.income.top.bottom[3,2], 0)` % respectively`r ifelse(nrow(sco.income.exclude.top) == 0, ".", ifelse(nrow(sco.income.exclude.top) == 1, paste(", excluding", sco.income.exclude.top[1], "where the income is very low."), ifelse(nrow(sco.income.exclude.top) == 2,  paste(", excluding", sco.income.exclude.top[1,1], ", and", sco.income.exclude.top[2,1], "where the income is very low."), paste0(", excluding ", sco.income.exclude.top[1,1], ", ", sco.income.exclude.top[2,1], ", and ", sco.income.exclude.top[3,1], " where the income is very low."))))` The biggest decreases were in `r sco.income.top.bottom[5,1]` (`r FunDec(abs(sco.income.top.bottom[5,2]), 0)` %), and `r sco.income.top.bottom[4,1]` (`r FunDec(abs(sco.income.top.bottom[4,2]),0)` %) `r ifelse(nrow(sco.income.exclude.bottom) == 0, ".", ifelse(nrow(sco.income.exclude.bottom) == 1, paste(" (excluding", sco.income.exclude.bottom[1], "where the income is very low)."),   paste(" (excluding", sco.income.exclude.bottom[1,1], ", and", sco.income.exclude.bottom[2,1], "where the income is very low).")))`
-
+`r sco.income.change.top3[1,2]` increased their income by `r FunDec(sco.income.change.top3$change[1], 0)` %
+while `r sco.income.change.top3[2,2]` and `r sco.income.change.top3[3,2]` increased  by `r FunDec(sco.income.change.top3$change[2], 0)` % and `r FunDec(sco.income.change.top3$change[3], 0)` % respectively`r if(nrow(sco.income.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.income.excluded.top$auth.name), " due to very low numbers)")`. The biggest decreases were in `r sco.income.change.bottom2[2,2]` (`r FunDec(abs(sco.income.change.bottom2$change[2]), 0)` %), and `r sco.income.change.bottom2[1,2]` (`r FunDec(abs(sco.income.change.bottom2$change[1]), 0)`  %)`r if(nrow(sco.income.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.income.excluded.bottom$auth.name), " due to very low numbers)")`.
 
 \renewcommand{\arraystretch}{1.2}
 ```{r incometab, echo = FALSE, message = FALSE, warning = FALSE}
 
 sco.income %>% 
   mutate(change = ifelse(is.na(change), NA, 
-                         paste(format(round(change, 1), nsmall = 1), "\\%"))) %>% 
+                         paste(FunDec(change, 1), "\\%"))) %>% 
    kable( "latex", 
          booktabs = T, 
          digits = c(rep(0, 6), 2), 
@@ -349,7 +383,70 @@ sco.income %>%
 ```
  
 
-\newpage
+```{r}
+# extract data forn PCN numbers for each year, and the PCN income for the most 
+# recent year
+
+data %>% 
+  filter(year >= max(current.year-4, 2014)) %>% 
+  select(auth.name, year, pcn.number) %>% 
+  spread(key = year, value = pcn.number) %>% 
+  full_join(data %>% 
+              select(auth.name, year, income.pcn) %>% 
+              filter(year == current.year)) %>% 
+  bind_rows(group_by(. ,auth.name) %>%
+              ungroup() %>% 
+              summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>%
+              mutate(auth.name='Total'))  %>% 
+  mutate(income.per.pcn = 1000* income.pcn/!!as.name(current.year)) %>% 
+  select(-year, -income.pcn) %>% 
+  filter(!is.na(income.per.pcn)) -> sco.pcn.numbers
+# get correct number of headers for the table
+x <- ncol(sco.pcn.numbers) - 3
+yearz.pcn <- paste0("\\multirow{1}{*}[0pt]{",(current.year-x):(current.year), "-", (current.year-x-1999):(current.year-1999),"}")
+
+# get average anual increase over the years in the table
+sco.pcn.numbers %>% 
+  filter(auth.name == "Total") %>% 
+  select(-auth.name, -income.per.pcn) %>% 
+  mutate(annual = (.[[ncol(.)]]/ .[[1]] )^(1/(ncol(.)-1))) %>% 
+  pull(annual)*100 -100 -> sco.pcn.numbers.annual
+
+# eet £ per PCN for total Scotland
+sco.pcn.tot.average <- filter(sco.pcn.numbers, auth.name == "Total") %>% pull(income.per.pcn)
+```
+
+
+Table @ref(tab:pcntab) shows the number of PCNs issued council by council in Scotland for the years `r FunFisc(x)` to `r FunFisc()`, with the average income per PCN for  `r FunFisc()`. The total number of PCNs has `r ifelse(sco.pcn.numbers.annual > 0, "increased", "decreased")` by around `r FunDec(sco.pcn.numbers.annual,1)` % a year on average. \color{red}The penalty for parking can be £40 or £50 for a minor offence such as overstaying at a meter, or £60 for a more serious offence such as parking where it is not allowed. \color{black} These figures are reduced by 50% for prompt payment and increased by 50% for slow payment. The average recovery per PCN was £`r FunDec(sco.pcn.tot.average, 1)` in `r FunFisc()`.
+
+
+```{r pcntab}
+
+sco.pcn.numbers %>% 
+ mutate(income.per.pcn = ifelse(is.na(income.per.pcn), NA, 
+                         paste0("£", FunDec(income.per.pcn, 1)))) %>% 
+   kable( "latex", 
+         booktabs = TRUE, 
+         digits = 0, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = paste("Number of PCNs for councils using DPE and average", 
+                         FunFisc(), "income per PCN"),
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz.pcn, 
+                       paste0("£/PCN (", FunFisc(), ")"))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 10) %>% 
+   column_spec(1, width = "3.7cm") %>% 
+  row_spec(nrow(sco.pcn.numbers)-1, hline_after = TRUE)
+  
+
+
+```
+
 
 # Expenditures
 
@@ -373,7 +470,11 @@ data %>%
               mutate(auth.name='Total')) %>% 
   mutate(change =100*(.[[6]]/.[[5]]-1),
          prop.income = 100*.[[6]]/.[[7]]) %>% 
-  select(-income.total)-> sco.expend
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change)),
+         prop.income = ifelse(is.nan(prop.income), NA, 
+                         ifelse(is.infinite(prop.income), NA, prop.income))) %>% 
+  select(-income.total) -> sco.expend
 
 # calculate change and prop of income for Scotland total row. 
 sco.expend %>% 
@@ -385,32 +486,58 @@ sco.expend %>%
 # count councils with +/- change
 sco.expend %>% 
   filter(auth.name != "Total") %>% 
-  mutate(change = ifelse(change >=0, TRUE, FALSE)) %>% 
+  mutate(change = ifelse(!!as.name(current.year) > 0, "poz",
+                         ifelse(!!as.name(current.year) == 0, "zero", "neg"))) %>% 
   group_by(change) %>% 
   summarise(n = n()) %>% 
-  deframe() -> expend.bin
+  deframe()-> expend.bin
+
 
 # select only valid
 sco.expend %>% 
   filter(auth.name != "Total") %>% 
-  arrange(desc(change)) %>% 
-  filter(!is.nan(change) & !is.infinite(change)) -> sco.expend.valid
-    
-# extract bottom LAs where expenditure is under 30.000
- sco.expend.valid %>% 
-  filter(row_number() %in% c(n(), n()-1) & !!as.name(current.year) <= 30) -> sco.expend.exclude.bottom
+  filter(!is.nan(change) & !is.infinite(change) & !is.na(change)) %>% 
+  arrange(desc(change)) %>%
+  rownames_to_column() %>% 
+  mutate(rowname = as.numeric(rowname)) -> sco.expend.valid
 
-# extract top LAs where expenditure is under 30.000
- sco.expend.valid %>% 
-  filter(row_number() %in% c(1, 2, 3) & !!as.name(current.year) <= 30) -> sco.expend.exclude.top
-
-# remove excluded rows and select top 3 and bottom 2
+# get top three LAs and proportion they command
 sco.expend.valid %>% 
-  anti_join(sco.expend.exclude.top) %>% 
-  anti_join(sco.expend.exclude.bottom) %>% 
-  filter(row_number() %in% c(1, 2, 3, n()-1, n())) %>% 
-  select(auth.name, change, !!as.name(current.year)) -> sco.expend.top.bottom
+  arrange(desc(!!as.name(current.year))) %>% 
+  group_by(row_number() ==1, row_number() ==2, row_number() == 3, row_number() > 3) %>% 
+  mutate(sum = sum(!!as.name(current.year))) %>% 
+  ungroup() %>% 
+  filter(row_number() <= 4) %>% 
+  mutate(auth.name = ifelse(row_number() == 4, "Other", auth.name)) %>% 
+  select(auth.name, sum)  %>% 
+  mutate(total = sum(sum)) %>% 
+  group_by(auth.name == "Other") %>% 
+  mutate(proportion = 100*sum(sum)/total) %>% 
+  ungroup() %>% 
+  select(auth.name, proportion) %>% 
+  deframe() -> sco.expend.top3
 
+# get top three relevant expenditure changes
+sco.expend.valid %>% 
+   filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() <= 3) -> sco.expend.change.top3
+
+# find excluded rows in top of the table 
+sco.expend.valid %>% 
+  filter(rowname <= max(sco.expend.change.top3$rowname)) %>% 
+  anti_join(sco.expend.change.top3) -> sco.expend.excluded.top
+
+# get bottom two relevant surplus changes
+sco.expend.valid %>% 
+   filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() > n()-2) -> sco.expend.change.bottom2
+
+# find excluded rows in bottom of the table 
+sco.expend.valid %>% 
+  filter(rowname > min(sco.expend.change.bottom2$rowname)) %>% 
+  anti_join(sco.expend.change.bottom2) -> sco.expend.excluded.bottom
+
+# calculate the proportion of the expenditure by Glasgow and Edinburgh
 sco.expend %>% 
   select(auth.name, prop.income) %>% 
   filter(auth.name %in% c("Total", "Glasgow City", "Edinburgh City")) %>% 
@@ -420,22 +547,22 @@ sco.expend %>%
 
 Table @ref(tab:expendtab) ranks the councils in terms of expenditure on parking.
 
-Overall expenditure has `r ifelse( sco.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(sco.expend.t[2]),1)`m (`r FunDec(abs(sco.expend.t[1]),1)` %) after a `r ifelse( sco.expend.t[3] > 0, paste0("rise of £", FunDec(sco.expend.t[3], 1), "m last year"), paste0("fall of £", FunDec(abs(sco.expend.t[3]),1), "m last year"))`, with `r xfun::numbers_to_words(expend.bin[2])` councils having increased their and `r xfun::numbers_to_words(expend.bin[1])` reduced their costs.  
+Overall expenditure has `r ifelse( sco.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(sco.expend.t[2]),1)`m (`r FunDec(abs(sco.expend.t[1]),1)` %) after a `r ifelse( sco.expend.t[3] > 0, paste0("rise of £", FunDec(sco.expend.t[3], 1), "m last year"), paste0("fall of £", FunDec(abs(sco.expend.t[3]),1), "m last year"))`, with `r FunN2W(expend.bin[2])` councils having increased their and `r FunN2W(expend.bin[1])` reduced their costs.  
 
+The largest increase in expenditure occured in `r sco.expend.change.top3[1,2]` where it increased by `r FunDec(sco.expend.change.top3$change[1], 0)` %
+while `r sco.expend.change.top3[2,2]` and `r sco.expend.change.top3[3,2]` increased  by `r FunDec(sco.expend.change.top3$change[2], 0)` % and `r FunDec(sco.expend.change.top3$change[3], 0)` % respectively`r if(nrow(sco.expend.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.expend.excluded.top$auth.name), " due to very low numbers)")`. The biggest decreases were in `r sco.expend.change.bottom2[2,2]` (`r FunDec(abs(sco.expend.change.bottom2$change[2]), 0)` %), and `r sco.expend.change.bottom2[1,2]` (`r FunDec(abs(sco.expend.change.bottom2$change[1]), 0)`  %)`r if(nrow(sco.expend.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.expend.excluded.bottom$auth.name), " due to very low numbers)")`.
 
-The largest increase in expenditure happened in`r sco.expend.top.bottom[1,1]`, where it increased  by `r FunDec(sco.expend.top.bottom[1,2], 0)` %, 
-while `r sco.expend.top.bottom[2,1]` and `r sco.expend.top.bottom[3,1]` increased  by `r FunDec(sco.expend.top.bottom[2,2], 0)` % and `r FunDec(sco.expend.top.bottom[3,2], 0)` % respectively 
-`r ifelse(nrow(sco.expend.exclude.top) == 0, ".", ifelse(nrow(sco.expend.exclude.top) == 1, paste(", excluding", sco.expend.exclude.top[1], "where the expenditure spending is very low."), ifelse(nrow(sco.expend.exclude.top) == 2,  paste(", excluding", sco.expend.exclude.top[1,1], ", and", sco.expend.exclude.top[2,1], "where the expenditure spending is very low."), paste0(", excluding ", sco.expend.exclude.top[1,1], ", ", sco.expend.exclude.top[2,1], ", and ", sco.expend.exclude.top[3,1], " where the expenditure spending is very low."))))` The biggest decreases were in `r sco.expend.top.bottom[5,1]` (`r FunDec(abs(sco.expend.top.bottom[5,2]), 0)` %), and `r sco.expend.top.bottom[4,1]` (`r FunDec(abs(sco.expend.top.bottom[4,2]),0)` %) `r ifelse(nrow(sco.expend.exclude.bottom) == 0, ".", ifelse(nrow(sco.expend.exclude.bottom) == 1, paste(" (excluding", sco.expend.exclude.bottom[1], "where the expenditure spending is very low)."),   paste(" (excluding", sco.expend.exclude.bottom[1,1], ", and", sco.expend.exclude.bottom[2,1], "where the expenditure spending is very low).")))`
-
-The table also shows the proportion of income taken up by costs in `r paste0(current.year, "-", current.year-1999)`. Nationally in Scotland it is `r format(round(sco.expend.p[3],1), nsmall = 1)` % with Glasgow at `r format(round(sco.expend.p[2],1), nsmall = 1)` % and Edinburgh at `r format(round(sco.expend.p[1],1), nsmall = 1)` %.
+The table also shows the proportion of income taken up by costs in `r FunFisc()`. Nationally in Scotland it is `r FunDec(sco.expend.p[3],1)` % with Glasgow at `r FunDec(sco.expend.p[2],1)` % and Edinburgh at `r FunDec(sco.expend.p[1],1)` %.
 
 
 
 ```{r expendtab, echo = FALSE, message = FALSE, warning = FALSE}
 
 sco.expend %>% 
-  mutate(change = paste(format(round(change, 1),nsmall = 1), "\\%"),
-         prop.income = paste(format(round(prop.income, 1),nsmall = 1), "\\%")) %>% 
+  mutate(change = ifelse(is.na(change), NA, 
+                         paste(FunDec(change, 1), "\\%")),
+         prop.income = ifelse(is.na(prop.income), NA, 
+                              paste(FunDec(prop.income, 1), "\\%"))) %>% 
    kable( "latex", 
          booktabs = TRUE, 
          digits = 0, 
@@ -451,13 +578,197 @@ sco.expend %>%
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
                 font_size = 10) %>% 
-   column_spec(1, width = "3.3cm") %>% 
+   column_spec(1, width = "3.7cm") %>% 
   column_spec(8, width = "1.8cm") %>% 
   row_spec(32, hline_after = TRUE)
   
 ```
 
+```{r}
+# calculate proportion of expenditure in income for all LA/year combinations
+# and also for each year's total. 
+data %>% 
+  select(auth.name, year, expend.total) %>% 
+  filter(auth.name != "Scotland") %>% 
+  full_join(data %>% 
+              filter(auth.name != "Scotland") %>% 
+              select(auth.name, year, income.total)) %>% 
+  bind_rows(group_by(., year) %>% 
+              summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>%
+              mutate(auth.name='Total'))  %>% 
+  mutate(expend.prop = expend.total/income.total*100) %>% 
+  select(auth.name, year, expend.prop) %>%
+  spread(key = year, value = expend.prop) %>% 
+  full_join(data %>% 
+              filter(auth.name != "Scotland"& year == current.year) %>% 
+              select(auth.name, year, expend.total)) %>% 
+  arrange(desc(expend.total)) %>% 
+  select(-year, -expend.total) -> sco.expend.of.income
+```
+
+Table @ref(tab:expendprop) shows the proportion of income taken up by expenditure over the previous four years. Across Scotland it was `r FunDec(sco.expend.of.income[33,6],1)` % having `r ifelse(sco.expend.of.income[33,6] < sco.expend.of.income[33,5], "fallen", "risen")` compared to `r FunDec(sco.expend.of.income[33,5],1)` % in the previous year, suggesting `r ifelse(sco.expend.of.income[33,6] < sco.expend.of.income[33,5], "improving", "declining")` efficiency in operations. 
+
+Edinburgh’s expenditure was `r FunDec(sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",6],1)` % having `r ifelse(sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",6] < sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",5], "fallen", "risen")` since last year, while Glasgow's has \color{red} also \color{black} `r ifelse(sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",6] < sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",5], "fallen", "risen")` to `r FunDec(sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",6],1)` %. \color{red} Most of the medium-sized councils spend 50–90% of their income on parking management, which includes enforcement. \color{black} Care should be taken in interpreting the percentages towards the bottom of the table, as the very low parking incomes can lead to extreme values which are less meaningful.  
+
+```{r expendprop}
+
+sco.expend.of.income %>% 
+  mutate_at(vars(-auth.name), function(x) ifelse(is.infinite(x), NA, x)) %>% 
+  mutate_at(vars(-auth.name), function(x) { 
+    cell_spec(ifelse(is.na(x), "", paste(FunDec(x, 1), "%")), "latex", 
+              background  = spec_color(1/x, begin = 0.3,
+                                                 end = 0.9, option = "D", 
+                                                 na_color = "#FFFFFF"))}) %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         digits = 0, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure as proportion of parking income",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz)) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 10) %>% 
+   column_spec(1, width = "3.7cm") %>% 
+  row_spec(32, hline_after = TRUE) %>% 
+  footnote(symbol = "Empty cells indicate the council reported no income and/or no expenditure")
+  
+```
+
+
 \newpage
 
 # Surpluses
 
+
+```{r surplus, echo = FALSE, message = FALSE, warning = FALSE}
+# create totals row for surpluses and deficits. 
+data %>% 
+  select(auth.name, year, surplus.total, transport.total) %>% 
+  mutate(poz.neg = ifelse(surplus.total >= 0, "poz", "neg")) %>% 
+  group_by(year, poz.neg) %>%
+  summarise_at(vars(-auth.name), list(~sum)) %>%
+  gather(variable, value, -c(year, poz.neg)) %>%
+  unite(temp, year, variable) %>%
+  spread(temp, value) %>% 
+  select(poz.neg, contains("surplus"), paste0(current.year, "_transport.total"))  %>% 
+  mutate(poz.neg = c("Total deficit", "Total surplus")) %>% 
+  rename_all(~ c("auth.name", (current.year-4):(current.year), "transport.total")) %>% 
+  bind_rows(group_by(., auth.name) %>% 
+              ungroup() %>% 
+              summarise_at(vars(-auth.name), list(~sum)) %>%
+              mutate(auth.name = c("Total"))) -> sco.surplus.totals
+
+# bind both tables together
+bind_rows(sco.surplus, sco.surplus.totals) %>% 
+  mutate(change =100*(!!as.name(current.year)/!!as.name(current.year - 1)-1),
+         prop.transp = 100*.[[6]]/.[[7]]) %>% 
+  mutate(change = ifelse(sign(!!as.name(current.year)) != 
+                           sign(!!as.name(current.year-1)), NA, change)) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change)),
+        prop.transp = ifelse(is.nan(prop.transp), NA, 
+                         ifelse(is.infinite(prop.transp), NA, prop.transp))) %>% 
+  select(-transport.total) -> sco.surplus.totals.table
+
+# get top three LAs and proportion they command
+sco.surplus %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  filter(!!as.name(current.year) >= 0) %>% 
+  group_by(row_number() ==1, row_number() ==2, row_number() == 3, row_number() > 3) %>% 
+  mutate(sum = sum(!!as.name(current.year))) %>% 
+  ungroup() %>% 
+  filter(row_number() <= 4) %>% 
+  mutate(auth.name = ifelse(row_number() == 4, "Other", auth.name)) %>% 
+  select(auth.name, sum)  %>% 
+  mutate(total = sum(sum)) %>% 
+  group_by(auth.name == "Other") %>% 
+  mutate(proportion = 100*sum(sum)/total) %>% 
+  ungroup() %>% 
+  select(auth.name, proportion) %>% 
+  deframe() -> sco.surplus.top3
+
+# surplus.councils (pozitive)
+sco.poz.surplus <- nrow(filter(sco.surplus, !!as.name(current.year) >= 0))
+
+# extract surplus table where only valid changes are 
+ sco.surplus %>% 
+   mutate(change =100*(!!as.name(current.year)/!!as.name(current.year - 1)-1)) %>% 
+   filter(!is.nan(change) & !is.infinite(change)) %>% 
+   arrange(desc(change)) %>% 
+     rownames_to_column() %>% 
+   mutate(rowname = as.numeric(rowname))-> sco.surplus.valid
+
+# get top three relevant surplus changes
+sco.surplus.valid %>% 
+   filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() <= 3) -> sco.surplus.change.top3
+
+# find excluded rows in top of the table 
+sco.surplus.valid %>% 
+  filter(rowname <= max(sco.surplus.change.top3$rowname)) %>% 
+  anti_join(sco.surplus.change.top3) -> sco.surplus.excluded.top
+
+# get bottom two relevant surplus changes
+sco.surplus.valid %>% 
+   filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() > n()-2) -> sco.surplus.change.bottom2
+
+# find excluded rows in bottom of the table 
+sco.surplus.valid %>% 
+  filter(rowname > min(sco.surplus.change.bottom2$rowname)) %>% 
+  anti_join(sco.surplus.change.bottom2) -> sco.surplus.excluded.bottom
+
+```
+
+Table @ref(tab:surplustab) shows the parking surpluses from from `r FunFisc(4)` to `r FunFisc()` and the change from `r FunFisc(1)` to `r FunFisc()`. It also shows the proportion that parking surpluses represent of total transport expenditure.
+
+
+The total *surpluses* for Scotland amounted to £`r FunDec((sco.surplus.totals.table[34, 6]/1000),1)`m between `r  sco.poz.surplus ` authorities, of which the top three--`r paste0(names(sco.surplus.top3)[1], ", ", names(sco.surplus.top3)[2], ", and ", names(sco.surplus.top3)[3])`--accounted for `r FunDec(sco.surplus.top3[1], 1)` %.  `r FunFirstup(FunN2W(surplus.bin[1]))` councils made a loss with the total of parking deficits `r ifelse(sco.surplus.totals.table[33,6] > sco.surplus.totals.table[33,5], "falling", "rising")` to £`r FunDec(-sco.surplus.totals.table[33,6]/1000,1)`m from £`r FunDec(-sco.surplus.totals.table[33,5]/1000,1)`m last year. 
+
+Overall, parking contributed £`r FunDec((sco.surplus.totals.table[35, 6]/1000),1)`million to local authority finances in Scotland in `r FunFisc()` compared with £`r FunDec((sco.surplus.totals.table[35, 5]/1000),1)`million in `r FunFisc()`, an increase of `r FunDec((sco.surplus.totals.table[35, 7]),1)` %. 
+
+`r sco.surplus.change.top3[1,2]` increased their surplus by `r FunDec(sco.surplus.change.top3$change[1], 0)` %
+while `r sco.surplus.change.top3[2,2]` and `r sco.surplus.change.top3[3,2]` increased  by `r FunDec(sco.surplus.change.top3$change[2], 0)` % and `r FunDec(sco.surplus.change.top3$change[3], 0)` % respectively`r if(nrow(sco.surplus.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.surplus.excluded.top$auth.name), " due to very low numbers)")`. The biggest decreases were in `r sco.surplus.change.bottom2[2,2]` (`r FunDec(abs(sco.surplus.change.bottom2$change[2]), 0)` %), and `r sco.surplus.change.bottom2[1,2]` (`r FunDec(abs(sco.surplus.change.bottom2$change[1]), 0)`  %)`r if(nrow(sco.surplus.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.surplus.excluded.bottom$auth.name), " due to very low numbers)")`.
+
+
+```{r surplustab}
+
+# setup table
+sco.surplus.totals.table %>% 
+    mutate(change = ifelse(is.na(change), NA, 
+                         paste(FunDec(change, 1), "%")),
+         prop.transp = ifelse(is.na(prop.transp), NA, 
+                              paste(FunDec(prop.transp, 1), "\\%"))) %>% 
+  mutate(change =cell_spec(change, "latex", 
+                           italic = ifelse(is.na(.[[7]]), FALSE,
+                                          ifelse(.[[6]] < 0 , TRUE, FALSE)))) %>% 
+  mutate(change = ifelse(change == "NA", "", change)) %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = 0, 
+         longtable = T,
+         escape = F,
+         align = c("r"),
+         caption = "Parking surpluses for Scotland (£,000)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", current.year, "-", current.year-1999, 
+                              " on ", current.year-1, "-", current.year-1999-1), "Surplus as proportion of transport spending")) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_headers"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "3.7cm") %>% 
+  row_spec(c(32, 34), hline_after = TRUE) %>% 
+  footnote(symbol = "Where the change in surplus is actually a change in deficit, the values are in italics")
+
+```
+
+
+## References {-}
+
+*Still to come*

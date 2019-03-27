@@ -126,3 +126,25 @@ master %>%
   anti_join(update, by = c("a", "b")) %>% 
   bind_rows(update) -> master
 
+## how to write conditional tree for n number of potential elements that 
+## need to be listed?
+
+
+
+FunMultiText <- function(vec) {
+  n <- length(vec)
+  ifelse(n == 0, "",
+         ifelse(n == 1, paste0(vec[1], "."),
+                {text <- vec[1]
+                for( e in 2:(n-1) ){
+                  if (n > 2) {text <- paste0(text,", ", vec[e])}
+                }
+                paste0(text, ", and ", vec[n])}
+         )
+  )
+} 
+x <- 1:10
+x <- c("a", "b", "c", "d") 
+x <- c("d", "jj")
+x <- c("k")
+FunMultiText(x)         

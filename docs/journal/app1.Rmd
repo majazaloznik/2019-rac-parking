@@ -1,6 +1,6 @@
 ```{r, echo = FALSE}
 library(kableExtra)
-results <- readRDS(here::here("data/02-interim/reports.rds"))
+results <- readRDS(here::here("data/01-raw/orig.reports.rds"))
 kable(results, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```

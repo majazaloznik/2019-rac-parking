@@ -119,11 +119,13 @@ FunEnglandBudget <- function(file =file,
 ## SCOTLAND IMPORT FUNCTIONS ###################################################
 
 # function for extracting Scotlandn income and expenditure from relevant cells
-FunScotlandLACels <- function(file, sheet, expend.total, income.total, auth.cell) {
+FunScotlandLACels <- function(file, sheet, expend.total, income.total, 
+                              transport.total, auth.cell) {
   auth.name <- colnames(read_excel(file, sheet, auth.cell))
   expend.total <- colnames(read_excel(file, sheet, expend.total))
   income.total <- colnames(read_excel(file, sheet, income.total))
-  c(auth.name, expend.total, income.total)
+  transport.total <- colnames(read_excel(file, sheet, transport.total))
+  c(auth.name, expend.total, income.total, transport.total)
 }
 
 # Function that loops through all sheets and extracts relevant cell data 
@@ -134,17 +136,19 @@ FunScotlandLoopIE <- function(row,
                               end.sh,
                               exp.cell,
                               inc.cell,
+                              transp.cell,
                               auth.cell) {
   
   
   # prepare empty data frame for the data
   df <- data.frame(auth.name = character(),
                    expend.total = character(),
-                   income.total = character())
+                   income.total = character(),
+                   transport.total = character())
 
   # loop through all the sheets
   for (sheet in start.sh:end.sh){
-    x <- FunScotlandLACels(file.name, sheet, exp.cell, inc.cell, auth.cell)
+    x <- FunScotlandLACels(file.name, sheet, exp.cell, inc.cell, transp.cell, auth.cell)
     names(x) <- colnames(df)
     if(year == 2016) 
       x[1] <- gsub("^.+?, |, 2016-17", "", x[1])
@@ -154,23 +158,12 @@ FunScotlandLoopIE <- function(row,
   # change values to numeric type and add the year variable
   df %>% 
     mutate(expend.total = as.numeric(expend.total),
-           income.total = abs(as.numeric(income.total))) -> df
+           income.total = abs(as.numeric(income.total)),
+           transport.total = as.numeric(transport.total)) -> df
   df$year <- year
   df <- df %>% mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   df
 }
-
-## Scotland tranposrt totals for transport and penalty charge income.
-FunScotlandTransportTotals <- function(file , 
-                                    transport.total,
-                                    year,
-                                    sheet = 1 ) {
-  transport.total <- colnames(read_excel(file, sheet, transport.total))
-  vec <- as.numeric(c(year, transport.total))
-  names(vec) <- c("year", "transport.total")
-  vec
-}
-
 
 # Function to clean up the DPE table extracted from the pdf using tabulizer:
 FunScotlandDPE <- function(list, year) {
@@ -201,7 +194,7 @@ FunScotlandDPE <- function(list, year) {
 FunScotlandPCN <- function(df, year) {
   column <- paste0("X", year, ".", year-1999)
   df %>% 
-    mutate(pcn.number = gsub("[^1-9]", "", (!!as.name(column))),
+    mutate(pcn.number = gsub("[^0-9]", "", (!!as.name(column))),
            auth.name = gsub("[^A-Za-z ]", "", Local.Authority),
            year = year) %>% 
     mutate(pcn.number = ifelse( pcn.number == "", NA, as.numeric(pcn.number))) %>% 
@@ -222,9 +215,9 @@ FunScotlandTFSIE <- function(df, year) {
            income.pcn = PCN,
            income.tfs = Total,
            expend.tfs = Expenditure) %>% 
-    mutate(income.pcn = gsub("[^1-9]", "", income.pcn),
-           income.tfs = gsub("[^1-9]", "", income.tfs),
-           expend.tfs = gsub("[^1-9]", "", expend.tfs),
+    mutate(income.pcn = gsub("[^0-9]", "", income.pcn),
+           income.tfs = gsub("[^0-9]", "", income.tfs),
+           expend.tfs = gsub("[^0-9]", "", expend.tfs),
            auth.name = gsub("[^A-Za-z ]", "", auth.name),
            year = year) %>% 
     mutate(income.pcn = ifelse( income.pcn == "", NA, as.numeric(income.pcn)),
@@ -269,3 +262,23 @@ FunDec <- function(x,d) {
 FunFisc <- function( x = 0, c.y = current.year){
 paste0(c.y - x, "-", c.y - 1999 - x)
   }
+
+# function to turn an arbitrarily long vector of elements into listed text with
+# commas after each and an "and" at the end. 
+FunMultiText <- function(vec) {
+  n <- length(vec)
+  ifelse(n == 0, "",
+         ifelse(n == 1, vec[1],
+                {text <- vec[1]
+                for( e in 2:(n-1) ){
+                  if (n > 2) {text <- paste0(text,", ", vec[e])}
+                }
+                paste0(text, ", and ", vec[n])}
+         )
+  )
+} 
+
+# functionf for converting numbers to words
+FunN2W <- function(x) {
+  xfun::numbers_to_words(x)
+}

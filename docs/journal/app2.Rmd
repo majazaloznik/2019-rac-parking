@@ -2,7 +2,7 @@
 ## England--Outturn
 ```{r, echo = FALSE}
 library(kableExtra)
-england.outturn <- readRDS(here::here("data/02-interim/england.outturn.17.18.rds"))
+england.outturn <- readRDS(here::here("data/01-raw/orig.eng.meta.outturn.17.rds"))
 kable(england.outturn, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
@@ -28,7 +28,7 @@ kable(england.outturn, "latex", booktabs = T, escape = F) %>%
 
 ## England--Budget
 ```{r, echo = FALSE}
-england.budget <- readRDS(here::here("data/02-interim/england.budget.18.19.rds"))
+england.budget <- readRDS(here::here("data/01-raw/orig.eng.meta.budget.18.rds"))
 kable(england.budget, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
@@ -44,7 +44,7 @@ kable(england.budget, "latex", booktabs = T, escape = F) %>%
 
 ## England--Nottingham WPL
 ```{r, echo = FALSE}
-nottingham.wpl <- readRDS(here::here("data/02-interim/nottingham.wpl.17.18.rds"))
+nottingham.wpl <- readRDS(here::here("data/01-raw/orig.eng.meta.nott.wpl.17.rds"))
 kable(nottingham.wpl, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
