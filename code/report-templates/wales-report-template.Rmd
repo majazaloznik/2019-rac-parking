@@ -48,7 +48,6 @@ current.year <- params$current.year
 # extract relevant country subset of data for all years
 master %>% 
   filter(country == "Wales") %>% 
-  mutate(surplus.total = income.total - expend.total) %>% 
   filter(year <= current.year) -> data.full
 
 # only for the last four years
@@ -201,6 +200,7 @@ Table @ref(tab:compare) provides a comparison with London, England excluding Lon
 
 \renewcommand{\arraystretch}{1.2}
 ```{r compare, echo = FALSE}
+# comparing summaries for all three countries
 # extract relevant subset of data for england
 master %>% 
   filter(country == "England") %>% 

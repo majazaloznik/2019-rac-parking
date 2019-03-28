@@ -52,7 +52,6 @@ current.year <- params$current.year
 # extract relevant country subset of data for all years
 master %>% 
   filter(country == "Scotland") %>% 
-  mutate(surplus.total = income.total - expend.total) %>% 
   filter(year <= current.year) -> data.full
 
 # only for the last four years
@@ -259,10 +258,7 @@ par(old.par)
 master %>% 
   filter(country == "England") %>% 
   filter(year == current.year) %>% 
-  mutate(income.total = income.on + income.off,
-         expend.total = expend.on + expend.off,
-         surplus.total = income.total - expend.total,
-         group = recode(auth.type, "X" = "X", 
+  mutate(group = recode(auth.type, "X" = "X", 
                         .default = "LA")) %>% 
   summarise(transport = sum(transport.total, na.rm = TRUE),
             surplus = sum(surplus.total, na.rm = TRUE)) %>% 
@@ -278,14 +274,12 @@ Parking makes a
 
 \renewcommand{\arraystretch}{1.2}
 ```{r compare, echo = FALSE}
+# comparing summaries for all three countries
 # extract relevant subset of data for england
 master %>% 
   filter(country == "England") %>% 
   filter(year == min(current.year, max(year))) %>% 
-  mutate(income.total = income.on + income.off,
-         expend.total = expend.on + expend.off,
-         surplus.total = income.total - expend.total,
-         country = recode(auth.type, "X" = "X", "L" = "London",
+  mutate(country = recode(auth.type, "X" = "X", "L" = "London",
                         .default = "England without London")) %>% 
   group_by(country) %>% 
   filter(country != "X") %>% 
@@ -299,7 +293,6 @@ master %>%
 master %>% 
   filter(country == "Wales") %>% 
   filter(year == min(current.year, max(year))) %>% 
-  mutate(surplus.total = income.total - expend.total)  %>% 
   group_by(country) %>% 
   summarise( sum.year = first(year),
             income = sum(income.total, na.rm = TRUE),
@@ -311,7 +304,6 @@ master %>%
 master %>% 
   filter(country == "Scotland") %>% 
   filter(year == min(current.year, max(year))) %>% 
-  mutate(surplus.total = income.total - expend.total)  %>% 
   group_by(country) %>% 
   summarise( sum.year = first(year),
             income = sum(income.total, na.rm = TRUE),
@@ -354,6 +346,39 @@ sum.gb %>%
 ```
 
 
+```{r}
+# change over time for all three countries
+# first figure out how far back you can go
+
+master %>% 
+  group_by(country, year) %>% 
+  select(country, year, income.total, expend.total, surplus.total) %>% 
+  summarise(income = sum(income.total, na.rm = TRUE),
+            expend = sum(expend.total, na.rm = TRUE),
+             surplus = sum(surplus.total, na.rm = TRUE)) -> x
+
+# extract relevant subset of data for england
+master %>% 
+  filter(country == "England") %>% 
+  filter(year == min(current.year, max(year))) %>% 
+  mutate(income.total = income.on + income.off,
+         expend.total = expend.on + expend.off,
+         surplus.total = income.total - expend.total,
+         country = recode(auth.type, "X" = "X", "L" = "London",
+                        .default = "England without London")) %>% 
+  group_by(country) %>% 
+  filter(country != "X") %>% 
+  summarise( sum.year = first(year),
+            income = sum(income.total, na.rm = TRUE),
+            expend = sum(expend.total, na.rm = TRUE),
+             surplus = sum(surplus.total, na.rm = TRUE),
+            prop.of.income = surplus/income) -> eng.sum
+
+
+
+
+
+```
 #  Income
 
 Total council parking income from all sources in `r FunFisc()` was £`r format(sco.summary$V5[1], digits = 2)` million, `r format(sco.summary$change[1], digits = 2)` % `r ifelse (sco.summary$change[1] > 0, "higher", "lower")` than `r FunFisc(1)`. Note that this includes meter and penalty income for on- and off-street parking, but does not include income received by private parking companies.  Table @ref(tab:incometab) ranks the Scottish councils in terms of parking income. 

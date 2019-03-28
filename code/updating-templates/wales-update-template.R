@@ -57,11 +57,12 @@ wal.expend.total<- FunWalesReshape(wal.expend.total)
 wal.income.total<- FunWalesReshape(wal.income.total)
 wal.transport.total<- FunWalesReshape(wal.transport.total)
 
-# join them together 
+# join them together and calculate surplus
 wal.expend.total %>% 
   left_join(wal.income.total) %>% 
   left_join(wal.transport.total) %>% 
-  mutate(income.total = -income.total) %>% 
+  mutate(income.total = -income.total,
+         surplus.total = income.total - expend.total) %>% 
   filter(year == current.year) -> update
 
 # add Wales specific data
@@ -93,7 +94,8 @@ report.name <- paste0("wales-report-", current.year, "-",
 
 # create a copy of the wales report template
 file.copy("code/report-templates/wales-report-template.Rmd",
-          paste0("code/report-rmds/", report.name, ".Rmd"))
+          paste0("code/report-rmds/", report.name, ".Rmd"),
+          overwrite = TRUE)
 
 ################################################################################
 ## COMPILE REPORT -  THIS IS THE ONLY PART OF THE SCRIPT THAT CAN BE RE-RUN   ##
@@ -105,7 +107,9 @@ rmarkdown::render(paste0("code/report-rmds/", report.name, ".Rmd"),
                   output_dir = "outputs/reports",
                   params = list(current.year = current.year))
 
-nlink(paste0("outputs/reports/", report.name, "_files"), recursive=TRUE)
+# remove empty folder that the compilation creates
+unlink(paste0("outputs/reports/", report.name, "_files"), recursive=TRUE)
+
 # the report are saved to /outputs/reports/
 ################################################################################
 ################################################################################

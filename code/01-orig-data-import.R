@@ -276,11 +276,12 @@ wal.expend.total<- FunWalesReshape(wal.expend.total)
 wal.income.total<- FunWalesReshape(wal.income.total)
 wal.transport.total<- FunWalesReshape(wal.transport.total)
 
-# join them together. 
+# join them together. and cacluate surplus
 wal.expend.total %>% 
   left_join(wal.income.total) %>% 
   left_join(wal.transport.total) %>% 
-  mutate(income.total = -income.total) -> original.wales
+  mutate(income.total = -income.total,
+         surplus.total = income.total - expend.total) -> original.wales
 
 # add Wales specific data
 original.wales %>% 

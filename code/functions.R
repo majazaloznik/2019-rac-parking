@@ -69,6 +69,10 @@ FunEnglandOutturn <- function(file =file,
                    year = year)
   df <- df %>%  mutate(auth.type = ifelse(auth.name == "Greater London Authority", 
                                   "GLA", auth.type))
+  # do the math: 
+  df$income.total = df$income.on + df$income.off
+  df$expend.total = df$expend.on + df$expend.off
+  df$surplus.total = df$income.total - df$expend.total
   df
 }
 
@@ -156,10 +160,12 @@ FunScotlandLoopIE <- function(row,
   }
   
   # change values to numeric type and add the year variable
+  # and caclulate the surplus
   df %>% 
     mutate(expend.total = as.numeric(expend.total),
            income.total = abs(as.numeric(income.total)),
-           transport.total = as.numeric(transport.total)) -> df
+           transport.total = as.numeric(transport.total),
+           surplus.total = income.total - expend.total) -> df
   df$year <- year
   df <- df %>% mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   df
@@ -233,8 +239,6 @@ FunScotlandTFSIE <- function(df, year) {
   
   df
 }
-
-
 
 # reshape and clean function  for Wales
 FunWalesReshape <- function(DF) {

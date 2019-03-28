@@ -522,6 +522,21 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * OK, table 3 is now done, for both Scotland and copied to Wales as well. OK
 * Next: table 4 missing in Scotland and Wales. Then send it off again?
 
+# Thursday 28.3. 2019
+
+* OK, now for the last of the tables in Scotland.
+* Summaries for all three tables make the fact that on and off are not added up already seem a bit odd. And requires more ugly code. Maybe I should do that in the import function. Then I should also do the surpluses? Probably. It would be nicer anyway for giving out the open data. 
+* OK, import adds up england totals and calculates surplus now.OK
+* OK, import calculates surplus for Scotland now. OK *could remove the superflous claculations of it later - although it makes no difference*
+* Now wales: OK, added that, and also changed that in the wales update.R file.OK 
+* Reran wales update, *make sure the copy.file has overwrite swithced on!*
+* technical: add this: only on+off and surplus have been calculated. Despite it being bad practice probably. 
+* Now clean up all the unnecessary calculatoins of surpluses.. 
+* OK, now fix that in Wales as well.
+* Commit. 
+
+
+
 
 ### Wales (based on 17/18) #####################################################
 
