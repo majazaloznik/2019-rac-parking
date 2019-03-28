@@ -531,9 +531,15 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * Now wales: OK, added that, and also changed that in the wales update.R file.OK 
 * Reran wales update, *make sure the copy.file has overwrite swithced on!*
 * technical: add this: only on+off and surplus have been calculated. Despite it being bad practice probably. 
-* Now clean up all the unnecessary calculatoins of surpluses.. 
-* OK, now fix that in Wales as well.
+* Now clean up all the unnecessary calculatoins of surpluses.. ok.
+* OK, now fix that in Wales as well.OK.
 * Commit. 
+* OK, the summary changes over past 4 years work now, but odn't quite match up with Leibling's ones... 
+* Also, he has a GB total as well inthere...Add that. OK
+* actually, add GB total to table 3 as well.., OK
+* This is such a stupid table. It should be annual change, not over 4 years, who can interpret that!? I'll do both. OK, done.
+* Now need to add formatting ..OK
+* All tables for scotland done. Commit
 
 
 
