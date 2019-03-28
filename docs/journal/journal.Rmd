@@ -441,7 +441,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * Instructions: ammending tables with a footnote!
 * scotland summary table and text are now OK
 * plot. OK
-* issues: floats of tables and figures, little control..
+* issues: floats of tables and figures, little control..use "H". OK
 * text and code seem to work fine from Wales, a bit of adjusting.. Like the inf and Nans, I still need to deal with them a bit more.  OK
 * longtable is maybe better here, trying it out now. OK.
 * todo: there are still a lot of old format/round combos need replacing, OK
@@ -527,7 +527,8 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * OK, now for the last of the tables in Scotland.
 * Summaries for all three tables make the fact that on and off are not added up already seem a bit odd. And requires more ugly code. Maybe I should do that in the import function. Then I should also do the surpluses? Probably. It would be nicer anyway for giving out the open data. 
 * OK, import adds up england totals and calculates surplus now.OK
-* OK, import calculates surplus for Scotland now. OK *could remove the superflous claculations of it later - although it makes no difference*
+* OK, import calculates surplus for Scotland now. OK 
+* could remove the superflous claculations of it later - although it makes no difference. OK
 * Now wales: OK, added that, and also changed that in the wales update.R file.OK 
 * Reran wales update, *make sure the copy.file has overwrite swithced on!*
 * technical: add this: only on+off and surplus have been calculated. Despite it being bad practice probably. 
@@ -540,8 +541,12 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * This is such a stupid table. It should be annual change, not over 4 years, who can interpret that!? I'll do both. OK, done.
 * Now need to add formatting ..OK
 * All tables for scotland done. Commit
-
-
+* write up queries. 
+* Add this annual table to Wales as well. 
+* Now the table is printed off the page!?
+* also r chunks can't have overlapping names, haha. tip!
+* OK, clean up a bit, Wales and Scotland ready to go. Kinda. 
+* send off queries 5, commit. 
 
 
 ### Wales (based on 17/18) #####################################################

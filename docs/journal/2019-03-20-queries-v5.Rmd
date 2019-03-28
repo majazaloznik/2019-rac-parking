@@ -1,0 +1,78 @@
+---
+title: "RAC Parking Report Automation---Queries for RAC, round 5"
+author: mz
+date: 28.3.2019
+output:
+  pdf_document: default
+---
+  
+Some still outstanding queries from before: 
+  
+10. Where can I get the Aberdeen City data? *It is currenlty witout any data in the draft report*
+  
+11. Any idea what is wrong with the South Ayrshire data for 15/16?
+  
+12. Apart from Aberdeen City, am I OK to use all other 31 authorities as they are reported in the Excel files? *That's what I'm doing now, including South Ayrshire*
+  
+13. Any idea what Leibling is using as the total transport expenditure value for Scotland? Or rather what do you want  me to use? *For Scotland I am currently using the cell `Gross Expenditure on a Funding Basis` for 17/18, `Gross Revenue Expenditure` for 16/17, and 15/16 and `Total Expenditure` for previous years. *
+  
+14. Also, do you want to continue the comparison between the incomes and expenditures reported in both datasources like Leibling did in the 2016/17 report (section 6)? *I've left it out for now*
+  
+22. what do you want to do about the Wales section "6. reporting on parking" in particular the table *Comparison of Published parking reports and financial data supplied to the Welsh Government*? See also Q14 for a similar issue. 
+
+Both the Wales and the Scotland reports there is a sentence along the lines of "a, b and c collect XX% of the parking income, event thought they only have YY % of the population". The England report instead has the sentence ending with "ZZ % of the cars". 
+
+23. Is this potentially something you might want to remove from the reports? *I have for now*
+  
+24. If not, is this something you might want to make consistent between the reports i.e. comparing to population or to cars in all three reports?
+  
+25. If the comparator is cars, is it OK if this value is manually inserted?
+  
+26. General (rhetorical) question: If I find similar inconsistencies, e.g. where one report is missing a sentence/paragraph that the others have, should I aim to make the three reports as similar to each other, to the extent possible? *That's what I'm doing with Wales and Scotland, including with tables that are missing in one (Wales)*
+  
+Sometimes the manually written text can do human things like e.g. describe the numbers 2.74 %, 2.9 % and 3.15 % as all being around 3 %. I cannot code a decision tree to do that. Instead individual values will be listed, which makes the text flow a bit less. Of course this can always be manually overwritten by a human. There are also nuances like "much smaller" vs "smaller" which again are too fine-grained to code up. 
+
+27. I hope this is acceptable?
+  
+One question is when to say something has gone up, gone down or stayed the same?
+  
+28. Should e.g. -0.2 % - 0.2 % count as *staying the same* or would you prefer a different range?
+  
+29. In tables I kept 2 decimal points, in the text only one, is that OK?
+  
+The Wales 2017/18 report has incomes and expenditures for the previous 4 years, but only the income table has the change 17/18 on 16/17 (probably because it instead had the expenditure per population columns, which we've now thrown out. I've added it now.
+
+31. Is that OK, to add the change on previous year to the expenditures?
+
+
+The surpluses table for Wales has two columns at the end: one for change in *surpluses* and one for change in *deficits*. And they are non-overlapping. So it seems a bit wasteful. It is clear which is which anyway, since the deficits are all at the bottom of the table. I thought I would instead conditionally format the changes in the deficits to be italic, that should be clear enough. I can add a footnote.
+
+32. Is that cool?
+                                                                                          In the text for all three main tables there are lists of the councils with the largest increases and decreases. I can automate this to list e.g the top 3, but it is going to get really complicated if e.g. the third largest one is really similar to the fourth one, which a human would note. Similarly when there are extreme increases that a human would flag and explain, this would be terribly tricky to code. 
+                                                                                          
+33. Is it acceptable that I keep the texts simple and you can manually add any extra explanations that look relevant?
+                                                                                          
+In tables reporting change from last year, these changes can be quite extreme for councils with very low incomes/surpluses. When I then need to list councils as having the highest or lowest changes, I exclude the ones where the income/value is under £30,000. This is completely arbitrary of course, and I can change the value to whatever you prefer. But have a look at what it looks like now. 
+
+34. Is £30,000 OK, and if not, what should it be?
+
+In the Scotland report there are two tables comparing the countries. In Table 3 my sums for London and Wales match Leibling's, Scotland and England without London don't however. Scotland makes a bit of sense, since I don't have any Aberdeen data. Not sure about England though, I double checked manually, and my sums add up...
+
+35. With this and similar inconsistencies, what do you want me to do? Make note of them, or ignore them?
+
+In Table 4 in the Scotland report compares how the total income/expenditure/surpluses have changed from 2012/13 to 16/17. Now I personally think this is a silly number to report (sorry), so instead I've done a table reporting annual change over the same period. I have (for now) also left a table like the original, so you can compare the results. Again London matches perfectly, Wales is close, but not completely, and the other two are pretty far off...Right now I am going 4 years back, as in the original, but it probably makes more sense to go back as far as the data allows (which is back to 2012/13, that's the first year I have Scotland data for). 
+
+36. Do you want me to keep the annual change table instead?
+
+37. Would you prefer the comparison *always* goes back to 2012/13 or stick to 4 years?
+
+I've done one map in the Scotland report. Should be fairly straightforward do to more, e.g. choropleths of income/expenditure/surplus changes. This is only possible for Wales and Scotland.  
+
+38. Any specific maps would you like me to attempt?
+
+I've also experimented a bit with conditional formatting of cells in one of the tables. 
+
+39. Would you be interested in more of that? e.g. all the rates of change?
+
+
+
