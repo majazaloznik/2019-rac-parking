@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.12.21)  28 MAR 2019 11:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.12.21)  29 MAR 2019 02:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -930,10 +930,10 @@ Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
 ) (./scotland-report-template.aux
 
-LaTeX Warning: Label `tab:unnamed-chunk-2' multiply defined.
-
-
 LaTeX Warning: Label `tab:incometab' multiply defined.
+
+
+LaTeX Warning: Label `tab:pcntab' multiply defined.
 
 
 LaTeX Warning: Label `tab:expendtab' multiply defined.
@@ -1135,56 +1135,57 @@ has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.205 
-      pdfTeX warning (ext4): destination with the same identifier (name{table.2
-}) has been already used, duplicate ignored
+l.229 \end{longtabu}
+                    pdfTeX warning (ext4): destination with the same identifier
+ (name{table.2}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.205 
-       <./scotland-report-template_files/figure-latex/fig1-1.pdf>] [4] [5] [6]
-Overfull \hbox (1.76509pt too wide) in paragraph at lines 450--450
+l.229 \end{longtabu}
+                     <./scotland-report-template_files/figure-latex/fig1-1.pdf>
+] [4] [5] [6] [7]
+Overfull \hbox (1.76509pt too wide) in paragraph at lines 495--495
  []\T1/lmr/m/n/10 (-20) Expenditure
  []
 
 
-Overfull \hbox (1.76509pt too wide) in paragraph at lines 450--450
+Overfull \hbox (1.76509pt too wide) in paragraph at lines 495--495
  []\T1/lmr/m/n/10 (-20) Expenditure
  []
 
-[7] [8] [9] [10]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 582.
-[11]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 582.
+[8] [9] [10] [11]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 627.
+[12]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 627.
 (./scotland-report-template.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 582.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 582.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 627.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 627.
 Package rerunfilecheck Info: File `scotland-report-template.out' has not change
 d.
 (rerunfilecheck)             Checksum: E4E6BC59484C5E81EDB94C614899F75F;548.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 582.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 627.
  ) 
 Here is how much of TeX's memory you used:
- 14276 strings out of 493892
- 202925 string characters out of 6156144
- 390360 words of memory out of 5000000
- 17377 multiletter control sequences out of 15000+600000
- 56754 words of font info for 88 fonts, out of 8000000 for 9000
+ 14285 strings out of 493892
+ 203003 string characters out of 6156144
+ 390569 words of memory out of 5000000
+ 17380 multiletter control sequences out of 15000+600000
+ 56975 words of font info for 90 fonts, out of 8000000 for 9000
  622 hyphenation exceptions out of 8191
- 43i,17n,43p,631b,627s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 43i,17n,43p,633b,627s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}</usr/share/texmf/fonts/type1/
 public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/sh
 are/texmf/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmr17.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/texmf
 /fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri1
 2.pfb>
-Output written on scotland-report-template.pdf (11 pages, 317666 bytes).
+Output written on scotland-report-template.pdf (12 pages, 320654 bytes).
 PDF statistics:
- 157 PDF objects out of 1000 (max. 8388607)
- 129 compressed objects within 2 object streams
- 36 named destinations out of 1000 (max. 500000)
+ 168 PDF objects out of 1000 (max. 8388607)
+ 139 compressed objects within 2 object streams
+ 38 named destinations out of 1000 (max. 500000)
  12347 words of extra memory for PDF output out of 14400 (max. 10000000)
 

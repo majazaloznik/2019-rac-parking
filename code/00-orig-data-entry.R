@@ -14,7 +14,7 @@
 ## * in the report compilation. 
 ## For descsriptions of variables, see them printed in the appendix of the 
 ## journal in docs/journal/journal.pdf
-##T his file also contains manually entered naming lookup tables, also saved as 
+## This file also contains manually entered naming lookup tables, also saved as 
 ## data frames in /data/01-raw/
 ################################################################################
 ## 1. EXISTING REPORTS #########################################################
@@ -30,6 +30,7 @@
 ## 5. NAME LOOKUP TABLE FOR LAs ################################################
 ################################################################################
 library(dplyr)
+library(tibble)
 options(stringsAsFactors = FALSE)
 
 ## 1. EXISTING REPORTS #########################################################
@@ -167,9 +168,9 @@ i.off <- c("DE", "BL", "BL", "BL", "BL", "BL", "BI", "DE", "DE", "DE")
 
 i.cc <- c("CC", "AV", "AV", "AV", "AV", "AV", "AS", "BV", "BV", "BV")
 
-pen.sh <- c(NA, NA, NA, NA, NA, NA, NA, 3, 3, 3) 
+pen.sh <- c(3, 4, 4, 4, 4, 4, 4, 3, 3, 3) 
 
-pen.on <- c("--", "--", "--", "--", "--", "--", "--", "FX", "FX", "FX")
+pen.on <- c("HD", "DS", "DS", "DS", "DW", "DW", "DT", "FX", "FX", "FX")
 
 pen.1 <- c("G64", "G64", "G64", "G64", "G65", "G65", "I68", "H67", "H67", "H67")
 
@@ -371,6 +372,126 @@ scotland.pdf <- data.frame(fisc.year, year,file.name, file.type, link, dpe.tab,p
 
 ## commented out to stop overwriting!
 saveRDS(scotland.pdf, "data/01-raw/orig.sco.meta.pdf.17.rds")
+
+## 3.3. manual input of PCN data for 2013-2015
+sco.pcn.number.13 <- c("Aberdeen City"       = 47320,
+                       "City of Edinburgh"   = 181756,
+                       "Dundee City"         = 23180,
+                       "East Ayrshire"       = 7597,
+                       "East Renfrewshire"   = 4762,
+                       "Fife"                = 16639,
+                       "Glasgow City"        = 118245,
+                       "Perth and Kinross"   = 11881,
+                       "Renfrewshire"        = 10280,
+                       "South Ayrshire"       = 7187,
+                       "South Lanarkshire"   = 18787)
+
+sco.income.pcn.13 <- c("Aberdeen City"         = 1837017,
+                         "City of Edinburgh"   = 5261836,
+                         "Dundee City"         = 530039,
+                         "East Ayrshire"       = 333563,
+                         "East Renfrewshire"   = 134776,
+                         "Fife"                = 425720,
+                         "Glasgow City"        = 4329842,
+                         "Perth and Kinross"   = 444000,
+                         "Renfrewshire"        = 303585,
+                         "South Ayrshire"       = 246423,
+                         "South Lanarkshire"   = 615276)
+
+sco.income.pcn.14  <- c("Aberdeen City"         = 1640090,
+                          "Argyll and Bute"     = 232711,
+                          "City of Edinburgh"   = 5127332,
+                          "Dundee City"         = 749850,
+                          "East Ayrshire"       = 250662,
+                          "East Renfrewshire"   = 209403,
+                          "Fife"                = 585378,
+                          "Glasgow City"        = 4345454,
+                          "Inverclyde"          = 132570,
+                          "Perth and Kinross"   = 346217,
+                          "Renfrewshire"        = 232783,
+                          "South Ayrshire"       = 255971,
+                          "South Lanarkshire"   = 728302)
+
+
+sco.income.pcn.15 <- c("Aberdeen City"         = 1478540,
+                         "Argyll and Bute"     = 267837,
+                         "City of Edinburgh"   = 5232993,
+                         "Dundee City"         = 1112248,
+                         "East Ayrshire"       = 204645,
+                         "East Renfrewshire"   = 208460,
+                         "Fife"                = 499218,
+                         "Glasgow City"        = 3985927,
+                         "Inverclyde"          = 277598,
+                         "Perth and Kinross"   = 296377,
+                         "Renfrewshire"        = 217620,
+                         "South Ayrshire"       = 218998,
+                         "South Lanarkshire"   = 746794)
+
+sco.income.tfs.13 <- c("Aberdeen City"         = 9166031,
+                         "City of Edinburgh"   = 22402125,
+                         "Dundee City"         = 3605024,
+                         "East Ayrshire"       = 1241587,
+                         "East Renfrewshire"   = 134776,
+                         "Fife"                = 2903581,
+                         "Glasgow City"        = 4758344,
+                         "Perth and Kinross"   = 2901000,
+                         "Renfrewshire"        = 1063338,
+                         "South Ayrshire"       = 826046,
+                         "South Lanarkshire"   = 2136272)
+
+sco.income.tfs.14 <- c("Aberdeen City"         = 8516749,
+                         "Argyll and Bute"     = 1004377,
+                         "City of Edinburgh"   = 24205605,
+                         "Dundee City"         = 3875694,
+                         "East Ayrshire"       = 1088732,
+                         "East Renfrewshire"   = 209403,
+                         "Fife"                = 3428805,
+                         "Glasgow City"        = 4719294,
+                         "Inverclyde"          = 157384,
+                         "Perth and Kinross"   = 2915788,
+                         "Renfrewshire"        = 1063219,
+                         "South Ayrshire"       = 774956,
+                         "South Lanarkshire"   = 2280904)
+
+sco.income.tfs.15 <- c("Aberdeen City"         = 8534428,
+                         "Argyll and Bute"     = 1089262,
+                         "City of Edinburgh"   = 26033092,
+                         "Dundee City"         = 4485080,
+                         "East Ayrshire"       = 1121401,
+                         "East Renfrewshire"   = 208460,
+                         "Fife"                = 2908587,
+                         "Glasgow City"        = 4316282,
+                         "Inverclyde"          = 328341,
+                         "Perth and Kinross"   = 2855525,
+                         "Renfrewshire"        = 1164513,
+                         "South Ayrshire"       = 790756,
+                         "South Lanarkshire"   = 2462126)
+
+# merge together all three tables for 2013
+data.frame(income.pcn = sco.income.pcn.13, 
+           income.tfs = sco.income.tfs.13,
+           pcn.number = sco.pcn.number.13) %>% 
+  rownames_to_column("auth.name") %>% 
+  mutate_at(2:4, function(x) x/1000) %>% 
+  mutate(year = 2013) -> scotland.pdf.13
+
+# merge together the two tables for 2014
+data.frame(income.pcn = sco.income.pcn.14, 
+           income.tfs = sco.income.tfs.14) %>% 
+  rownames_to_column("auth.name") %>% 
+  mutate_at(2:3, function(x) x/1000) %>% 
+  mutate(year = 2014) -> scotland.pdf.14
+
+# merge together the two tables for 2015
+data.frame(income.pcn = sco.income.pcn.15, 
+           income.tfs = sco.income.tfs.15) %>% 
+  rownames_to_column("auth.name") %>% 
+  mutate_at(2:3, function(x) x/1000) %>% 
+  mutate(year = 2015) -> scotland.pdf.15
+
+saveRDS(scotland.pdf.13, "data/01-raw/orig.sco.pdf.13.rds")
+saveRDS(scotland.pdf.14, "data/01-raw/orig.sco.pdf.14.rds")
+saveRDS(scotland.pdf.15, "data/01-raw/orig.sco.pdf.15.rds")
 
 ## 4. WALES DATA SOURCES #######################################################
 # missing atm, only need to add the links, since the files are all simple

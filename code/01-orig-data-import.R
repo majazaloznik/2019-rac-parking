@@ -7,7 +7,7 @@
 ## DO NOT MODIFY THIS FILE & DO NOT SOURCE THIS FILE
 ################################################################################
 ## INPUTS:
-## Outputs of 00-orig-data-entry.R (seven .rds files with metadata info and lookup
+## Outputs of 00-orig-data-entry.R (ten .rds files with metadata info and lookup
 ## tables for names all in data/01-raw)
 ## Manually downloaded excel, csv and pdf files in data/01-raw/orig.*.*
 ################################################################################
@@ -235,8 +235,27 @@ scotland.tfs.i.e.17 <- FunScotlandTFSIE(scotland.tfs.i.e.17, 2017)
 ## 2.3. Merge all Scotland data together #######################################
 
 # first merge by year
-scotland.pdf.14 <- scotland.pcn.14
-scotland.pdf.15 <- scotland.pcn.15
+# 2013 is only from the manually input data from the pdf
+orig.sco.pdf.13 %>%  mutate(auth.name, 
+                            auth.name = 
+                              recode(auth.name, !!!orig.sco.name.lookup)) ->
+  scotland.pdf.13 
+
+# 2014: pcn no. are scrapped from the pdf, the income are manually input from pdf
+# before matching clean up the names. 
+orig.sco.pdf.14 %>%  mutate(auth.name, 
+                      auth.name = 
+                        recode(auth.name, !!!orig.sco.name.lookup)) %>% 
+  full_join(scotland.pcn.14 ) -> scotland.pdf.14
+
+# 2015: pcn no. are scrapped from the pdf, the income are manually input from pdf
+# before matching clean up the names. 
+orig.sco.pdf.15 %>%  mutate(auth.name, 
+                            auth.name = 
+                              recode(auth.name, !!!orig.sco.name.lookup)) %>% 
+  full_join(scotland.pcn.15) -> scotland.pdf.15
+
+
 scotland.pdf.16 <- full_join(full_join(scotland.dpe.16,
                                        scotland.pcn.16,by = c("auth.name", "year")),
                              scotland.tfs.i.e.16,  by = c("auth.name", "year"))
@@ -246,7 +265,8 @@ scotland.pdf.17 <- full_join(full_join(scotland.dpe.17,
                              scotland.tfs.i.e.17,  by = c("auth.name", "year"))
 
 # now row bind all pdf data together
-original.scotland.pdf <- bind_rows(scotland.pdf.14,
+original.scotland.pdf <- bind_rows(scotland.pdf.13,
+                                   scotland.pdf.14,
                                    scotland.pdf.15,
                                    scotland.pdf.16,
                                    scotland.pdf.17)

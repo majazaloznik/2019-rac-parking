@@ -134,15 +134,10 @@ compared to the previous fiscal year. Total transport has
 `r ifelse(wal.summary$change[4] < -0.02, paste("fallen by", format(-wal.summary$change[4], digits = 2), "%"), ifelse(wal.summary$change[1] > 0.02, paste("increased by", format(wal.summary$change[4], digits = 2), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(format(wal.summary$V5[5], digits = 2), "%")` of transport costs. 
 
 ```{r echo = FALSE}
-# extract relevant subset of data 
+# extract England and summarise transport and surplus totals
 master %>% 
   filter(country == "England") %>% 
   filter(year == current.year) %>% 
-  mutate(income.total = income.on + income.off,
-         expend.total = expend.on + expend.off,
-         surplus.total = income.total - expend.total,
-         group = recode(auth.type, "X" = "X", 
-                        .default = "LA")) %>% 
   summarise(transport = sum(transport.total, na.rm = TRUE),
             surplus = sum(surplus.total, na.rm = TRUE)) %>% 
   mutate(proportion = 100*surplus/transport) %>% 

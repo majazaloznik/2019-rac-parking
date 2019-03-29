@@ -252,7 +252,7 @@ OK, back to the Scotland PNC data scraped from the pdf
 * Now again, because these are single cells, they get exported as the column headers..Same as the scotland data. 
 * Totals import OK.
 * Forgot to add country var to England. OK.
-* Add the penalty ranges to the I.E. outturn code as well. This possibly requires checking if the data is there..because it's only there for the last three years.  OK.
+* Add the penalty ranges to the I.E. outturn code as well. This possibly requires checking if the data is there..because it's only there for the last three years.  OK. **this turns out was not true!? not sure how i missed this!!**
 * Remove authorities we don't need. That's all the ones with an O type, except ones with Naitonal park in the name?OK
 * Congestion charges. 
 * OK, added congestion charges from the main otturn import, so the whole column is imported for everyone, it doesn't matter, since we only use Greater London. 
@@ -547,6 +547,35 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * also r chunks can't have overlapping names, haha. tip!
 * OK, clean up a bit, Wales and Scotland ready to go. Kinda. 
 * send off queries 5, commit. 
+
+* OK, next job: penalty as proportion of DPE income. That's the table I'm missing, because the data needs to be manually input.. 
+* Income PCN and income TFS for 2013-2015...OK,
+* and double check? OK. 
+* Also PCn number for 2013.OK
+* Now all these 3 sets of data are input manually in 00-orig-data-entry. OK
+* They get automatically picked up by 01-orig-data-import. 
+* Now they have to be merged with the existing data in 01-orig-data-import. 
+* double check everything. OK
+* OK, scotland report: PCN numbers table now goes back to 2013. 
+* Next: the PCN income as prop of DPE income table (table 7 in the original report). 
+* ffs, turns out there is LA level PCN data for england for before 2015 afterall, somehow.
+i just missed it... better sort that out now...OK
+* *todo*: in the end re-download all the original data files!!
+* OK, the PCN columns for England are now input, although I'm a bit worried about the 08/09 one, not that that matters much tbh.. But also it isn't added up in the total income column there? weird. not important. OK
+* so, add sheet and column for PCN data for england 09/10 to 14/15, which i had somehow missed before. OK
+* rerun 00 and 01. OK. PCN data for England is all there. OK
+* check if the sums are OK. perfect match! 
+* finally got rid of the last of the warnings in the import - it was because of a separate call that was dropping empty. OK
+* OK, back to the PCN table, it's similar to the surplus/income table, so let's reuse that.. 
+* Not sure if i'm using TFS income or regular? try both i guess. OK, it's the regular.OK 
+* Oh, OK, income.pch is not in 1000s. OK, fixed in 00 data entry. OK
+* Now table is ok, but have to add england and london.. and wales?
+* *check that using data.full in the annual, not data*
+* just a reminder, "X" in auth. type means England totals for transport and PCN. OK
+* OK, the sorting of the table should be alphabetical. OK
+* and instead of scotland it should say dpe. OK
+* table done. OK
+
 
 
 ### Wales (based on 17/18) #####################################################

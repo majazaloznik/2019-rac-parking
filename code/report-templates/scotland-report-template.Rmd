@@ -254,12 +254,10 @@ par(old.par)
 
 
 ```{r engtrans}
-# extract relevant subset of data 
+# extract England and summarise transport and surplus totals
 master %>% 
   filter(country == "England") %>% 
   filter(year == current.year) %>% 
-  mutate(group = recode(auth.type, "X" = "X", 
-                        .default = "LA")) %>% 
   summarise(transport = sum(transport.total, na.rm = TRUE),
             surplus = sum(surplus.total, na.rm = TRUE)) %>% 
   mutate(proportion = 100*surplus/transport) %>% 
@@ -548,7 +546,7 @@ sco.income %>%
 # recent year
 
 data %>% 
-  filter(year >= max(current.year-4, 2014)) %>% 
+  filter(year >= max(current.year-4, 2013)) %>% 
   select(auth.name, year, pcn.number) %>% 
   spread(key = year, value = pcn.number) %>% 
   full_join(data %>% 
@@ -607,6 +605,69 @@ sco.pcn.numbers %>%
 
 ```
 
+```{r}
+# calculate proportion of PCN in income for all LA/year combinations
+# and also for each year's total. Not sure if this should be tsf income or regular?
+data %>% 
+  select(country, auth.name, year, income.pcn, income.total) %>% 
+  filter(auth.name != "Scotland"& year > 2012) %>% 
+  arrange(year, desc(income.total)) %>%
+  bind_rows(master %>% 
+              select(country, auth.type, year, income.pcn, income.total) %>% 
+              filter(auth.type != "X",  year > 2012 , year <= current.year,
+                     country != "Wales") %>% 
+              mutate(country = recode(auth.type, "L" = "London",
+                                      .default = country),
+                     country = recode(country, "England" =  "England without London",
+                                      .default = country)) %>% 
+              group_by(country, year) %>% 
+              summarise_at(vars(income.pcn, income.total), list(~sum(., na.rm = TRUE))) %>% 
+              mutate(auth.name = country) %>% 
+              ungroup() %>% 
+              mutate(country = ifelse(country == "Scotland", "Scotlan", country))) %>%  
+  mutate(pcn.prop = income.pcn/income.total*100) %>% 
+  select(country, auth.name, year, pcn.prop) %>% 
+  mutate(pcn.prop = ifelse(is.nan(pcn.prop), NA, 
+                         ifelse(is.infinite(pcn.prop), NA, pcn.prop))) %>% 
+  spread(key = year, value = pcn.prop) %>% 
+  arrange(desc(country), auth.name) %>% 
+  select(-country)  %>% 
+  select_if(function(x) !(all(is.na(x)) | all(x==""))) %>% 
+  mutate(auth.name = ifelse(auth.name == "Scotland", 
+                            "Scottish DPE authorties", auth.name)) %>% 
+  filter(rowSums(is.na(.[,2:5]))!=4)  -> sco.psn.prop
+```
+
+```{r pcnprop}
+sco.psn.prop %>%
+  mutate_at(vars(-auth.name), 
+            function(x) {cell_spec(ifelse(is.na(x), "", 
+                                          paste(FunDec(x, 1), "%")), "latex", 
+                                   background  = spec_color(log(x), begin = 0.3,
+                                                            end = 0.9, option = "D",
+                                                            na_color = "#FFFFFF"))}) %>% 
+
+   kable( "latex",
+         booktabs = TRUE,
+         digits = 0,
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = paste("Proportion of parking income from PCNs in Scottish councils using DPE with London, and England excluding London, for comparison"),
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz.pcn)) %>% 
+  kable_styling(full_width = TRUE,
+                latex_options =c("HOLD_position", "striped", "repeat_header"),
+                font_size = 10) %>%
+   column_spec(1, width = "5cm") %>%
+  row_spec(nrow(sco.pcn.numbers)-1, hline_after = TRUE)
+
+```
+
+Scottish councils with DPE earn `r FunDec(sco.psn.prop[nrow(sco.pcn.numbers), ncol(sco.psn.prop)], 1)` % of their income from PCNs, which is \color{red}about half of the equivalent proportions for London and for the rest of England \color{black} (see Table @ref(tab:pcnprop)). \color{red} It would appear that either Scottish drivers are more law-abiding, or the enforcement regime in Scotland is not as rigorous.\color{black}
+
+\newpage
 
 # Expenditures
 
@@ -748,11 +809,8 @@ sco.expend %>%
 # calculate proportion of expenditure in income for all LA/year combinations
 # and also for each year's total. 
 data %>% 
-  select(auth.name, year, expend.total) %>% 
+  select(auth.name, year, expend.total, income.total) %>% 
   filter(auth.name != "Scotland") %>% 
-  full_join(data %>% 
-              filter(auth.name != "Scotland") %>% 
-              select(auth.name, year, income.total)) %>% 
   bind_rows(group_by(., year) %>% 
               summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>%
               mutate(auth.name='Total'))  %>% 
@@ -778,7 +836,7 @@ sco.expend.of.income %>%
     cell_spec(ifelse(is.na(x), "", paste(FunDec(x, 1), "%")), "latex", 
               background  = spec_color(1/x, begin = 0.3,
                                                  end = 0.9, option = "D", 
-                                                 na_color = "#FFFFFF"))}) %>% 
+                                                 na_color = "#FFFFFF"))}) %>%
   kable( "latex", 
          booktabs = TRUE, 
          digits = 0, 
