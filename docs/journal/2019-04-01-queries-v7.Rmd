@@ -1,0 +1,15 @@
+---
+title: "RAC Parking Report Automation---Queries for RAC, round 7"
+author: mz
+date: 1.4.2019
+output:
+  pdf_document: default
+---
+  
+I've added the last, data source comparison table for Scotland. NB on discrepancy in last three cells: Leibling's last three cells are calculated in the last row: so first sums up the LGF for all the LAs, including the ones not reported on by TS, then subtratcts the TS reporting ones. So in the last three columns the total of the differences is inflated by including as differences also ones where there was no DPE reporting (I hope I'm being clear). Instead I've calculated the totals as just that: the totals of the columns as they are in the table. 
+
+40. Is this clear/OK? I'll add a footnote to make it clear why the last three cells don't add up...
+
+I'm having trouble figuring out how to treat the surplus data, mainly because surpluses can be negative. Right now I have removed from the column % change any LA where the surplus went from negative to positive. In the text describing the data, where I list top/bottom LAs I am also not sure how to treat largest increases and largest decreases? If an LA went from -10 to -20, that's currenlty a 100% decrease. If it went from 20 to 0, that's also a 100% decrease... this obviously isn't cool. The alternative is to split the text into two sets of cescrptions: the largest increases/decreases in surpluses, and largest increases/decreases in deficits. But that still doens't account for the ones who have gone from negative to positive, So do I split the description three ways? 
+
+41. Some guidance on this would be great!

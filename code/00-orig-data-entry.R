@@ -32,7 +32,7 @@
 library(dplyr)
 library(tibble)
 options(stringsAsFactors = FALSE)
-
+source("code/functions.R")
 ## 1. EXISTING REPORTS #########################################################
 country <- c(rep("England", 8), rep("Scotland", 8),rep("Wales", 8))
 
@@ -548,3 +548,99 @@ scotland.name.lookup  <- c("Argyll  Bute" = "Argyll and Bute",
                            "Skye and Lochalsh" = "Highland")
                                                                  
 saveRDS(scotland.name.lookup, "data/01-raw/orig.sco.name.lookup.rds")
+
+# start the bib.table
+
+bib.master <- data.frame(country = "GB",
+                         year = 2018, 
+                         year.published = 2017,
+                         author = "Office for National Statistics", 
+                         title = "Local Administrative Units Level 1 (January 2018) Super Generalised Clipped Boundaries in United Kingdom", 
+                         url ="http://geoportal1-ons.opendata.arcgis.com/datasets/3dc07a60f46b4e01ab0ec8ba71c7a879_3.zip", 
+                         urldate = "10.03.2019",
+                         bibtype = "misc", 
+                         type = "map")
+
+# add scottish income and expenditure data 
+scotland.i.e. %>% 
+               select(year, url = link) %>% 
+               filter(year>2011) %>% 
+              mutate(url = gsub("[\\{\\}]", "", 
+                                 regmatches(url, regexpr("\\{.*?\\}", url)))) %>% 
+  mutate(country ="Scotland",
+         title = paste("Scottish Local Government Finance Statistics",
+                       FunFisc(c.y = year), "Annex A by LA"),
+         urldate = "10.03.2019",
+         bibtype = "misc",
+         type = "i.e", 
+         year.published = year + 2, 
+         author = "{Scottish Government}") %>% 
+  bind_rows(bib.master) -> bib.master
+
+# add scotland pcn data. 
+scotland.pdf %>% 
+  filter(year >2012) %>% 
+  select(year, url = link) %>% 
+  mutate(url = gsub("[\\{\\}]", "", 
+                     regmatches(url, regexpr("\\{.*?\\}", url))),
+         country = "Scotland",
+         type = "pcn",
+         bibtype = "misc",
+         year.published = c(2016, 2017, 2018),
+         author = "{Transport Scotland}",
+         urldate = "10.03.2019",
+         title = paste("Decriminalised Parking Enforcement: Local Authorites'",
+                       "Income and Expenditure:", year, "to", 
+                       ifelse(row_number() == n(), year + 1, lead(year)))) %>% 
+  bind_rows(bib.master) -> bib.master
+         
+         
+# add wales data
+
+bind_rows(bib.master,
+data.frame(country = "Wales",
+           type = "i.e",
+           bibtype = "misc",
+           author =  "{Welsh Governmnet}",
+           title = "Revenue outturn expenditure: roads and transport (Table LGFS0009)",
+           url = "https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Transport/RoadsAndTransportRevenueExpenditure-by-authority",
+           year.published = 2018,
+           year = 2018, 
+           urldate = "10.03.2019")) -> bib.master
+
+# add England i.e. data
+england.outturn.17.18 %>% 
+  select(year, url = link) %>% 
+  mutate(url = gsub("[\\{\\}]", "", 
+                     regmatches(url, regexpr("\\{.*?\\}", url))),
+               country = "England",
+               type = "i.e",
+               bibtype = "misc",
+               year.published = c(2010:2017, 2017, 2019),
+               author = "{Office for National Statistics}",
+         urldate = "10.03.2019",
+         title = paste("Local authority revenue expenditure and financing England:", year,
+         "to", year + 1, ", individual local authority data - outturn")) %>% 
+  bind_rows(bib.master) -> bib.master
+           
+# add England budget data
+england.budget.18.19 %>% 
+  select(year, url = link) %>% 
+  mutate(url = ifelse(is.na(url), NA, gsub("[\\{\\}]", "", 
+                     regmatches(url, regexpr("\\{.*?\\}", url)))),
+         country = "England",
+         type = "budget",
+         bibtype = "misc",
+         year.published = c(NA, NA, 2011, 2011, 2012:2018),
+         author = "{Office for National Statistics}",
+         urldate = "10-03-2019",
+         title = paste("Local authority revenue expenditure and financing England:", year,
+                       "to", year + 1, ", budget (Revenue Account budget)")) %>% 
+  bind_rows(bib.master) -> bib.master
+
+
+bib.master %>% 
+  mutate(key = paste0(country,".", type, ".", year)) -> bib.master
+
+saveRDS(bib.master, "data/01-raw/orig.bib.master.rds")
+saveRDS(bib.master, "data/03-processed/bib.master.rds")

@@ -1,0 +1,54 @@
+---
+title: "RAC Parking Report Automation---Queries for RAC, round 6"
+author: mz
+date: 1.4.2019
+output:
+  pdf_document: default
+---
+
+10. Where can I get the Aberdeen City data? *It is currenlty witout any data in the draft report*
+  
+11. Any idea what is wrong with the South Ayrshire data for 15/16?
+
+13. Any idea what Leibling is using as the total transport expenditure value for Scotland? Or rather what do you want  me to use? *For Scotland I am currently using the cell `Gross Expenditure on a Funding Basis` for 17/18, `Gross Revenue Expenditure` for 16/17, and 15/16 and `Total Expenditure` for previous years. *
+  
+
+36. & 37. So just to be clear: Table 4 is only comparing the summaries for Wales, Scotland, London and England without London. So a resurfacing of a multi-storey car park shouldn't be that big a deal. 
+
+But to your answer: I'm not sure I am clear on what you're asking for with this sentence :"So, year-on-year change is good, alongside a change from the last year against some rolling average of your choosing."
+
+Let's just try an example, to make this easier: hypothetical Scotland's annual income increases over the past 5 years have e.g been: 10% (2012-13), 10%, 15%, 5%, 20% (2016-17). 
+
+* i.  Year on year change is 10%, 10%, 15%, 5%, 20% ?
+* ii.  Leibling's report has the change for the four year range: `1.1*1.15*1.05*1.20 = 1.59`
+* iii. I've suggested the alternative `1.59 ^ 0.25 = 1.12` average annual change. 
+
+So are you suggesting both (i) and (iii)? This makes the table much larger, and the table now has three dimensions: the type of account, the country, and the year (+ rolling average). In that case, I could instead split it instead into three tables, one for each type of account (income, expenditure, surplus) and place them in those sections instead? Or am I getting this completely wrong?
+
+38. The Scottish and Welsh councils aren't overlapping are they?
+
+39. So you mean yes to conditional colouring of all columns (usually one per table) that have a rate of change?
+
+Comments on Phill's questions (numbers indicate page and order of comment on page). 
+
+**PG-sco-3-1:** Rounding of decimal points: I've tried as a rule to keep 2 dp in the tables and 1dp in the text. This can of course be changed as you wish. If you want the behaviour to change in different paragraphs, that can also be done, but you have to tell me where. (And there is an actual error just before your comment, the 7% should have been 7.0%). 
+
+**PG-sco-4-1:** Yes, I saw that (see question 35. earlier). I double checked in the Excel table, and these are correct. Cells K37:K38 on the second sheet of this file: [link](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/757366/RO2_2017-18_data_by_LA.xlsx) sum up to -873,275. 
+
+**PG-sco-4-3:** *"Income has risen more sharply..."* I was thinking in terms of the dozens of possible combinations shapes of these curves over the past five years (probably because of the words "sharply" and "steadily". If instead you want the sentence to be something along the lines of: *"Income has risen faster/slower than expenditure over the five years, meaning that the surplus has increased/decreased"*, then that is naturally fine. 
+
+**PG-sco-4-5:** Adding the CPI number. There are generally two options: 
+
+* *manual*: the text is left red, when compiling the report you look up the appropriate value and insert it manually.
+* *automatic*: the text is black. when preparing for the compilation you download the relevant file with the data, enter the metadata (url, date accessed) into the updating script, and then when compiling the report the script will extract the relevant data and automatically insert it into the sentence. 
+
+For a single number like the CPI, option two is really more work than it's worth to be honest, but can of course be done. 
+
+Additionally I am not sure which source you might want to use for this. e.g. The Bank of England has a UK CPI calculator [here](https://www.bankofengland.co.uk/monetary-policy/inflation/inflation-calculator) - this one gives a value of 2.2 % for 2013-2017, that's the range in the current report. Note also that it is for the UK, not GB.  And compare to 1 % in Leibling's report. On the other hand the ONS produces a huge file [here](https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/consumerpriceindices), which has the raw data, and is pretty crazy. Or this slightly simpler file [here](https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/consumerpriceinflation), which however has only 3 years worth of data... In both cases there's also monthly, quarterly data.. I'm happy to use whichever source you wish if you let me know which value, and which date ranges I should use. 
+
+
+**PG-sco-6-2:** The source are the Transport Scotland DPE reports. They list the number of PCNs and the PCN income, so the last column in table 7 simply divides the two. This is the same as in the Leibling report (and the numbers match as well). 
+ 
+**PG-sco-10-2:** m/millions: I'm mixing them up because the original was like that. Whichever you prefer?
+
+

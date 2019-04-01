@@ -47,7 +47,7 @@ Next steps: find data
 
 * 2017/18 uses "MHCLG tables on parking income and expenditure"
 
-This looks like the data [https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing](here). 
+This looks like the data [here](https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing). 
 
 * For each year there is normally budget, provisional outturn and outturn data, the latter needs to be for individual local authorities, which does not seem to exist for 2007/08, but is available for all other years. 
 * The files are grouped under the title *Local authority revenue expenditure and financing England: 2010 to 2011 individual local authority data - outturn* for each year
@@ -494,10 +494,10 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * OK, this now works. But how do i make the conditional tree simple if there is potentially X number of excluded councils? Where do I do `, and`. OK wrote a function. OK
 * This all works now, need to replicate in all 6.. 
 * Replicated for Wales surpluses. OK
-* still need to replicate for incomes and expenditures. in scotland OK
-* * still need to replicate for incomes and expenditures. in wales*
+* still need to replicate for incomes and expenditures. in scotland OK.
+* still need to replicate for incomes and expenditures. in wales.OK
 * SHit, if surplus goes from poz to neg or vv, there should be no change. OK.
-* *Also, the transport numbers for scotland are definitely wrong. I am using net expenditure, but I should presumably be using gross expenditure? OK, I'll fix that now... BUT still no correspondence with the Leibling report.. *
+* Also, the transport numbers for scotland are definitely wrong. I am using net expenditure, but I should presumably be using gross expenditure? OK, I'll fix that now... BUT still no correspondence with the Leibling report.. 
 * TODO: table of expenditure as proportion of income over the years? That removes the need for the final column in the expend.table
 * SO if a change or proportion is nan or inf it should become NA, right? Yeah, but now the problem seem to be the italics... If it's NA and italic, it won't make it disappear. Because the whole column is now character.. So I need to fix that as well. This is done in Scotland. OK
 * OK, surplus tables with change in sign. Scotland and Wales. OK
@@ -575,6 +575,52 @@ i just missed it... better sort that out now...OK
 * OK, the sorting of the table should be alphabetical. OK
 * and instead of scotland it should say dpe. OK
 * table done. OK
+
+Monday 1.4.2019
+
+* respond to Ivo and Phill's answers. OK
+* Incorportate the following:
++ change visible in text  is described as such in text. (difference smaller than 0.05 is under FunDec threshold). OK.
++ add 30.000 explanation sentence> OK
++ Table 2 units.OK
+* There are still some format's that haven't been FunDec-ed.OK 
+* changed all the 0.02 to 0.05 when saying two things are the same, since 0.05 at FunDec disappeares. OK.
++ delete for in tfs.ok
++ unit in table 2. OK
+*  *"Income has .. sentence". OK, so there are 12 possible income/expenditure/surplus combinations... I should write a function I guess. *Later
+* million/m. OK
+* all other typos. OK
+* The surplus/deficit top/bottom 3 are wrong because some are deficits.. query.OK
+* also in the surlus table Clackmanshire has no change, but it should, -100%, consistent with the others. AH, comparing signs. but zero has a zero sign. so instead of signs being different, i have to have signs being 2 apart. Fixed. 
+* oops, looks like the FunMulti text was not done in Wales? OK
+* add tfs table.OK
+* *add total to tfs table.OK
+* Error: Leibling's comparison table for Scotland: last row sums up the totals for all the LAs, including the ones not reported on by TS. So in the last three columns the total of the differences is inflated by including as differences also ones where there was no DPE reporting. Instead I've calculated the totals as just that: the totals of the columns as they are in the table. OK
+* clean up millions. in Wales as well. 
+* table 7  13-14 data is in thousands..? FixedOK
+* *add references.*
+* Mapping reference and copyright notice. OK
+* OK, references: 
+  + some are already input into the metadata tables. What will happen with new ones?
+  + Additionally there is cross-country comparisons that use a bunch of other references as well. OK
+  + Should I list them all? Yes
+  + OK, so I need to create a master bib file/table. Of all england, wales and scotland sources. OK, manual input in 00-orig-data-entry. OK. Save as master.bib.rds. OK
+* OK, so now when you compile a report, you must first create the new updated bib.master.rds, and from there create a bespoke bib.file. 
+* *Additionally you will need to update the bib.master file when you update all the rest of the data - todo* 
+* Now the update creates a new bib. file for this report only: the relevant country references are saved into a .bib file in the same folder, with the same name as the report. 
+* OK, the report.Rmd has to have the correct .bib file in the Yaml. That actually means the name cannot be dynamic. so instead it is just the country name, and it will be overwritten every time, that's OK anyway, because when the .Rmd is created, the correct .bib file will also be created.
+* but the no-cite references also have to be created in the .Rmd file, and this luckily can happen in the second part of the YAML, meaning that the names can already be picked up from another object based on the current.date. 
+* Man, took a while, but finally got it to work! OK
+* OK, Wales references are now all cool, only problem is this (!?) has somehow broken the table cross-referencing!?
+* Let's try Scotland and see how that fares. Yeah, as soon as bibliography is added to the yaml, the other references seem to stop working...
+* No idea how this is happening!? ALso no idea how it suddenly started working again?! Anyway, refs are in Scotland, *needs cleaning up*
+* *rename rds bibs, to have bib in the name*
+* *ONS for maps name needs {}*
+
+
+* *add some maps*
+
+
 
 
 
