@@ -634,7 +634,24 @@ i just missed it... better sort that out now...OK
 * add note on comparison table.OK
 
 * *maps?*
+* OK, mapping means figuring out palattes, make them nice and make them match the ones in the tables. It also means centering on zero. So probably two palattes diverging. OK [this link](https://stackoverflow.com/questions/10985224/r-heatmap-with-diverging-colour-palette/10986203#10986203) was useful. 
+* but the example there is silly, if the data is skewed the zero will be way off. Maybe it isn't silly, just need to fix the scale/legend?
+* kinda works, but i need to figure out the scale legend as well. OK
+* and then split it into two palettes. 
+* aah, viridis is great, does the interpolation for you, colorbrewer has only 11 max and then you have to use colorramp to interpolate. 
+* yeah, palettes work!!OK
+* Now need to be able to swap D and C if i want. 
+* phew, some messines, but it seems to work. 
+* Not as pretty as before, but at least consistent..
+* font for scale legend can't be fixed?
+* adding % to scale.. means need to get nice axis `at` . OK
+* narrower scale, means the 
+* Now add same palettes to the conditional cell colouring. 
+* *maybe inset shetland isles at some point..* Probably need ggplot for that though..
 
+* *move code out of rmd*
+* *prepare scotland update file*
+* *change plot line colours*
 
 ### Wales (based on 17/18) #####################################################
 

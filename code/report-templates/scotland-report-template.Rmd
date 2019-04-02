@@ -44,6 +44,8 @@ suppressWarnings(suppressMessages(library(tidyr)))
 suppressWarnings(suppressMessages(library(tibble)))
 suppressWarnings(suppressMessages(library(showtext)))
 suppressWarnings(suppressMessages(library(sf)))
+suppressWarnings(suppressMessages(library(viridis)))
+suppressWarnings(suppressMessages(library(classInt)))
 options(knitr.kable.NA = '')
 options(stringsAsFactors = FALSE)
 
@@ -557,23 +559,11 @@ while `r sco.income.change.top3[2,2]` and `r sco.income.change.top3[3,2]` increa
 
 \renewcommand{\arraystretch}{1.2}
 ```{r incometab, echo = FALSE, message = FALSE, warning = FALSE}
-
 sco.income %>% 
-  mutate(change = ifelse(is.na(change),
-                         cell_spec( "", "latex", 
-                                    background  = spec_color(change, begin = 0.3,
-                                                             end = 0.9, option = "D", 
-                                                             na_color = "#FFFFFF")),
-                         ifelse(change > 0, 
-                                cell_spec(paste(FunDec(change, 1), "%"), "latex", 
-                                background  = spec_color(change, begin = 0.3,
-                                                 end = 0.9, option = "D", 
-                                                 na_color = "#FFFFFF")),
-                                cell_spec(paste(FunDec(change, 1), "%"), "latex", 
-                                          background  = 
-                                            spec_color(change, begin = 0.3,
-                                                      end = 0.9, option = "A", 
-                                                      na_color = "#FFFFFF"))))) %>% 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
+  mutate(change = cell_spec(change, "latex",
+                            background = 
+                              FunDivergePalette(sco.income$change, dir = 1)[[2]])) %>%  
   kable( "latex", 
          booktabs = T, 
          digits = c(rep(0, 6), 2), 
@@ -593,7 +583,11 @@ sco.income %>%
   column_spec(1, width = "4cm") %>% 
   row_spec(32, hline_after = TRUE)
 ```
- 
+
+```{r incomefig, fig.cap = "Map of change in parking income since previous fiscal year"}
+FunMap(sco.income, uc,  dir = 1)
+
+```
 
 ```{r}
 # extract data for PCN numbers for each year, and the PCN income for the most 
@@ -838,22 +832,11 @@ The table also shows the proportion of income taken up by costs in `r FunFisc()`
 sco.expend %>% 
   mutate(prop.income = ifelse(is.na(prop.income), NA, 
                               paste(FunDec(prop.income, 1), "\\%"))) %>% 
-   mutate(change = ifelse(is.na(change),
-                         cell_spec( "", "latex", 
-                                    background  = spec_color(change, begin = 0.3,
-                                                             end = 0.9, option = "A", 
-                                                             na_color = "#FFFFFF")),
-                         ifelse(change > 0, 
-                                cell_spec(paste(FunDec(change, 1), "%"), "latex", 
-                                background  = spec_color(-change, begin = 0.3,
-                                                 end = 0.9, option = "A", 
-                                                 na_color = "#FFFFFF")),
-                                cell_spec(paste(FunDec(change, 1), "%"), "latex", 
-                                          background  = 
-                                            spec_color(-change, begin = 0.3,
-                                                      end = 0.9, option = "D", 
-                                                      na_color = "#FFFFFF"))))) %>% 
-   kable( "latex", 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
+  mutate(change = cell_spec(change, "latex",
+                            background = 
+                              FunDivergePalette(sco.expend$change, dir = -1)[[2]])) %>% 
+  kable( "latex", 
          booktabs = TRUE, 
          digits = 0, 
          escape = FALSE,
@@ -872,6 +855,11 @@ sco.expend %>%
   column_spec(8, width = "1.8cm") %>% 
   row_spec(32, hline_after = TRUE)
   
+```
+
+```{r expendfig, fig.cap = "Map of change in parking expenditure since previous fiscal year"}
+FunMap(sco.expend, uc,  dir = -1)
+
 ```
 
 ```{r}

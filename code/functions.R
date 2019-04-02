@@ -290,3 +290,90 @@ FunMultiText <- function(vec) {
 FunN2W <- function(x) {
   xfun::numbers_to_words(x)
 }
+
+
+## functions ################
+FunDivergePalette <- function(data, dir = 1){
+  top <- ifelse(dir == 1, "D", "C")
+  bottom <- ifelse(dir == 1, "C", "D")
+  data.clean <- data[!is.na(data)]
+  min <- min(data.clean)
+  max <- max(data.clean)
+  if(min < 0 & 0 < max)
+    range <- max-min 
+  min.prop <- -round(min(data.clean)/range*100)
+  max.prop <- 100 - min.prop
+  rb1 <- seq(min, 0, length.out=min.prop + 1)
+  rb2 <- seq(0, max, length.out=max.prop)[-1]
+  rampbreaks <- c(rb1, rb2)
+  cuts <- suppressWarnings(classIntervals(data, style="fixed",fixedBreaks=rampbreaks))
+  if (abs(min) > max) {
+    pal.min <- viridis_pal(begin = 0.9, end = 0, 
+                           option = bottom)(min.prop)
+    end <- 1-0.9/min.prop * max.prop
+    pal.max <- viridis_pal(begin = 0.9, end = end, 
+                           option = top)(max.prop)
+  } else {
+    pal.max <- viridis_pal(begin = 0.9, end = 0, 
+                           direction = dir, option = top)(max.prop)
+    end <- 1-0.9/max.prop * min.prop
+    pal.min <- viridis_pal(begin = 0.9, end = end, 
+                           direction = dir, option = bottom)(min.prop)}
+  pal <- c(rev(pal.min), pal.max)
+  pal <- findColours(cuts, pal)
+ pal.na <- ifelse(is.na(pal), "#FFFFFF", pal)
+ return(list(pal, pal.na))
+}
+
+## legend function ##########
+FunScaleLegend <- function(col, data){
+  opar <- par
+  n <- length(col)
+  bx <- par("usr")
+  box.cx <- c(bx[2] -  (bx[2] - bx[1]) / 10,
+              bx[2] - (bx[2] - bx[1]) / 10 + (bx[2] - bx[1]) / 70)
+  box.cy <- c(bx[3], bx[3])
+  box.sy <- (bx[4] - bx[3]) / n
+  xx <- rep(box.cx, each = 2)
+  par(xpd = TRUE)
+  for(i in 1:n){
+    yy <- c(box.cy[1] + (box.sy * (i - 1)),
+            box.cy[1] + (box.sy * (i)),
+            box.cy[1] + (box.sy * (i)),
+            box.cy[1] + (box.sy * (i - 1)))
+    polygon(xx, yy, col = col[i], border = col[i])
+  }
+  par(new = TRUE)
+  plot(0, 0, type = "n",
+       ylim = c(min(data, na.rm = TRUE), max(data, na.rm = TRUE)),
+       yaxt = "n", ylab = "",
+       xaxt = "n", xlab = "",
+       frame.plot = FALSE)
+  x <- axis(side = 4, las = 2, tick =FALSE,  at = NULL, labels =  NA)
+  axis(side = 4, las = 2, tick = FALSE, at = x, labels = 
+         paste0(x, " %"), cex.axis = 0.7, line = -3)
+  par <- opar
+}
+
+FunMap <- function(table, shp, country = "^S", dir = 1) { 
+  # clean data ##
+  shp %>% 
+    filter(grepl(country, lau118cd)) %>% 
+    mutate(lau118nm = recode(lau118nm, !!!orig.sco.name.lookup)) %>% 
+    left_join(select(table, auth.name, change), 
+              by = c("lau118nm"= "auth.name")) -> map.data
+  
+  # vector for colouring
+  data <- map.data$change
+  
+  # get colour palette and breaks
+  pal <- FunDivergePalette(data, dir = dir)[[1]]
+  
+  # plot map
+  plot(map.data["change"], main = "", col = pal)
+  
+  # plot legend.
+  FunScaleLegend(attr(pal, "palette"), data[!is.na(data)])
+}
+
+
