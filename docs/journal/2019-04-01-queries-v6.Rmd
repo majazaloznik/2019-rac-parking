@@ -46,7 +46,6 @@ For a single number like the CPI, option two is really more work than it's worth
 
 Additionally I am not sure which source you might want to use for this. e.g. The Bank of England has a UK CPI calculator [here](https://www.bankofengland.co.uk/monetary-policy/inflation/inflation-calculator) - this one gives a value of 2.2 % for 2013-2017, that's the range in the current report. Note also that it is for the UK, not GB.  And compare to 1 % in Leibling's report. On the other hand the ONS produces a huge file [here](https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/consumerpriceindices), which has the raw data, and is pretty crazy. Or this slightly simpler file [here](https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/consumerpriceinflation), which however has only 3 years worth of data... In both cases there's also monthly, quarterly data.. I'm happy to use whichever source you wish if you let me know which value, and which date ranges I should use. 
 
-
 **PG-sco-6-2:** The source are the Transport Scotland DPE reports. They list the number of PCNs and the PCN income, so the last column in table 7 simply divides the two. This is the same as in the Leibling report (and the numbers match as well). 
  
 **PG-sco-10-2:** m/millions: I'm mixing them up because the original was like that. Whichever you prefer?

@@ -576,7 +576,7 @@ i just missed it... better sort that out now...OK
 * and instead of scotland it should say dpe. OK
 * table done. OK
 
-Monday 1.4.2019
+# Monday 1.4.2019
 
 * respond to Ivo and Phill's answers. OK
 * Incorportate the following:
@@ -587,7 +587,7 @@ Monday 1.4.2019
 * changed all the 0.02 to 0.05 when saying two things are the same, since 0.05 at FunDec disappeares. OK.
 + delete for in tfs.ok
 + unit in table 2. OK
-*  *"Income has .. sentence". OK, so there are 12 possible income/expenditure/surplus combinations... I should write a function I guess. *Later
+*  "Income has .. sentence". OK, so there are 12 possible income/expenditure/surplus combinations... I should write a function I guess. Later. Nah, simplified it. 
 * million/m. OK
 * all other typos. OK
 * The surplus/deficit top/bottom 3 are wrong because some are deficits.. query.OK
@@ -598,7 +598,7 @@ Monday 1.4.2019
 * Error: Leibling's comparison table for Scotland: last row sums up the totals for all the LAs, including the ones not reported on by TS. So in the last three columns the total of the differences is inflated by including as differences also ones where there was no DPE reporting. Instead I've calculated the totals as just that: the totals of the columns as they are in the table. OK
 * clean up millions. in Wales as well. 
 * table 7  13-14 data is in thousands..? FixedOK
-* *add references.*
+* add references.
 * Mapping reference and copyright notice. OK
 * OK, references: 
   + some are already input into the metadata tables. What will happen with new ones?
@@ -606,22 +606,34 @@ Monday 1.4.2019
   + Should I list them all? Yes
   + OK, so I need to create a master bib file/table. Of all england, wales and scotland sources. OK, manual input in 00-orig-data-entry. OK. Save as master.bib.rds. OK
 * OK, so now when you compile a report, you must first create the new updated bib.master.rds, and from there create a bespoke bib.file. 
-* *Additionally you will need to update the bib.master file when you update all the rest of the data - todo* 
+* Additionally you will need to update the bib.master file when you update all the rest of the data - todo. OK
 * Now the update creates a new bib. file for this report only: the relevant country references are saved into a .bib file in the same folder, with the same name as the report. 
 * OK, the report.Rmd has to have the correct .bib file in the Yaml. That actually means the name cannot be dynamic. so instead it is just the country name, and it will be overwritten every time, that's OK anyway, because when the .Rmd is created, the correct .bib file will also be created.
 * but the no-cite references also have to be created in the .Rmd file, and this luckily can happen in the second part of the YAML, meaning that the names can already be picked up from another object based on the current.date. 
 * Man, took a while, but finally got it to work! OK
 * OK, Wales references are now all cool, only problem is this (!?) has somehow broken the table cross-referencing!?
 * Let's try Scotland and see how that fares. Yeah, as soon as bibliography is added to the yaml, the other references seem to stop working...
-* No idea how this is happening!? ALso no idea how it suddenly started working again?! Anyway, refs are in Scotland, *needs cleaning up*
-* *rename rds bibs, to have bib in the name*
-* *ONS for maps name needs {}*
+* No idea how this is happening!? ALso no idea how it suddenly started working again?! Anyway, refs are in Scotland, needs cleaning up
+* rename rds bibs, to have bib in the name. OK
+* ONS for maps name needs {}.OK
 
+# Tuesday 2.4.2019
 
-* *add some maps*
+* make sure the references work for Wales as well
+* cleaning up: turns out i need to be careful distinguishing between the fiscal year and year published.. in the bibs it's not the publihsed year that's called year, because that's what the ref manager picks up it seems. And so the key actually has the fiscal year in the name because that's the one I can pass to it from current.year. OK
+* referencing style
+  + date accessed. update APA, OK.using [this style editor](http://editor.citationstyles.org/visualEditor/)
+  + But change text of date accessed in refmanager. meh, this seems a bit involved.. i think i would need to switch from bibtex to biblatex, and then update the style again... Not important anyway. it happens in the WriteBib function. 
+  + capitalisation. solve by using {}. OK.
+  + italics instead of quotations, OK APA. 
+  * tip: when using WriteBib form a dataframe, column names shouldn't have "." in them. 
+* add conditional formatting to change columns. OK
+* crossing zero requires a bit more work...But done for income, now expenditure. This one is tricky. Actually it's the bloody South Ayershire that's wrong that's fucking everything up. I should manually fix it to what Leibling has. OK
+* font size of table captions changes. why? oh, because they are longtable... hmm, that means i best make them all longtables. OK
+* ALso striped rows don't work if you have colapsed. There's an unspported hack, but it doesn't work with Table 2 in Scotland I'm afraid. OK
+* add note on comparison table.OK
 
-
-
+* *maps?*
 
 
 ### Wales (based on 17/18) #####################################################

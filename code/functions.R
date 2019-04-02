@@ -164,8 +164,7 @@ FunScotlandLoopIE <- function(row,
   df %>% 
     mutate(expend.total = as.numeric(expend.total),
            income.total = abs(as.numeric(income.total)),
-           transport.total = as.numeric(transport.total),
-           surplus.total = income.total - expend.total) -> df
+           transport.total = as.numeric(transport.total)) -> df
   df$year <- year
   df <- df %>% mutate(auth.name, auth.name = recode(auth.name, !!!orig.sco.name.lookup)) 
   df

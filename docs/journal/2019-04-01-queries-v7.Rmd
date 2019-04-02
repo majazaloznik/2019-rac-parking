@@ -6,10 +6,48 @@ output:
   pdf_document: default
 ---
   
-I've added the last, data source comparison table for Scotland. NB on discrepancy in last three cells: Leibling's last three cells are calculated in the last row: so first sums up the LGF for all the LAs, including the ones not reported on by TS, then subtratcts the TS reporting ones. So in the last three columns the total of the differences is inflated by including as differences also ones where there was no DPE reporting (I hope I'm being clear). Instead I've calculated the totals as just that: the totals of the columns as they are in the table. 
 
-40. Is this clear/OK? I'll add a footnote to make it clear why the last three cells don't add up...
+10. Where can I get the Aberdeen City data? *It is currenlty witout any data in the draft report*
+  
+11. Any idea what is wrong with the South Ayrshire data for 15/16? *I've manually changed the expenditure figure from -327 to +470 (from the value 0.47 in Leibling's report). This will be documented naturally, but it would still be good to know where the number is from?*
 
-I'm having trouble figuring out how to treat the surplus data, mainly because surpluses can be negative. Right now I have removed from the column % change any LA where the surplus went from negative to positive. In the text describing the data, where I list top/bottom LAs I am also not sure how to treat largest increases and largest decreases? If an LA went from -10 to -20, that's currenlty a 100% decrease. If it went from 20 to 0, that's also a 100% decrease... this obviously isn't cool. The alternative is to split the text into two sets of cescrptions: the largest increases/decreases in surpluses, and largest increases/decreases in deficits. But that still doens't account for the ones who have gone from negative to positive, So do I split the description three ways? 
+13. Any idea what Leibling is using as the total transport expenditure value for Scotland? Or rather what do you want  me to use? *For Scotland I am currently using the cell `Gross Expenditure on a Funding Basis` for 17/18, `Gross Revenue Expenditure` for 16/17, and 15/16 and `Total Expenditure` for previous years. *
+  
+36. & 37. So just to be clear: Table 4 is only comparing the summaries for Wales, Scotland, London and England without London. So a resurfacing of a multi-storey car park shouldn't be that big a deal. 
+
+But to your answer: I'm not sure I am clear on what you're asking for with this sentence :"So, year-on-year change is good, alongside a change from the last year against some rolling average of your choosing."
+
+Let's just try an example, to make this easier: hypothetical Scotland's annual income increases over the past 5 years have e.g been: 10% (2012-13), 10%, 15%, 5%, 20% (2016-17). 
+
+* i.  Year on year change is 10%, 10%, 15%, 5%, 20% ?
+* ii.  Leibling's report has the change for the four year range: `1.1*1.15*1.05*1.20 = 1.59`
+* iii. I've suggested the alternative `1.59 ^ 0.25 = 1.12` average annual change. 
+
+So are you suggesting both (i) and (iii)? This makes the table much larger, and the table now has three dimensions: the type of account, the country, and the year (+ rolling average). In that case, I could instead split it instead into three tables, one for each type of account (income, expenditure, surplus) and place them in those sections instead? Or am I getting this completely wrong?
+
+38. The Scottish and Welsh councils aren't overlapping are they?
+
+39. So you mean yes to conditional colouring of all columns (usually one per table) that have a rate of change? *I've added it to the change on last year columns in the income and expenditure tables (not surpluses yet, see question 41 below). These worry me a bit, because there is no easy way to code defensively against extreme values, which will make the colour palettes look weird. I'll leave them in for now.*
+
+(updated) Comments on Phill's questions (numbers indicate page and order of comment on page). 
+
+**PG-sco-3-1:** Rounding of decimal points: Currently 2 dp in the tables and 1dp in the text. 
+
+**PG-sco-4-1:** Yes, I saw that (see question 35. earlier). I double checked in the Excel table, and these are correct. Cells K37:K38 on the second sheet of this file: [link](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/757366/RO2_2017-18_data_by_LA.xlsx) sum up to -873,275. 
+
+**PG-sco-4-3:** *"Income has risen more sharply..."* *I've simplified this sentence.*
+
+**PG-sco-4-5:** Adding the CPI number. *Ivo will send me the data to include*
+
+**PG-sco-6-2:** The source are the Transport Scotland DPE reports. They list the number of PCNs and the PCN income, so the last column in table 7 simply divides the two.
+ 
+**PG-sco-10-2:** m/millions: switched to millions everywhere. 
+
+
+I've added the last, data source comparison, table for Scotland. NB on discrepancy in last three cells: Leibling's last three cells are calculated **in** the last row: so first sums up the LGF for all the LAs, including the ones not reported on by TS, then subtracts the TS reporting ones. So in the last three columns the total of the differences is inflated by including as differences also ones where there was no DPE reporting (I hope I'm being clear). Instead I've calculated the totals as just that: the totals of the columns as they are in the table. 
+
+40. Is this clear/OK? I've added a footnote to make it clear why the last three cells don't add up...
+
+I'm having trouble figuring out how to treat the surplus data, mainly because surpluses can be negative i.e deficits. Right now I have removed from the column % change any LA where the surplus went from negative to positive. In the text describing the data, where I list top/bottom LAs I am also not sure how to treat largest increases and largest decreases? If an LA went from -10 to -20, that's currently a 100% decrease. If it went from 20 to 0, that's also a 100% decrease... this obviously isn't cool. The alternative is to split the text into two sets of descriptions: the largest increases/decreases in surpluses, and largest increases/decreases in deficits. But that still doesn't account for the ones who have gone from negative to positive, So do I split the description three ways? And how do I colour the cells?
 
 41. Some guidance on this would be great!

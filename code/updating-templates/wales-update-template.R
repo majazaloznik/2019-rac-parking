@@ -17,7 +17,7 @@
 ################################################################################
 ## MANUAL DATA INPUT ###########################################################
 ################################################################################
-current.year <- 2016
+current.year <- 2017
 
 ## after dowloading the Wales files into the data/01-raw folder, enter their
 ## correct filenames here:
@@ -26,7 +26,7 @@ wal.expenditure.file <-"orig.wal.exp.17.csv"
 wal.transport.file <-"orig.wal.trans.17.csv"
 
 ## replace with date of access to data:
-new.date.accessed <- "11.03.2019"
+new.date.accessed <- "12.03.2019"
 
 ################################################################################
 ################################################################################
@@ -41,6 +41,7 @@ new.date.accessed <- "11.03.2019"
 source("code/functions.R")
 library(tidyr)
 library(dplyr)
+library(tibble)
 library(RefManageR)
 # load existing master file
 master <- readRDS("data/03-processed/master.rds")
@@ -111,7 +112,7 @@ file.copy("code/report-templates/wales-report-template.Rmd",
 
 # create a bibliography for the wales report
 bib.master %>% 
-  filter(year > current.year - 5, !type %in% c("budget", "pcn")) %>% 
+  filter(fiscyear > current.year - 5, !type %in% c("budget", "pcn")) %>% 
   mutate(refs = paste0("@", key)) %>% 
   column_to_rownames("key") %>% 
   select(-type) -> bib.master
@@ -120,7 +121,7 @@ bib.master %>%
   as.BibEntry() %>% 
   WriteBib(file = "code/report-rmds/wales.bib", 
            biblatex = FALSE, verbose = FALSE)
-saveRDS(bib.master, paste0("data/03-processed/", report.name, ".rds"))
+saveRDS(bib.master, paste0("data/03-processed/", report.name, "-bib.rds"))
 
 ################################################################################
 ## COMPILE REPORT -  THIS IS THE ONLY PART OF THE SCRIPT THAT CAN BE RE-RUN   ##

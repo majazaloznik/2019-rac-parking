@@ -170,6 +170,11 @@ for (row in 2:nrow(orig.sco.meta.i.e.17)){
   original.scotland.i.e <- bind_rows(original.scotland.i.e, x)
 }
 
+# manually change South Ayrshire's 2015/16 value 
+original.scotland.i.e %>% 
+  mutate(expend.total = ifelse(auth.name == "South Ayrshire" & year == 2015,
+                               470, expend.total),
+         surplus.total = income.total - expend.total) -> original.scotland.i.e
 
 ## 2.2 SCOTLAND PCN data from pdf ##############################################
 

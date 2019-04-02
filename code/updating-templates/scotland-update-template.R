@@ -113,10 +113,10 @@ file.copy("code/report-templates/scotland-report-template.Rmd",
 
 # select a bibliography for the wscotland report - only rows needed
 bib.master %>% 
-  filter(year > current.year - 5, !type %in% c("budget")) %>% 
+  filter(fiscyear > current.year - 5, !type %in% c("budget")) %>% 
   mutate(refs = paste0("@", key)) %>% 
   column_to_rownames("key") %>% 
-  select(-type) -> bib.master
+  rename(content = type) -> bib.master
 
 # create bib file
 bib.master %>% 
@@ -125,7 +125,7 @@ bib.master %>%
            biblatex = FALSE, verbose = FALSE)
 
 # also save the data.frame
-saveRDS(bib.master, paste0("data/03-processed/", report.name, ".rds"))
+saveRDS(bib.master, paste0("data/03-processed/", report.name, "-bib.rds"))
 
 ################################################################################
 ## COMPILE REPORT -  THIS IS THE ONLY PART OF THE SCRIPT THAT CAN BE RE-RUN   ##
