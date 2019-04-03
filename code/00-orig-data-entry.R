@@ -559,7 +559,7 @@ bib.master <- data.frame(country = "GB",
                          url ="http://geoportal1-ons.opendata.arcgis.com/datasets/3dc07a60f46b4e01ab0ec8ba71c7a879_3.zip", 
                          urldate = "10.03.2019",
                          bibtype = "misc", 
-                         type = "map")
+                         content = "map")
 
 # add scottish income and expenditure data 
 scotland.i.e. %>% 
@@ -572,7 +572,7 @@ scotland.i.e. %>%
                        FunFisc(c.y = fiscyear), "Annex A by LA}"),
          urldate = "10.03.2019",
          bibtype = "misc",
-         type = "i.e", 
+         content = "i.e", 
          year = fiscyear + 2, 
          author = "{Scottish Government}") %>% 
   bind_rows(bib.master) -> bib.master
@@ -584,7 +584,7 @@ scotland.pdf %>%
   mutate(url = gsub("[\\{\\}]", "", 
                      regmatches(url, regexpr("\\{.*?\\}", url))),
          country = "Scotland",
-         type = "pcn",
+         content = "pcn",
          bibtype = "misc",
          year = c(2016, 2017, 2018),
          author = "{Transport Scotland}",
@@ -599,7 +599,7 @@ scotland.pdf %>%
 
 bind_rows(bib.master,
 data.frame(country = "Wales",
-           type = "i.e",
+           content = "i.e",
            bibtype = "misc",
            author =  "{Welsh Government}",
            title = "{Revenue outturn expenditure: roads and transport (Table LGFS0009)}",
@@ -614,7 +614,7 @@ england.outturn.17.18 %>%
   mutate(url = gsub("[\\{\\}]", "", 
                      regmatches(url, regexpr("\\{.*?\\}", url))),
                country = "England",
-               type = "i.e",
+               content = "i.e",
                bibtype = "misc",
                year = c(2010:2017, 2017, 2019),
                author = "{Office for National Statistics}",
@@ -629,7 +629,7 @@ england.budget.18.19 %>%
   mutate(url = ifelse(is.na(url), NA, gsub("[\\{\\}]", "", 
                      regmatches(url, regexpr("\\{.*?\\}", url)))),
          country = "England",
-         type = "budget",
+         content = "budget",
          bibtype = "misc",
          year  = c(NA, NA, 2011, 2011, 2012:2018),
          author = "{Office for National Statistics}",
@@ -640,7 +640,7 @@ england.budget.18.19 %>%
 
 
 bib.master %>% 
-  mutate(key = paste0(country,".", type, ".", fiscyear)) -> bib.master
+  mutate(key = paste0(country,".", content, ".", fiscyear)) -> bib.master
 
 saveRDS(bib.master, "data/01-raw/orig.bib.master.rds")
 saveRDS(bib.master, "data/03-processed/bib.master.rds")

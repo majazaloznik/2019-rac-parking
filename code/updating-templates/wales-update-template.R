@@ -17,7 +17,7 @@
 ################################################################################
 ## MANUAL DATA INPUT ###########################################################
 ################################################################################
-current.year <- 2015
+current.year <- 2017
 
 ## after dowloading the Wales files into the data/01-raw folder, enter their
 ## correct filenames here:
@@ -112,16 +112,18 @@ file.copy("code/report-templates/wales-report-template.Rmd",
 
 # create a bibliography for the wales report
 bib.master %>% 
-  filter(fiscyear > current.year - 5, !type %in% c("budget", "pcn")) %>% 
+  filter(fiscyear > current.year - 5, !content %in% c("budget", "pcn")) %>% 
   mutate(refs = paste0("@", key)) %>% 
-  column_to_rownames("key") %>% 
-  rename(content = type) -> bib.master
+  column_to_rownames("key") -> bib.wales
 
-bib.master %>% 
+# crete the wales bibliography
+bib.wales %>% 
   as.BibEntry() %>% 
   WriteBib(file = "code/report-rmds/wales.bib", 
            biblatex = FALSE, verbose = FALSE)
-saveRDS(bib.master, paste0("data/03-processed/", report.name, "-bib.rds"))
+
+# also save the data frame
+saveRDS(bib.wales, paste0("data/03-processed/", report.name, "-bib.rds"))
 
 ################################################################################
 ## COMPILE REPORT -  THIS IS THE ONLY PART OF THE SCRIPT THAT CAN BE RE-RUN   ##

@@ -678,7 +678,7 @@ i just missed it... better sort that out now...OK
 * todo: when compiling remove log file. OK
 * todo save csv files of individual tables! *Wales OK
 * these csv's mean splitting tables into csv-able and formatted for kable.. but all good. OK
-*  *prepare scotland update file*
+* prepare scotland update file. OK
 * *move code out of rmd for scotland* and add csv writing
 
 
