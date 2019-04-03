@@ -44,6 +44,9 @@ suppressWarnings(suppressMessages(library(tidyr)))
 suppressWarnings(suppressMessages(library(tibble)))
 suppressWarnings(suppressMessages(library(showtext)))
 suppressWarnings(suppressMessages(library(sf)))
+suppressWarnings(suppressMessages(library(viridis)))
+suppressWarnings(suppressMessages(library(classInt)))
+suppressWarnings(suppressMessages(library(colorspace)))
 options(knitr.kable.NA = '')
 options(stringsAsFactors = FALSE)
 
@@ -90,6 +93,11 @@ bib %>%
 bib %>% 
   filter(country == "Scotland", fiscyear == 2013, content == "pcn") %>% 
   pull(refs) -> sco.bib.old.pcn
+
+# map reference
+bib %>% 
+  filter( content == "map") %>% 
+  pull(refs) -> sco.bib.map
 ```
 
 This note covers parking finances for the 32 local authorities in Scotland. They are required to submit details of their finances to the Scottish Government annually in a standard format. The figures are normally published in March, nearly a year after the financial year end. This note looks at the section on parking income and expenditure for `r FunFisc(4)` to `r FunFisc()` and is based primarily on Scottish Local Government Finance Statistics data (`r sco.bib.main.i.e`), as well as data reported by English and Welsh Local Government authorities, all of the sources of which care listed in the references[^1]. 
@@ -124,9 +132,9 @@ data.current %>%
   select(dpe.now, dpe.next, dpe.not) -> sco.dpe 
 ```
 
-Table 1 shows that as of \color{red}December \color{black} `r current.year`, `r nrow(sco.dpe)` councils were operating DPE (using local traffic wardens and civil enforcement), while two more were actively working towards DPE, \color{red}one of which--Midlothian--introduced DPE in January 2018. \color{black} The remaining ten authorities were not currently considering DPE, but still use fixed penalty notices issued instead of fines enforced by the Justice of the Peace courts. See Figure \@ref(fig:map1) for the map.[^1]
+Table 1 shows that as of \color{red}December \color{black} `r current.year`, `r nrow(sco.dpe)` councils were operating DPE (using local traffic wardens and civil enforcement), while two more were actively working towards DPE, \color{red}one of which--Midlothian--introduced DPE in January 2018. \color{black} The remaining ten authorities were not currently considering DPE, but still use fixed penalty notices issued instead of fines enforced by the Justice of the Peace courts. See Figure \@ref(fig:map1) for the map[^2].
 
-[^1]:  Boundary data ONS (2017). Contains public sector information licensed under the [Open Government Licence v3.0.](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+[^2]:  Boundary data for this and all furhter maps is from `r sco.bib.map`. Contains public sector information licensed under the [Open Government Licence v3.0.](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
 
 Police Scotland no longer enforces parking offences but now deals only with dangerous parking (e.g. on pedestrian crossings) by local arrangement. Several of the authorities not using DPE have rejected it because of the cost of setting it up and running it for the small number of parking offences. 
 
@@ -137,6 +145,7 @@ sco.dpe %>%
  kable( "latex", 
          booktabs = T, 
          align = c("l"),
+        longtable = T,
          linesep = "",
          caption = "Parking arrangements for local authorities in Scotland",
          col.names = c("Using DPE", "Considering using DPE", "Not using DPE")) %>% 
@@ -151,13 +160,14 @@ uc %>%
   filter(grepl("^S", lau118cd)) %>% 
   mutate(lau118nm = recode(lau118nm, !!!orig.sco.name.lookup)) %>% 
   left_join(select(data.current, auth.name, dpe.status), 
-            by = c("lau118nm"= "auth.name")) ->sco
+            by = c("lau118nm"= "auth.name")) -> sco
 
-plot(sco["dpe.status"], main = "", pal = c("darkmagenta",  "darkgoldenrod1", "chartreuse3"),
-     key.pos = NULL)
 
-legend("topleft", fill = rev(c("darkmagenta",  "darkgoldenrod1", "chartreuse3")),
-       legend = rev(c( "No DPE", "DPE being introduced", "DPE")), bty = "n",
+plot(sco["dpe.status"], main = "", pal = viridis(3),
+     key.pos = NULL, border = "black", lwd = 0.3)
+
+legend("topleft", fill = rev(viridis(3)),
+       legend = c( "DPE","No DPE", "DPE being introduced"), bty = "n",
        cex = 0.8)
 
 ```
@@ -201,6 +211,14 @@ sco.surplus %>%
   summarise(n = n()) %>% 
   deframe() -> surplus.bin
 
+
+master %>% 
+  filter(country == "England") %>% 
+  filter(year == current.year) %>% 
+  summarise(transport = sum(transport.total, na.rm = TRUE),
+            surplus = sum(surplus.total, na.rm = TRUE)) %>% 
+  mutate(proportion = 100*surplus/transport) %>% 
+  pull(proportion)  -> eng.trans
 ```
 
 Table \@ref(tab:sumtab) and Figure \@ref(fig:fig1) show the summary accounts for local authorities in Scotland for fiscal years `r FunFisc(4)` to `r FunFisc()`. The income has 
@@ -208,7 +226,8 @@ Table \@ref(tab:sumtab) and Figure \@ref(fig:fig1) show the summary accounts for
 `r ifelse(sco.summary$change[2] < -0.05, paste("fallen by", FunDec(-sco.summary$change[2], 1), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[2], 1), "%"),"stayed approximately the same"))`, and the surplus has
 `r ifelse(sco.summary$change[3] < -0.05, paste("fallen by", FunDec(-sco.summary$change[3], 1), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[3], 1), "%"),"stayed approximately the same"))`
 compared to the previous fiscal year. Total transport has
-`r ifelse(sco.summary$change[4] < -0.05, paste("fallen by", FunDec(-sco.summary$change[4], 1), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[4], 1), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(FunDec(sco.summary$V5[5],1), "%")` of transport costs.
+`r ifelse(sco.summary$change[4] < -0.05, paste("fallen by", FunDec(-sco.summary$change[4], 1), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[4], 1), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(FunDec(sco.summary$V5[5],1), "%")` of transport costs. Parking makes a 
+`r ifelse(sco.summary$V5[5] < eng.trans - 0.05 , "smaller", ifelse(sco.summary$V5[5] > eng.trans + 0.05,  "larger","similar"))` contribution to overall transport expenditure in Scotland compared with England where it is around `r FunDec(eng.trans,1)` % of total transport.
 
 ```{r sumtab, echo = FALSE, message = FALSE, warning = FALSE}
 yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-", (current.year-4-1999):(current.year-1999),"}")
@@ -216,7 +235,7 @@ yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-", (
 sco.summary %>% 
   mutate(change = ifelse(rowname == "surplus.of.transport", NA, 
                          paste(FunDec(change, 2), "\\%"))) %>% 
-  mutate(rowname = c("Income", "Expenditure", "Surplus", "Net expenditure", "Parking surplus as percentage of all transport costs")) %>% 
+  mutate(rowname = c("Income", "Expenditure", "Surplus", "Net expenditure", "Parking surplus as percentage of all transport costs"))  %>% 
   mutate_at(vars(V1:V5), function(x) FunDec(x, 2)) %>% 
   mutate_at(vars(V1:V5), function(x) ifelse(.$rowname == "Parking surplus as percentage of all transport costs", paste0(x, " \\%"), x)) %>%
   mutate(collapsed = c(rep("Parking", 3), "Total transport", "")) %>% 
@@ -225,15 +244,17 @@ sco.summary %>%
          booktabs = T, 
          digits = 2, 
          escape = F,
+         longtable = T,
          align = c("r"),
          caption = "Summary of parking accounts for Scotland (£ millions)",
          col.names = c("", "", yearz, paste0("Change ", current.year, "-", 
-current.year-1999, " on ", current.year-1, "-", current.year-1999-1))) %>% 
+current.year-1999, " on ", current.year-1, "-", current.year-1999-1)),
+ linesep = "") %>% 
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>% 
   kable_styling(full_width = TRUE, 
-                latex_options =c("HOLD_position", "striped"), 
+                latex_options =c("HOLD_position"), 
                 font_size = 10) %>% 
-   column_spec(1:2, width = "3cm") 
+   column_spec(1:2, width = "3cm")
 ```
 
 
@@ -253,7 +274,7 @@ plot(data.plot$year, data.plot$income.total,
      ylim = c(0, max(data.plot$income.total) ), 
      type = "l",
      lwd = 2,
-     col = "darkblue",
+     col = viridis(3)[1],
      bty = "n",
      xlab = "Fiscal Year",
      ylab = "£ (millions)",
@@ -270,35 +291,25 @@ lines(data.plot$year, data.plot$expend.total,
      ylim = c(0, max(data.plot$expend.total)), 
      type = "l",
      lwd = 2,
-     col = "coral3")
+     col = viridis(3)[2])
 lines(data.plot$year, data.plot$surplus.total, 
      ylim = c(0, max(data.plot$surplus.total)), 
      type = "l",
      lwd = 2,
-     col = "chartreuse3")
+     col = viridis(3)[3])
 par(family = "meri")
 legend("bottomright",
        legend = c("Income", "Expenditure", "Surplus"),
        bty = "n",
-       col = c("darkblue", "coral3", "chartreuse3"), 
+       col = viridis(3), 
        lwd = 2, cex = 0.8,  xpd = TRUE)
 par(old.par)
 ```
 
 
-```{r engtrans}
-# extract England and summarise transport and surplus totals
-master %>% 
-  filter(country == "England") %>% 
-  filter(year == current.year) %>% 
-  summarise(transport = sum(transport.total, na.rm = TRUE),
-            surplus = sum(surplus.total, na.rm = TRUE)) %>% 
-  mutate(proportion = 100*surplus/transport) %>% 
-  pull(proportion)  -> eng.trans
-```
 
-Parking makes a 
-`r ifelse(sco.summary$V5[5] < eng.trans - 0.05 , "smaller", ifelse(sco.summary$V5[5] > eng.trans + 0.05,  "larger","similar"))` contribution to overall transport expenditure in Scotland compared with England where it is around `r FunDec(eng.trans,1)` % of total transport. Figure \@ref(fig:fig1) gives a longer term overview of the trends in incomes, expenditures and surpluses. 
+Since `r FunFisc(4)` income has `r ifelse(sco.summary[1,6] > sco.summary[1,2], "risen", "fallen")` by 
+`r FunDec(100*sco.summary[1,6]/sco.summary[1,2] - 100, 1)` % and expenditure has `r ifelse(sco.summary[2,6] > sco.summary[2,2], "risen", "fallen")` by `r FunDec(100*sco.summary[2,6]/sco.summary[2,2] - 100, 1)` %. Over the same period the surplus has `r ifelse(sco.summary[3,6] > sco.summary[3,2], "risen", "fallen")` by `r FunDec(100*sco.summary[3,6]/sco.summary[3,2] - 100, 1)` %. Figure \@ref(fig:fig1) gives a longer term overview of the trends in incomes, expenditures and surpluses. 
 
 
 \renewcommand{\arraystretch}{1.2}
@@ -419,8 +430,7 @@ sum.gb.annual %>%
 
 ```
 
-Income has risen 
-than expenditure over the five years, meaning that the surplus has steadily increased. \color{black} Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for  for the most recent available data, while Table \@ref(tab:change) shows the change between `r FunFisc(current.year-ref.year)` and `r FunFisc()`. *and Table \@ref(tab:annual) shows the more sensible annual change. *. 
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for  for the most recent available data, while Table \@ref(tab:change) shows the change between `r FunFisc(current.year-ref.year)` and `r FunFisc()`. *and Table \@ref(tab:annual) shows the more sensible annual change. *. 
 
 On average, parking surpluses in Great Britain have risen by about `r FunDec(sum.gb.annual$surplus.change[sum.gb.annual$country == "Great Britain"], 1)` % annually over the past `r FunN2W(current.year - ref.year)` years compared with about \color{red} 1% annually for the Consumer Prices Index during the same period\color{black}.
 
@@ -542,7 +552,7 @@ sco.income.valid %>%
   anti_join(sco.income.change.bottom2) -> sco.income.excluded.bottom
 ```
 
-`r FunFirstup(FunN2W(income.bin[2]))` councils increased their income over the past year and `r FunN2W(income.bin[1])` decreased their income`r if (sco.no.income > 0 ) {paste0(" ", FunFirstup(FunN2W(sco.no.income)), " councils did not show any income in ", FunFisc(), ".")}`
+`r FunFirstup(FunN2W(income.bin[2]))` councils increased their income over the past year and `r FunN2W(income.bin[1])` decreased their income. `r if (sco.no.income > 0 ) {paste0(" ", FunFirstup(FunN2W(sco.no.income)), " councils did not show any income in ", FunFisc(), ".")}` The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:incomefig). 
  
 The top three Scottish cities by income were `r paste0(names(sco.income.top3)[1], ", ", names(sco.income.top3)[2], ", and ", names(sco.income.top3)[3])`, and between them accounted for `r FunDec(sco.income.top3[1], 1)` % of parking income. 
 
@@ -551,11 +561,13 @@ while `r sco.income.change.top3[2,2]` and `r sco.income.change.top3[3,2]` increa
 
 \renewcommand{\arraystretch}{1.2}
 ```{r incometab, echo = FALSE, message = FALSE, warning = FALSE}
-
 sco.income %>% 
-  mutate(change = ifelse(is.na(change), NA, 
-                         paste(FunDec(change, 1), "\\%"))) %>% 
-   kable( "latex", 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
+  mutate(change = cell_spec(change, "latex",
+                            background = 
+                              FunDivergePalette(sco.income$change, 
+                                                dir = 1, factor = 1)[[3]])) %>%  
+  kable( "latex", 
          booktabs = T, 
          digits = c(rep(0, 6), 2), 
          escape = F,
@@ -574,7 +586,11 @@ sco.income %>%
   column_spec(1, width = "4cm") %>% 
   row_spec(32, hline_after = TRUE)
 ```
- 
+
+```{r incomefig, fig.cap = "Map of change in parking income since previous fiscal year"}
+FunMap(sco.income, uc, country = "^S",  dir = 1)
+
+```
 
 ```{r}
 # extract data for PCN numbers for each year, and the PCN income for the most 
@@ -805,7 +821,7 @@ sco.expend %>%
 
 Table \@ref(tab:expendtab) ranks the councils in terms of expenditure on parking.
 
-Overall expenditure has `r ifelse( sco.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(sco.expend.t[2]),1)` million (`r FunDec(abs(sco.expend.t[1]),1)` %) after a `r ifelse( sco.expend.t[3] > 0, paste0("rise of £", FunDec(sco.expend.t[3], 1), "m last year"), paste0("fall of £", FunDec(abs(sco.expend.t[3]),1), "m last year"))`, with `r FunN2W(expend.bin[2])` councils having increased their costs and `r FunN2W(expend.bin[1])` having reduced them.  
+Overall expenditure has `r ifelse( sco.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(sco.expend.t[2]),1)` million (`r FunDec(abs(sco.expend.t[1]),1)` %) after a `r ifelse( sco.expend.t[3] > 0, paste0("rise of £", FunDec(sco.expend.t[3], 1), " million last year"), paste0("fall of £", FunDec(abs(sco.expend.t[3]),1), " million last year"))`, with `r FunN2W(expend.bin[2])` councils having increased their costs and `r FunN2W(expend.bin[1])` having reduced them. The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:expendfig). 
 
 The largest increase in expenditure occured in `r sco.expend.change.top3[1,2]` where it increased by `r FunDec(sco.expend.change.top3$change[1], 0)` %
 while `r sco.expend.change.top3[2,2]` and `r sco.expend.change.top3[3,2]` increased  by `r FunDec(sco.expend.change.top3$change[2], 0)` % and `r FunDec(sco.expend.change.top3$change[3], 0)` % respectively`r if(nrow(sco.expend.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.expend.excluded.top$auth.name), " with expenditure under £30,000)")`. The biggest decreases were in `r sco.expend.change.bottom2[2,2]` (`r FunDec(abs(sco.expend.change.bottom2$change[2]), 0)` %), and `r sco.expend.change.bottom2[1,2]` (`r FunDec(abs(sco.expend.change.bottom2$change[1]), 0)`  %)`r if(nrow(sco.expend.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.expend.excluded.bottom$auth.name), " with expenditure under £30,000)")`.
@@ -817,11 +833,14 @@ The table also shows the proportion of income taken up by costs in `r FunFisc()`
 ```{r expendtab, echo = FALSE, message = FALSE, warning = FALSE}
 
 sco.expend %>% 
-  mutate(change = ifelse(is.na(change), NA, 
-                         paste(FunDec(change, 1), "\\%")),
-         prop.income = ifelse(is.na(prop.income), NA, 
+  mutate(prop.income = ifelse(is.na(prop.income), NA, 
                               paste(FunDec(prop.income, 1), "\\%"))) %>% 
-   kable( "latex", 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
+  mutate(change = cell_spec(change, "latex",
+                            background = 
+                              FunDivergePalette(sco.expend$change, dir = -1,
+                                                factor = 1)[[3]])) %>% 
+  kable( "latex", 
          booktabs = TRUE, 
          digits = 0, 
          escape = FALSE,
@@ -840,6 +859,11 @@ sco.expend %>%
   column_spec(8, width = "1.8cm") %>% 
   row_spec(32, hline_after = TRUE)
   
+```
+
+```{r expendfig, fig.cap = "Map of change in parking expenditure since previous fiscal year"}
+FunMap(sco.expend, uc,  dir = -1)
+
 ```
 
 ```{r}
@@ -1050,9 +1074,9 @@ sco.compare.tab %>%
 
 
 
-The biggest difference in reported income is in `r sco.compare.income.ht[1,1]` where the LGF figures show £`r FunDec(sco.compare.income.ht[1,2]/1000, 1)` million more income than the Transport Scotland set. It's expenditure is reported by LGF as £`r FunDec(sco.compare.income.ht[1,3]/1000, 1)` million `r ifelse(sco.compare.income.ht[1,3] > 0, "higher", "lower")`, making the difference in the two surpluses £`r FunDec(sco.compare.income.ht[1,4]/1000, 1)` million. \color{red}Glasgow’s off-street car parks and on-street enforcement have been run by City Parking (Glasgow) LLP, a wholly-owned subsidiary of Glasgow Council since 2007. Its accounts for 2016-17 show income of £15.2 million, expenditure of £13.0 million and an operating profit of £2.8 million which almost exactly matches the difference. \color{black}
+The biggest difference in reported income is in `r sco.compare.income.ht[1,1]` where the LGF figures show £`r FunDec(sco.compare.income.ht[1,2]/1000, 1)` million more income than the Transport Scotland set. Its expenditure is reported by LGF as £`r FunDec(sco.compare.income.ht[1,3]/1000, 1)` million `r ifelse(sco.compare.income.ht[1,3] > 0, "higher", "lower")`, making the difference in the two surpluses £`r FunDec(sco.compare.income.ht[1,4]/1000, 1)` million. \color{red}Glasgow’s off-street car parks and on-street enforcement have been run by City Parking (Glasgow) LLP, a wholly-owned subsidiary of Glasgow Council since 2007. Its accounts for 2016-17 show income of £15.2 million, expenditure of £13.0 million and an operating profit of £2.8 million which almost exactly matches the difference. \color{black}
 
-In `r sco.compare.income.ht[2,1]`, the LGF income is £`r FunDec(sco.compare.income.ht[2,2]/1000, 1)` million higher, \color{red}but Edinburgh does not operate any off-street carparks as they are all commercially run.\color{black}. On the other hand `r sco.compare.income.ht[4,1]` has LGF income £`r FunDec(abs(sco.compare.income.ht[4,2])/1000, 1)` million less than the DPE income, and `r sco.compare.income.ht[3,1]` has LGF income reported to be £`r FunDec(abs(sco.compare.income.ht[3,2])/1000, 1)` million less. *NB: Aberdeen is only the biggest negative difference here because it's LGF income is currently zero!* 
+In `r sco.compare.income.ht[2,1]`, the LGF income is £`r FunDec(sco.compare.income.ht[2,2]/1000, 1)` million higher, \color{red}but Edinburgh does not operate any off-street carparks as they are all commercially run.\color{black}. On the other hand `r sco.compare.income.ht[4,1]` has LGF income £`r FunDec(abs(sco.compare.income.ht[4,2])/1000, 1)` million less than the DPE income, and `r sco.compare.income.ht[3,1]` has LGF income reported to be £`r FunDec(abs(sco.compare.income.ht[3,2])/1000, 1)` million less. *NB: Aberdeen is only the biggest negative difference here because its LGF income is currently zero!* 
 
 \newpage
 \blandscape
@@ -1067,7 +1091,7 @@ sco.compare.tab %>%
 
 sco.compare.tab %>% 
   kable( "latex", 
-         booktabs = T, 
+         booktabs = T,
          digits = 0, 
          escape = F,
          align = c("r"),
@@ -1081,9 +1105,10 @@ sco.compare.tab %>%
                      "Difference" = 3)) %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_headers"), 
-                font_size = 8) %>% 
+                font_size = 7) %>% 
   column_spec(1, width = "3.7cm") %>% 
-  row_spec(c(32), hline_after = TRUE) 
+  row_spec(c(32), hline_after = TRUE) %>% 
+  footnote(symbol = "The totals calculated in the final 'Differences' column only take into account LAs that have DPE")
 
 
 

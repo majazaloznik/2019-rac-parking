@@ -46,9 +46,9 @@ uc <- st_read(here::here(paste0("data/01-raw/maps/Local_Administrative_Units_",
 current.year <- params$current.year
 
 # create folder for csv tables if it does not exist already
+suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/wales-", FunFisc())), 
+                             showWarnings =TRUE))
 
-dir.create(here::here(paste0("outputs/csv-tables/wales-", FunFisc())), 
-                             showWarnings =TRUE)
 ## data preparation ############################################################
 # extract relevant country subset of data for all years
 master %>% 

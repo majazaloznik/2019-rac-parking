@@ -200,7 +200,7 @@ scotland.pcn.14.15.16 <- extract_tables(here::here(orig.sco.meta.pdf.17$file.nam
                                       pages = orig.sco.meta.pdf.17$pcn.tab[4],
                      output = "data.frame")[[1]]
 
-# extract PCN type table for 14/15, 15/16, 16/17 directly into a data.frame
+# extract PCN type table for 17/18 directly into a data.frame
 scotland.pcn.17 <- extract_tables(here::here(orig.sco.meta.pdf.17$file.name[5]), 
                                         pages = orig.sco.meta.pdf.17$pcn.tab[5],
                                         output = "data.frame")[[1]]

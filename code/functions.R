@@ -133,8 +133,7 @@ FunScotlandLACels <- function(file, sheet, expend.total, income.total,
 }
 
 # Function that loops through all sheets and extracts relevant cell data 
-FunScotlandLoopIE <- function(row,
-                              year,
+FunScotlandLoopIE <- function(year,
                               file.name,
                               start.sh,
                               end.sh,

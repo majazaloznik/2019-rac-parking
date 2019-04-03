@@ -5,8 +5,8 @@
 ## produce the report for Scotland for any year available in the file         ##
 ################################################################################
 ## Instructions (detailed instructions are in /docs/technical):
-## 1. Manual input: input (update) the current year and the three .csv filenames 
-##      you have saved into /data/01-raw
+## 1. Manual input: input (update) the current year and the required metadata
+##      for all the files you've downloaded into data/01-raw
 ## 2. Run through the rest of the script that imports the data, cleans it,  
 ##      creates an .Rmd file and produces the compiled .pdf report.
 ## 3. Optional: you can now modify the .Rmd file in /code/report-rmds and 
@@ -19,14 +19,96 @@
 ################################################################################
 current.year <- 2016
 
-## after dowloading the Wales files into the data/01-raw folder, enter their
-## correct filenames here:
-# wal.income.file <-"orig.wal.inc.17.csv"
-# wal.expenditure.file <-"orig.wal.exp.17.csv"
-# wal.transport.file <-"orig.wal.trans.17.csv"
+## after dowloading the Scotland files into the data/01-raw folder, enter their
+## metadata here:
+
+# Scottish Local Government Finance Statistics (Income and Expenditure data)####
+################################################################################
+# title as it will appear in the references:
+sco.i.e.title <- "Scottish Local Government Finance Statistics 2015-16 Annex A by LA"
+
+# url of the file:
+sco.i.e.url <- "https://www2.gov.scot/Resource/0054/00546675.xlsx"
+
+# year published, as it will appear in the references:
+sco.i.e.year.published <- 2018
 
 ## replace with date of access to data:
-new.date.accessed <- "11.03.2019"
+sco.i.e.date.accessed <- "11.03.2019"
+
+# path and name of file where you have saved it:
+sco.i.e.file <- "data/01-raw/orig.sco-16-17.xlsx"
+
+# which sheet has the first LA (Aberdeen city) on it?
+sco.i.e.start.sh <- 2
+
+# which sheet has the last LA (West Lothian) on it?
+sco.i.e.end.sh <- 33
+
+# which cell has the Parking "Gross Expenditure on a Funding Basis"?
+sco.i.e.exp.cell <- "B41"
+
+# which cell has the Parking "Gross Income on a Funding Basis"?
+sco.i.e.inc.cell <- "C41"
+
+# which cell has the Total Roads and Transport "Gross Expenditure on a Funding Basis"?
+sco.i.e.transp.cell <- "B34"
+
+# On individual LA sheets, which cell has the name of the LA?
+sco.i.e.auth.cell <- "A1"
+
+# Aberdeen city - separate data source if available? ###########################
+################################################################################
+# title as it will appear in the references:
+sco.aberdeen.title <- ""
+
+# url of the file:
+sco.aberdeen.url <- ""
+
+# year published, as it will appear in the references:
+sco.aberdeen.year.published <- NA
+
+## replace with date of access to data:
+sco.aberdeen.date.accessed <- ""
+
+# How much parking Income did Aberdedn City report this year??
+sco.aberdeen.income.total <- 0
+
+# How much parking Expenditure did Aberdedn City report this year??
+sco.aberdeen.expend.total <- 0
+
+# How much total transport expenditure did Aberdedn City report this year??
+sco.aberdeen.transport.total <- 0
+
+
+
+# Transport Scotland (PCN) data  ###############################################
+################################################################################
+# title as it will appear in the references:
+sco.pdf.title <- "Decriminalised Parking Enforcement: Local Authorites’ Income 
+and Expenditure: 2017 to 2018"
+
+# url of the file:
+sco.pdf.url <- "https://www.transport.gov.scot/media/43636/decriminalised-parking-enforcement-income-expenditure-annual-report-2017-18.pdf"
+
+# year published, as it will appear in the references:
+sco.pdf.year.published <- 2018
+
+## replace with date of access to data:
+sco.pdf.date.accessed <- "11.03.2019"
+
+# path and name of file where you have saved it:
+sco.pdf.file <- "data/01-raw/orig.sco-17-18-pcn.pdf"
+
+# which page in the report is the DPE table on?
+sco.pdf.dpe.tab <- 4
+
+# which page in the report is the number of PCNs table on?
+sco.pdf.pcn.tab <- 5
+
+# which page in the report is the income/expenditure table on?
+sco.pdf.i.e.tab <- 6
+
 
 ################################################################################
 ################################################################################
@@ -43,58 +125,81 @@ library(tidyr)
 library(dplyr)
 library(tibble)
 library(RefManageR)
+library(readxl)
+library(tabulizer)
 # load existing master file
 master <- readRDS("data/03-processed/master.rds")
 bib.master <- readRDS("data/03-processed/bib.master.rds")
-
+orig.sco.name.lookup <- readRDS("data/01-raw/orig.sco.name.lookup.rds")
 ################################################################################
 ## AUTOMATIC DATA IMPORT AND CLEANING 
 ################################################################################
 path <- "data/01-raw/"
-# # read all expenditure data, remove extra row and column
-# wal.income.total <- read.csv(paste0(path, wal.income.file))[-1,-1]
-# # read all income data, remove extra row and column
-# wal.expend.total <- read.csv(paste0(path, wal.expenditure.file))[-1,-1]
-# # read all transport total data, remove extra row and column
-# wal.transport.total <- read.csv(paste0(path, wal.transport.file))[-1,-1]
-# 
-# # reshape all three dfs - you can ignore the warnigns here!
-# wal.expend.total<- FunWalesReshape(wal.expend.total)
-# wal.income.total<- FunWalesReshape(wal.income.total)
-# wal.transport.total<- FunWalesReshape(wal.transport.total)
-# 
-# # join them together and calculate surplus
-# wal.expend.total %>% 
-#   left_join(wal.income.total) %>% 
-#   left_join(wal.transport.total) %>% 
-#   mutate(income.total = -income.total,
-#          surplus.total = income.total - expend.total) %>% 
-#   filter(year == current.year) -> update
-# 
-# # add Wales specific data
-# update %>% 
-#   mutate(country = "Wales",
-#          auth.type = "LA")  -> update
-# 
-# # double check the update is OK:
-# if (nrow(update) != 22) {
-#   paste("Something is wrong. The update should have 22 rows, but it has",
-#         nrow(update), "instead.")} else {
-#           "Everything checks out, the update has 22 rows"}
+
+# loop through each sheet of the excel file to extract the income/expenditure data
+FunScotlandLoopIE(year = current.year,
+                  file.name = sco.i.e.file,
+                  start.sh =  sco.i.e.start.sh,
+                  end.sh =  sco.i.e.end.sh,
+                  exp.cell =  sco.i.e.exp.cell,
+                  inc.cell =  sco.i.e.inc.cell,
+                  transp.cell = sco.i.e.transp.cell,
+                  auth.cell = sco.i.e.auth.cell) -> scotland.i.e. 
+
+# extract the dpe table from the pdf
+scotland.dpe <- extract_tables(sco.pdf.file, pages = sco.pdf.dpe.tab)
+
+# clean DPE type table 
+scotland.dpe <- FunScotlandDPE(scotland.dpe, current.year)
+
+# extract PCN type table 
+scotland.pcn <- extract_tables(sco.pdf.file, 
+                                  pages = sco.pdf.pcn.tab,
+                                  output = "data.frame")[[1]]
+
+# clean PCN table
+scotland.pcn <- FunScotlandPCN(scotland.pcn, current.year)
+
+# extract TfS i.e. type table directly into a data.frame
+scotland.tfs.i.e <- extract_tables(sco.pdf.file, 
+                                      pages = sco.pdf.i.e.tab,
+                                      output = "data.frame")[[1]]
+
+# clean TFS income expenditure table
+scotland.tfs.i.e <- FunScotlandTFSIE(scotland.tfs.i.e, current.year)
+
+# join all 3 tables from the pdf
+scotland.pdf <- full_join(full_join(scotland.dpe,
+                                    scotland.pcn,by = c("auth.name", "year")),
+                          scotland.tfs.i.e,  by = c("auth.name", "year"))
+
+# now merge income exp data from the Excel files with the pdf data
+update <- full_join(scotland.i.e., scotland.pdf)
+
+# add Scotland data and calculate surplus
+update %>% 
+  mutate(country = "Scotland",
+         auth.type = "LA",
+         surplus.total = income.total - expend.total)   -> update
+
+# double check the update is OK:
+if (nrow(update) != 32) {
+  paste("Something is wrong. The update should have 32 rows, but it has",
+        nrow(update), "instead.")} else {
+          "Everything checks out, the update has 32 rows"}
+
 
 ################################################################################
 ## Add (or overwrite) new rows to master #######################################
 ################################################################################
 
-# # add update for Wales - if that year already exists, it will be overwritten!!!
-# master %>% 
-#   anti_join(update, by = c("country", "auth.name", "year")) %>% 
-#   bind_rows(update) -> master
+# add update for Wales - if that year already exists, it will be overwritten!!!
+master %>%
+  anti_join(update, by = c("country", "auth.name", "year")) %>% 
+  bind_rows(update) -> master
 
-# add new date.accessed to bibliography master
-bib.master %>% 
-  mutate(urldate = ifelse(country == "Scotland", new.date.accessed,
-                                urldate)) -> bib.master
+
+# add new files to bibliography master
 
 # # save updated datafile to master
 # saveRDS(master, "data/03-processed/master.rds")
