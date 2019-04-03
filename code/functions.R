@@ -288,7 +288,7 @@ FunMultiText <- function(vec) {
 
 # functionf for converting numbers to words
 FunN2W <- function(x) {
-  xfun::numbers_to_words(x)
+  if (x <= 10) {xfun::numbers_to_words(x)} else{as.character(x)}
 }
 
 
@@ -359,11 +359,16 @@ FunScaleLegend <- function(col, data){
 
 FunMap <- function(table, shp, country = "^S", dir = 1, factor = 1) { 
   # clean data ##
+  if (country == "^S") {
   shp %>% 
     filter(grepl(country, lau118cd)) %>% 
     mutate(lau118nm = recode(lau118nm, !!!orig.sco.name.lookup)) %>% 
     left_join(select(table, auth.name, change), 
-              by = c("lau118nm"= "auth.name")) -> map.data
+              by = c("lau118nm"= "auth.name")) -> map.data} else {
+                shp %>% 
+                  filter(grepl(country, lau118cd)) %>% 
+                  left_join(select(table, auth.name, change), 
+                            by = c("lau118nm"= "auth.name")) -> map.data}
   
   # vector for colouring
   data <- map.data$change

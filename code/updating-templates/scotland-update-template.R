@@ -140,6 +140,10 @@ saveRDS(bib.master, paste0("data/03-processed/", report.name, "-bib.rds"))
 # # remove empty folder that the compilation creates
 # unlink(paste0("outputs/reports/", report.name, "_files"), recursive=TRUE)
 # 
+# # remove log file (comment this out if there are issues and look at the log
+# # file for clues?
+# file.remove(paste0("code/report-rmds/", report.name, ".log"))
+
 # # the report are saved to /outputs/reports/
 ################################################################################
 ################################################################################

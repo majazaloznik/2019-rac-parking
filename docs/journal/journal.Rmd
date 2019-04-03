@@ -419,15 +419,15 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * Commit
 * Oh, and delete the annoying empty folder that keeps cropping up. OK
 
-* *Todo Now clean up the Wales references as well! *
+* Todo Now clean up the Wales references as well! OK
 
 * OK, now Scotland
-* *TODO: shoudl I move all the code out of the Rmds? It would look nicer for sure*
+* TODO: shoudl I move all the code out of the Rmds? It would look nicer for sure. Done
 * OK, DPE table done! And that was not easy!
 * let's try a map. The scotland map has 41 polygons, I need to colapse them into 32.. 
 * More lookup table updating.. 
 * map works, but for some reason the font won't work - if i leave the par command there it stops working. *todo*?
-* *Ugh, East dunbartonshire has lost it's year.. that's the import of the DPE table..*
+* Ugh, East dunbartonshire has lost it's year.. that's the import of the DPE table..Fixed
 * UGH, turns out i also dont have Scotland total transport data. OK
 * i had originally entered both income and expenditure cells for the total transport into the metadata, but that seems unnecesary, so i'll change that now to just the net revenue expenditure one. fixed in 00-orig-data-entry. OK
 * OK, added funciton for importing scotland transport totals, added the code to 01-orig-data-import, and now reran the whole thing. OK
@@ -453,7 +453,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 # Wednesday 27.3.2019
 
 * OK, the top/bottom code needs cleaning up. 
-* *Should i consider moving all the code out of the .Rmd files?*
+* Should i consider moving all the code out of the .Rmd files? OK
 * top/bottom. first use deframe() instead of pull in order to get a named vector. nice tip!
 * top/bottom: exclude from list if they have under 30,000 income/expenditure.
 * *clean up code: stop using column indices!*
@@ -507,7 +507,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
   + Inf means no income. So also white? OK
   + then gray out the text for the ones with too small numbers? Nah, a footnote will do.
 * Now repeat for Wales. OK
-* *Now the PCNs. first need to extract the old pdf data from the Leibling report.NO, they're not there. The data would have to be manually input... Maybe later* 
+* Now the PCNs. first need to extract the old pdf data from the Leibling report.NO, they're not there. The data would have to be manually input... Maybe later.OK
 * LOL, i had a [1-9] gsub line, which stripped out all the zeros from the Scotland PCN data, eeek! OK
 * OK, just the last two years for PCN incomes then. OK
 * Manually correct the 2016/17 Argyll and Bute no on PCNs from 3018 to 13018? Make sure it's in the tech doc. 
@@ -530,7 +530,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * OK, import calculates surplus for Scotland now. OK 
 * could remove the superflous claculations of it later - although it makes no difference. OK
 * Now wales: OK, added that, and also changed that in the wales update.R file.OK 
-* Reran wales update, *make sure the copy.file has overwrite swithced on!*
+* Reran wales update, make sure the copy.file has overwrite swithced on!
 * technical: add this: only on+off and surplus have been calculated. Despite it being bad practice probably. 
 * Now clean up all the unnecessary calculatoins of surpluses.. ok.
 * OK, now fix that in Wales as well.OK.
@@ -633,7 +633,7 @@ i just missed it... better sort that out now...OK
 * ALso striped rows don't work if you have colapsed. There's an unspported hack, but it doesn't work with Table 2 in Scotland I'm afraid. OK
 * add note on comparison table.OK
 
-* *maps?*
+* maps? OK, done
 * OK, mapping means figuring out palattes, make them nice and make them match the ones in the tables. It also means centering on zero. So probably two palattes diverging. OK [this link](https://stackoverflow.com/questions/10985224/r-heatmap-with-diverging-colour-palette/10986203#10986203) was useful. 
 * but the example there is silly, if the data is skewed the zero will be way off. Maybe it isn't silly, just need to fix the scale/legend?
 * kinda works, but i need to figure out the scale legend as well. OK
@@ -659,12 +659,27 @@ i just missed it... better sort that out now...OK
 * change plot line colours.OK
 * maybe maps look nicer without black lines? OK.
 * references to maps in text. OK
-* Do wales maps?
-* *move code out of rmd*
-* *prepare scotland update file*
-
-
-
+* Do wales maps? OK
+* add text reference to maps. OK
+* change line pplot colours.OK
+* add boundary data licence.OK
+* add income sentence to wales.ok
+* efficiency error somewhere.OK
+* instructions: you do have to read the text through. It will say things like 14% and 14% respectively, which you might want to smooth over..
+* todo: millions wales.ok
+* instructions: sometimes the float cause text to ovwerflow... not sure why, but the alternative you don't want: where floats are actually floating. This won't work well in a document like this with so many tables and figures, you want them to stay in the correct order with the text. So if this happens manually insert `\pagebreak` at any location that is overflowing to force a new page. 
+* fix words to numbers function so that it only works if number is > 10. killin it.OK
+* add conditional formatting of tables.OK
+* move code out of rmd. OK for wales
+* OK, testing external code:
++ knitr options moved out work
++ packages installed work
++ objects are in .rmd environment. so all good. 
+* todo: when compiling remove log file. OK
+* todo save csv files of individual tables! *Wales OK
+* these csv's mean splitting tables into csv-able and formatted for kable.. but all good. OK
+*  *prepare scotland update file*
+* *move code out of rmd for scotland* and add csv writing
 
 
 ### Wales (based on 17/18) #####################################################

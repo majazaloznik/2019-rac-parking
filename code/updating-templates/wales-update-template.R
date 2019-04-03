@@ -17,7 +17,7 @@
 ################################################################################
 ## MANUAL DATA INPUT ###########################################################
 ################################################################################
-current.year <- 2017
+current.year <- 2015
 
 ## after dowloading the Wales files into the data/01-raw folder, enter their
 ## correct filenames here:
@@ -115,7 +115,7 @@ bib.master %>%
   filter(fiscyear > current.year - 5, !type %in% c("budget", "pcn")) %>% 
   mutate(refs = paste0("@", key)) %>% 
   column_to_rownames("key") %>% 
-  select(-type) -> bib.master
+  rename(content = type) -> bib.master
 
 bib.master %>% 
   as.BibEntry() %>% 
@@ -135,6 +135,10 @@ rmarkdown::render(paste0("code/report-rmds/", report.name, ".Rmd"),
 
 # remove empty folder that the compilation creates
 unlink(paste0("outputs/reports/", report.name, "_files"), recursive=TRUE)
+
+# remove log file (comment this out if there are issues and look at the log
+# file for clues?
+file.remove(paste0("code/report-rmds/", report.name, ".log"))
 
 # the report are saved to /outputs/reports/
 ################################################################################
