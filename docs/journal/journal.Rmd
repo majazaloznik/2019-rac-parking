@@ -649,9 +649,23 @@ i just missed it... better sort that out now...OK
 * Now add same palettes to the conditional cell colouring. 
 * *maybe inset shetland isles at some point..* Probably need ggplot for that though..
 
+# Wednesday 3.4.2019
+
+* change plot line colours and map. OK
+* add aplha to the conditional tables at least? Hmm, so the findColours function drops the alpha values. This sucks. 
+* OK, but i can use findCols instead. I get that to work, the palettes now have 8-character colours, the last two being the alpha. And it works in the maps. But in the conditional formatting it doesn't come through. No, it won't, seems LaTeX doesn't handle it. Could try mixing with white? But too much effort. Nope, sorted it out. `FunLigthen()` But i don't like it, so revert to normal..
+* instructions: install Latex, tinytex maybe?
+* fix palette function for non-negative scales
+* change plot line colours.OK
+* maybe maps look nicer without black lines? OK.
+* references to maps in text. OK
+* Do wales maps?
 * *move code out of rmd*
 * *prepare scotland update file*
-* *change plot line colours*
+
+
+
+
 
 ### Wales (based on 17/18) #####################################################
 
@@ -928,4 +942,30 @@ This data is massively time lagged, Ivo suggested removing it?
 # Appendix 2
 ## data overview - Scotland
 ```{r appendix, child = 'app3.Rmd'}
+```
+
+
+### stackoverflow question:
+
+##### alpha channel in 8-digit HEX code stripped in kableExtra cell_spec()?
+
+I'm (conditionally) formatting cells in a LaTeX `kable` table, and attempting to pass 8-digit HEX colours in order to get some transparency. 
+
+It seems however, that `cell_spec()` strips away the last two characters of the colour, leaving it opaque. 
+
+NB: In fact even if I use the built in `viridis` functionality via the helper function `spec_color()` that has an alpha argument, `cell_spec()` doesn't seem to pass it on. 
+
+See repex below: you can see the colours are 6-digit instead of 8. 
+```
+library(kableExtra)
+library(dplyr)
+x <- data.frame(a = 1:4)
+
+x %>%  
+  mutate(a = cell_spec(a, "latex",  background = c("#AADC3280"))) %>% 
+  kable()
+
+x %>%  
+  mutate(a = cell_spec(a, "latex",  background = spec_color(1, alpha = 0.5))) %>% 
+  kable()
 ```

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.12.21)  3 APR 2019 01:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.12.21)  3 APR 2019 11:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1135,14 +1135,14 @@ has been already used, duplicate ignored
                                                   \fi \fi 
 l.203 
        <./scotland-report-template_files/figure-latex/fig1-1.pdf>] [4] [5]
-<scotland-report-template_files/figure-latex/incomefig-1.pdf, id=99, 296.10625p
-t x 274.02374pt>
+<scotland-report-template_files/figure-latex/incomefig-1.pdf, id=101, 296.10625
+pt x 273.02pt>
 File: scotland-report-template_files/figure-latex/incomefig-1.pdf Graphic file 
 (type pdf)
 <use scotland-report-template_files/figure-latex/incomefig-1.pdf>
 Package pdftex.def Info: scotland-report-template_files/figure-latex/incomefig-
 1.pdf used on input line 351.
-(pdftex.def)             Requested size: 296.11455pt x 274.03143pt.
+(pdftex.def)             Requested size: 296.11455pt x 273.02766pt.
 [6pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) 
 has been already used, duplicate ignored
 
@@ -1161,22 +1161,22 @@ Overfull \hbox (1.76509pt too wide) in paragraph at lines 501--501
  []
 
 [9]
-<scotland-report-template_files/figure-latex/expendfig-1.pdf, id=133, 296.10625
-pt x 274.02374pt>
+<scotland-report-template_files/figure-latex/expendfig-1.pdf, id=134, 296.10625
+pt x 273.02pt>
 File: scotland-report-template_files/figure-latex/expendfig-1.pdf Graphic file 
 (type pdf)
 <use scotland-report-template_files/figure-latex/expendfig-1.pdf>
 Package pdftex.def Info: scotland-report-template_files/figure-latex/expendfig-
 1.pdf used on input line 506.
-(pdftex.def)             Requested size: 296.11455pt x 274.03143pt.
+(pdftex.def)             Requested size: 296.11455pt x 273.02766pt.
 [10pdfTeX warning (ext4): destination with the same identifier (name{figure.4})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.566 \end{longtabu}
-                     <./scotland-report-template_files/figure-latex/expendfig-1
-.pdf>] [11] [12] [13] [14] [15
+l.513 
+       <./scotland-report-template_files/figure-latex/expendfig-1.pdf>] [11] [1
+2] [13] [14] [15
 
 pdfTeX warning (ext4): destination with the same identifier (name{table.12}) ha
 s been already used, duplicate ignored
@@ -1210,7 +1210,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 753.
 Here is how much of TeX's memory you used:
  14404 strings out of 493892
  205277 string characters out of 6156144
- 391991 words of memory out of 5000000
+ 389839 words of memory out of 5000000
  17437 multiletter control sequences out of 15000+600000
  76045 words of font info for 118 fonts, out of 8000000 for 9000
  622 hyphenation exceptions out of 8191
@@ -1222,10 +1222,10 @@ lm/lmr17.pfb></usr/share/texmf/fonts/type1/public/lm/lmr5.pfb></usr/share/texmf
 /fonts/type1/public/lm/lmr7.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pf
 b></usr/share/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmri12.pfb>
-Output written on scotland-report-template.pdf (17 pages, 547524 bytes).
+Output written on scotland-report-template.pdf (17 pages, 548308 bytes).
 PDF statistics:
- 280 PDF objects out of 1000 (max. 8388607)
- 237 compressed objects within 3 object streams
+ 281 PDF objects out of 1000 (max. 8388607)
+ 238 compressed objects within 3 object streams
  68 named destinations out of 1000 (max. 500000)
  14413 words of extra memory for PDF output out of 17280 (max. 10000000)
 

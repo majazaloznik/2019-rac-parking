@@ -293,7 +293,7 @@ FunN2W <- function(x) {
 
 
 ## functions ################
-FunDivergePalette <- function(data, dir = 1){
+FunDivergePalette <- function(data, dir = 1, factor = 1){
   top <- ifelse(dir == 1, "D", "C")
   bottom <- ifelse(dir == 1, "C", "D")
   data.clean <- data[!is.na(data)]
@@ -308,21 +308,23 @@ FunDivergePalette <- function(data, dir = 1){
   rampbreaks <- c(rb1, rb2)
   cuts <- suppressWarnings(classIntervals(data, style="fixed",fixedBreaks=rampbreaks))
   if (abs(min) > max) {
-    pal.min <- viridis_pal(begin = 0.9, end = 0, 
+    pal.min <- viridis_pal(begin = 0.93, end = 0, 
                            option = bottom)(min.prop)
     end <- 1-0.9/min.prop * max.prop
-    pal.max <- viridis_pal(begin = 0.9, end = end, 
+    pal.max <- viridis_pal(begin = 0.93, end = end, 
                            option = top)(max.prop)
   } else {
-    pal.max <- viridis_pal(begin = 0.9, end = 0, 
-                           direction = dir, option = top)(max.prop)
+    pal.max <- viridis_pal(begin = 0.93, end = 0, 
+                           option = top)(max.prop)
     end <- 1-0.9/max.prop * min.prop
-    pal.min <- viridis_pal(begin = 0.9, end = end, 
-                           direction = dir, option = bottom)(min.prop)}
-  pal <- c(rev(pal.min), pal.max)
-  pal <- findColours(cuts, pal)
- pal.na <- ifelse(is.na(pal), "#FFFFFF", pal)
- return(list(pal, pal.na))
+    pal.min <- viridis_pal(begin = 0.93, end = end, 
+                           option = bottom)(min.prop)}
+  pal.full <- c(rev(pal.min), pal.max)
+  pal.full <- FunLighten(pal.full, factor)
+  i <- findCols(cuts)
+  pal <- pal.full[i]
+ pal.na <- ifelse(is.na(pal), "#FFFFFFFF", pal)
+ return(list(pal.full, pal, pal.na))
 }
 
 ## legend function ##########
@@ -355,7 +357,7 @@ FunScaleLegend <- function(col, data){
   par <- opar
 }
 
-FunMap <- function(table, shp, country = "^S", dir = 1) { 
+FunMap <- function(table, shp, country = "^S", dir = 1, factor = 1) { 
   # clean data ##
   shp %>% 
     filter(grepl(country, lau118cd)) %>% 
@@ -367,13 +369,28 @@ FunMap <- function(table, shp, country = "^S", dir = 1) {
   data <- map.data$change
   
   # get colour palette and breaks
-  pal <- FunDivergePalette(data, dir = dir)[[1]]
+  pal <- FunDivergePalette(data, dir = dir, factor)
   
   # plot map
-  plot(map.data["change"], main = "", col = pal)
+  plot(map.data["change"], main = "", col = pal[[2]], 
+       border = "black", lwd = 0.3)
   
   # plot legend.
-  FunScaleLegend(attr(pal, "palette"), data[!is.na(data)])
+  FunScaleLegend(pal[[1]], data[!is.na(data)])
 }
 
+
+# Function to lighten colours by a factor
+FunLighten <- function(cols, factor = 1.25) {
+  cols1 <- readhex(file = textConnection(paste(cols, collapse = "\n")),
+                   class = "RGB")
+  #transform to hue/lightness/saturation colorspace
+  cols1 <- as(cols1, "HLS")
+  #multiplicative decrease of lightness
+  cols1@coords[, "L"] <- cols1@coords[, "L"] * factor
+  #going via rgb seems to work better  
+  cols1 <- as(cols1, "RGB")
+  cols1 <- hex(cols1)
+ cols1
+}
 

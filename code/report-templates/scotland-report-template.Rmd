@@ -46,6 +46,7 @@ suppressWarnings(suppressMessages(library(showtext)))
 suppressWarnings(suppressMessages(library(sf)))
 suppressWarnings(suppressMessages(library(viridis)))
 suppressWarnings(suppressMessages(library(classInt)))
+suppressWarnings(suppressMessages(library(colorspace)))
 options(knitr.kable.NA = '')
 options(stringsAsFactors = FALSE)
 
@@ -161,11 +162,12 @@ uc %>%
   left_join(select(data.current, auth.name, dpe.status), 
             by = c("lau118nm"= "auth.name")) ->sco
 
-plot(sco["dpe.status"], main = "", pal = c("darkmagenta",  "darkgoldenrod1", "chartreuse3"),
-     key.pos = NULL)
 
-legend("topleft", fill = rev(c("darkmagenta",  "darkgoldenrod1", "chartreuse3")),
-       legend = rev(c( "No DPE", "DPE being introduced", "DPE")), bty = "n",
+plot(sco["dpe.status"], main = "", pal = viridis(3),
+     key.pos = NULL, border = "black", lwd = 0.3)
+
+legend("topleft", fill = rev(viridis(3)),
+       legend = c( "DPE","No DPE", "DPE being introduced"), bty = "n",
        cex = 0.8)
 
 ```
@@ -272,7 +274,7 @@ plot(data.plot$year, data.plot$income.total,
      ylim = c(0, max(data.plot$income.total) ), 
      type = "l",
      lwd = 2,
-     col = "darkblue",
+     col = viridis(3)[1],
      bty = "n",
      xlab = "Fiscal Year",
      ylab = "£ (millions)",
@@ -289,17 +291,17 @@ lines(data.plot$year, data.plot$expend.total,
      ylim = c(0, max(data.plot$expend.total)), 
      type = "l",
      lwd = 2,
-     col = "coral3")
+     col = viridis(3)[2])
 lines(data.plot$year, data.plot$surplus.total, 
      ylim = c(0, max(data.plot$surplus.total)), 
      type = "l",
      lwd = 2,
-     col = "chartreuse3")
+     col = viridis(3)[3])
 par(family = "meri")
 legend("bottomright",
        legend = c("Income", "Expenditure", "Surplus"),
        bty = "n",
-       col = c("darkblue", "coral3", "chartreuse3"), 
+       col = viridis(3), 
        lwd = 2, cex = 0.8,  xpd = TRUE)
 par(old.par)
 ```
@@ -550,7 +552,7 @@ sco.income.valid %>%
   anti_join(sco.income.change.bottom2) -> sco.income.excluded.bottom
 ```
 
-`r FunFirstup(FunN2W(income.bin[2]))` councils increased their income over the past year and `r FunN2W(income.bin[1])` decreased their income`r if (sco.no.income > 0 ) {paste0(" ", FunFirstup(FunN2W(sco.no.income)), " councils did not show any income in ", FunFisc(), ".")}`
+`r FunFirstup(FunN2W(income.bin[2]))` councils increased their income over the past year and `r FunN2W(income.bin[1])` decreased their income. `r if (sco.no.income > 0 ) {paste0(" ", FunFirstup(FunN2W(sco.no.income)), " councils did not show any income in ", FunFisc(), ".")}` The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:incomefig). 
  
 The top three Scottish cities by income were `r paste0(names(sco.income.top3)[1], ", ", names(sco.income.top3)[2], ", and ", names(sco.income.top3)[3])`, and between them accounted for `r FunDec(sco.income.top3[1], 1)` % of parking income. 
 
@@ -563,7 +565,8 @@ sco.income %>%
   mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
   mutate(change = cell_spec(change, "latex",
                             background = 
-                              FunDivergePalette(sco.income$change, dir = 1)[[2]])) %>%  
+                              FunDivergePalette(sco.income$change, 
+                                                dir = 1, factor = 1)[[3]])) %>%  
   kable( "latex", 
          booktabs = T, 
          digits = c(rep(0, 6), 2), 
@@ -818,7 +821,7 @@ sco.expend %>%
 
 Table \@ref(tab:expendtab) ranks the councils in terms of expenditure on parking.
 
-Overall expenditure has `r ifelse( sco.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(sco.expend.t[2]),1)` million (`r FunDec(abs(sco.expend.t[1]),1)` %) after a `r ifelse( sco.expend.t[3] > 0, paste0("rise of £", FunDec(sco.expend.t[3], 1), "m last year"), paste0("fall of £", FunDec(abs(sco.expend.t[3]),1), "m last year"))`, with `r FunN2W(expend.bin[2])` councils having increased their costs and `r FunN2W(expend.bin[1])` having reduced them.  
+Overall expenditure has `r ifelse( sco.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(sco.expend.t[2]),1)` million (`r FunDec(abs(sco.expend.t[1]),1)` %) after a `r ifelse( sco.expend.t[3] > 0, paste0("rise of £", FunDec(sco.expend.t[3], 1), "m last year"), paste0("fall of £", FunDec(abs(sco.expend.t[3]),1), "m last year"))`, with `r FunN2W(expend.bin[2])` councils having increased their costs and `r FunN2W(expend.bin[1])` having reduced them. The changes from `r FunFisc(1)` are mapped in Figure \@ref(tab:expendfig). 
 
 The largest increase in expenditure occured in `r sco.expend.change.top3[1,2]` where it increased by `r FunDec(sco.expend.change.top3$change[1], 0)` %
 while `r sco.expend.change.top3[2,2]` and `r sco.expend.change.top3[3,2]` increased  by `r FunDec(sco.expend.change.top3$change[2], 0)` % and `r FunDec(sco.expend.change.top3$change[3], 0)` % respectively`r if(nrow(sco.expend.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.expend.excluded.top$auth.name), " with expenditure under £30,000)")`. The biggest decreases were in `r sco.expend.change.bottom2[2,2]` (`r FunDec(abs(sco.expend.change.bottom2$change[2]), 0)` %), and `r sco.expend.change.bottom2[1,2]` (`r FunDec(abs(sco.expend.change.bottom2$change[1]), 0)`  %)`r if(nrow(sco.expend.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.expend.excluded.bottom$auth.name), " with expenditure under £30,000)")`.
@@ -835,7 +838,8 @@ sco.expend %>%
   mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
   mutate(change = cell_spec(change, "latex",
                             background = 
-                              FunDivergePalette(sco.expend$change, dir = -1)[[2]])) %>% 
+                              FunDivergePalette(sco.expend$change, dir = -1,
+                                                factor = 1)[[3]])) %>% 
   kable( "latex", 
          booktabs = TRUE, 
          digits = 0, 
