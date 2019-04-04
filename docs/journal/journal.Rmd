@@ -679,7 +679,19 @@ i just missed it... better sort that out now...OK
 * todo save csv files of individual tables! *Wales OK
 * these csv's mean splitting tables into csv-able and formatted for kable.. but all good. OK
 * prepare scotland update file. OK
-* *move code out of rmd for scotland* and add csv writing
+* instructions: bibliography {}
+* move code out of rmd for scotland and add csv writing. DONE!!
+
+# Thursday 4.4.2019
+
+* *CPI, add to both reports.  and bibiography*
+* *surplus/deficit mapping and shading*
+* *annual/not annual change*
+* *number of dps*
+* *network graph of pipeline*
+* *technical documentation*
+* *instructions*
+* *aberdeen*
 
 
 ### Wales (based on 17/18) #####################################################

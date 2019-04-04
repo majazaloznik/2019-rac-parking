@@ -100,7 +100,7 @@ data %>%
 # save csv table 1
 write.csv(wal.summary, here::here(paste0("outputs/csv-tables/wales-",
                                          FunFisc(), "/wales-", 
-                                         FunFisc(), "-table-1.csv")),
+                                         FunFisc(), "-table-01.csv")),
           row.names = FALSE)
 
 # prepare and format data for Summary table
@@ -157,7 +157,8 @@ sub.gb.years %>%
          year = paste0("(", year, "-", year-1999, ")"),
          surplus = FunDec(surplus/1000, 1), 
          income = FunDec(income/1000, 1), 
-         expend = FunDec(expend/1000, 1)) %>% 
+         expend = FunDec(expend/1000, 1),
+         prop.of.income = prop.of.income*100) %>% 
   t() %>% 
   as.data.frame(stringsAsFactors = FALSE) %>% 
   tibble::rownames_to_column("var") %>% 
@@ -170,7 +171,7 @@ sub.gb.years %>%
 # save csv table 2
 write.csv(sum.gb, here::here(paste0("outputs/csv-tables/wales-",
                                          FunFisc(), "/wales-", 
-                                         FunFisc(), "-table-2.csv")),
+                                         FunFisc(), "-table-02.csv")),
           row.names = FALSE)
 
 # same as before, but this time add % formatting to the bottom row
@@ -248,7 +249,7 @@ sum.gb.annual %>%
 # save csv table 3
 write.csv(sum.gb.annual.tab, here::here(paste0("outputs/csv-tables/wales-",
                                     FunFisc(), "/wales-", 
-                                    FunFisc(), "-table-3.csv")),
+                                    FunFisc(), "-table-03.csv")),
           row.names = FALSE)
 
 
@@ -284,7 +285,7 @@ data %>%
 # save csv table 4
 write.csv(wal.income, here::here(paste0("outputs/csv-tables/wales-",
                                                FunFisc(), "/wales-", 
-                                               FunFisc(), "-table-4.csv")),
+                                               FunFisc(), "-table-04.csv")),
           row.names = FALSE)
 
 
@@ -375,7 +376,7 @@ data %>%
 # save csv table 5
 write.csv(wal.expend, here::here(paste0("outputs/csv-tables/wales-",
                                                FunFisc(), "/wales-", 
-                                               FunFisc(), "-table-5.csv")),
+                                               FunFisc(), "-table-05.csv")),
           row.names = FALSE)
 
 
@@ -478,7 +479,7 @@ data %>%
 # save csv table 6
 write.csv(wal.expend.of.income, here::here(paste0("outputs/csv-tables/wales-",
                                         FunFisc(), "/wales-", 
-                                        FunFisc(), "-table-6.csv")),
+                                        FunFisc(), "-table-06.csv")),
           row.names = FALSE)
 
 
@@ -495,8 +496,7 @@ wal.expend.of.income %>%
 
 
 ## SURPLUS #####################################################################
-
-# needs to be at the start because the intro requires data from here XXXXXX!X!X!X
+# clean up surplus data
 data %>% 
   select(auth.name, year, surplus.total) %>% 
   spread(key = year, value = surplus.total) %>% 
@@ -509,7 +509,7 @@ data %>%
 # save csv table 7
 write.csv(wal.surplus, here::here(paste0("outputs/csv-tables/wales-",
                                         FunFisc(), "/wales-", 
-                                        FunFisc(), "-table-7.csv")),
+                                        FunFisc(), "-table-07.csv")),
           row.names = FALSE)
 
 

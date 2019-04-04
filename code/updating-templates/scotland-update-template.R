@@ -17,7 +17,7 @@
 ################################################################################
 ## MANUAL DATA INPUT ###########################################################
 ################################################################################
-current.year <- 2016
+current.year <- 2017
 
 ## after dowloading the Scotland files into the data/01-raw folder, enter their
 ## metadata here:
@@ -141,66 +141,67 @@ report.name <- paste0("scotland-report-", current.year, "-",
 ################################################################################
 ## AUTOMATIC DATA IMPORT AND CLEANING 
 ################################################################################
-# loop through each sheet of the excel file to extract the income/expenditure data
-FunScotlandLoopIE(year = current.year,
-                  file.name = sco.i.e.file,
-                  start.sh =  sco.i.e.start.sh,
-                  end.sh =  sco.i.e.end.sh,
-                  exp.cell =  sco.i.e.exp.cell,
-                  inc.cell =  sco.i.e.inc.cell,
-                  transp.cell = sco.i.e.transp.cell,
-                  auth.cell = sco.i.e.auth.cell) -> scotland.i.e. 
-
-# extract the dpe table from the pdf
-scotland.dpe <- extract_tables(sco.pdf.file, pages = sco.pdf.dpe.tab)
-
-# clean DPE type table 
-scotland.dpe <- FunScotlandDPE(scotland.dpe, current.year)
-
-# extract PCN type table 
-scotland.pcn <- extract_tables(sco.pdf.file, 
-                                  pages = sco.pdf.pcn.tab,
-                                  output = "data.frame")[[1]]
-
-# clean PCN table
-scotland.pcn <- FunScotlandPCN(scotland.pcn, current.year)
-
-# extract TfS i.e. type table directly into a data.frame
-scotland.tfs.i.e <- extract_tables(sco.pdf.file, 
-                                      pages = sco.pdf.i.e.tab,
-                                      output = "data.frame")[[1]]
-
-# clean TFS income expenditure table
-scotland.tfs.i.e <- FunScotlandTFSIE(scotland.tfs.i.e, current.year)
-
-# join all 3 tables from the pdf
-scotland.pdf <- full_join(full_join(scotland.dpe,
-                                    scotland.pcn,by = c("auth.name", "year")),
-                          scotland.tfs.i.e,  by = c("auth.name", "year"))
-
-# now merge income exp data from the Excel files with the pdf data
-update <- full_join(scotland.i.e., scotland.pdf)
-
-# add Scotland data and calculate surplus
-update %>% 
-  mutate(country = "Scotland",
-         auth.type = "LA",
-         surplus.total = income.total - expend.total)   -> update
-
-# double check the update is OK:
-if (nrow(update) != 32) {
-  paste("Something is wrong. The update should have 32 rows, but it has",
-        nrow(update), "instead.")} else {
-          "Everything checks out, the update has 32 rows"}
+# # loop through each sheet of the excel file to extract the income/expenditure data
+# FunScotlandLoopIE(year = current.year,
+#                   file.name = sco.i.e.file,
+#                   start.sh =  sco.i.e.start.sh,
+#                   end.sh =  sco.i.e.end.sh,
+#                   exp.cell =  sco.i.e.exp.cell,
+#                   inc.cell =  sco.i.e.inc.cell,
+#                   transp.cell = sco.i.e.transp.cell,
+#                   auth.cell = sco.i.e.auth.cell) -> scotland.i.e. 
+# 
+# # extract the dpe table from the pdf
+# scotland.dpe <- extract_tables(sco.pdf.file, pages = sco.pdf.dpe.tab)
+# 
+# # clean DPE type table 
+# scotland.dpe <- FunScotlandDPE(scotland.dpe, current.year)
+# 
+# # extract PCN type table 
+# scotland.pcn <- extract_tables(sco.pdf.file, 
+#                                   pages = sco.pdf.pcn.tab,
+#                                   output = "data.frame")[[1]]
+# 
+# # clean PCN table
+# scotland.pcn <- FunScotlandPCN(scotland.pcn, current.year)
+# 
+# # extract TfS i.e. type table directly into a data.frame
+# scotland.tfs.i.e <- extract_tables(sco.pdf.file, 
+#                                       pages = sco.pdf.i.e.tab,
+#                                       output = "data.frame")[[1]]
+# 
+# # clean TFS income expenditure table
+# scotland.tfs.i.e <- FunScotlandTFSIE(scotland.tfs.i.e, current.year)
+# 
+# # join all 3 tables from the pdf
+# scotland.pdf <- full_join(full_join(scotland.dpe,
+#                                     scotland.pcn,by = c("auth.name", "year")),
+#                           scotland.tfs.i.e,  by = c("auth.name", "year"))
+# 
+# # now merge income exp data from the Excel files with the pdf data
+# update <- full_join(scotland.i.e., scotland.pdf)
+# 
+# # add Scotland data and calculate surplus
+# update %>% 
+#   mutate(country = "Scotland",
+#          auth.type = "LA",
+#          surplus.total = income.total - expend.total)   -> update
+# 
+# # double check the update is OK:
+# if (nrow(update) != 32) {
+#   paste("Something is wrong. The update should have 32 rows, but it has",
+#         nrow(update), "instead.")} else {
+#           "Everything checks out, the update has 32 rows"}
 
 ################################################################################
 ## Add (or overwrite) new rows to master #######################################
 ################################################################################
 
 # add update for Wales - if that year already exists, it will be overwritten!!!
-master %>%
-  anti_join(update, by = c("country", "auth.name", "year")) %>% 
-  bind_rows(update) -> master
+if (exists(update)){
+  master %>%
+    anti_join(update, by = c("country", "auth.name", "year")) %>% 
+    bind_rows(update) -> master}
 
 
 # save updated datafile to master
@@ -217,7 +218,7 @@ sco.i.e.bib <- data.frame(fiscyear = current.year,
                  content = "i.e",
                  bibtype = "misc",
                  year = sco.i.e.year.published,
-                 author = "Scottish Government",
+                 author = "{Scottish Government}",
                  urldate = sco.i.e.date.accessed,
                  title = sco.i.e.title,
                  key = paste0("Scotland.i.e.", current.year))
@@ -235,7 +236,7 @@ sco.pdf.bib <- data.frame(fiscyear = current.year,
                           content = "pcn",
                           bibtype = "misc",
                           year = sco.pdf.year.published,
-                          author = "Transport Scotland",
+                          author = "{Transport Scotland}",
                           urldate = sco.pdf.date.accessed,
                           title = sco.pdf.title,
                           key = paste0("Scotland.pdf.", current.year))
