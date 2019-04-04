@@ -292,38 +292,39 @@ FunN2W <- function(x) {
 
 
 ## functions ################
-FunDivergePalette <- function(data, dir = 1, factor = 1){
+FunDivergePalette <- function(data, data.full = NULL, dir = 1, factor = 1){
+  if(is.null(data.full)) {data.full <- data}
   top <- ifelse(dir == 1, "D", "C")
   bottom <- ifelse(dir == 1, "C", "D")
-  data.clean <- data[!is.na(data)]
-  min <- min(data.clean)
-  max <- max(data.clean)
-  if(min < 0 & 0 < max)
+  data.full.clean <- data.full[!is.na(data.full)]
+  min <- min(data.full.clean)
+  max <- max(data.full.clean)
+  if(min < 0 & 0 < max){
     range <- max-min 
-  min.prop <- -round(min(data.clean)/range*100)
-  max.prop <- 100 - min.prop
-  rb1 <- seq(min, 0, length.out=min.prop + 1)
-  rb2 <- seq(0, max, length.out=max.prop)[-1]
-  rampbreaks <- c(rb1, rb2)
-  cuts <- suppressWarnings(classIntervals(data, style="fixed",fixedBreaks=rampbreaks))
-  if (abs(min) > max) {
-    pal.min <- viridis_pal(begin = 0.93, end = 0, 
-                           option = bottom)(min.prop)
-    end <- 1-0.9/min.prop * max.prop
-    pal.max <- viridis_pal(begin = 0.93, end = end, 
-                           option = top)(max.prop)
-  } else {
-    pal.max <- viridis_pal(begin = 0.93, end = 0, 
-                           option = top)(max.prop)
-    end <- 1-0.9/max.prop * min.prop
-    pal.min <- viridis_pal(begin = 0.93, end = end, 
-                           option = bottom)(min.prop)}
-  pal.full <- c(rev(pal.min), pal.max)
+    min.prop <- -round(min(data.full.clean)/range*100)
+    max.prop <- 100 - min.prop
+    rb1 <- seq(min, 0, length.out=min.prop + 1)
+    rb2 <- seq(0, max, length.out=max.prop)[-1]
+    rampbreaks <- c(rb1, rb2)
+    cuts <- suppressWarnings(classIntervals(data, style="fixed",fixedBreaks=rampbreaks))
+    if (abs(min) > max) {
+      pal.min <- viridis_pal(begin = 0.93, end = 0, 
+                             option = bottom)(min.prop)
+      end <- 1-0.9/min.prop * max.prop
+      pal.max <- viridis_pal(begin = 0.93, end = end, 
+                             option = top)(max.prop)
+    } else {
+      pal.max <- viridis_pal(begin = 0.93, end = 0, 
+                             option = top)(max.prop)
+      end <- 1-0.9/max.prop * min.prop
+      pal.min <- viridis_pal(begin = 0.93, end = end, 
+                             option = bottom)(min.prop)}
+    pal.full <- c(rev(pal.min), pal.max)}
   pal.full <- FunLighten(pal.full, factor)
   i <- findCols(cuts)
   pal <- pal.full[i]
- pal.na <- ifelse(is.na(pal), "#FFFFFFFF", pal)
- return(list(pal.full, pal, pal.na))
+  pal.na <- ifelse(is.na(pal), "#FFFFFFFF", pal)
+  return(list(pal.full, pal, pal.na))
 }
 
 ## legend function ##########
@@ -356,31 +357,34 @@ FunScaleLegend <- function(col, data){
   par <- opar
 }
 
-FunMap <- function(table, shp, country = "^S", dir = 1, factor = 1) { 
+
+FunMap <- function(table, which = 1, shp, country = "^S", dir = 1, factor = 1) { 
   # clean data ##
   if (country == "^S") {
   shp %>% 
     filter(grepl(country, lau118cd)) %>% 
     mutate(lau118nm = recode(lau118nm, !!!orig.sco.name.lookup)) %>% 
-    left_join(select(table, auth.name, change), 
+    left_join(select(table, auth.name, change, change.4), 
               by = c("lau118nm"= "auth.name")) -> map.data} else {
                 shp %>% 
                   filter(grepl(country, lau118cd)) %>% 
-                  left_join(select(table, auth.name, change), 
+                  left_join(select(table, auth.name, change, change.4), 
                             by = c("lau118nm"= "auth.name")) -> map.data}
   
   # vector for colouring
-  data <- map.data$change
-  
+  if (which == 1) {
+  data <- map.data$change} else {
+    data <-  map.data$change.4}
+  full <- c(map.data$change, map.data$change.4)
   # get colour palette and breaks
-  pal <- FunDivergePalette(data, dir = dir, factor)
+  pal <- FunDivergePalette(data, full, dir = dir, factor = factor)
   
   # plot map
   plot(map.data["change"], main = "", col = pal[[2]], 
        border = "black", lwd = 0.3)
   
   # plot legend.
-  FunScaleLegend(pal[[1]], data[!is.na(data)])
+  FunScaleLegend(pal[[1]], full[!is.na(full)])
 }
 
 

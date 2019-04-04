@@ -17,10 +17,8 @@ bibliography: wales.bib
 csl: apa-with-notes.csl
 ---
   
-```{r, echo = FALSE}
-report.name <- paste0("wales-report-", params$current.year, "-",
-                      params$current.year - 1999)
-bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
+```{r setup, echo = FALSE}
+source(here::here("code/wales.R"))
 ```
 
 ---
@@ -28,10 +26,7 @@ title: "`r paste("Local Authority Parking Finances in Wales", params$current.yea
 nocite: |
   `r paste0(bib$refs, collapse = ", ")`
 ---
-  
-```{r setup, echo = FALSE, warning = FALSE, message = FALSE}
-source(here::here("code/wales.R"))
-```
+
 \renewcommand{\arraystretch}{1.2}
 
 # Introduction
@@ -144,12 +139,12 @@ sum.gb.formatted %>%
 
 Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for  for the most recent available data, while Table \@ref(tab:annual) shows the annual change over the years `r FunFisc(current.year-ref.year)` and `r FunFisc()`. 
 
-On average, parking surpluses in Great Britain have risen by about `r FunDec(sum.gb.annual$surplus.change[sum.gb.annual$country == "Great Britain"], dp.text)` % annually over the past `r FunN2W(current.year - ref.year)` years compared with `r FunDec(rpi.annual, dp.text)` % annually for the Retail Prices Index during the same period (`r sco.bib.rpi`). 
+On average, parking surpluses in Great Britain have risen by about `r FunDec(sum.gb.change$surplus.change.4[sum.gb.change$country == "Great Britain"], dp.text)` % annually over the past `r FunN2W(current.year - ref.year)` years compared with `r FunDec(rpi.annual, dp.text)` % annually for the Retail Prices Index during the same period (`r wal.bib.rpi`). 
 
 
 ```{r annual}
 # print table comparing annual changes over last 5 years. 
-sum.gb.annual.tab.formatted %>% 
+sum.gb.change.tab.formatted %>% 
   kable( "latex", 
          booktabs = T, 
          digits = c(rep(0, 6), 2), 
@@ -163,9 +158,10 @@ sum.gb.annual.tab.formatted %>%
          linesep = "") %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
-                font_size = 10) %>% 
-  column_spec(1, width = "5cm") %>% 
-  column_spec(6, width = "3cm")
+                font_size = 9) %>% 
+  column_spec(1, width = "6cm") %>% 
+  column_spec(6, width = "2.5cm") %>% 
+  row_spec(c(2,4), hline_after = TRUE)
 ```
 
 \pagebreak

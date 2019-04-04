@@ -688,12 +688,6 @@ i just missed it... better sort that out now...OK
   + add new params to the .Rmd templates, and make sure the script has them as well. add them to the render call to the list of params passed and then add them into the manual input section of the update. 
   + Done for Wales. OK
   + done for Scotland. OK
-* *aberdeen*
-* *surplus/deficit mapping and shading*
-* *instructions*
-* *network graph of pipeline*
-* *technical documentation*
-* *annual/not annual change*
 * fix an extra space in the references titles somewhere. OK
 * CPI, add to both reports.  and bibiography
   + add reference: add to original input. update must do what? change date accessed and year (publihsed)? yes. in both Wales and Scotland updates. OK
@@ -706,7 +700,39 @@ i just missed it... better sort that out now...OK
 * add reference in text for RPI. 
 * ffs, one of the update scripts was turning the year in the bib. master into a character vector each time, and every time i fixed it on one side it overwrote it on the other.. fixed. 
 * instructions: change the style file for citations if you want. 
-
+* annual/not annual change for countries. OK
+* That calculation is limited by how far back you can go - 2012/13 is the last year that has numbers for all 3 countries. So let's just never do one earlier?Nah, the code should work. try it out? Yeah, it works! also the RPI is caclucated for the correct period. 
+* first clean up a bit, move the bib, report file. OK. 
+* while working on wales.R comment out the params, so I can sournce the file direclty instead of compiling the pdf. don't forget to swithc back OK
+* also, after fixing wales.R i removed some objects that are references in the text in the rmd, don't forget those. OK
+* Wales done. repeat steps for Scotland.OK
+* annual/not annual change for LAs. OK
+* OK, adding the average annual change column to the table is easy. The problem is now the divergent palette. Since it only takes the range of the input to determine the palette, but I need it to take into account the other column as well). But I fixed it by adding another argument for the full range of the data. COOL!!
+* that had the consequence that my poor style - not explicitly naming arguments in my own functions, which i later rewrite and add more arguments!! tip, don't do that - but it's all good. OK
+* don't forget to add another column heading in the kable call after adding a new column. and in expenditures, fix the last column widht. 1.5 and font to 9.OK 
+* expenditure table Wales. OK
+* income table Scotland. OK
+* expend table Scotland. ok
+* there are stil some infinite values in expend scotland..
+* income maps Wales.ok
+* income maps Scoltalnd.ok
+* enxpend maps Walse.ok
+* Expend maps Scoltand.ok
+* instrucitons: this is all stupidly backwards compatible..
+* dear lord, getting the maps to play along is a mess... for some reason anything i tried there was somehting wrong, and my bespoke palette function was not making it easy. especially since the pairs of maps now have to share a palette. Still not sure this is working OK, but separating the plots seems to be the safest option. 
+* What if I move them all into an appendix? Oh, that won't work, because there has to be some text in between.. oh, if there are two lines it's OK? [here](https://stackoverflow.com/questions/27444804/some-figure-captions-from-rmarkdown-not-showing)
+* Still not sure the merged palette is OK, there seems to be a bit of a shift in the scale, but it doens't affect the actual readability or usefulness of the maps. 
+* Also these bloody floats won't stay in place, even in the appendix..Keeps putting it above the section title.. apparently [from this question here here](https://tex.stackexchange.com/questions/285238/avoid-figure-above-section-title)
+the latex flafter package stops that from happening. But now I'm getting an empty page instead. 
+* *surplus/deficit mapping and shading*
+* *instructions*
+* *network graph of pipeline*
+* *technical documentation*
+* *aberdeen*
+* add manually original data. OK
+** merge in import with the rest of scotland data*
+* *add template to update*
+* *add bibliography*
 
 ### Wales (based on 17/18) #####################################################
 

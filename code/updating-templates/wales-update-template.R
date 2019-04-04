@@ -17,7 +17,7 @@
 ################################################################################
 ## MANUAL DATA INPUT ###########################################################
 ################################################################################
-current.year <- 2016
+current.year <- 2015
 
 ## after dowloading the Wales files into the data/01-raw folder, enter their
 ## correct filenames here:
@@ -156,7 +156,7 @@ unlink(paste0("outputs/reports/", report.name, "_files"), recursive=TRUE)
 
 # remove log file (comment this out if there are issues and look at the log
 # file for clues?
-file.remove(paste0("code/report-rmds/", report.name, ".log"))
+suppressWarnings(file.remove(paste0("code/report-rmds/", report.name, ".log")))
 
 # the report are saved to /outputs/reports/
 ################################################################################

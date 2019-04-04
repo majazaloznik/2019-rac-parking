@@ -343,8 +343,52 @@ scotland.i.e. <- data.frame(fisc.year,year,report, file.name, link,
                             auth.cell)
 
 
-## commented out to stop overwriting!
+# save
 saveRDS(scotland.i.e., "data/01-raw/orig.sco.meta.i.e.17.rds")
+
+## 3.1.5  Aberdeen incomes and expenditures MANUAL #############################
+
+aberdeen.12 <- data.frame(auth.name = "Aberdeen City",
+                          year = 2012,
+                          income.total = 8074,
+                          expend.total = 3716 )   
+
+
+aberdeen.13 <- data.frame(auth.name = "Aberdeen City",
+                          year = 2013,
+                          income.total = 9200,
+                          expend.total = 4315)   
+
+aberdeen.14 <- data.frame(auth.name = "Aberdeen City",
+                          year = 2014,
+                          income.total = 8730, 
+                          expend.total =  4221) 
+
+aberdeen.15 <- data.frame(auth.name = "Aberdeen City",
+                          year = 2015,
+                          income.total = 8444 , # 8483
+                          expend.total =  4877 )   # 5156
+
+aberdeen.16 <- data.frame(auth.name = "Aberdeen City",
+                          year = 2016,
+                          income.total = 8040,
+                          expend.total =  4821) 
+
+aberdeen.17 <- data.frame(auth.name = "Aberdeen City",
+                          year = 2017,
+                          income.total = 8397,
+                          expend.total =  5075)
+
+bind_rows(aberdeen.12,
+          aberdeen.13,
+          aberdeen.14,
+          aberdeen.15,
+          aberdeen.16,
+          aberdeen.17) -> aberdeen
+
+# save
+saveRDS(aberdeen., "data/01-raw/orig.sco.aberdeen.17.rds")
+
 
 ## 3.2 SCOTLAND penalty notice charges #########################################
 

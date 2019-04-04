@@ -1,4 +1,8 @@
 ---
+################################################################################
+##                 YOU CANNOT KNIT THIS FILE DIRECTLY FROM HERE!              ##
+##              Instead use the scotland-update-template.R script             ##
+################################################################################
 output:
   bookdown::pdf_document2: 
     toc: FALSE
@@ -12,6 +16,7 @@ header-includes:
   - \usepackage{lscape}
   - \newcommand{\blandscape}{\begin{landscape}}
   - \newcommand{\elandscape}{\end{landscape}}
+  - \usepackage{flafter}
 params:
   current.year: 2016
   dp.text: 1
@@ -20,11 +25,8 @@ bibliography: scotland.bib
 csl: apa-with-notes.csl
 ---
   
-```{r, echo = FALSE}
-report.name <- paste0("scotland-report-", params$current.year, "-",
-                      params$current.year - 1999)
-bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
-
+```{r setup, echo = FALSE}
+source(here::here("code/scotland.R"))
 ```
 
 ---
@@ -32,9 +34,7 @@ title: "`r paste("Local Authority Parking Finances in Scotland", params$current.
 nocite: |
   `r paste0(bib$refs, collapse = ", ")`
 ---
-```{r setup, echo = FALSE, warning = FALSE, message = FALSE}
-source(here::here("code/scotland.R"))
-```
+
 \renewcommand{\arraystretch}{1.2}
 
   **Careful - there is no Aberdeen data in this report, so the totals won't match. (And there is some other source of errors in the Summary I suspect..) **
@@ -176,9 +176,9 @@ sum.gb.formatted %>%
   row_spec(c(1, 4), hline_after = TRUE)
 ```
 
-Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for  for the most recent available data, while Table \@ref(tab:change) shows the change between `r FunFisc(current.year-ref.year)` and `r FunFisc()`. *and Table \@ref(tab:annual) shows the more sensible annual change. *. 
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for  for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and `r FunFisc(1)` with the average annual change over the `r FunN2W(current.year - ref.year)`-year period from `r FunFisc(current.year-ref.year)`.
 
-On average, parking surpluses in Great Britain have risen by about `r FunDec(sum.gb.annual$surplus.change[sum.gb.annual$country == "Great Britain"], dp.text)` % annually over the past `r FunN2W(current.year - ref.year)` years compared with `r FunDec(rpi.annual, dp.text)` % annually for the Retail Prices Index during the same period (`r sco.bib.rpi`).
+On average, parking surpluses in Great Britain have risen by about `r FunDec(sum.gb.change$surplus.change.4[sum.gb.change$country == "Great Britain"], dp.text)` % annually over the past `r FunN2W(current.year - ref.year)` years compared with `r FunDec(rpi.annual, dp.text)` % annually for the Retail Prices Index during the same period (`r sco.bib.rpi`).
 
 ```{r change}
 # print change over 5 years. 
@@ -197,29 +197,9 @@ sum.gb.change.tab.formatted  %>%
   kable_styling(full_width = TRUE, 
                 latex_options =c("hold_position", "striped", "repeat_header"), 
                 font_size = 10) %>% 
-  column_spec(1, width = "5cm") %>% 
-  column_spec(6, width = "3cm")
-```
-
-```{r annual}
-# print annual change
-sum.gb.annual.tab.formatted %>% 
-  kable( "latex", 
-         booktabs = T, 
-         digits = c(rep(0, 6), 2), 
-         escape = F,
-         longtable = T,
-         align = c("r"),
-         col.names = c("",  "England without London", "London", 
-                       "Scotland", "Wales", "Great Britain"),
-         caption = paste0("Annual changes in parking income and expenditure from ", FunFisc(current.year - ref.year), " to ", FunFisc(), " across the nations of Great Britain"), 
-         format.args = list(big.mark = ","),
-         linesep = "") %>% 
-  kable_styling(full_width = TRUE, 
-                latex_options =c("hold_position", "striped", "repeat_header"), 
-                font_size = 10) %>% 
-  column_spec(1, width = "5cm") %>% 
-  column_spec(6, width = "3cm")
+  column_spec(1, width = "6.7cm") %>% 
+  column_spec(6, width = "1.8cm") %>% 
+  row_spec(c(2,4), hline_after = TRUE)
 ```
 
 #  Income
@@ -245,22 +225,31 @@ sco.income.formatted %>%
          format.args = list(big.mark = ","),
          linesep = "",
          col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
-                       paste0("Change ", current.year, "-", current.year-1999, 
-                              " on ", current.year-1, "-", 
-                              current.year-1999-1))) %>% 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)),
+                       paste0("Average annual change since ", FunFisc(4)))) %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("hold_position", "striped", "repeat_header"), 
-                font_size = 10) %>% 
-  column_spec(1, width = "4cm") %>% 
+                font_size = 9) %>% 
+  column_spec(1, width = "3.5cm") %>% 
+  column_spec(7, width = "1.5cm") %>% 
+  column_spec(8, width = "1.5cm") %>% 
+  
   row_spec(32, hline_after = TRUE)
 ```
 
 ```{r incomefig, fig.cap = "Map of change in parking income since previous fiscal year"}
 # map change in income from last year
-FunMap(sco.income, uc, country = "^S",  dir = 1)
+FunMap(sco.income, which = 1, shp = uc, country = "^S",  dir = 1)
 ```
 
 Table \@ref(tab:pcntab) shows the number of PCNs issued council by council in Scotland for the years `r FunFisc(x)` to `r FunFisc()`, with the average income per PCN for  `r FunFisc()`. The total number of PCNs has `r ifelse(sco.pcn.numbers.annual > 0, "increased", "decreased")` by around `r FunDec(sco.pcn.numbers.annual, dp.text)` % a year on average. \color{red}The penalty for parking can be £40 or £50 for a minor offence such as overstaying at a meter, or £60 for a more serious offence such as parking where it is not allowed. \color{black} These figures are reduced by 50% for prompt payment and increased by 50% for slow payment. The average recovery per PCN was £`r FunDec(sco.pcn.tot.average, dp.text)` in `r FunFisc()`.
+
+```{r incomefig4, fig.cap = "Map of average annual change in parking income over the past four years", fig.height = 4}
+# map expenditure change
+FunMap(sco.income, which = 4, shp = uc, country = "^S",dir = -1)
+```
+
 
 
 ```{r pcntab}
@@ -311,6 +300,12 @@ Scottish councils with DPE earn `r FunDec(sco.pcn.prop[nrow(sco.pcn.numbers), nc
 
 # Expenditure
 
+```{r expendfig, fig.cap = "Map of change in parking expenditure since previous fiscal year"}
+# map expenditure change
+FunMap(sco.expend, which = 1, shp = uc,  country = "^S", dir = -1)
+```
+
+
 Table \@ref(tab:expendtab) ranks the councils in terms of expenditure on parking.
 
 Overall expenditure has `r ifelse( sco.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(sco.expend.t[2]), dp.text)` million (`r FunDec(abs(sco.expend.t[1]), dp.text)` %) after a `r ifelse( sco.expend.t[3] > 0, paste0("rise of £", FunDec(sco.expend.t[3], dp.text), " million last year"), paste0("fall of £", FunDec(abs(sco.expend.t[3]), dp.text), " million last year"))`, with `r FunN2W(expend.bin[2])` councils having increased their costs and `r FunN2W(expend.bin[1])` having reduced them. The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:expendfig). 
@@ -333,19 +328,24 @@ sco.expend.formatted %>%
          format.args = list(big.mark = ","),
          linesep = "",
          col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
-                       paste0("Change ", current.year, "-", current.year-1999, 
-                              " on ", current.year-1, "-", current.year-1999-1), "Expenditure as proportion of income")) %>% 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)), 
+                       paste0("Average annual change since ", FunFisc(4)),
+                       "Expenditure as proportion of income")) %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
-                font_size = 10) %>% 
-  column_spec(1, width = "3.7cm") %>% 
-  column_spec(8, width = "1.8cm") %>% 
+                font_size = 9) %>% 
+  column_spec(1, width = "3.1cm") %>% 
+    column_spec(7, width = "1.5cm") %>%
+    column_spec(8, width = "1.5cm") %>%
+  column_spec(9, width = "1.5cm") %>% 
   row_spec(32, hline_after = TRUE)
 ```
 
-```{r expendfig, fig.cap = "Map of change in parking expenditure since previous fiscal year"}
+
+```{r expendfig4, fig.cap = "Map of average annual change in parking expenditure over the past four years", fig.height = 4}
 # map expenditure change
-FunMap(sco.expend, uc,  dir = -1)
+FunMap(sco.expend, which = 4, shp = uc, country = "^S",dir = -1)
 ```
 
 Table \@ref(tab:expendprop) shows the proportion of income taken up by expenditure over the previous four years. Across Scotland it was `r FunDec(sco.expend.of.income[33,6], dp.text)` % compared to `r FunDec(sco.expend.of.income[33,5], dp.text)` % in the previous year, suggesting `r ifelse(sco.expend.of.income[33,6] < sco.expend.of.income[33,5], "improving", "declining")` efficiency in operations. 

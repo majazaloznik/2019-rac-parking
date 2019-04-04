@@ -3,13 +3,15 @@
 ##                                                                            ##
 ##            This script is sourced  by the Wales .Rmd file.                 ##
 ##                                                                            ##
-##              You do not need to run this directly ever.                    ##
+##              You cannot run this directly - no need anyway.                ##
 ##                                                                            ##
 ##                 Also, DO NOT MAKE ANT CHANGES HERE.                        ##
 ##                                                                            ##
 ################################################################################
 
 ## preliminaries ###############################################################
+# change the year variable 
+current.year <- params$current.year
 
 # knitr options
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
@@ -42,9 +44,9 @@ uc <- st_read(here::here(paste0("data/01-raw/maps/Local_Administrative_Units_",
                                 "Boundaries_in_United_Kingdom.shp")), 
               quiet = TRUE)
 rpi <- read.csv(here::here("data/01-raw/rpi.csv"))
-
-# change the year variable 
-current.year <- params$current.year
+# load bibliography - get name of the report
+report.name <- paste0("wales-report-", current.year, "-",current.year - 1999)
+bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
 
 # get the number of decimal points
 dp.text <- params$dp.text
@@ -74,6 +76,12 @@ bib %>%
 bib %>% 
   filter(content == "map") %>% 
   pull(refs) -> wal.bib.map
+
+# rpi reference
+bib %>% 
+  filter( content == "rpi") %>% 
+  pull(refs) -> wal.bib.rpi
+
 
 # column headers 
 yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-",
@@ -204,26 +212,35 @@ max(sub.gb.years %>%
       pull(min.year)) %>% 
   max(current.year-4) -> ref.year
 
-# extract current year, and 4 years back, or as far as min.year lets you
+# extract current year, 1 year back,  and 4 years back, or as far as min.year lets you
 sub.gb.years %>% 
-  filter(year == current.year | year == ref.year) -> sub.gb.ref
+  filter(year == current.year | year == current.year - 1 |
+           year == ref.year) -> sub.gb.ref
 
-# calculate change over 4 years 
+# calculate change over 4 years as well as last year. 
 sub.gb.ref  %>% 
   gather(var, value, 3:5) %>% 
   unite(temp, year, var) %>% 
   spread(temp, value) %>% 
+  mutate(income.change.4 = 100*(!!as.name(paste0(current.year, "_income")) / 
+                                  !!as.name(paste0(ref.year, "_income")) - 1), 
+         expend.change.4 = 100*(!!as.name(paste0(current.year, "_expend")) / 
+                                  !!as.name(paste0(ref.year, "_expend")) - 1), 
+         surplus.change.4 = 100*(!!as.name(paste0(current.year, "_surplus")) / 
+                                   !!as.name(paste0(ref.year, "_surplus")) - 1) ) %>% 
+  mutate_at(vars(ends_with(".4")), function(x) 100*(x/100 + 1) ^ 
+              ( 1 / (current.year - ref.year)) - 100) %>% 
   mutate(income.change = 100*(!!as.name(paste0(current.year, "_income")) / 
-                                !!as.name(paste0(ref.year, "_income")) - 1), 
+                                !!as.name(paste0(current.year - 1, "_income")) - 1), 
          expend.change = 100*(!!as.name(paste0(current.year, "_expend")) / 
-                                !!as.name(paste0(ref.year, "_expend")) - 1), 
+                                !!as.name(paste0(current.year - 1, "_expend")) - 1), 
          surplus.change = 100*(!!as.name(paste0(current.year, "_surplus")) / 
-                                 !!as.name(paste0(ref.year, "_surplus")) - 1) ) %>% 
-  select(country, income.change, expend.change, surplus.change) -> sum.gb.change
+                                 !!as.name(paste0(current.year - 1, "_surplus")) - 1) ) %>%
+  
+  select(country, income.change.4, income.change,
+         expend.change.4, expend.change, 
+         surplus.change.4, surplus.change) -> sum.gb.change
 
-# but also caclulate annual change
-sum.gb.change %>% 
-  mutate_at(vars(-country), function(x) 100*(x/100 + 1) ^ ( 1 / (current.year - ref.year)) - 100) -> sum.gb.annual
 
 # prepare for tabulation
 sum.gb.change %>% 
@@ -234,47 +251,27 @@ sum.gb.change %>%
   filter(country != "country") %>% 
   select(country, "England without London", "London", 
          "Scotland", "Wales", "Great Britain") %>% 
-  mutate(country = c( "Change in income", 
-                      "Change in expenditure", 
-                      "Change in surplus"))  %>% 
-  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), dp.tables), "\\%")) -> sum.gb.change.tab
+  mutate(country = c( "Average annual change in income", 
+                      "Change in income since previous year", 
+                      "Average annual change in expenditure", 
+                      "Change in expenditure since previous year", 
+                      "Average annual change in surplus",
+                      "Change in surplus since previous year")) -> sum.gb.change.tab
 
-# prepare for csv
-sum.gb.annual %>% 
-  t() %>% 
-  as.data.frame(stringsAsFactors = FALSE) %>% 
-  tibble::rownames_to_column("var") %>% 
-  setNames(.[1,]) %>% 
-  filter(country != "country") %>% 
-  select(country, "England without London", "London", 
-         "Scotland", "Wales", "Great Britain") %>% 
-  mutate(country = c( "Change in income", 
-                      "Change in expenditure", 
-                      "Change in surplus"))  ->   sum.gb.annual.tab
 # save csv table 3
-write.csv(sum.gb.annual.tab, here::here(paste0("outputs/csv-tables/wales-",
+write.csv(sum.gb.change.tab, here::here(paste0("outputs/csv-tables/wales-",
                                     FunFisc(), "/wales-", 
                                     FunFisc(), "-table-03.csv")),
           row.names = FALSE)
 
 
 # prepare for tabulation with formatting
-sum.gb.annual %>% 
-  t() %>% 
-  as.data.frame(stringsAsFactors = FALSE) %>% 
-  tibble::rownames_to_column("var") %>% 
-  setNames(.[1,]) %>% 
-  filter(country != "country") %>% 
-  select(country, "England without London", "London", 
-         "Scotland", "Wales", "Great Britain") %>% 
-  mutate(country = c( "Change in income", 
-                      "Change in expenditure", 
-                      "Change in surplus")) %>% 
+sum.gb.change.tab %>% 
   mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), dp.tables), "\\%")) -> 
-  sum.gb.annual.tab.formatted
+  sum.gb.change.tab.formatted
 
-# RPI calculation
-rpi.annual <- FunRpi(current.year)
+# RPI calculation 
+rpi.annual <- FunRpi(current.year, n = current.year - ref.year)
 
 ## INCOME ######################################################################
 # clean up income data
@@ -286,9 +283,12 @@ data %>%
               ungroup() %>% 
               summarise_at(vars(-auth.name), list(~sum)) %>%
               mutate(auth.name='Total')) %>% 
-  mutate(change =100*(.[[6]]/.[[5]]-1)) %>% 
+  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
+         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100) %>% 
   mutate(change = ifelse(is.nan(change), NA, 
-                         ifelse(is.infinite(change), NA, change))) -> wal.income
+                         ifelse(is.infinite(change), NA, change)),
+         change.4 = ifelse(is.nan(change.4), NA, 
+                         ifelse(is.infinite(change.4), NA, change.4))) -> wal.income
 
 # save csv table 4
 write.csv(wal.income, here::here(paste0("outputs/csv-tables/wales-",
@@ -333,7 +333,7 @@ wal.income.valid %>%
   select(auth.name, proportion) %>% 
   deframe() -> wal.income.top3
 
-# get top three relevant expenditure changes
+# get top three relevant income changes
 wal.income.valid %>% 
   filter(abs(!!as.name(current.year)) >= 30) %>% 
   filter(row_number() <= 3) -> wal.income.change.top3
@@ -355,10 +355,19 @@ wal.income.valid %>%
 
 # format income data for tabulation
 wal.income %>% 
-  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%"))) %>% 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%")),
+         change.4 = ifelse(is.na(change.4), "", paste(FunDec(change.4, dp.tables), "%"))) %>% 
   mutate(change = cell_spec(change, "latex",
                             background = 
                               FunDivergePalette(wal.income$change, 
+                                                c(wal.income$change, 
+                                                  wal.income$change.4),
+                                                dir = 1, factor = 1)[[3]]),
+         change.4 = cell_spec(change.4, "latex",
+                            background = 
+                              FunDivergePalette(wal.income$change.4, 
+                                                c(wal.income$change, 
+                                                  wal.income$change.4),
                                                 dir = 1, factor = 1)[[3]])) ->
   wal.income.formatted
 
@@ -377,9 +386,14 @@ data %>%
               ungroup() %>% 
               summarise_at(vars(-auth.name), list(~sum)) %>%
               mutate(auth.name='Total')) %>% 
-  mutate(change =100*(.[[6]]/.[[5]]-1),
-         prop.income = 100*.[[6]]/.[[7]]) %>% 
-  select(-income.total)-> wal.expend
+  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
+         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100,
+         prop.income = 100 *!!as.name(current.year)/income.total) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change)),
+         change.4 = ifelse(is.nan(change.4), NA, 
+                           ifelse(is.infinite(change.4), NA, change.4))) %>% 
+  select(-income.total) -> wal.expend
 
 # save csv table 5
 write.csv(wal.expend, here::here(paste0("outputs/csv-tables/wales-",
@@ -459,10 +473,19 @@ wal.expend %>%
 wal.expend %>% 
   mutate(prop.income = ifelse(is.na(prop.income), NA, 
                               paste(FunDec(prop.income, dp.tables), "\\%"))) %>% 
-  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%"))) %>% 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%")),
+         change.4 = ifelse(is.na(change.4), "", paste(FunDec(change.4, dp.tables), "%"))) %>% 
   mutate(change = cell_spec(change, "latex",
                             background = 
-                              FunDivergePalette(wal.expend$change, dir = -1,
+                              FunDivergePalette(wal.expend$change,
+                                                c(wal.expend$change,
+                                                  wal.expend$change.4),dir = -1,
+                                                factor = 1)[[3]]),
+         change.4 = cell_spec(change.4, "latex",
+                            background = 
+                              FunDivergePalette(wal.expend$change.4,
+                                                c(wal.expend$change,
+                                                  wal.expend$change.4),dir = -1,
                                                 factor = 1)[[3]])) ->
   wal.expend.formatted
 
