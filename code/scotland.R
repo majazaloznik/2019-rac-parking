@@ -39,9 +39,12 @@ source(here::here("code/functions.R"))
 master <- readRDS(here::here("data/03-processed/master.rds"))
 orig.sco.name.lookup <- readRDS(here::here("data/01-raw/orig.sco.name.lookup.rds"))
 uc <- st_read(here::here("data/01-raw/maps/Local_Administrative_Units_Level_1_January_2018_Ultra_Generalised_Clipped_Boundaries_in_United_Kingdom.shp"), quiet = TRUE)
+rpi <- read.csv(here::here("data/01-raw/rpi.csv"))
 
 # change the year variable 
 current.year <- params$current.year
+dp.text <- params$dp.text
+dp.tables <- params$dp.tables
 
 # create folder for csv tables if it does not exist already
 suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/scotland-", FunFisc())), 
@@ -82,6 +85,11 @@ bib %>%
 bib %>% 
   filter( content == "map") %>% 
   pull(refs) -> sco.bib.map
+
+# rpi reference
+bib %>% 
+  filter( content == "rpi") %>% 
+  pull(refs) -> sco.bib.rpi
 
 # column headers 
 yearz <- paste0("\\multirow{1}{*}[0pt]{",(current.year-4):(current.year), "-",
@@ -167,10 +175,10 @@ master %>%
 # prepare summary data for tabulation
 sco.summary %>% 
   mutate(change = ifelse(rowname == "surplus.of.transport", NA, 
-                         paste(FunDec(change, 2), "\\%"))) %>% 
+                         paste(FunDec(change, dp.tables), "\\%"))) %>% 
   mutate(rowname = c("Income", "Expenditure", "Surplus", "Net expenditure", 
                      "Parking surplus as percentage of all transport costs"))  %>% 
-  mutate_at(vars(-rowname, -change), function(x) FunDec(x, 2)) %>% 
+  mutate_at(vars(-rowname, -change), function(x) FunDec(x, dp.tables)) %>% 
   mutate_at(vars(-rowname, -change), function(x) ifelse(.$rowname == "Parking surplus 
                                             as percentage of all transport 
                                             costs", paste0(x, " \\%"), x)) %>%
@@ -207,9 +215,9 @@ sub.gb.years %>%
   filter(year == min(current.year, max(year)))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
-         surplus = FunDec(surplus/1000, 1), 
-         income = FunDec(income/1000, 1), 
-         expend = FunDec(expend/1000, 1), 
+         surplus = surplus/1000, 
+         income = income/1000, 
+         expend = expend/1000, 
          prop.of.income = prop.of.income*100) %>% 
   t() %>% 
   as.data.frame(stringsAsFactors = FALSE) %>% 
@@ -230,10 +238,10 @@ sub.gb.years %>%
   filter(year == min(current.year, max(year)))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
-         surplus = FunDec(surplus/1000, 1), 
-         income = FunDec(income/1000, 1), 
-         expend = FunDec(expend/1000, 1), 
-         prop.of.income = paste0(FunDec(prop.of.income*100, 1),"\\%")) %>% 
+         surplus = FunDec(surplus/1000, dp.tables), 
+         income = FunDec(income/1000, dp.tables), 
+         expend = FunDec(expend/1000, dp.tables), 
+         prop.of.income = paste0(FunDec(prop.of.income*100, dp.tables),"\\%")) %>% 
   t() %>% 
   as.data.frame(stringsAsFactors = FALSE) %>% 
   tibble::rownames_to_column("var") %>% 
@@ -294,7 +302,7 @@ write.csv(sum.gb.change.tab, here::here(paste0("outputs/csv-tables/scotland-",
 
 # format for tabulation 
 sum.gb.change.tab %>% 
-  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), 1), "\\%")) ->
+  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), dp.tables), "\\%")) ->
   sum.gb.change.tab.formatted 
 
 
@@ -319,9 +327,11 @@ write.csv(sum.gb.annual.tab, here::here(paste0("outputs/csv-tables/scotland-",
 
 # format for tabulation 
 sum.gb.annual.tab %>% 
-  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), 1), "\\%")) ->
+  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), dp.tables), "\\%")) ->
   sum.gb.annual.tab.formatted
 
+# RPI calculation
+rpi.annual <- FunRpi(current.year)
 
 ## INCOME ######################################################################
 # clean up income data, add totals row and change variable
@@ -345,7 +355,7 @@ write.csv( sco.income, here::here(paste0("outputs/csv-tables/scotland-",
 
 # format table for kable
 sco.income %>% 
-  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%"))) %>% 
   mutate(change = cell_spec(change, "latex",
                             background = 
                               FunDivergePalette(sco.income$change, 
@@ -435,7 +445,7 @@ write.csv(sco.pcn.numbers, here::here(paste0("outputs/csv-tables/scotland-",
 
 sco.pcn.numbers %>% 
   mutate(income.per.pcn = ifelse(is.na(income.per.pcn), NA, 
-                                 paste0("£", FunDec(income.per.pcn, 1)))) ->
+                                 paste0("£", FunDec(income.per.pcn, dp.tables)))) ->
   sco.pcn.numbers.formatted
 
 # get correct number of headers for the table
@@ -498,7 +508,7 @@ write.csv(sco.pcn.prop, here::here(paste0("outputs/csv-tables/scotland-",
 sco.pcn.prop %>%
   mutate_at(vars(-auth.name), 
             function(x) {cell_spec(ifelse(is.na(x), "", 
-                                          paste(FunDec(x, 1), "%")), "latex", 
+                                          paste(FunDec(x, dp.tables), "%")), "latex", 
                                    background = 
                                      spec_color(log(x), 
                                                 begin = 0.3,
@@ -542,8 +552,8 @@ write.csv(sco.expend, here::here(paste0("outputs/csv-tables/scotland-",
 # format cells for tabulations
 sco.expend %>% 
   mutate(prop.income = ifelse(is.na(prop.income), NA, 
-                              paste(FunDec(prop.income, 1), "\\%"))) %>% 
-  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
+                              paste(FunDec(prop.income, dp.tables), "\\%"))) %>% 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%"))) %>% 
   mutate(change = cell_spec(change, "latex",
                             background = 
                               FunDivergePalette(sco.expend$change, dir = -1,
@@ -647,7 +657,7 @@ write.csv(sco.expend.of.income, here::here(paste0("outputs/csv-tables/scotland-"
 sco.expend.of.income %>% 
   mutate_at(vars(-auth.name), function(x) ifelse(is.infinite(x), NA, x)) %>% 
   mutate_at(vars(-auth.name), function(x) { 
-    cell_spec(ifelse(is.na(x), "", paste(FunDec(x, 1), "%")), "latex", 
+    cell_spec(ifelse(is.na(x), "", paste(FunDec(x, dp.tables), "%")), "latex", 
               background  = spec_color(1/x, begin = 0.3,
                                        end = 0.9, option = "D", 
                                        na_color = "#FFFFFF"))}) ->
@@ -716,9 +726,9 @@ write.csv(sco.surplus.totals.table, here::here(
 # format for tabulation
 sco.surplus.totals.table %>% 
   mutate(change = ifelse(is.na(change), NA, 
-                         paste(FunDec(change, 1), "%")),
+                         paste(FunDec(change, dp.tables), "%")),
          prop.transp = ifelse(is.na(prop.transp), NA, 
-                              paste(FunDec(prop.transp, 1), "\\%"))) %>% 
+                              paste(FunDec(prop.transp, dp.tables), "\\%"))) %>% 
   mutate(change =cell_spec(change, "latex", 
                            italic = ifelse(is.na(.[[7]]), FALSE,
                                            ifelse(.[[6]] < 0 , TRUE, FALSE)))) %>% 

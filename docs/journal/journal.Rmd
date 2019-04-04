@@ -684,14 +684,28 @@ i just missed it... better sort that out now...OK
 
 # Thursday 4.4.2019
 
-* *CPI, add to both reports.  and bibiography*
+* number of dps: 
+  + add new params to the .Rmd templates, and make sure the script has them as well. add them to the render call to the list of params passed and then add them into the manual input section of the update. 
+  + Done for Wales. OK
+  + done for Scotland. OK
+* *aberdeen*
 * *surplus/deficit mapping and shading*
-* *annual/not annual change*
-* *number of dps*
+* *instructions*
 * *network graph of pipeline*
 * *technical documentation*
-* *instructions*
-* *aberdeen*
+* *annual/not annual change*
+* fix an extra space in the references titles somewhere. OK
+* CPI, add to both reports.  and bibiography
+  + add reference: add to original input. update must do what? change date accessed and year (publihsed)? yes. in both Wales and Scotland updates. OK
+  + also update the Wales data reference with the current year as year published. 
+* OK, how does this RPI table work then?
++ first need to download it, but only if a current version doesn't exist already. This happens in the update file. 
++ OK, so what do I want: for each report I want the annual RPI for the previous 5 years. So i need the RPI for 3/4/current.year-4, and 3/4/currentyear. 
++ Write function, double check [here](https://www.investing.com/economic-calendar/rpi-267), all checks out. 
++ insert into Wales and Scotlan, works!
+* add reference in text for RPI. 
+* ffs, one of the update scripts was turning the year in the bib. master into a character vector each time, and every time i fixed it on one side it overwrote it on the other.. fixed. 
+* instructions: change the style file for citations if you want. 
 
 
 ### Wales (based on 17/18) #####################################################

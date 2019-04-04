@@ -17,7 +17,7 @@
 ################################################################################
 ## MANUAL DATA INPUT ###########################################################
 ################################################################################
-current.year <- 2017
+current.year <- 2016
 
 ## after dowloading the Wales files into the data/01-raw folder, enter their
 ## correct filenames here:
@@ -27,6 +27,10 @@ wal.transport.file <-"orig.wal.trans.17.csv"
 
 ## replace with date of access to data:
 new.date.accessed <- "12.03.2019"
+
+## numbers of decimal points in text and in tables
+dp.text = 1
+dp.tables = 2
 
 ################################################################################
 ################################################################################
@@ -94,7 +98,17 @@ master %>%
 # add new date.accessed to bibliography master
 bib.master %>% 
   mutate(urldate = ifelse(country == "Wales", new.date.accessed,
-                                urldate)) -> bib.master
+                                urldate),
+         year = ifelse(country == "Wales", 
+                       as.numeric(format(Sys.Date(), "%Y")), year)) -> bib.master
+
+# update RPI data acces date and year of publication
+bib.master %>% 
+  mutate(urldate = ifelse(content == "rpi", 
+                          as.character(format(Sys.Date(), "%d.%m.%Y")), urldate),
+         year = ifelse(content == "rpi", 
+                       as.numeric(format(Sys.Date(), "%Y")), year)) ->
+  bib.master
 
 # save updated datafile to master
 saveRDS(master, "data/03-processed/master.rds")
@@ -133,7 +147,9 @@ saveRDS(bib.wales, paste0("data/03-processed/", report.name, "-bib.rds"))
 rmarkdown::render(paste0("code/report-rmds/", report.name, ".Rmd"),
                   output_file = paste0(report.name, ".pdf"),
                   output_dir = "outputs/reports",
-                  params = list(current.year = current.year))
+                  params = list(current.year = current.year,
+                                dp.text = dp.text,
+                                dp.tables = dp.tables))
 
 # remove empty folder that the compilation creates
 unlink(paste0("outputs/reports/", report.name, "_files"), recursive=TRUE)

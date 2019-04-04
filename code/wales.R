@@ -41,9 +41,14 @@ uc <- st_read(here::here(paste0("data/01-raw/maps/Local_Administrative_Units_",
                                 "Level_1_January_2018_Ultra_Generalised_Clipped_",
                                 "Boundaries_in_United_Kingdom.shp")), 
               quiet = TRUE)
+rpi <- read.csv(here::here("data/01-raw/rpi.csv"))
 
 # change the year variable 
 current.year <- params$current.year
+
+# get the number of decimal points
+dp.text <- params$dp.text
+dp.tables <- params$dp.tables
 
 # create folder for csv tables if it does not exist already
 suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/wales-", FunFisc())), 
@@ -106,10 +111,10 @@ write.csv(wal.summary, here::here(paste0("outputs/csv-tables/wales-",
 # prepare and format data for Summary table
 wal.summary %>% 
   mutate(change = ifelse(rowname == "surplus.of.transport", NA, 
-                         paste(FunDec(change, 2), "\\%"))) %>% 
+                         paste(FunDec(change, dp.tables), "\\%"))) %>% 
   mutate(rowname = c("Income", "Expenditure", "Surplus", "Net expenditure", 
                      "Parking surplus as percentage of all transport costs")) %>% 
-  mutate_at(vars(-rowname, -change), function(x) FunDec(x, 2)) %>% 
+  mutate_at(vars(-rowname, -change), function(x) FunDec(x, dp.tables)) %>% 
   mutate_at(vars(-rowname, -change), function(x) ifelse(.$rowname == "Parking surplus as 
                                             percentage of all transport costs", 
                                             paste0(x, " \\%"), x)) %>%
@@ -155,9 +160,9 @@ sub.gb.years %>%
   filter(year == min(current.year, max(year)))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
-         surplus = FunDec(surplus/1000, 1), 
-         income = FunDec(income/1000, 1), 
-         expend = FunDec(expend/1000, 1),
+         surplus = FunDec(surplus/1000, dp.tables), 
+         income = FunDec(income/1000, dp.tables), 
+         expend = FunDec(expend/1000, dp.tables),
          prop.of.income = prop.of.income*100) %>% 
   t() %>% 
   as.data.frame(stringsAsFactors = FALSE) %>% 
@@ -179,10 +184,10 @@ sub.gb.years %>%
   filter(year == min(current.year, max(year)))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
-         surplus = FunDec(surplus/1000, 1), 
-         income = FunDec(income/1000, 1), 
-         expend = FunDec(expend/1000, 1), 
-         prop.of.income = paste0(FunDec(prop.of.income*100, 1),"\\%")) %>% 
+         surplus = FunDec(surplus/1000, dp.tables), 
+         income = FunDec(income/1000, dp.tables), 
+         expend = FunDec(expend/1000, dp.tables), 
+         prop.of.income = paste0(FunDec(prop.of.income*100, dp.tables),"\\%")) %>% 
   t() %>% 
   as.data.frame(stringsAsFactors = FALSE) %>% 
   tibble::rownames_to_column("var") %>% 
@@ -232,7 +237,7 @@ sum.gb.change %>%
   mutate(country = c( "Change in income", 
                       "Change in expenditure", 
                       "Change in surplus"))  %>% 
-  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), 1), "\\%")) -> sum.gb.change.tab
+  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), dp.tables), "\\%")) -> sum.gb.change.tab
 
 # prepare for csv
 sum.gb.annual %>% 
@@ -265,8 +270,11 @@ sum.gb.annual %>%
   mutate(country = c( "Change in income", 
                       "Change in expenditure", 
                       "Change in surplus")) %>% 
-  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), 1), "\\%")) -> 
+  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), dp.tables), "\\%")) -> 
   sum.gb.annual.tab.formatted
+
+# RPI calculation
+rpi.annual <- FunRpi(current.year)
 
 ## INCOME ######################################################################
 # clean up income data
@@ -347,7 +355,7 @@ wal.income.valid %>%
 
 # format income data for tabulation
 wal.income %>% 
-  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%"))) %>% 
   mutate(change = cell_spec(change, "latex",
                             background = 
                               FunDivergePalette(wal.income$change, 
@@ -450,8 +458,8 @@ wal.expend %>%
 # format table for printing 
 wal.expend %>% 
   mutate(prop.income = ifelse(is.na(prop.income), NA, 
-                              paste(FunDec(prop.income, 1), "\\%"))) %>% 
-  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, 1), "%"))) %>% 
+                              paste(FunDec(prop.income, dp.tables), "\\%"))) %>% 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%"))) %>% 
   mutate(change = cell_spec(change, "latex",
                             background = 
                               FunDivergePalette(wal.expend$change, dir = -1,
@@ -487,7 +495,7 @@ write.csv(wal.expend.of.income, here::here(paste0("outputs/csv-tables/wales-",
 wal.expend.of.income %>% 
   mutate_at(vars(-auth.name), function(x) ifelse(is.infinite(x), NA, x)) %>% 
   mutate_at(vars(-auth.name), function(x) { 
-    cell_spec(ifelse(is.na(x), "", paste(FunDec(x, 1), "%")), "latex", 
+    cell_spec(ifelse(is.na(x), "", paste(FunDec(x, dp.tables), "%")), "latex", 
               bold = T, background  = spec_color(1/x, begin = 0.3,
                                                  end = 0.9, option = "D", 
                                                  na_color = "#FFFFFF"))}) ->
@@ -604,8 +612,8 @@ wal.surplus.valid %>%
 
 # format surplus table for tabulation
 wal.surplus.totals.table %>% 
-  mutate(change = paste(FunDec(change, 1), "%"),
-         prop.transp = paste(FunDec(prop.transp, 1), "\\%")) %>% 
+  mutate(change = paste(FunDec(change, dp.tables), "%"),
+         prop.transp = paste(FunDec(prop.transp, dp.tables), "\\%")) %>% 
   mutate(change =cell_spec(change, "latex", 
                            italic = ifelse(.[[6]] < 0, TRUE, FALSE))) ->
   wal.surplus.formatted

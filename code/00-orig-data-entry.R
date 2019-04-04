@@ -31,6 +31,7 @@
 ################################################################################
 library(dplyr)
 library(tibble)
+library(curl)
 options(stringsAsFactors = FALSE)
 source("code/functions.R")
 ## 1. EXISTING REPORTS #########################################################
@@ -549,6 +550,7 @@ scotland.name.lookup  <- c("Argyll  Bute" = "Argyll and Bute",
                                                                  
 saveRDS(scotland.name.lookup, "data/01-raw/orig.sco.name.lookup.rds")
 
+## 5. ORIGINAL BIBLIOGRAPHY ####################################################
 # start the bib.table
 # map first
 bib.master <- data.frame(country = "GB",
@@ -560,6 +562,18 @@ bib.master <- data.frame(country = "GB",
                          urldate = "10.03.2019",
                          bibtype = "misc", 
                          content = "map")
+
+# RPI data
+data.frame(country = "GB",
+           fiscyear = 2018, 
+           year = 2019,
+           author = "{Office for National Statistics}", 
+           title = "{Inflation and price indices}", 
+           url ="https://www.ons.gov.uk/economy/inflationandpriceindices", 
+           urldate = "3.4.2019",
+           bibtype = "misc", 
+           content = "rpi") %>% 
+  bind_rows(bib.master) -> bib.master
 
 # add scottish income and expenditure data 
 scotland.i.e. %>% 
@@ -619,7 +633,7 @@ england.outturn.17.18 %>%
                year = c(2010:2017, 2017, 2019),
                author = "{Office for National Statistics}",
          urldate = "10.03.2019",
-         title = paste("{Local authority revenue expenditure and financing England:", fiscyear,
+         title = paste0("{Local authority revenue expenditure and financing England: ", fiscyear,
          "to", fiscyear + 1, ", individual local authority data - outturn}")) %>% 
   bind_rows(bib.master) -> bib.master
            
@@ -634,7 +648,7 @@ england.budget.18.19 %>%
          year  = c(NA, NA, 2011, 2011, 2012:2018),
          author = "{Office for National Statistics}",
          urldate = "10-03-2019",
-         title = paste("{Local authority revenue expenditure and financing England:", fiscyear,
+         title = paste0("{Local authority revenue expenditure and financing England: ", fiscyear,
                        "to", fiscyear + 1, ", budget (Revenue Account budget)}")) %>% 
   bind_rows(bib.master) -> bib.master
 
@@ -644,3 +658,15 @@ bib.master %>%
 
 saveRDS(bib.master, "data/01-raw/orig.bib.master.rds")
 saveRDS(bib.master, "data/03-processed/bib.master.rds")
+
+## IMPORT AND CLEAN RPI DATA ###################################################
+# if RPI file doesn't exist, or if it doesn't have today's date, download it again. 
+if (!file.exists("data/01-raw/rpi.csv") | 
+    format(file.mtime("data/01-raw/rpi.csv"), "%d.%m.%Y") != 
+    format(Sys.Date(), "%d.%m.%Y")) {
+  url <- paste0("https://docs.google.com/spreadsheets/d/e/2PACX-1vTisg2eXAykXY-",
+                "jcDJRXBf7LlL8IBFRmwBgJGF6-kcFVTlx96kAurVWCohG1ryXMvtvD1dNvQ6otS2R",
+                "/pub?gid=543857295&single=true&output=csv")
+  
+  download.file(url, destfile = "data/01-raw/rpi.csv", method="curl")
+}
