@@ -737,16 +737,35 @@ the latex flafter package stops that from happening. But now I'm getting an empt
 
 # friday 5.4.2019
 
+* where did the joining from lines come from!? fixed, it was because the knit options had been moved into the .R script, so they had not been read. OK
+* forgot to calculate the surpluses somewhere!? Aberdeen. fixed. 
+* update files should have inputs set to current year! Added check. 
+* hmm, but think about this, for testing this is problematic, it adds things to the master files that shouldn't be there!? saorted. 
+* Add check to stop from running year for which no data exists. OK
+* instructions: tables are still being pushed off the page. use newpage to control 
+* if you are recompiling a modified RMD, you can't rerun the update file, it will have overwritten it! why can't you run it directly again? because it compiles it to the same folder. maybe i can fix that. No, I can't the solution I have doesn't work because of the params that need to be passed, especially current.year. 
+* OK, so instead I have to add an option to the update file. OK
+* changed name: update templates to scripts. OK
+* SOme defensive coding - the surplus/deficit stuff is still not clean.. 
+* SO fix Wales update as well:
+  + add check for adding new data
+  + add check for recompiling. OK
+  + fix bibliography so that old wales reports can be recreated as well. 
+* if RPI data was redonwloaded you need to update it's date accessed..Oh, looks like i already do that! nice :)
+* rpi dates change!! ffs. fixed. just takes any date in april. 
+* OK, updates work!
+* Commit
 * *surplus/deficit table*
-* *instructions*
+
 * *technical documentation*
-* *update files should have imputs set to current year!)*
-* *or instead if the year already has data, you should not overwrite it?*meh
-* *hmm, but think about this, for testing this is problematic, it adds things to the master files that shouldn't be there!?*
-
-
-
-
+* *instructions*
+  + folder tree colour coded?OK
+  + step by step
+  + outline of folder structure
+  + outline of pipeline - short
+  + outline of pipeline - long
+  
+  
 ### Wales (based on 17/18) #####################################################
 
 #### 1. Introduction

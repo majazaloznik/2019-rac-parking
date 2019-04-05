@@ -36,7 +36,7 @@ nocite: |
 
 # Introduction
 
-This note covers parking finances for the 22 local authorities in Wales. As in England and Scotland, local authorities are required to submit details of all their finances to the Welsh Government in a standard format. They are normally published in October, seven months after the financial year end. This report looks at the section on parking income and expenditure from `r FunFisc(4)` to `r FunFisc()` and is based primarily on data reported by Statistics for Wales (`r bib[bib$country == "Wales",]$refs`), as well as data reported by English and Scotish Local Government authorities, all of the sources of which are listed in the references.[^1]
+This note covers parking finances for the 22 local authorities in Wales. As in England and Scotland, local authorities are required to submit details of all their finances to the Welsh Government in a standard format. They are normally published in October, seven months after the financial year end. This report looks at the section on parking income and expenditure from `r FunFisc(4)` to `r FunFisc()` and is based primarily on data reported by Statistics for Wales (`r bib[bib$country == "Wales",]$refs`), as well as data reported by English and Scotish Local Government authorities, all of the sources of which care listed in the references.[^1]
 
 [^1]: Contains public sector information licensed under the [Open Government Licence v3.0](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). 
 

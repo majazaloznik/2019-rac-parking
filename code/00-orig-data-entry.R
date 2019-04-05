@@ -386,6 +386,9 @@ bind_rows(aberdeen.12,
           aberdeen.16,
           aberdeen.17) -> aberdeen
 
+aberdeen %>%  
+  mutate(surplus.total = income.total - expend.total) -> aberdeen
+
 # save
 saveRDS(aberdeen, "data/01-raw/orig.sco.aberdeen.17.rds")
 

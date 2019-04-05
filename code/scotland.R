@@ -10,7 +10,7 @@
 ################################################################################
 
 ## preliminaries ###############################################################
-current.year <- params$current.year
+current.year <- 2017# params$current.year
 # knitr options
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
 knitr::opts_chunk$set(fig.pos = 'H')
@@ -47,8 +47,8 @@ report.name <- paste0("scotland-report-", current.year, "-",
 bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
 # change the year variable 
 
-dp.text <- params$dp.text
-dp.tables <- params$dp.tables
+dp.text <- 1# params$dp.text
+dp.tables <- 2# params$dp.tables
 
 # create folder for csv tables if it does not exist already
 suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/scotland-", FunFisc())), 
@@ -706,7 +706,8 @@ data %>%
   mutate(poz.neg = ifelse(surplus.total >= 0, "poz", "neg")) %>% 
   group_by(year, poz.neg) %>%
   summarise_at(vars(-auth.name), list(~sum)) %>% 
-  full_join(expand.grid(year = 2012:2016, poz.neg = c("poz", "neg", NA)) %>% 
+  full_join(expand.grid(year = (current.year - 4):current.year,
+                        poz.neg = c("poz", "neg", NA)) %>% 
               mutate(poz.neg = as.character(poz.neg))) %>% 
   gather(variable, value, -c(year, poz.neg)) %>%
   unite(temp, year, variable) %>%

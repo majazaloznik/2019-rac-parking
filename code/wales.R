@@ -70,7 +70,7 @@ data.full %>%
 ## extract some useful variables like bib references and column headers ########
 # current main I.E. reference
 bib %>% 
-  filter(country == "Wales", fiscyear == current.year) %>% 
+  filter(country == "Wales") %>% 
   pull(refs) -> wal.bib.main
 
 # map reference

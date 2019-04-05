@@ -6,13 +6,14 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message = FALSE)
+knitr::opts_chunk$set(warning= FALSE, message = FALSE)
 # PRELIMINARIES
 suppressWarnings(suppressMessages(library(DiagrammeR)))
 suppressWarnings(suppressMessages(library(DiagrammeRsvg)))
 suppressWarnings(suppressMessages(library(rsvg)))
-
+suppressWarnings(suppressMessages(library(kableExtra)))
 ```
+
 # Intro
 
 *Hi everyone! So this is just a draft version of this document, so apologies if it is a bit rambling and rough around the edges, but hopefully you will find it helpful still!*
@@ -26,3 +27,46 @@ This document describes the data management pipeline for the parking report auto
 ```{r, echo = FALSE, out.width='100%', fig.cap = "Schematic overview of the data management pipeline"}
 knitr::include_graphics("chart.png")
 ```
+
+\color{black}
+`|-- code` \color{green}
+
+`|   |-- report-rmds` \color{black}
+
+`|   |-- report-templates` \color{green}
+
+`|   \-- updating-scripts` \color{black}
+
+`|-- data` \color{orange}
+
+`|   |-- 01-raw` \color{black}
+
+`|   |   |-- fonts`
+
+`|   |   \-- maps`
+
+`|   |-- 02-interim`
+
+`|   \-- 03-processed`
+
+`|-- docs`
+
+`|   |-- admin`
+
+`|   |-- journal`
+
+`|   |-- original-reports`
+
+`|   \-- technical` 
+
+`|        \-- instructions`\color{magenta}
+
+``-- outputs`
+
+`.   |-- csv-tables`
+
+`.   |   |-- scotland-2016-17`
+
+`.   |   \-- wales-2017-18`
+
+`.   \-- reports` \color{black}
