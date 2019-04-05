@@ -723,16 +723,29 @@ i just missed it... better sort that out now...OK
 * What if I move them all into an appendix? Oh, that won't work, because there has to be some text in between.. oh, if there are two lines it's OK? [here](https://stackoverflow.com/questions/27444804/some-figure-captions-from-rmarkdown-not-showing)
 * Still not sure the merged palette is OK, there seems to be a bit of a shift in the scale, but it doens't affect the actual readability or usefulness of the maps. 
 * Also these bloody floats won't stay in place, even in the appendix..Keeps putting it above the section title.. apparently [from this question here here](https://tex.stackexchange.com/questions/285238/avoid-figure-above-section-title)
-the latex flafter package stops that from happening. But now I'm getting an empty page instead. 
-* *surplus/deficit mapping and shading*
-* *instructions*
-* *network graph of pipeline*
-* *technical documentation*
-* *aberdeen*
+the latex flafter package stops that from happening. But now I'm getting an empty page instead. Just leave it, let them fall where they may. 
+* Comitt
+* aberdeen. OK
 * add manually original data. OK
-** merge in import with the rest of scotland data*
-* *add template to update*
-* *add bibliography*
+* merge in import with the rest of scotland data
+* add template to update.OK
+* add bibliography.OK
+* quick test and clean up. 
+* instructions: scotland don't try 2015, because it doens't have 4 years of preceeding data. 
+* network graph of pipeline. OK!
+* commit
+
+# friday 5.4.2019
+
+* *surplus/deficit table*
+* *instructions*
+* *technical documentation*
+* *update files should have imputs set to current year!)*
+* *or instead if the year already has data, you should not overwrite it?*meh
+* *hmm, but think about this, for testing this is problematic, it adds things to the master files that shouldn't be there!?*
+
+
+
 
 ### Wales (based on 17/18) #####################################################
 

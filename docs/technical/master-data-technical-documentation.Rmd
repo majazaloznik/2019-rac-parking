@@ -105,7 +105,7 @@ master %>%
 
 # Sources
 
-*ToDO: be a table with all the urls of all the sources here*
+*ToDO: one by one explain how the data was extracted from the sources, what if any modifications were made and of course list all the references *
 
 
 

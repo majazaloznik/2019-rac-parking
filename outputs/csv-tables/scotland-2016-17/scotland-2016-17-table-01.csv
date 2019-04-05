@@ -1,16 +1,15 @@
 "dpe.now","dpe.next","dpe.not"
-"Aberdeen City (2003)","Falkirk","Aberdeenshire"
-"Angus (2017)","Midlothian","Clackmannanshire"
-"Argyll and Bute (2014)",NA,"Dumfries and Galloway"
-"Dundee City (2004)",NA,"Eilean Siar"
-"East Ayrshire (2012)",NA,"Moray"
-"East Dunbartonshire (2014)",NA,"North Ayrshire"
-"East Lothian (2017)",NA,"Orkney Islands"
-"East Renfrewshire (2013)",NA,"Scottish Borders"
-"Edinburgh City (1998)",NA,"Shetland Islands"
-"Fife (2013)",NA,"West Dunbartonshire"
-"Glasgow City (1999)",NA,"West Lothian"
-"Highland (2016)",NA,NA
+"Angus (2017)","Falkirk","Aberdeenshire"
+"Argyll and Bute (2014)","Midlothian","Clackmannanshire"
+"Dundee City (2004)",NA,"Dumfries and Galloway"
+"East Ayrshire (2012)",NA,"Eilean Siar"
+"East Dunbartonshire (2014)",NA,"Moray"
+"East Lothian (2017)",NA,"North Ayrshire"
+"East Renfrewshire (2013)",NA,"Orkney Islands"
+"Edinburgh City (1998)",NA,"Scottish Borders"
+"Fife (2013)",NA,"Shetland Islands"
+"Glasgow City (1999)",NA,"West Dunbartonshire"
+"Highland (2016)",NA,"West Lothian"
 "Inverclyde (2014)",NA,NA
 "North Lanarkshire (2017)",NA,NA
 "Perth and Kinross (2002)",NA,NA
@@ -18,3 +17,4 @@
 "South Ayrshire (2012)",NA,NA
 "South Lanarkshire (2005)",NA,NA
 "Stirling (2017)",NA,NA
+"Aberdeen City (2003)",NA,NA

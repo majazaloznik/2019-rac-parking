@@ -1,4 +1,8 @@
 ---
+################################################################################
+##                 YOU CANNOT KNIT THIS FILE DIRECTLY FROM HERE!              ##
+##                 Instead use the wales-update-template.R script             ##
+################################################################################
 output:
   bookdown::pdf_document2: 
     toc: FALSE
@@ -9,6 +13,7 @@ header-includes:
   - \usepackage{tabu}
   - \usepackage{multirow}
   - \usepackage{colortbl}
+  - \usepackage{flafter}
 params:
   current.year: 2017
   dp.text: 1
@@ -17,10 +22,8 @@ bibliography: wales.bib
 csl: apa-with-notes.csl
 ---
   
-```{r, echo = FALSE}
-report.name <- paste0("wales-report-", params$current.year, "-",
-                      params$current.year - 1999)
-bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
+```{r setup, echo = FALSE}
+source(here::here("code/wales.R"))
 ```
 
 ---
@@ -28,10 +31,7 @@ title: "`r paste("Local Authority Parking Finances in Wales", params$current.yea
 nocite: |
   `r paste0(bib$refs, collapse = ", ")`
 ---
-  
-```{r setup, echo = FALSE, warning = FALSE, message = FALSE}
-source(here::here("code/wales.R"))
-```
+
 \renewcommand{\arraystretch}{1.2}
 
 # Introduction
@@ -139,17 +139,14 @@ sum.gb.formatted %>%
   row_spec(c(1, 4), hline_after = TRUE)
 ```
 
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for  for the most recent available data, while Table \@ref(tab:annual) compares the changes between `r FunFisc()` and `r FunFisc(1)` with the average annual change over the `r FunN2W(current.year - ref.year)`-year period from `r FunFisc(current.year-ref.year)`.
 
-\pagebreak
-
-Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for  for the most recent available data, while Table \@ref(tab:annual) shows the annual change over the years `r FunFisc(current.year-ref.year)` and `r FunFisc()`. 
-
-On average, parking surpluses in Great Britain have risen by about `r FunDec(sum.gb.annual$surplus.change[sum.gb.annual$country == "Great Britain"], dp.text)` % annually over the past `r FunN2W(current.year - ref.year)` years compared with `r FunDec(rpi.annual, dp.text)` % annually for the Retail Prices Index during the same period (`r sco.bib.rpi`). 
+On average, parking surpluses in Great Britain have risen by about `r FunDec(sum.gb.change$surplus.change.4[sum.gb.change$country == "Great Britain"], dp.text)` % annually over the past `r FunN2W(current.year - ref.year)` years compared with `r FunDec(rpi.annual, dp.text)` % annually for the Retail Prices Index during the same period (`r wal.bib.rpi`). 
 
 
 ```{r annual}
 # print table comparing annual changes over last 5 years. 
-sum.gb.annual.tab.formatted %>% 
+sum.gb.change.tab.formatted %>% 
   kable( "latex", 
          booktabs = T, 
          digits = c(rep(0, 6), 2), 
@@ -164,13 +161,18 @@ sum.gb.annual.tab.formatted %>%
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
                 font_size = 10) %>% 
-  column_spec(1, width = "5cm") %>% 
-  column_spec(6, width = "3cm")
+  column_spec(1, width = "6.5cm") %>% 
+  column_spec(6, width = "2.cm") %>% 
+  row_spec(c(2,4), hline_after = TRUE)
 ```
 
-\pagebreak
 
 # Income
+
+```{r mapincome, fig.cap = "Map of change in parking income since previous fiscal year", fig.height = 3, fig.pos = "H"}
+# map income change
+FunMap(wal.income, which = 1, shp = uc, country = "^W",  dir = 1)
+```
 
 Total council parking income from all sources in `r FunFisc()` was £`r FunDec(wal.summary[1, 6], dp.text)` million, `r FunDec(wal.summary$change[1], dp.text)` % `r ifelse (wal.summary$change[1] > 0, "higher", "lower")` than `r FunFisc(1)`. Note that this includes penalty income, which is not shown separately, but does not include off-street income received by commercial off-street parking facilities. Table \@ref(tab:income) ranks the Welsh councils in terms of parking income. 
 
@@ -178,10 +180,6 @@ Total council parking income from all sources in `r FunFisc()` was £`r FunDec(w
 
 [^2]:  Boundary data for this and all further maps is from `r wal.bib.map`. Contains public sector information licensed under the [Open Government Licence v3.0.](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
 
-```{r mapincome, fig.cap = "Map of change in parking income since previous fiscal year", fig.pos="H"}
-# map income change
-FunMap(wal.income, uc, country = "^W",  dir = 1)
-```
 
 The top three Welsh councils by income were `r paste0(names(wal.income.top3)[1], ", ", names(wal.income.top3)[2], ", and ", names(wal.income.top3)[3])`, and between them accounted for `r FunDec(wal.income.top3[1], dp.text)` % of parking income.
 
@@ -195,14 +193,17 @@ while `r wal.income.change.top3[2,2]` and `r wal.income.change.top3[3,2]` increa
 wal.income.formatted %>%  
   kable( "latex", 
          booktabs = T, 
-         digits = c(rep(0, 6), 2), 
          escape = F,
+         digits = c(rep(0, 6), 2), 
          longtable = TRUE,
          align = c("r"),
          caption = "Parking income for Wales (£,000)",
          format.args = list(big.mark = ","),
          linesep = "",
-         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, paste0("Change ", current.year, "-", current.year-1999, " on ", current.year-1, "-", current.year-1999-1))) %>% 
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)), 
+         paste0("Average annual change from ", FunFisc(4)))) %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
                 font_size = 10) %>% 
@@ -212,7 +213,13 @@ wal.income.formatted %>%
 ```
 
 
-\pagebreak 
+
+```{r mapincome4, fig.cap = "Map of average annual change in parking income over the past four years", fig.height = 3}
+# map income change
+FunMap(wal.income, which = 4, shp = uc, country = "^W",  dir = 1)
+```
+
+
 
 # Expenditure
 
@@ -222,6 +229,13 @@ Overall expenditure has `r ifelse( wal.expend.t[2] > 0, "risen", "fallen")` by �
 
 The largest increase in expenditure occured in `r wal.expend.change.top3[1,2]` where it increased by `r FunDec(wal.expend.change.top3$change[1], dp.text)` %
 while `r wal.expend.change.top3[2,2]` and `r wal.expend.change.top3[3,2]` increased  by `r FunDec(wal.expend.change.top3$change[2], dp.text)` % and `r FunDec(wal.expend.change.top3$change[3], dp.text)` % respectively`r if(nrow(wal.expend.excluded.top) > 0) paste0(" (excluding ", FunMultiText(wal.expend.excluded.top$auth.name), " with expenditure under £30,000)")`. The biggest decreases were in `r wal.expend.change.bottom2[2,2]` (`r FunDec(abs(wal.expend.change.bottom2$change[2]), dp.text)` %), and `r wal.expend.change.bottom2[1,2]` (`r FunDec(abs(wal.expend.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(wal.expend.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(wal.expend.excluded.bottom$auth.name), " with expenditure under £30,000)")`.
+
+
+```{r mapexpend, fig.cap = "Map of change in parking expenditure since previous fiscal year", fig.height = 3.5}
+# map change in expenditure
+FunMap(wal.expend, which = 1, shp = uc, country = "^W",  dir = -1)
+```
+
 
 The table also shows the proportion of income taken up by costs in `r FunFisc()`. Nationally in Wales it is `r FunDec(wal.expend.p[2], dp.text)` % with Cardiff at `r FunDec(wal.expend.p[1], dp.text)` %.
 
@@ -238,25 +252,28 @@ wal.expend.formatted %>%
          format.args = list(big.mark = ","),
          linesep = "",
          col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
-                       paste0("Change ", current.year, "-", current.year-1999, 
-                              " on ", current.year-1, "-", current.year-1999-1), "Expenditure as proportion of income")) %>% 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)),
+                       paste0("Average annual change since ", FunFisc(4)),
+                         "Expenditure as proportion of income")) %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
-                font_size = 10) %>% 
+                font_size = 9) %>% 
   column_spec(1, width = "3.3cm") %>% 
-  column_spec(8, width = "1.8cm") %>% 
+  column_spec(9, width = "1.5cm") %>% 
   row_spec(22, hline_after = TRUE)
-```
-
-
-```{r mapexpend, fig.cap = "Map of change in parking expenditure since previous fiscal year", fig.pos="H"}
-# map change in expenditure
-FunMap(wal.expend, uc, country = "^W",  dir = -1)
 ```
 
 Table \@ref(tab:propexpend) shows the proportion of income taken up by expenditure. Across Wales it was `r FunDec(wal.expend.of.income[23,6], dp.text)` % compared to `r FunDec(wal.expend.of.income[23,5], dp.text)` % in the previous year, suggesting `r ifelse(wal.expend.of.income[23,6] < wal.expend.of.income[23,5], "improving", "declining")` efficiency in operations. 
 
 Cardiff’s expenditure was `r FunDec(wal.expend.of.income[wal.expend.of.income$auth.name == "Cardiff",6], dp.text)` % of its income having `r ifelse(wal.expend.of.income[wal.expend.of.income$auth.name == "Cardiff",6] < wal.expend.of.income[wal.expend.of.income$auth.name == "Cardiff",5], "fallen", "risen")` since last year, while Swansea's has `r ifelse(wal.expend.of.income[wal.expend.of.income$auth.name == "Swansea",6] < wal.expend.of.income[wal.expend.of.income$auth.name == "Swansea",5], "fallen", "risen")` to `r FunDec(wal.expend.of.income[wal.expend.of.income$auth.name == "Swansea",6], dp.text)` %.
+
+
+
+```{r mapexpend4, fig.cap = "Map of average annual change in parking expenditure over the past four years", fig.height = 3.5}
+# map change in expenditure
+FunMap(wal.expend, which = 4, shp = uc, country = "^W",  dir = -1)
+```
 
 \color{red} Most of the medium-sized councils spend 50–90% of their income on parking management, which includes enforcement. \color{black} Care should be taken in interpreting the percentages towards the bottom of the table, as the very low parking incomes can lead to extreme values which are less meaningful.  
 
@@ -321,5 +338,7 @@ wal.surplus.formatted %>%
 ```
 
 
+
+\newpage
 ## References {-}
 

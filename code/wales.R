@@ -43,6 +43,7 @@ uc <- st_read(here::here(paste0("data/01-raw/maps/Local_Administrative_Units_",
                                 "Level_1_January_2018_Ultra_Generalised_Clipped_",
                                 "Boundaries_in_United_Kingdom.shp")), 
               quiet = TRUE)
+
 rpi <- read.csv(here::here("data/01-raw/rpi.csv"))
 # load bibliography - get name of the report
 report.name <- paste0("wales-report-", current.year, "-",current.year - 1999)

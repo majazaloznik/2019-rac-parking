@@ -164,7 +164,7 @@ for (row in 2:nrow(orig.sco.meta.i.e.17)){
   inc.cell =  orig.sco.meta.i.e.17$inc.cell[row]
   transp.cell = orig.sco.meta.i.e.17$t.exp.cell[row]
   auth.cell = orig.sco.meta.i.e.17$auth.cell[row]
-  x <- FunScotlandLoopIE(row, year, file.name, 
+  x <- FunScotlandLoopIE(year, file.name, 
                          start.sh, end.sh, 
                          exp.cell, inc.cell,  transp.cell, auth.cell)
   original.scotland.i.e <- bind_rows(original.scotland.i.e, x)
@@ -175,6 +175,17 @@ original.scotland.i.e %>%
   mutate(expend.total = ifelse(auth.name == "South Ayrshire" & year == 2015,
                                470, expend.total),
          surplus.total = income.total - expend.total) -> original.scotland.i.e
+
+# slot in manual aberdeen city data
+original.scotland.i.e %>% 
+  filter(auth.name == "Aberdeen City") %>% 
+  select(auth.name, transport.total, year) %>% 
+  full_join(orig.sco.aberdeen.17) -> original.scotland.aberdeen
+
+# merge back with scotland i.e.
+original.scotland.i.e %>% 
+  filter(auth.name != "Aberdeen City") %>%
+  bind_rows(original.scotland.aberdeen) -> original.scotland.i.e
 
 ## 2.2 SCOTLAND PCN data from pdf ##############################################
 
@@ -320,7 +331,7 @@ bind_rows(original.data, original.wales) -> original.data
 original.data %>% 
   arrange(country, year) -> original.data
 
-# write.csv(original.data, "data/02-interim/original.data.csv")
+# write.csv(master, "outputs/csv-tables/master.csv")
 saveRDS(original.data, "data/02-interim/original.data.rds")
 saveRDS(original.data, "data/03-processed/master.rds")
 

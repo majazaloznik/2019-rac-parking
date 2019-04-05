@@ -37,8 +37,6 @@ nocite: |
 
 \renewcommand{\arraystretch}{1.2}
 
-  **Careful - there is no Aberdeen data in this report, so the totals won't match. (And there is some other source of errors in the Summary I suspect..) **
-
 This note covers parking finances for the 32 local authorities in Scotland. They are required to submit details of their finances to the Scottish Government annually in a standard format. The figures are normally published in March, nearly a year after the financial year end. This note looks at the section on parking income and expenditure for `r FunFisc(4)` to `r FunFisc()` and is based primarily on Scottish Local Government Finance Statistics data (`r sco.bib.main.i.e`), as well as data reported by English and Welsh Local Government authorities, all of the sources of which care listed in the references[^1]. 
 
 [^1]: Contains public sector information licensed under the [Open Government Licence v3.0](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). 
@@ -247,7 +245,7 @@ Table \@ref(tab:pcntab) shows the number of PCNs issued council by council in Sc
 
 ```{r incomefig4, fig.cap = "Map of average annual change in parking income over the past four years", fig.height = 4}
 # map expenditure change
-FunMap(sco.income, which = 4, shp = uc, country = "^S",dir = -1)
+FunMap(sco.income, which = 4, shp = uc, country = "^S",dir = 1)
 ```
 
 
@@ -345,7 +343,7 @@ sco.expend.formatted %>%
 
 ```{r expendfig4, fig.cap = "Map of average annual change in parking expenditure over the past four years", fig.height = 4}
 # map expenditure change
-FunMap(sco.expend, which = 4, shp = uc, country = "^S",dir = -1)
+FunMap(sco.expend, which = 4, shp = uc, country = "^S",dir = 1)
 ```
 
 Table \@ref(tab:expendprop) shows the proportion of income taken up by expenditure over the previous four years. Across Scotland it was `r FunDec(sco.expend.of.income[33,6], dp.text)` % compared to `r FunDec(sco.expend.of.income[33,5], dp.text)` % in the previous year, suggesting `r ifelse(sco.expend.of.income[33,6] < sco.expend.of.income[33,5], "improving", "declining")` efficiency in operations. 

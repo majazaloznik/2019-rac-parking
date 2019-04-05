@@ -1,5 +1,4 @@
 "auth.name","income.total","expend.total","surplus.total","income.tfs","expend.tfs","surplus.tfs","income.diff","expend.diff","surplus.diff"
-"Aberdeen City",0,0,0,8040.313,4104.338,3935.975,-8040.313,-4104.338,-3935.975
 "Aberdeenshire",488,589,-101,NA,NA,NA,NA,NA,NA
 "Angus",6,190,-184,NA,NA,NA,NA,NA,NA
 "Argyll and Bute",1089,726,363,1228.821,272.457,956.364,-139.821,453.543,-593.364
@@ -31,4 +30,5 @@
 "Stirling",1620,1546,74,NA,NA,NA,NA,NA,NA
 "West Dunbartonshire",0,77,-77,NA,NA,NA,NA,NA,NA
 "West Lothian",0,149,-149,NA,NA,NA,NA,NA,NA
-"Total",74537,35151,39386,61959.292,33757.041,28202.251,8754.708,-3276.041,12030.749
+"Aberdeen City",8040,4821,3219,8040.313,4104.338,3935.975,-0.313000000000102,716.662,-716.975
+"Total",82577,39972,42605,61959.292,33757.041,28202.251,16794.708,1544.959,15249.749

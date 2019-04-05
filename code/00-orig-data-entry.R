@@ -387,7 +387,7 @@ bind_rows(aberdeen.12,
           aberdeen.17) -> aberdeen
 
 # save
-saveRDS(aberdeen., "data/01-raw/orig.sco.aberdeen.17.rds")
+saveRDS(aberdeen, "data/01-raw/orig.sco.aberdeen.17.rds")
 
 
 ## 3.2 SCOTLAND penalty notice charges #########################################
@@ -652,7 +652,75 @@ scotland.pdf %>%
                        ifelse(row_number() == n(), fiscyear + 1, lead(fiscyear)), "}")) %>% 
   bind_rows(bib.master) -> bib.master
          
-         
+# add Aberdeen data
+bib.master %>% 
+  bind_rows(data.frame(country = "Scotland",
+           author = "{Aberdeen City Council}", 
+           bibtype = "misc", 
+           content = "i.e.",
+           fiscyear = 2017,
+           year = 2018,
+           title = "{Aberdeen City Council Annual Accounts 2017-18}",
+           url = "https://www.aberdeencity.gov.uk/sites/default/files/2018-08/Aberdeen%20City%20Council%20Annual%20Report%20and%20Accounts%202017-18.pdf",
+           urldate = "4.4.2019")) -> bib.master
+
+bib.master %>% 
+  bind_rows(data.frame(country = "Scotland",
+                       author = "{Aberdeen City Council}", 
+                       bibtype = "misc", 
+                       content = "i.e.",
+                       fiscyear = 2016,
+                       year = 2017,
+                       title = "{Aberdeen City Council Annual Accounts 2016-17}",
+                       url = "https://www.aberdeencity.gov.uk/media/5702",
+                       urldate = "4.4.2019")) -> bib.master
+
+bib.master %>% 
+  bind_rows(data.frame(country = "Scotland",
+                       author = "{Aberdeen City Council}", 
+                       bibtype = "misc", 
+                       content = "i.e.",
+                       fiscyear = 2015,
+                       year = 2016,
+                       title = "{Aberdeen City Council Annual Accounts 2015-16}",
+                       url = "https://www.aberdeencity.gov.uk/media/3101",
+                       urldate = "4.4.2019")) -> bib.master
+
+bib.master %>% 
+  bind_rows(data.frame(country = "Scotland",
+                       author = "{Aberdeen City Council}", 
+                       bibtype = "misc", 
+                       content = "i.e.",
+                       fiscyear = 2014,
+                       year = 2015,
+                       title = "{Aberdeen City Council Annual Accounts 2014-15}",
+                       url = "https://www.aberdeencity.gov.uk/media/3111",
+                       urldate = "4.4.2019")) -> bib.master
+
+bib.master %>% 
+  bind_rows(data.frame(country = "Scotland",
+                       author = "{Aberdeen City Council}", 
+                       bibtype = "misc", 
+                       content = "i.e.",
+                       fiscyear = 2013,
+                       year = 2014,
+                       title = "{Aberdeen City Council Annual Accounts 2013-14}",
+                       url = "https://www.aberdeencity.gov.uk/media/3114",
+                       urldate = "4.4.2019")) -> bib.master
+
+
+bib.master %>% 
+  bind_rows(data.frame(country = "Scotland",
+                       author = "{Aberdeen City Council}", 
+                       bibtype = "misc", 
+                       content = "i.e.",
+                       fiscyear = 2012,
+                       year = 2013,
+                       title = "{Aberdeen City Council Annual Accounts 2012-13}",
+                       url = "https://www.aberdeencity.gov.uk/media/3135",
+                       urldate = "4.4.2019")) -> bib.master
+
+
 # add wales data
 
 bind_rows(bib.master,

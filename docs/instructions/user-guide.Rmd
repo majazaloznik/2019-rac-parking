@@ -1,0 +1,28 @@
+---
+title: "RAC Parking report automation - A user's guide"
+author: "mz"
+date: "5 April 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message = FALSE)
+# PRELIMINARIES
+suppressWarnings(suppressMessages(library(DiagrammeR)))
+suppressWarnings(suppressMessages(library(DiagrammeRsvg)))
+suppressWarnings(suppressMessages(library(rsvg)))
+
+```
+# Intro
+
+*Hi everyone! So this is just a draft version of this document, so apologies if it is a bit rambling and rough around the edges, but hopefully you will find it helpful still!*
+
+This document describes the data management pipeline for the parking report automation repository, and describes in detail how users should proceed to add new data and produce new reports. It is highly recommended that you do not skip the first part of the document. 
+
+
+
+## Data Management Pipeline
+
+```{r, echo = FALSE, out.width='100%', fig.cap = "Schematic overview of the data management pipeline"}
+knitr::include_graphics("chart.png")
+```

@@ -705,10 +705,13 @@ data %>%
   select(auth.name, year, surplus.total, transport.total) %>% 
   mutate(poz.neg = ifelse(surplus.total >= 0, "poz", "neg")) %>% 
   group_by(year, poz.neg) %>%
-  summarise_at(vars(-auth.name), list(~sum)) %>%
+  summarise_at(vars(-auth.name), list(~sum)) %>% 
+  full_join(expand.grid(year = 2012:2016, poz.neg = c("poz", "neg", NA)) %>% 
+              mutate(poz.neg = as.character(poz.neg))) %>% 
   gather(variable, value, -c(year, poz.neg)) %>%
   unite(temp, year, variable) %>%
   spread(temp, value) %>% 
+  filter(!is.na(poz.neg)) %>% 
   select(poz.neg, contains("surplus"), paste0(current.year, 
                                               "_transport.total"))  %>% 
   mutate(poz.neg = c("Total deficit", "Total surplus")) %>% 
@@ -834,3 +837,4 @@ write.csv(sco.compare.tab, here::here(paste0("outputs/csv-tables/scotland-",
                                              FunFisc(), "/scotland-", 
                                              FunFisc(), "-table-11.csv")),
           row.names = FALSE)
+

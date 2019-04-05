@@ -17,7 +17,7 @@
 ################################################################################
 ## MANUAL DATA INPUT ###########################################################
 ################################################################################
-current.year <- 2015
+current.year <- 2017
 
 ## after dowloading the Wales files into the data/01-raw folder, enter their
 ## correct filenames here:
@@ -95,6 +95,22 @@ master %>%
   anti_join(update, by = c("country", "auth.name", "year")) %>% 
   bind_rows(update) -> master
 
+
+## IMPORT AND CLEAN RPI DATA ###################################################
+# if RPI file doesn't exist, or if it doesn't have today's date, download it again. 
+if (!file.exists("data/01-raw/rpi.csv") | 
+    format(file.mtime("data/01-raw/rpi.csv"), "%d.%m.%Y") != 
+    format(Sys.Date(), "%d.%m.%Y")) {
+  url <- paste0("https://docs.google.com/spreadsheets/d/e/2PACX-1vTisg2eXAykXY-",
+                "jcDJRXBf7LlL8IBFRmwBgJGF6-kcFVTlx96kAurVWCohG1ryXMvtvD1dNvQ6otS2R",
+                "/pub?gid=543857295&single=true&output=csv")
+  
+  download.file(url, destfile = "data/01-raw/rpi.csv", method="curl")
+}
+
+################################################################################
+# add new files to bibliography master #########################################
+################################################################################
 # add new date.accessed to bibliography master
 bib.master %>% 
   mutate(urldate = ifelse(country == "Wales", new.date.accessed,
