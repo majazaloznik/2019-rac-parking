@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.12.21)  5 APR 2019 15:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.12.21)  5 APR 2019 18:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1136,41 +1136,45 @@ LaTeX Font Info:    Try loading font information for T1+lmtt on input line 146.
 
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) <chart.png, id=79, 879.285pt x 1273.75874pt>
+) <chart.png, id=74, 879.285pt x 1273.75874pt>
 File: chart.png Graphic file (type png)
 <use chart.png>
-Package pdftex.def Info: chart.png used on input line 183.
+Package pdftex.def Info: chart.png used on input line 185.
 (pdftex.def)             Requested size: 399.28372pt x 578.41443pt.
 [2] [3pdfTeX warning (ext4): destination with the same identifier (name{figure.
 1}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.191 \texttt{\textbar{}-\/-\ code}
-                                    \color{green} <./chart.png>] [4] [5]
+l.193 \texttt{00-orig-daya-entry.R}
+                                    is where all the original manual data en...
+ <./chart.png>] [4]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 331.
+(Font)              <9> on input line 275.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 331.
-[6] [7]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 483.
-[8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 483.
+(Font)              <5> on input line 275.
+[5] [6] [7] [8]
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 492.
+[9] [10]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 602.
+[11]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 602.
 (./user-guide.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 483.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 483.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 602.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 602.
 Package rerunfilecheck Info: File `user-guide.out' has not changed.
-(rerunfilecheck)             Checksum: F76724B3FF06BB9F1C0D9D309C9BC571;2161.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 483.
+(rerunfilecheck)             Checksum: 4C8BF86134F47760610CE3EB811A2AD9;2095.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 602.
  ) 
 Here is how much of TeX's memory you used:
- 15008 strings out of 493892
- 216328 string characters out of 6156144
- 347372 words of memory out of 5000000
- 18071 multiletter control sequences out of 15000+600000
- 65936 words of font info for 70 fonts, out of 8000000 for 9000
+ 15050 strings out of 493892
+ 216816 string characters out of 6156144
+ 347167 words of memory out of 5000000
+ 18085 multiletter control sequences out of 15000+600000
+ 66254 words of font info for 71 fonts, out of 8000000 for 9000
  622 hyphenation exceptions out of 8191
- 34i,8n,37p,511b,430s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,8n,37p,731b,430s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dv
 ips/lm/lm-ts1.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/shar
 e/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/l
@@ -1178,11 +1182,12 @@ m/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb></usr/share/texmf
 /fonts/type1/public/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pf
 b></usr/share/texmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type
 1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr
-/share/texmf/fonts/type1/public/lm/lmtt10.pfb>
-Output written on user-guide.pdf (8 pages, 363998 bytes).
+/share/texmf/fonts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/pub
+lic/lm/lmtt10.pfb>
+Output written on user-guide.pdf (11 pages, 399400 bytes).
 PDF statistics:
- 256 PDF objects out of 1000 (max. 8388607)
- 231 compressed objects within 3 object streams
- 93 named destinations out of 1000 (max. 500000)
- 12390 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 298 PDF objects out of 1000 (max. 8388607)
+ 269 compressed objects within 3 object streams
+ 120 named destinations out of 1000 (max. 500000)
+ 12382 words of extra memory for PDF output out of 14400 (max. 10000000)
 

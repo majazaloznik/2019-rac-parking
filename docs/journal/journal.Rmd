@@ -756,26 +756,23 @@ the latex flafter package stops that from happening. But now I'm getting an empt
 * OK, updates work!
 * Commit
 * *surplus/deficit table*
-* *david's transport totals*
+* david's transport totals. sent email. 
 * *technical documentation*
-* *instructions*
+* instructions
   + folder tree colour coded?OK
   + step by step
   + wales step by step. OK
   + Scotland step by step.OK
-  + *outline of folder structure*
+  + outline of folder structure
   + outline of pipeline - short. OK
-  + *outline of pipeline - long*
-  + prerequisites
-  + *formatting*
+  + outline of pipeline - long
+  + prerequisites.OK
+  + formatting.OK
+  + multiple labels defined. 
+* *remove Scotladn 2017*
+* *write readme.md*
 
 
-  
-  
-  
-  
-  
-  
 ### Wales (based on 17/18) #####################################################
 
 #### 1. Introduction
