@@ -301,42 +301,39 @@ saveRDS(wpl, "data/01-raw/orig.eng.nott.wpl.17.rds")
 ## 3. SCOTLAND DATA SOURCES ####################################################
 ## 3.1 SCOTLAND incomes and expenditures #######################################
 
-fisc.year <- c( "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", 
-           "2017/18")
+fisc.year <- c( "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17")
 
 year <- as.numeric(substr(fisc.year, 1, 4))
 
-report <- c("yes", "-", "yes", "yes", "yes", "-", "-")
+report <- c("yes", "-", "yes", "yes", "yes", "-")
 
 file.name <- c("", 
                "data/01-raw/orig.sco-12-13.xlsx",
                "data/01-raw/orig.sco-13-14.xlsx",
                "data/01-raw/orig.sco-14-15.xlsx",
                "data/01-raw/orig.sco-15-16.xlsx",
-               "data/01-raw/orig.sco-16-17.xlsx",
-               "data/01-raw/orig.sco-17-18.xlsx")
+               "data/01-raw/orig.sco-16-17.xlsx")
 
 link <- c("--", 
           "\\href{https://www2.gov.scot/Resource/0044/00446440.xlsx}{xlsx}", 
           "\\href{https://www2.gov.scot/Resource/0047/00475683.xlsx}{xlsx}",
           "\\href{https://www2.gov.scot/Resource/0049/00494926.xlsx}{xlsx}",
           "\\href{https://www2.gov.scot/Resource/0051/00515383.xlsx}{xlsx}",
-          "\\href{https://www2.gov.scot/Resource/0053/00536018.xlsx}{xlsx}",
-          "\\href{https://www2.gov.scot/Resource/0054/00546675.xlsx}{xlsx}")
+          "\\href{https://www2.gov.scot/Resource/0053/00536018.xlsx}{xlsx}")
 
-start.sh <- c(NA,2,2,2,2,2,3)
+start.sh <- c(NA,2,2,2,2,2)
 
-end.sh<- c(NA,33,33,33,33,33,34)
+end.sh<- c(NA,33,33,33,33,33)
 
-exp.cell <- c("-", "F57", "F40", "E40", "B41", "B41", "L13")
+exp.cell <- c("-", "F57", "F40", "E40", "B41", "B41")
 
-inc.cell <- c("-", "G57", "G40", "F40", "C41", "C41", "L23")
+inc.cell <- c("-", "G57", "G40", "F40", "C41", "C41")
 
-t.exp.cell <- c("-", "H50", "H33", "G33", "D34", "D34", "U28") #(net expenditure)
+t.exp.cell <- c("-", "H50", "H33", "G33", "D34", "D34") #(net expenditure)
 
-# t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34", "U13") # gross revenue expenditure
+# t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34") # gross revenue expenditure
 
-auth.cell <- c("-", "A2", "A2", "A2", "A2", "A1", "E2")
+auth.cell <- c("-", "A2", "A2", "A2", "A2", "A1")
 scotland.i.e. <- data.frame(fisc.year,year,report, file.name, link, 
                             start.sh, end.sh, exp.cell,
                             inc.cell, t.exp.cell, 
@@ -344,7 +341,7 @@ scotland.i.e. <- data.frame(fisc.year,year,report, file.name, link,
 
 
 # save
-saveRDS(scotland.i.e., "data/01-raw/orig.sco.meta.i.e.17.rds")
+saveRDS(scotland.i.e., "data/01-raw/orig.sco.meta.i.e.rds")
 
 ## 3.1.5  Aberdeen incomes and expenditures MANUAL #############################
 
@@ -374,52 +371,46 @@ aberdeen.16 <- data.frame(auth.name = "Aberdeen City",
                           income.total = 8040,
                           expend.total =  4821) 
 
-aberdeen.17 <- data.frame(auth.name = "Aberdeen City",
-                          year = 2017,
-                          income.total = 8397,
-                          expend.total =  5075)
 
 bind_rows(aberdeen.12,
           aberdeen.13,
           aberdeen.14,
           aberdeen.15,
-          aberdeen.16,
-          aberdeen.17) -> aberdeen
+          aberdeen.16) -> aberdeen
 
 aberdeen %>%  
   mutate(surplus.total = income.total - expend.total) -> aberdeen
 
 # save
-saveRDS(aberdeen, "data/01-raw/orig.sco.aberdeen.17.rds")
+saveRDS(aberdeen, "data/01-raw/orig.sco.aberdeen.rds")
 
 
 ## 3.2 SCOTLAND penalty notice charges #########################################
 
-fisc.year <- c( "2011/12","2012/13", "2013/14/15/16", "2016/17", "2017/18")
+fisc.year <- c( "2011/12","2012/13", "2013/14/15/16", "2016/17")
 
 year <- as.numeric(substr(fisc.year, 1, 4))
 
-file.type <- c("--","--", "scan", "pdf", "pdf")
+file.type <- c("--","--", "scan", "pdf")
 
-file.name <- c("--","--", "data/01-raw/orig.sco-13-14-15-16-pcn.pdf", "data/01-raw/orig.sco-16-17-pcn.pdf", 
-               "data/01-raw/orig.sco-17-18-pcn.pdf")
+file.name <- c("--","--", "data/01-raw/orig.sco-13-14-15-16-pcn.pdf", 
+               "data/01-raw/orig.sco-16-17-pcn.pdf")
 
 link <- c("--", 
           "--",
           "\\href{http://www.parliament.scot/S5_Rural/Meeting%20Papers/20161221_REC_Committee_Public_Paper.pdf}{pdf}",
-          "\\href{https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/}{pdf}",
-          "\\href{https://www.transport.gov.scot/media/43636/decriminalised-parking-enforcement-income-expenditure-annual-report-2017-18.pdf}{pdf}")
+          "\\href{https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/}{pdf}")
 
-dpe.tab <- c(NA, NA, NA, 4, 4)
+dpe.tab <- c(NA, NA, NA, 4)
 
-pcn.tab <- c(NA, NA, NA, 5, 5)
+pcn.tab <- c(NA, NA, NA, 5)
 
-e.i.tab <- c(NA, NA, NA, 6, 6)
+e.i.tab <- c(NA, NA, NA, 6)
 
 scotland.pdf <- data.frame(fisc.year, year,file.name, file.type, link, dpe.tab,pcn.tab, e.i.tab)
 
-## commented out to stop overwriting!
-saveRDS(scotland.pdf, "data/01-raw/orig.sco.meta.pdf.17.rds")
+## save
+saveRDS(scotland.pdf, "data/01-raw/orig.sco.meta.pdf.rds")
 
 ## 3.3. manual input of PCN data for 2013-2015
 sco.pcn.number.13 <- c("Aberdeen City"       = 47320,
@@ -647,7 +638,7 @@ scotland.pdf %>%
          country = "Scotland",
          content = "pcn",
          bibtype = "misc",
-         year = c(2016, 2017, 2018),
+         year = c(2016, 2017),
          author = "{Transport Scotland}",
          urldate = "10.03.2019",
          title = paste("{Decriminalised Parking Enforcement: Local Authorites'",
@@ -656,16 +647,6 @@ scotland.pdf %>%
   bind_rows(bib.master) -> bib.master
          
 # add Aberdeen data
-bib.master %>% 
-  bind_rows(data.frame(country = "Scotland",
-           author = "{Aberdeen City Council}", 
-           bibtype = "misc", 
-           content = "i.e.",
-           fiscyear = 2017,
-           year = 2018,
-           title = "{Aberdeen City Council Annual Accounts 2017-18}",
-           url = "https://www.aberdeencity.gov.uk/sites/default/files/2018-08/Aberdeen%20City%20Council%20Annual%20Report%20and%20Accounts%202017-18.pdf",
-           urldate = "4.4.2019")) -> bib.master
 
 bib.master %>% 
   bind_rows(data.frame(country = "Scotland",
@@ -785,3 +766,4 @@ if (!file.exists("data/01-raw/rpi.csv") |
   
   download.file(url, destfile = "data/01-raw/rpi.csv", method="curl")
 }
+

@@ -770,9 +770,9 @@ the latex flafter package stops that from happening. But now I'm getting an empt
   + formatting.OK
   + multiple labels defined. 
 * write readme.md
-* *remove Scotladn 2017*
+* remove Scotladn 2017/18
 * cleaned up the Wales tables a bit. 
-
+* why is master.csv not updating? fixed. 
 next: 
 * *technical documentation*
 

@@ -8,4 +8,4 @@ I have intentionally removed the raw data for Scotland 2017/18, even though it i
 
 You can also reproduce existing reports for Scotland and Wales for previous years (don't go too far back though..). 
 
-The one main issue with the code as it stands is that I'm still not sure about the total transportation numbers or rather how the original reports treated them. I have not been able to replicate that, so those numbers will be off. Everything else should match up (in all the cases that I've found that it doesn't, double checking has revealed an error in the original reports). 
+The one main issue with the code as it stands is that I'm still not sure about the total transportation numbers or rather how the original reports treated them (or rather they seem to treat them inconsistently, while these reports are consistent). I have not been able to replicate that, so those numbers will be off. Everything else should match up (in all the cases that I've found that it doesn't, double checking has revealed an error in the original reports). 

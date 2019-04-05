@@ -114,11 +114,13 @@ These instructions are split into three main parts for three main objectives you
 
 3. New data has been published and you want to input it and produce a new report. (separate instructions for Wales and Scotland)
 
+NB: I use the first year of the fiscal year to indicate which data we are interested in, so e.g. the report for 2016/17 is produced by setting `current.year` to 2016. 
+
 ## Produce a report based on existing data
 
 Although backward compatibility is not in any way guaranteed, it does exist to some extent. So while this pipeline was not meant for you to be able to reproduce old reports, it was a good idea to include that option, since differences in previous years' data inputs made it easier to code against future eventualities. 
 
-**I have not tested this for all possible years, but you should be fine producing reports for the last couple of years**
+**I have not tested this for all possible years,  but you should be fine producing reports for the last couple of years for Wales, but for Scotland 2016/17 is the only one that will work at the moment. **
 
 
 1. Open the `updating-scripts/wales-update-script.R`. 

@@ -243,6 +243,7 @@ if (add.new.data){
   
   # save updated datafile to master
   saveRDS(master, "data/03-processed/master.rds")
+  write.csv(master, "outputs/csv-tables/master.csv")
   
   ## IMPORT AND CLEAN RPI DATA ###################################################
   # if RPI file doesn't exist, or if it doesn't have today's date, download it again. 
@@ -256,6 +257,13 @@ if (add.new.data){
     download.file(url, destfile = "data/01-raw/rpi.csv", method="curl")
   }
   
+  # update RPI data acces date and year of publication in the bibliography
+  bib.master %>%
+    mutate(urldate = ifelse(content == "rpi",
+                            as.character(format(Sys.Date(), "%d.%m.%Y")), urldate),
+           year = ifelse(content == "rpi",
+                         as.numeric(format(Sys.Date(), "%Y")), year)) ->
+    bib.master
   ################################################################################
   # add new files to bibliography master #########################################
   ################################################################################
@@ -312,17 +320,12 @@ if (add.new.data){
     anti_join(sco.pdf.bib, by = c("fiscyear", "country", "content")) %>%
     bind_rows(sco.pdf.bib) -> bib.master
   
-  # update RPI data acces date and year of publication
-  bib.master %>%
-    mutate(urldate = ifelse(content == "rpi",
-                            as.character(format(Sys.Date(), "%d.%m.%Y")), urldate),
-           year = ifelse(content == "rpi",
-                         as.numeric(format(Sys.Date(), "%Y")), year)) ->
-    bib.master
+
   
   # save updated datafile to master
   saveRDS(bib.master, "data/03-processed/bib.master.rds")
-  
+}
+
   # select scotland only bibliograpy #############################################
   # select a bibliography for the scotland report - only the rows needed
   bib.master %>%
@@ -338,7 +341,7 @@ if (add.new.data){
   
   # also save the data.frame
   saveRDS(bib.scotland, paste0("data/03-processed/", report.name, "-bib.rds"))
-}
+
 
 
 ################################################################################

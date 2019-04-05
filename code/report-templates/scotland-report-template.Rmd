@@ -54,6 +54,7 @@ Table 1 shows that as of \color{red}December \color{black} `r current.year`, `r 
 
 Police Scotland no longer enforces parking offences but now deals only with dangerous parking (e.g. on pedestrian crossings) by local arrangement. Several of the authorities not using DPE have rejected it because of the cost of setting it up and running it for the small number of parking offences. 
 
+\newpage
 ```{r dpe }
 # pring DPE status table
 sco.dpe %>% 

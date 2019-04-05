@@ -132,6 +132,7 @@ if (add.new.data){
   
   # save updated datafile to master
   saveRDS(master, "data/03-processed/master.rds")
+  write.csv(master, "outputs/csv-tables/master.csv")
   
   ##############################################################################
   # add new files to bibliography master #######################################
