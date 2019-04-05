@@ -756,14 +756,24 @@ the latex flafter package stops that from happening. But now I'm getting an empt
 * OK, updates work!
 * Commit
 * *surplus/deficit table*
-
+* *david's transport totals*
 * *technical documentation*
 * *instructions*
   + folder tree colour coded?OK
   + step by step
-  + outline of folder structure
-  + outline of pipeline - short
-  + outline of pipeline - long
+  + wales step by step. OK
+  + Scotland step by step.OK
+  + *outline of folder structure*
+  + outline of pipeline - short. OK
+  + *outline of pipeline - long*
+  + prerequisites
+  + *formatting*
+
+
+  
+  
+  
+  
   
   
 ### Wales (based on 17/18) #####################################################

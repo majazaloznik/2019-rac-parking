@@ -22,7 +22,7 @@ bibliography: wales.bib
 csl: apa-with-notes.csl
 ---
   
-```{r setup, echo = FALSE}
+```{r setup, echo = FALSE, message= FALSE, warning=FALSE}
 source(here::here("code/wales.R"))
 ```
 

@@ -31,7 +31,7 @@ node [shape = circle, color = red]
 '/data/01-raw/'
 
 node [shape = box, color = green] 
-'/updating-templates/xxx.R'
+'/updating-scripts/xxx.R'
 
 node [shape = diamond, color = steelblue] 
 '/report-templates/xxx.Rmd'
@@ -52,27 +52,25 @@ node [shape = circle, color =  pink]
 'functions.R' -> '01-orig.data.import.R'
 '01-orig.data.import.R' -> 'original.data.rds'
 '/data/01-raw/' -> '01-orig.data.import.R'
-'/report-templates/xxx.Rmd' ->'/updating-templates/xxx.R'
-'/updating-templates/xxx.R' -> 'master.rds'
-'/updating-templates/xxx.R' ->'/report-rmds/xxx.Rmd'
+'/report-templates/xxx.Rmd' ->'/updating-scripts/xxx.R'
+'/updating-scripts/xxx.R' -> 'master.rds'
+'/updating-scripts/xxx.R' ->'/report-rmds/xxx.Rmd'
 '/report-rmds/xxx.Rmd' -> '/outputs/reports/xxx.pdf'
 '/report-rmds/xxx.Rmd' -> '/outputs/csv-tables/'
 'sco|wal|eng.R' -> '/report-rmds/xxx.Rmd'
 'master.rds' -> 'sco|wal|eng.R'
-'/data/01-raw/' -> '/updating-templates/xxx.R'
+'/data/01-raw/' -> '/updating-scripts/xxx.R'
 'functions.R' -> 'sco|wal|eng.R'
-'functions.R' -> '/updating-templates/xxx.R'
+'functions.R' -> '/updating-scripts/xxx.R'
 'functions.R' -> '00-orig-data-entry.R' 
 '00-orig-data-entry.R' -> 'bib.master.rds'
-'/updating-templates/xxx.R' -> 'bib.master.rds'
-'bib.master.rds' -> '/updating-templates/xxx.R' 
-'/updating-templates/xxx.R' -> 'sco|wal|eng.bib.rds'
+'/updating-scripts/xxx.R' -> 'bib.master.rds'
+'bib.master.rds' -> '/updating-scripts/xxx.R' 
+'/updating-scripts/xxx.R' -> 'sco|wal|eng.bib.rds'
 'sco|wal|eng.bib.rds' ->  '/report-rmds/xxx.Rmd' 
-'/updating-templates/xxx.R' -> '/data/01-raw/'
+'/updating-scripts/xxx.R' -> '/data/01-raw/'
 }"
+
 png::writePNG(rsvg(charToRaw(export_svg(grViz(diagram)))), 
-              here::here("docs/instructions/chart.png"))
+              here::here("docs/technical/instructions/chart.png"))
    
-
-# png::writePNG(rsvg(charToRaw(export_svg(grViz(diagram)))), here::here("figures/make.png"))
-

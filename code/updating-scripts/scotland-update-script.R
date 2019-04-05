@@ -234,7 +234,7 @@ if (add.new.data){
   ## Add (or overwrite) new rows to master #######################################
   ################################################################################
   
-  # add update for Wales - if that year already exists, it will be overwritten!!!
+  # add update - if that year already exists, it will be overwritten!!!
   if (exists("master.update")){
     master %>%
       anti_join(master.update, by = c("country", "auth.name", "year")) %>%
