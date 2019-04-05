@@ -74,8 +74,8 @@ if (add.new.data){
   # which cell has the Parking "Gross Income on a Funding Basis"?
   sco.i.e.inc.cell <- "C41"
   
-  # which cell has the Total Roads and Transport "Gross Expenditure on a Funding Basis"?
-  sco.i.e.transp.cell <- "B34"
+  # which cell has the Total Roads and Transport "Net revenue Expenditure on a funding basis"?
+  sco.i.e.transp.cell <- "D34"
   
   # On individual LA sheets, which cell has the name of the LA?
   sco.i.e.auth.cell <- "A1"

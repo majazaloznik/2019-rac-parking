@@ -184,8 +184,8 @@ sco.summary %>%
                      "Parking surplus as percentage of all transport costs"))  %>% 
   mutate_at(vars(-rowname, -change), function(x) FunDec(x, dp.tables)) %>% 
   mutate_at(vars(-rowname, -change), function(x) ifelse(.$rowname == "Parking surplus 
-                                            as percentage of all transport 
-                                            costs", paste0(x, " \\%"), x)) %>%
+                                                        as percentage of all transport 
+                                                        costs", paste0(x, " \\%"), x)) %>%
   mutate(collapsed = c(rep("Parking", 3), "Total transport", "")) %>% 
   select(collapsed, rowname:change) -> sco.summary.formatted
 
@@ -343,9 +343,9 @@ data %>%
 
 # save csv table 5
 write.csv(sco.income, here::here(paste0("outputs/csv-tables/scotland-",
-                                         FunFisc(), "/scotland-", 
-                                         FunFisc(), "-table-05.csv")),
-           row.names = FALSE)
+                                        FunFisc(), "/scotland-", 
+                                        FunFisc(), "-table-05.csv")),
+          row.names = FALSE)
 
 # format table for kable
 sco.income %>% 
@@ -358,11 +358,11 @@ sco.income %>%
                                                   sco.income$change.4),
                                                 dir = 1, factor = 1.2)[[3]]),
          change.4 = cell_spec(change.4, "latex",
-                            background = 
-                              FunDivergePalette(sco.income$change.4, 
-                                                c(sco.income$change, 
-                                                  sco.income$change.4),
-                                                dir = 1, factor = 1.2)[[3]])) ->
+                              background = 
+                                FunDivergePalette(sco.income$change.4, 
+                                                  c(sco.income$change, 
+                                                    sco.income$change.4),
+                                                  dir = 1, factor = 1.2)[[3]])) ->
   sco.income.formatted
 
 # no income councils
@@ -545,7 +545,7 @@ data %>%
          change.4 = ifelse(is.nan(change.4), NA, 
                            ifelse(is.infinite(change.4), NA, change.4)),
          prop.income = ifelse(is.nan(prop.income), NA, 
-                           ifelse(is.infinite(prop.income), NA, prop.income))) %>% 
+                              ifelse(is.infinite(prop.income), NA, prop.income))) %>% 
   select(-income.total) -> sco.expend
 
 
@@ -776,13 +776,11 @@ sco.surplus %>%
 # surplus.councils (pozitive)
 sco.poz.surplus <- nrow(filter(sco.surplus, !!as.name(current.year) >= 0))
 
-# extract "surplus" table where only valid changes are 
+# extract surplus table where only valid changes are 
 sco.surplus %>% 
   mutate(change =100*(!!as.name(current.year)/!!as.name(current.year 
                                                         - 1) - 1)) %>% 
   filter(!is.nan(change) & !is.infinite(change)) %>% 
-  filter(!!as.name(current.year) >= 0,
-         !!as.name(current.year - 1) >= 0) %>% 
   arrange(desc(change)) %>% 
   rownames_to_column() %>% 
   mutate(rowname = as.numeric(rowname))-> sco.surplus.valid
@@ -807,38 +805,6 @@ sco.surplus.valid %>%
   filter(rowname > min(sco.surplus.change.bottom2$rowname)) %>% 
   anti_join(sco.surplus.change.bottom2) -> sco.surplus.excluded.bottom
 
-##
-
-# extract "deficit" table where only valid changes are 
-sco.surplus %>% 
-  mutate(change =100*(!!as.name(current.year)/!!as.name(current.year 
-                                                        - 1) - 1)) %>% 
-  filter(!is.nan(change) & !is.infinite(change)) %>% 
-  filter(!!as.name(current.year) < 0,
-         !!as.name(current.year - 1) < 0) %>% 
-  arrange(desc(change)) %>% 
-  rownames_to_column() %>% 
-  mutate(rowname = as.numeric(rowname))-> sco.deficit.valid
-
-# get top three relevant surplus changes
-sco.deficit.valid %>% 
-  filter(abs(!!as.name(current.year)) >= 30) %>% 
-  filter(row_number() <= 3) -> sco.deficit.change.top3
-
-# find excluded rows in top of the table 
-sco.deficit.valid %>% 
-  filter(rowname <= max(sco.deficit.change.top3$rowname)) %>% 
-  anti_join(sco.deficit.change.top3) -> sco.deficit.excluded.top
-
-# get bottom two relevant surplus changes
-sco.deficit.valid %>% 
-  filter(abs(!!as.name(current.year)) >= 30) %>% 
-  filter(row_number() > n()-2) -> sco.deficit.change.bottom2
-
-# find excluded rows in bottom of the table 
-sco.deficit.valid %>% 
-  filter(rowname > min(sco.deficit.change.bottom2$rowname)) %>% 
-  anti_join(sco.deficit.change.bottom2) -> sco.deficit.excluded.bottom
 
 ## COMPARE TWO DATA SOURCES ###################################################
 # clean up data

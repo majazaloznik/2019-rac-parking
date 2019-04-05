@@ -755,9 +755,9 @@ the latex flafter package stops that from happening. But now I'm getting an empt
 * rpi dates change!! ffs. fixed. just takes any date in april. 
 * OK, updates work!
 * Commit
-* *surplus/deficit table*
+* surplus/deficit text. OK for Scotland, now Wales
+* surplus/deficit fixed in Wales as wel 
 * david's transport totals. sent email. 
-* *technical documentation*
 * instructions
   + folder tree colour coded?OK
   + step by step
@@ -769,8 +769,14 @@ the latex flafter package stops that from happening. But now I'm getting an empt
   + prerequisites.OK
   + formatting.OK
   + multiple labels defined. 
+* write readme.md
 * *remove Scotladn 2017*
-* *write readme.md*
+* cleaned up the Wales tables a bit. 
+
+next: 
+* *technical documentation*
+
+
 
 
 ### Wales (based on 17/18) #####################################################

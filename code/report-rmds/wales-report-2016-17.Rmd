@@ -207,7 +207,7 @@ wal.income.formatted %>%
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
                 font_size = 10) %>% 
-  column_spec(1, width = "4cm") %>% 
+  column_spec(1, width = "3.3cm") %>% 
   row_spec(22, hline_after = TRUE)
 
 ```
@@ -260,6 +260,8 @@ wal.expend.formatted %>%
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
                 font_size = 9) %>% 
   column_spec(1, width = "3.3cm") %>% 
+  column_spec(7, width = "1.5cm") %>% 
+  column_spec(8, width = "1.5cm") %>% 
   column_spec(9, width = "1.5cm") %>% 
   row_spec(22, hline_after = TRUE)
 ```
@@ -310,7 +312,10 @@ The total *surpluses* for Wales amounted to £`r FunDec((wal.surplus.totals.tabl
 Overall, parking contributed £`r FunDec((wal.surplus.totals.table[25, 6]/1000), dp.text)` million to local authority finances in Wales in `r FunFisc()` compared with £`r FunDec((wal.surplus.totals.table[25, 5]/1000), dp.text)` million in `r FunFisc()`, an increase of `r FunDec((wal.surplus.totals.table[25, 7]), dp.text)` %. 
 
 `r wal.surplus.change.top3[1,2]` increased their surplus by `r FunDec(wal.surplus.change.top3$change[1], dp.text)` %
-while `r wal.surplus.change.top3[2,2]` and `r wal.surplus.change.top3[3,2]` increased  by `r FunDec(wal.surplus.change.top3$change[2], dp.text)` % and `r FunDec(wal.surplus.change.top3$change[3], dp.text)` % respectively`r if(nrow(wal.surplus.excluded.top) > 0) paste0(" (excluding ", FunMultiText(wal.surplus.excluded.top$auth.name), " with a surplus/deficit under £30,000)")`. The biggest decreases were in `r wal.surplus.change.bottom2[2,2]` (`r FunDec(abs(wal.surplus.change.bottom2$change[2]), dp.text)` %), and `r wal.surplus.change.bottom2[1,2]` (`r FunDec(abs(wal.surplus.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(wal.surplus.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(wal.surplus.excluded.bottom$auth.name), " with a surplus/deficit under £30,000)")`.
+while `r wal.surplus.change.top3[2,2]` and `r wal.surplus.change.top3[3,2]` increased  by `r FunDec(wal.surplus.change.top3$change[2], dp.text)` % and `r FunDec(wal.surplus.change.top3$change[3], dp.text)` % respectively`r if(nrow(wal.surplus.excluded.top) > 0) paste0(" (excluding ", FunMultiText(wal.surplus.excluded.top$auth.name), " with a surplus under £30,000)")`. The biggest decreases were in `r wal.surplus.change.bottom2[2,2]` (`r FunDec(abs(wal.surplus.change.bottom2$change[2]), dp.text)` %), and `r wal.surplus.change.bottom2[1,2]` (`r FunDec(abs(wal.surplus.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(wal.surplus.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(wal.surplus.excluded.bottom$auth.name), " with a surplus under £30,000)")`.
+
+
+The largest increase of deficit was incurred by `r wal.deficit.change.top1[1,2]`, which increased their deficit by `r FunDec(wal.deficit.change.top1$change[1], dp.text)` %`r if(nrow(wal.deficit.excluded.top) > 0) paste0(" (excluding ", FunMultiText(wal.deficit.excluded.top$auth.name), " with a deficit under £30,000)")`. The biggest decrease was in `r wal.deficit.change.bottom1[1,2]` where the deficit fell by (`r FunDec(abs(wal.deficit.change.bottom1$change[1]), dp.text)` %)`r if(nrow(wal.deficit.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(wal.deficit.excluded.bottom$auth.name), " with a deficit under £30,000)")`.
 
 
 ```{r surplustab}
@@ -332,6 +337,7 @@ wal.surplus.formatted %>%
                 latex_options =c("HOLD_position", "striped", "repeat_headers"), 
                 font_size = 10) %>% 
   column_spec(1, width = "3.3cm") %>% 
+  column_spec(7, width = "1.7cm") %>% 
   row_spec(c(22, 24), hline_after = TRUE) %>% 
   footnote(symbol = "Where the change in surplus is actually a change in deficit, the values are in italics")
 

@@ -605,11 +605,13 @@ wal.surplus %>%
 wal.poz.surplus <- nrow(filter(wal.surplus, !!as.name(current.year) >= 0))
 
 
-# extract bottom LAs where deficit or surplus is under 30.000 (i.e. close to 0)
+# extract bottom LAs where "surplus" is under 30.000 (i.e. close to 0)
 wal.surplus %>% 
   mutate(change = 100 * (!!as.name(current.year)/!!as.name(current.year 
                                                            - 1) - 1)) %>% 
   filter(!is.nan(change) & !is.infinite(change)) %>% 
+  filter(!!as.name(current.year) >= 0,
+         !!as.name(current.year - 1) >= 0) %>% 
   arrange(desc(change)) %>% 
   rownames_to_column() %>% 
   mutate(rowname = as.numeric(rowname))-> wal.surplus.valid
@@ -633,6 +635,38 @@ wal.surplus.valid %>%
 wal.surplus.valid %>% 
   filter(rowname > min(wal.surplus.change.bottom2$rowname)) %>% 
   anti_join(wal.surplus.change.bottom2) -> wal.surplus.excluded.bottom
+
+
+# extract bottom LAs where deficit is under 30.000 (i.e. close to 0)
+wal.surplus %>% 
+  mutate(change = 100 * (!!as.name(current.year)/!!as.name(current.year 
+                                                           - 1) - 1)) %>% 
+  filter(!is.nan(change) & !is.infinite(change)) %>% 
+  filter(!!as.name(current.year) < 0,
+         !!as.name(current.year - 1) < 0) %>% 
+  arrange(desc(change)) %>% 
+  rownames_to_column() %>% 
+  mutate(rowname = as.numeric(rowname)) -> wal.deficit.valid
+
+# get top relevant surplus changes
+wal.deficit.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() == 1) -> wal.deficit.change.top1
+
+# find excluded rows in top of the table 
+wal.deficit.valid %>% 
+  filter(rowname <= max(wal.deficit.change.top1$rowname)) %>% 
+  anti_join(wal.deficit.change.top1) -> wal.deficit.excluded.top
+
+# get botto relevant deficit changes
+wal.deficit.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() == n() ) -> wal.deficit.change.bottom1
+
+# find excluded rows in bottom of the table 
+wal.deficit.valid %>% 
+  filter(rowname > min(wal.deficit.change.bottom1$rowname)) %>% 
+  anti_join(wal.deficit.change.bottom1) -> wal.deficit.excluded.bottom
 
 # format surplus table for tabulation
 wal.surplus.totals.table %>% 
