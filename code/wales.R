@@ -161,7 +161,7 @@ master %>%
             expend = sum(expend.total, na.rm = TRUE),
             surplus = sum(surplus.total, na.rm = TRUE)) %>% 
   bind_rows(group_by(., year) %>% 
-              summarise_at(vars(income:surplus), list(~sum)) %>% 
+              summarise_at(vars(income:surplus), sum) %>% 
               mutate(country = "Great Britain")) -> sub.gb.years
 
 # extract most recent year, calculate proportion and reshape
@@ -282,7 +282,7 @@ data %>%
   arrange(desc(.[[6]])) %>% 
   bind_rows(group_by(. ,auth.name) %>%
               ungroup() %>% 
-              summarise_at(vars(-auth.name), list(~sum)) %>%
+              summarise_at(vars(-auth.name), sum) %>%
               mutate(auth.name='Total')) %>% 
   mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
          change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100) %>% 
@@ -385,7 +385,7 @@ data %>%
   arrange(desc(.[[6]])) %>% 
   bind_rows(group_by(. ,auth.name) %>%
               ungroup() %>% 
-              summarise_at(vars(-auth.name), list(~sum)) %>%
+              summarise_at(vars(-auth.name), sum) %>%
               mutate(auth.name='Total')) %>% 
   mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
          change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100,
@@ -559,7 +559,7 @@ data %>%
   select(auth.name, year, surplus.total, transport.total) %>% 
   mutate(poz.neg = ifelse(surplus.total >= 0, "poz", "neg")) %>% 
   group_by(year, poz.neg) %>%
-  summarise_at(vars(-auth.name), list(~sum)) %>%
+  summarise_at(vars(-auth.name), sum) %>%
   gather(variable, value, -c(year, poz.neg)) %>%
   unite(temp, year, variable) %>%
   spread(temp, value) %>% 
@@ -570,7 +570,7 @@ data %>%
                  "transport.total")) %>% 
   bind_rows(group_by(., auth.name) %>% 
               ungroup() %>% 
-              summarise_at(vars(-auth.name), list(~sum)) %>%
+              summarise_at(vars(-auth.name), sum) %>%
               mutate(auth.name = c("Total"))) -> wal.surplus.totals
 
 # bind both tables together

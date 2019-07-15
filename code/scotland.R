@@ -211,7 +211,7 @@ master %>%
             expend = sum(expend.total, na.rm = TRUE),
             surplus = sum(surplus.total, na.rm = TRUE)) %>% 
   bind_rows(group_by(., year) %>% 
-              summarise_at(vars(income:surplus), list(~sum)) %>% 
+              summarise_at(vars(income:surplus), sum) %>% 
               mutate(country = "Great Britain")) -> sub.gb.years
 
 # extract most recent year, calculate proportion and reshape
@@ -331,7 +331,7 @@ data %>%
   filter(auth.name != "Scotland") %>% 
   bind_rows(group_by(. ,auth.name) %>%
               ungroup() %>% 
-              summarise_at(vars(-auth.name), list(~sum)) %>%
+              summarise_at(vars(-auth.name), sum) %>%
               mutate(auth.name='Total')) %>% 
   mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
          change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100) %>% 
@@ -535,7 +535,7 @@ data %>%
   arrange(desc(.[[6]])) %>% 
   bind_rows(group_by(. ,auth.name) %>%
               ungroup() %>% 
-              summarise_at(vars(-auth.name), list(~sum)) %>%
+              summarise_at(vars(-auth.name), sum) %>%
               mutate(auth.name='Total')) %>% 
   mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
          change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100,
@@ -705,7 +705,7 @@ data %>%
   select(auth.name, year, surplus.total, transport.total) %>% 
   mutate(poz.neg = ifelse(surplus.total >= 0, "poz", "neg")) %>% 
   group_by(year, poz.neg) %>%
-  summarise_at(vars(-auth.name), list(~sum)) %>% 
+  summarise_at(vars(-auth.name), sum) %>% 
   full_join(expand.grid(year = (current.year - 4):current.year,
                         poz.neg = c("poz", "neg", NA)) %>% 
               mutate(poz.neg = as.character(poz.neg))) %>% 
@@ -720,7 +720,7 @@ data %>%
                  "transport.total")) %>% 
   bind_rows(group_by(., auth.name) %>% 
               ungroup() %>% 
-              summarise_at(vars(-auth.name), list(~sum)) %>%
+              summarise_at(vars(-auth.name), sum) %>%
               mutate(auth.name = c("Total"))) -> sco.surplus.totals
 
 # bind both tables together

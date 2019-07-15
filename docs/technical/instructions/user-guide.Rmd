@@ -63,6 +63,9 @@ install.packages("viridis")
 install.packages("classInt")
 install.packages("colorspace")
 install.packages("rmarkdown")
+install.packages("bookdown")
+install.packages("here")
+install.packages("knitr")
 ```
 
 Additionally, for you to be able to compile to pdf, you **need to have LaTeX installed**. Now it seems that there is a way to do this simply using TinyTex https://yihui.name/tinytex/. I have not tried this, but the guy that wrote it is a legend and I would trust him with my life. 
