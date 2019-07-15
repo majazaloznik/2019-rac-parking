@@ -840,7 +840,7 @@ loaded via a namespace (and not attached):
 * OK, so both reports are working. and both have been updated to work with the new dplyr version or whichever package has changed in between. 
 * so this means I have to set up packrat for this to be reproducible, otherwise this will keep breaking...
 * commit
-
+* had to sort out ssh authentication. 
 
 
 
