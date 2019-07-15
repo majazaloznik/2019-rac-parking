@@ -5,6 +5,7 @@ output:
   pdf_document: default
 ---
 
+
 # Saturday 9.3.2019
 
 * Initialised public github repo.
