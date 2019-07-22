@@ -840,7 +840,16 @@ loaded via a namespace (and not attached):
 * OK, so both reports are working. and both have been updated to work with the new dplyr version or whichever package has changed in between. 
 * so this means I have to set up packrat for this to be reproducible, otherwise this will keep breaking...
 * commit
-* had to sort out ssh authentication. finally fixed. 
+* had to sort out ssh authentication. still doens't work. or rather works only sometimes!?
+
+# Tuesday 16.7.2019
+
+OK, let's go through the comments!
+And set up packrat
+
+* Packrat didn't work - because of V8 not working. WHy did i need V8? 
+* also ssh only works from shell, not from Rstudio. Asked question: https://community.rstudio.com/t/ssh-authentication-not-working-with-git/35456, no answer a week later..
+
 
 
 
