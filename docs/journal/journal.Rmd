@@ -849,8 +849,9 @@ And set up packrat
 
 * Packrat didn't work - because of V8 not working. WHy did i need V8? 
 * also ssh only works from shell, not from Rstudio. Asked question: https://community.rstudio.com/t/ssh-authentication-not-working-with-git/35456, no answer a week later..
-
-
+* Instead I'm pushing manually: `git push -u origin master`
+* ToDo: look out, there seem to be some log files being created when compiling to latex, not sure why?
+* 
 
 
 
