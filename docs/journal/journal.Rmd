@@ -867,6 +867,7 @@ And set up packrat
 * very annoyingly at the end of initialising packrat you get the message "initialization complete! there were 50 or more warnings.." but then it restarts the R session, which means you cannot see the warnings.. So i don't knwo what it is. ToDo open issue?
 
 
+* annoyingly packrat seems to knit all the rmd files in the project, which also produces a bunch of log files that i do not need.. 
 
 
 
