@@ -853,6 +853,13 @@ And set up packrat
 * ToDo: look out, there seem to be some log files being created when compiling to latex, not sure why?
 * 
 
+# Tuesday 30.7.2019
+
+* OK, so still no good answer for gettting ssh-agent to work through |Rstudio, continue pushing manually. 
+* Next in order to get packrat to work have to get V8 to work, but that seems to be very tricky on arch [[https://github.com/jeroen/V8/issues/66]]. But I can avoid this if i avoid diagrammeRsvg. Can I do this? 
+* Only if I rewrite `scheme.R` in `docs/technical/instructions` to get the png out of the dot in a different way. 
+* use the system command `dot` instead. careful though, this needs the quotation marks to be the double ones, but replaced all and now works perfectly. 
+* OK, so this removes the need for `DiagrammeRsvg`, so should allow me to use packrat properly. 
 
 
 

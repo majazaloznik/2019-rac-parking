@@ -1,9 +1,4 @@
-################################################################################
-##                        DATA MANAGEMENT PIPELINE SCHEME                     ##
-################################################################################
 
-# DIAGRAM
-diagram <- '
 digraph boxes_and_circles {
 
 # a "graph" statement
@@ -63,12 +58,4 @@ node [shape = circle, color =  pink]
 "/updating-scripts/xxx.R" -> "sco|wal|eng.bib.rds"
 "sco|wal|eng.bib.rds" ->  "/report-rmds/xxx.Rmd" 
 "/updating-scripts/xxx.R" -> "/data/01-raw/"
-}'
-
-# write the diagram to a text file
-fileConn<-file("docs/technical/instructions/chart.dot")
-writeLines(diagram, fileConn)
-close(fileConn)
-
-# turn the diagram into a png image by running a system command:
-system("dot -Tpng docs/technical/instructions/chart.dot -odocs/technical/instructions/chart.png")
+}
