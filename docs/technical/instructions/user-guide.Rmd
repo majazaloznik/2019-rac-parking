@@ -15,10 +15,6 @@ header-includes:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning= FALSE, message = FALSE)
 # PRELIMINARIES
-suppressWarnings(suppressMessages(library(DiagrammeR)))
-suppressWarnings(suppressMessages(library(DiagrammeRsvg)))
-suppressWarnings(suppressMessages(library(rsvg)))
-suppressWarnings(suppressMessages(library(kableExtra)))
 ```
 
 # Intro

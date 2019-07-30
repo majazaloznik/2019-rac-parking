@@ -855,11 +855,16 @@ And set up packrat
 
 # Tuesday 30.7.2019
 
-* OK, so still no good answer for gettting ssh-agent to work through |Rstudio, continue pushing manually. 
+* OK, so still no good answer for gettting ssh-agent to work through Rstudio, continue pushing manually.
 * Next in order to get packrat to work have to get V8 to work, but that seems to be very tricky on arch [[https://github.com/jeroen/V8/issues/66]]. But I can avoid this if i avoid diagrammeRsvg. Can I do this? 
 * Only if I rewrite `scheme.R` in `docs/technical/instructions` to get the png out of the dot in a different way. 
 * use the system command `dot` instead. careful though, this needs the quotation marks to be the double ones, but replaced all and now works perfectly. 
-* OK, so this removes the need for `DiagrammeRsvg`, so should allow me to use packrat properly. 
+* OK, so this removes the need for `DiagrammeRsvg`, so should allow me to use packrat properly. * ok, let's try initialising packrat again
+* ugh, this is weird, it is still listing diagrammeR and Rsvg, i don't know why though? Ach, they were mistekenly loaded in the instructions. fixed
+* packrat initialised
+* change packrat.opts option: `vcs.ignore.src: TRUE` so that the actual package sources can be ignored by github. 
+* this means that if cloned, oackrat will cause it to download any packages required from cran instead of having them in the github repo. which is fine. 
+* very annoyingly at the end of initialising packrat you get the message "initialization complete! there were 50 or more warnings.." but then it restarts the R session, which means you cannot see the warnings.. So i don't knwo what it is. ToDo open issue?
 
 
 
