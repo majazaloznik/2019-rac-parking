@@ -382,6 +382,9 @@ FunMap <- function(table, which = 1, shp, country = "^S", dir = 1, factor = 1) {
   # plot map
   plot(map.data["change"], main = "", col = pal[[2]], 
        border = "black", lwd = 0.3)
+   # plot copyright 
+  text(0.75,-0.32,"Contains public sector information licensed\n under the Open Government Licence v3.0.", 
+       cex = 0.4, xpd = TRUE)
   
   # plot legend.
   FunScaleLegend(pal[[1]], full[!is.na(full)])

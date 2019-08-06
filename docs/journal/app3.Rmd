@@ -1,7 +1,7 @@
 
 ```{r, echo = FALSE}
 library(kableExtra)
-scotland.i.e. <- readRDS(here::here("data/01-raw/orig.sco.meta.i.e.17.rds"))
+scotland.i.e. <- readRDS(here::here("data/01-raw/orig.sco.meta.i.e.rds"))
 kable(scotland.i.e., "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)
 ```
@@ -20,7 +20,7 @@ kable(scotland.i.e., "latex", booktabs = T, escape = F) %>%
 #### DPE and PNC data
 
 ```{r, echo = FALSE}
-scotland.pnc <- readRDS(here::here("data/01-raw/orig.sco.meta.pdf.17.rds"))
+scotland.pnc <- readRDS(here::here("data/01-raw/orig.sco.meta.pdf.rds"))
 
 kable(scotland.pnc, "latex", booktabs = T, escape = F) %>%
   collapse_rows(columns = 1)

@@ -1,0 +1,90 @@
+---
+title: "RAC Parking Report Automation---Responses to Scotland comments - round 1"
+author: mz
+date: 6.8..2019
+output:
+  pdf_document: default
+---
+
+**Page 1**
+
+1. England and Wales data is used for some comparisons, e.g. Table 4 compares changes across Great Britain. *I have added the text " which is used for comparison" to make it clearer*
+
+2. Scotland DPE data comes from the Transport for Scotland DPE report pdfs, in this case from Table 1 on page 4 of the pdf you can find in `data/raw/orig.sco-16-17-pcn.pdf`. All I can do is extract the data in the table: which councils are in which column.
+
+* The "December" is red, because the report happened to be published in December in 2017, but was published in November in 2018.. If it is easier for you to make the change manually than it is for me to automate it, I have left the text in red. The alternative is to remove the month completely.
+
+* The text "one of whicn–Midlothian–introduced DPE in January 2018" is also red, because it is not possible to extract it from the table, but in the DPE report, but has to be inferred from the footnotes or text. Again, not somehting I can automate. I have left it in because it was in Leibling's reports. You can continue to update it manually, or you can remove it completely. 
+
+* Found an error though, it should read 2017, not 2016, fixed. 
+
+**Page 2**
+
+3. *Total transport* This is the total transport costs (the last row in table 2), so yes, the total net expenditures for transport. I have changed the text to read *Total transport costs have*. 
+
+4. *England comparison* - the data sources are mentioned at the start of the report, it would be completely unreadable if we referenced each source at every point in the text where it is used? 
+
+* I'm not sure I understand what you mean by the number being oddly specific? Do you not like that it has a decimal point combined with the word "around"? I just copied the text from the Wales reports. Would you prefer to loose the "around" or loose the decimal point? Or was there something else. 
+
+**Page 4**
+
+5. *map copyright notice*. OK, so I can put the copyright notice in the actual map ("contains public sector information licenced under the OGL licence. v3") but not the actual reference (e.g. ONS(2017a)), because the reference management happens when the pdf is compiled, so I cannot know the correct reference before then. But I have instead added the reference to the figure caption, and have done this for all the maps.
+
+**Page 6**
+6. OK
+
+**Page 7**
+7. OK
+
+**Page 8**
+8. OK. (ALso deleted the next sentence "These figures are reduced by 50% for prompt payment and increased by 50% for slow payment. ", which doesn't make sense on its own.
+
+9. *Weirdness* OK
+
+**Page 10**
+
+10. *about half the equivalent proportion" - why is this not automatable?* Well "half" just happens to be a nice ratio, but essentially you would like **any** ratio to be expressed as a simple ratio, which is not going to be easy most of the time. Because presumably you don't want the text to read "which is about seven seventeenths of the equivalent..". So technically it is automatable, if you want to give me a list of fractions that are allowed and I can automate it to find the closest one. And additionally automate whether it is "about", "just under", "just over", the nice fraction. It is doable, but it will take a disporoportional amount of code relative to its impact. Instead the text could simply say "they earn XX % from PCNs, compared to YZ% for London.". Or you can manually enter a nice ratio if it exists. 
+
+11. *delete sentence* OK
+
+12. *delete page number* why do you want to delete the page number? I'm not sure that's very straightforward, so before i go down a rabithole just want to make sure that's what you meant?
+
+**Page 11 and 12**
+
+13. *Fig caption year reference*
+
+**Page 14**
+
+14. *delete* OK
+
+15. *automatibility* Again, it can theoretically be automated, but seems like the amount of work that would be required for one sentence is disproportionately large. You have to acount for all the possibilities.. And then also decide which ones are more interesting: e.g. What do you do if e.g. 12 of 15 councils are in the 60-90% range, but a different 12 of 15 councils are in the 50-80% range... Humans are great at seeing a pattern worth reporting, but stupid algorithms not so much... But can discuss further if you like. 
+
+16. *italicising cells with low incomes* - sure thing! would you like to pick a threshold where to do this?
+
+**Page 20**
+
+17. *italic*OK
+
+18. *delete, delete*, OK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -37,7 +37,7 @@ nocite: |
 
 \renewcommand{\arraystretch}{1.2}
 
-This note covers parking finances for the 32 local authorities in Scotland. They are required to submit details of their finances to the Scottish Government annually in a standard format. The figures are normally published in March, nearly a year after the financial year end. This note looks at the section on parking income and expenditure for `r FunFisc(4)` to `r FunFisc()` and is based primarily on Scottish Local Government Finance Statistics data (`r sco.bib.main.i.e`), as well as data reported by English and Welsh Local Government authorities, all of the sources of which are listed in the references[^1]. 
+This note covers parking finances for the 32 local authorities in Scotland. They are required to submit details of their finances to the Scottish Government annually in a standard format. The figures are normally published in March, nearly a year after the financial year end. This note looks at the section on parking income and expenditure for `r FunFisc(4)` to `r FunFisc()` and is based primarily on Scottish Local Government Finance Statistics data (`r sco.bib.main.i.e`), as well as data reported by English and Welsh Local Government authorities which is used for comparison, all of the sources of which are listed in the references[^1]. 
 
 [^1]: Contains public sector information licensed under the [Open Government Licence v3.0](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). 
 
@@ -48,9 +48,9 @@ The Transport Scotland report deals with the statutory returns which are require
 
 # Introduction
 
-Table 1 shows that as of \color{red}December \color{black} `r current.year`, `r nrow(sco.dpe)` councils were operating DPE (using local traffic wardens and civil enforcement), while two more were actively working towards DPE, \color{red}one of which--Midlothian--introduced DPE in January 2018. \color{black} The remaining ten authorities were not currently considering DPE, but still use fixed penalty notices issued instead of fines enforced by the Justice of the Peace courts. See Figure \@ref(fig:map1) for the map[^2].
+Table 1 shows that as of \color{red}December \color{black} `r current.year+1`, `r nrow(sco.dpe)` councils were operating DPE (using local traffic wardens and civil enforcement), while two more were actively working towards DPE, \color{red}one of which--Midlothian--introduced DPE in January 2018. \color{black} The remaining ten authorities were not currently considering DPE, but still use fixed penalty notices issued instead of fines enforced by the Justice of the Peace courts. See Figure \@ref(fig:map1) for the map[^2].
 
-[^2]:  Boundary data for this and all furhter maps is from `r sco.bib.map`. Contains public sector information licensed under the [Open Government Licence v3.0.](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+[^2]:  Boundary data for this and all further maps is from `r sco.bib.map`. Contains public sector information licensed under the [Open Government Licence v3.0.](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
 
 Police Scotland no longer enforces parking offences but now deals only with dangerous parking (e.g. on pedestrian crossings) by local arrangement. Several of the authorities not using DPE have rejected it because of the cost of setting it up and running it for the small number of parking offences. 
 
@@ -69,15 +69,20 @@ sco.dpe %>%
                 latex_options =c("HOLD_position", "striped"), 
                 font_size = 10) 
 ```
+ 
+(ref:foo) (Boundary data for this map is from `r sco.bib.map`)
 
 
-```{r map1, fig.height = 4, fig.cap = "Map showing implementation of decriminalised parking in Scotland"}
+```{r map1, fig.height = 4, fig.cap = "Map showing implementation of decriminalised parking in Scotland (ref:foo)"}
 # plot DPE status map
 plot(sco.map["dpe.status"], main = "", pal = viridis(3),
 key.pos = NULL, border = "black", lwd = 0.3)
+text(0.75,-0.32,"Contains public sector information licensed\n under the Open Government Licence v3.0.", cex = 0.4, xpd = TRUE)
 legend("topleft", fill = rev(viridis(3)),
 legend = c( "DPE","No DPE", "DPE being introduced"), bty = "n",
 cex = 0.8)
+
+
 ```
 
 # Summary 
@@ -86,7 +91,7 @@ Table \@ref(tab:sumtab) and Figure \@ref(fig:fig1) show the summary accounts for
 `r ifelse(sco.summary$change[1] < -0.05, paste("fallen by", FunDec(-sco.summary$change[1], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[1], dp.text), "%"),"stayed approximately the same"))`, the expenditure has 
 `r ifelse(sco.summary$change[2] < -0.05, paste("fallen by", FunDec(-sco.summary$change[2], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[2], dp.text), "%"),"stayed approximately the same"))`, and the surplus has
 `r ifelse(sco.summary$change[3] < -0.05, paste("fallen by", FunDec(-sco.summary$change[3], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[3], dp.text), "%"),"stayed approximately the same"))`
-compared to the previous fiscal year. Total transport has
+compared to the previous fiscal year. Total transport costs have
 `r ifelse(sco.summary$change[4] < -0.05, paste("fallen by", FunDec(-sco.summary$change[4], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[4], dp.text), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(FunDec(sco.summary[5, 6], dp.text), "%")` of transport costs. Parking makes a 
 `r ifelse(sco.summary[5, 6] < eng.trans - 0.05 , "smaller", ifelse(sco.summary[5, 6] > eng.trans + 0.05,  "larger","similar"))` contribution to overall transport expenditure in Scotland compared with England where it is around `r FunDec(eng.trans, dp.text)` % of total transport.
 
@@ -176,7 +181,7 @@ sum.gb.formatted %>%
   row_spec(c(1, 4), hline_after = TRUE)
 ```
 
-Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for  for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and `r FunFisc(1)` with the average annual change over the `r FunN2W(current.year - ref.year)`-year period from `r FunFisc(current.year-ref.year)`.
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and `r FunFisc(1)` with the average annual change over the `r FunN2W(current.year - ref.year)`-year period from `r FunFisc(current.year-ref.year)`.
 
 On average, parking surpluses in Great Britain have risen by about `r FunDec(sum.gb.change$surplus.change.4[sum.gb.change$country == "Great Britain"], dp.text)` % annually over the past `r FunN2W(current.year - ref.year)` years compared with `r FunDec(rpi.annual, dp.text)` % annually for the Retail Prices Index during the same period (`r sco.bib.rpi`).
 
@@ -206,7 +211,7 @@ sum.gb.change.tab.formatted  %>%
 
 #  Income
 
-Total council parking income from all sources in `r FunFisc()` was £`r FunDec(sco.summary[1, 6], dp.text)` million, `r FunDec(sco.summary$change[1], dp.text)` % `r ifelse (sco.summary$change[1] > 0, "higher", "lower")` than `r FunFisc(1)`. Note that this includes meter and penalty income for on- and off-street parking, but does not include income received by private parking companies.  Table \@ref(tab:incometab) ranks the Scottish councils in terms of parking income. 
+Total council parking income from all sources in Scotland for `r FunFisc()` was £`r FunDec(sco.summary[1, 6], dp.text)` million, `r FunDec(sco.summary$change[1], dp.text)` % `r ifelse (sco.summary$change[1] > 0, "higher", "lower")` than `r FunFisc(1)`. Note that this includes meter and penalty income for on- and off-street parking, but does not include income received by private parking companies.  Table \@ref(tab:incometab) ranks the Scottish councils in terms of parking income. 
 
 `r FunFirstup(FunN2W(income.bin[2]))` councils increased their income over the past year and `r FunN2W(income.bin[1])` decreased their income. `r if (sco.no.income > 0 ) {paste0(" ", FunFirstup(FunN2W(sco.no.income)), " councils did not show any income in ", FunFisc(), ".")}` The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:incomefig). 
 
@@ -240,14 +245,14 @@ sco.income.formatted %>%
   row_spec(32, hline_after = TRUE)
 ```
 
-```{r incomefig, fig.cap = "Map of change in parking income since previous fiscal year"}
+```{r incomefig, fig.cap = paste("Map of change in parking income from ", FunFisc(1), "to",  FunFisc(), " (ref:foo)")}
 # map change in income from last year
 FunMap(sco.income, which = 1, shp = uc, country = "^S",  dir = 1)
 ```
 
-Table \@ref(tab:pcntab) shows the number of PCNs issued council by council in Scotland for the years `r FunFisc(x)` to `r FunFisc()`, with the average income per PCN for  `r FunFisc()`. The total number of PCNs has `r ifelse(sco.pcn.numbers.annual > 0, "increased", "decreased")` by around `r FunDec(sco.pcn.numbers.annual, dp.text)` % a year on average. \color{red}The penalty for parking can be £40 or £50 for a minor offence such as overstaying at a meter, or £60 for a more serious offence such as parking where it is not allowed. \color{black} These figures are reduced by 50% for prompt payment and increased by 50% for slow payment. The average recovery per PCN was £`r FunDec(sco.pcn.tot.average, dp.text)` in `r FunFisc()`.
+Table \@ref(tab:pcntab) shows the number of PCNs issued council by council in Scotland for the years `r FunFisc(x)` to `r FunFisc()`, with the average income per PCN for  `r FunFisc()`. The total number of PCNs has `r ifelse(sco.pcn.numbers.annual > 0, "increased", "decreased")` by around `r FunDec(sco.pcn.numbers.annual, dp.text)` % a year on average. The average recovery per PCN was £`r FunDec(sco.pcn.tot.average, dp.text)` in `r FunFisc()`.
 
-```{r incomefig4, fig.cap = "Map of average annual change in parking income over the past four years", fig.height = 4}
+```{r incomefig4, fig.cap = paste("Map of average annual change in parking income over the past four years from", FunFisc(4), "to", FunFisc(), "(ref:foo)"), fig.height = 4}
 # map expenditure change
 FunMap(sco.income, which = 4, shp = uc, country = "^S",dir = 1)
 ```
@@ -270,7 +275,7 @@ sco.pcn.numbers.formatted %>%
          col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz.pcn, 
                        paste0("£/PCN (", FunFisc(), ")"))) %>% 
   kable_styling(full_width = TRUE, 
-                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                latex_options =c("HOLD_position", "striped", "repeat_header"),
                 font_size = 10) %>% 
   column_spec(1, width = "3.7cm") %>% 
   row_spec(nrow(sco.pcn.numbers)- 1, hline_after = TRUE)
@@ -296,13 +301,11 @@ sco.pcn.prop.formatted %>%
   row_spec(nrow(sco.pcn.numbers)-1, hline_after = TRUE)
 ```
 
-Scottish councils with DPE earn `r FunDec(sco.pcn.prop[nrow(sco.pcn.numbers), ncol(sco.pcn.prop)], dp.text)` % of their income from PCNs, which is \color{red}about half of the equivalent proportions for London and for the rest of England \color{black} (see Table \@ref(tab:pcnprop)). \color{red} It would appear that either Scottish drivers are more law-abiding, or the enforcement regime in Scotland is not as rigorous.\color{black}
-
-\newpage
+Scottish councils with DPE earn `r FunDec(sco.pcn.prop[nrow(sco.pcn.numbers), ncol(sco.pcn.prop)], dp.text)` % of their income from PCNs, which is \color{red}about half of the equivalent proportions for London and for the rest of England \color{black} (see Table \@ref(tab:pcnprop)). 
 
 # Expenditure
 
-```{r expendfig, fig.cap = "Map of change in parking expenditure since previous fiscal year"}
+```{r expendfig, fig.cap = paste("Map of change in parking expenditure from", FunFisc(1), "to",  FunFisc(), " (ref:foo)")}
 # map expenditure change
 FunMap(sco.expend, which = 1, shp = uc,  country = "^S", dir = -1)
 ```
@@ -345,12 +348,12 @@ sco.expend.formatted %>%
 ```
 
 
-```{r expendfig4, fig.cap = "Map of average annual change in parking expenditure over the past four years", fig.height = 4}
+```{r expendfig4, fig.cap = paste("Map of average annual change in parking expenditure over the past four years from", FunFisc(4), "to",  FunFisc(),  "(ref:foo)"), fig.height = 4}
 # map expenditure change
 FunMap(sco.expend, which = 4, shp = uc, country = "^S",dir = -1)
 ```
 
-Table \@ref(tab:expendprop) shows the proportion of income taken up by expenditure over the previous four years. Across Scotland it was `r FunDec(sco.expend.of.income[33,6], dp.text)` % compared to `r FunDec(sco.expend.of.income[33,5], dp.text)` % in the previous year, suggesting `r ifelse(sco.expend.of.income[33,6] < sco.expend.of.income[33,5], "improving", "declining")` efficiency in operations. 
+Table \@ref(tab:expendprop) shows the proportion of income taken up by expenditure over the previous four years. Across Scotland it was `r FunDec(sco.expend.of.income[33,6], dp.text)` % compared to `r FunDec(sco.expend.of.income[33,5], dp.text)` % in the previous year.
 
 Edinburgh’s expenditure was `r FunDec(sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",6], dp.text)` % having `r ifelse(sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",6] < sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",5], "fallen", "risen")` since last year, and Glasgow's has `r ifelse(sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",6] < sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",5], "fallen", "risen")` to `r FunDec(sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",6], dp.text)` %. \color{red} Most of the medium-sized councils spend 50–90% of their income on parking management, which includes enforcement. \color{black} Care should be taken in interpreting the percentages towards the bottom of the table, as the very low parking incomes can lead to extreme values which are less meaningful.   
 
@@ -420,11 +423,11 @@ sco.surplus.totals.table.formatted %>%
 \newpage
 # Comparison between Local Government Finance figures and Transport Scotland decriminalised parking enforcement figures
 
-As mentioned in the introduction, there are now two sources of information from Scottish local authorities giving the income, expenditure and surpluses for parking: the Local Government Finance (LGF) figures, which cover all the parking activities; and the Transport Scotland figures (for those authorities operating DPE), which cover only the statutory elements of on-street parking and penalties, and do not include council-run off-street parking. Table 11 compares the two sets of figures. The differences between the two sources may not be due solely to off-street income and expenditure only being included in the LGF figures as it is possible that councils use different figures for overheads and other costs in reporting the two sets of figures.
+As mentioned in the introduction, there are now two sources of information from Scottish local authorities giving the income, expenditure and surpluses for parking: the Local Government Finance (LGF) figures, which cover all the parking activities; and the Transport Scotland figures (for those authorities operating DPE), which cover only the statutory elements of on-street parking and penalties, and do not include council-run off-street parking. Table 11 compares the two sets of figures. *The differences between the two sources may not be due solely to off-street income and expenditure only being included in the LGF figures as it is possible that councils use different figures for overheads and other costs in reporting the two sets of figures.*
 
-The biggest difference in reported income is in `r sco.compare.income.ht[1,1]` where the LGF figures show £`r FunDec(sco.compare.income.ht[1,2]/1000, dp.text)` million more income than the Transport Scotland set. Its expenditure is reported by LGF as £`r FunDec(sco.compare.income.ht[1,3]/1000, dp.text)` million `r ifelse(sco.compare.income.ht[1,3] > 0, "higher", "lower")`, making the difference in the two surpluses £`r FunDec(sco.compare.income.ht[1,4]/1000, dp.text)` million. \color{red}Glasgow’s off-street car parks and on-street enforcement have been run by City Parking (Glasgow) LLP, a wholly-owned subsidiary of Glasgow Council since 2007. Its accounts for 2016-17 show income of £15.2 million, expenditure of £13.0 million and an operating profit of £2.8 million which almost exactly matches the difference. \color{black}
+The biggest difference in reported income is in `r sco.compare.income.ht[1,1]` where the LGF figures show £`r FunDec(sco.compare.income.ht[1,2]/1000, dp.text)` million more income than the Transport Scotland set. Its expenditure is reported by LGF as £`r FunDec(sco.compare.income.ht[1,3]/1000, dp.text)` million `r ifelse(sco.compare.income.ht[1,3] > 0, "higher", "lower")`, making the difference in the two surpluses £`r FunDec(sco.compare.income.ht[1,4]/1000, dp.text)` million. \color{red}Glasgow’s off-street car parks and on-street enforcement have been run by City Parking (Glasgow) LLP, a wholly-owned subsidiary of Glasgow Council since 2007. \color{black}
 
-In `r sco.compare.income.ht[2,1]`, the LGF income is £`r FunDec(sco.compare.income.ht[2,2]/1000, dp.text)` million higher, \color{red}but Edinburgh does not operate any off-street carparks as they are all commercially run.\color{black}. On the other hand `r sco.compare.income.ht[4,1]` has LGF income £`r FunDec(abs(sco.compare.income.ht[4,2])/1000, dp.text)` million less than the DPE income, and `r sco.compare.income.ht[3,1]` has LGF income reported to be £`r FunDec(abs(sco.compare.income.ht[3,2])/1000, dp.text)` million less. *NB: Aberdeen is only the biggest negative difference here because its LGF income is currently zero!* 
+In `r sco.compare.income.ht[2,1]`, the LGF income is £`r FunDec(sco.compare.income.ht[2,2]/1000, dp.text)` million higher. On the other hand `r sco.compare.income.ht[4,1]` has LGF income £`r FunDec(abs(sco.compare.income.ht[4,2])/1000, dp.text)` million less than the DPE income, and `r sco.compare.income.ht[3,1]` has LGF income reported to be £`r FunDec(abs(sco.compare.income.ht[3,2])/1000, dp.text)` million less. *NB: Aberdeen is only the biggest negative difference here because its LGF income is currently zero!* 
   
 \newpage
 \blandscape

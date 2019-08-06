@@ -28,7 +28,7 @@ add.new.data <- FALSE
 
 # If you have already produced an .Rmd file by running this script, and have 
 # made changes to the .Rmd file and just want to recompile it switch to TRUE.
-# If you want to produce a fresh copy of the template for this eyar switch
+# If you want to produce a fresh copy of the template for this year switch
 # to FALSE
 recompile.rmd <- FALSE
 
