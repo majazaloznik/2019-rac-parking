@@ -883,7 +883,18 @@ And set up packrat
 * Seems to work OK, add to all maps
 * What is the dea with the "label mutliply defined warnings?" they are not mulitply defined. And only some of them cause an issue? But it's only a warning the pdf is fine!? what gives?
 
-* There were weird symbols in front of the pound sign in one of the tables. They went away, but not sure why?
+* There were weird symbols in front of the pound sign in one of the tables. They went away, but not sure why? 
+* Todo: mention this to Ivo, the weird sign could be an artefact on his computer, hopefully packrat will solve this. 
+* Scotland done
+
+# Wednesday 7.8.2019
+
+* Start Wales
+* in all the maps the legend labels get slightly clipped...
+* TODO: table 3, annual changes only works if all countries have data for current year. need to fix this.. 
+
+# Thursday 8.8.2019
+
 
 
 

@@ -1,0 +1,36 @@
+---
+title: "RAC Parking Report Automation---Responses to Wales comments - round 1"
+author: mz
+date: 7.8.2019
+output:
+  pdf_document: default
+---
+  
+**Page 1**
+
+1. *deletions* OK
+
+2. *cost = expenditure* OK, changed in Scotland as well. 
+
+**Page 2**
+
+3. *transport* assuming this is the same as the previous? changed in Scotland as well.
+
+4. *fiscal year in table* the reason this is there is that this table picks up the most recent data available for each of the countries, which may not be the same year for all the countires. In this particular case it is though, so it does look a bit silly. But if you produce the 2017-18 Wales report, this row is useful to tell you the data for Scotland are for 2016-17. Let me know if you want to change it still.
+
+**Page 3**
+
+5. *Copyright data on maps * OK, all maps.
+
+6. *fisc. year in caption* OK
+
+**Page 4**
+
+7. *Top three councils* OK, changed, also in Scotland. 
+
+**Page 6**
+
+8. *deletions* OK
+
+9. bolded numbers in table removed. 
+

@@ -122,10 +122,10 @@ wal.summary %>%
   mutate(change = ifelse(rowname == "surplus.of.transport", NA, 
                          paste(FunDec(change, dp.tables), "\\%"))) %>% 
   mutate(rowname = c("Income", "Expenditure", "Surplus", "Net expenditure", 
-                     "Parking surplus as percentage of all transport costs")) %>% 
+                     "Parking surplus as percentage of net transport expenditure")) %>% 
   mutate_at(vars(-rowname, -change), function(x) FunDec(x, dp.tables)) %>% 
   mutate_at(vars(-rowname, -change), function(x) ifelse(.$rowname == "Parking surplus as 
-                                            percentage of all transport costs", 
+                                            percentage of net transport expenditure", 
                                             paste0(x, " \\%"), x)) %>%
   mutate(collapsed = c(rep("Parking", 3), "Total transport", "")) %>% 
   select(collapsed, rowname:change) -> wal.summary.formatted
@@ -520,7 +520,7 @@ wal.expend.of.income %>%
   mutate_at(vars(-auth.name), function(x) ifelse(is.infinite(x), NA, x)) %>% 
   mutate_at(vars(-auth.name), function(x) { 
     cell_spec(ifelse(is.na(x), "", paste(FunDec(x, dp.tables), "%")), "latex", 
-              bold = T, background  = spec_color(1/x, begin = 0.3,
+              bold = F, background  = spec_color(1/x, begin = 0.3,
                                                  end = 0.9, option = "D", 
                                                  na_color = "#FFFFFF"))}) ->
   wal.expend.of.income.formatted

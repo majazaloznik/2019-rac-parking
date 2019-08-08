@@ -181,11 +181,11 @@ sco.summary %>%
   mutate(change = ifelse(rowname == "surplus.of.transport", NA, 
                          paste(FunDec(change, dp.tables), "\\%"))) %>% 
   mutate(rowname = c("Income", "Expenditure", "Surplus", "Net expenditure", 
-                     "Parking surplus as percentage of all transport costs"))  %>% 
+                     "Parking surplus as percentage of net transport expenditure"))  %>% 
   mutate_at(vars(-rowname, -change), function(x) FunDec(x, dp.tables)) %>% 
   mutate_at(vars(-rowname, -change), function(x) ifelse(.$rowname == "Parking surplus 
-                                            as percentage of all transport 
-                                            costs", paste0(x, " \\%"), x)) %>%
+                                            as percentage of net transport 
+                                            expenditure", paste0(x, " \\%"), x)) %>%
   mutate(collapsed = c(rep("Parking", 3), "Total transport", "")) %>% 
   select(collapsed, rowname:change) -> sco.summary.formatted
 

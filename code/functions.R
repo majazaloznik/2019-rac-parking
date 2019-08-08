@@ -353,7 +353,7 @@ FunScaleLegend <- function(col, data){
        frame.plot = FALSE)
   x <- axis(side = 4, las = 2, tick =FALSE,  at = NULL, labels =  NA)
   axis(side = 4, las = 2, tick = FALSE, at = x, labels = 
-         paste0(x, " %"), cex.axis = 0.7, line = -3)
+         paste0(x, " %"), cex.axis = 0.5, line = -3)
   par <- opar
 }
 
@@ -382,9 +382,12 @@ FunMap <- function(table, which = 1, shp, country = "^S", dir = 1, factor = 1) {
   # plot map
   plot(map.data["change"], main = "", col = pal[[2]], 
        border = "black", lwd = 0.3)
-   # plot copyright 
-  text(0.75,-0.32,"Contains public sector information licensed\n under the Open Government Licence v3.0.", 
-       cex = 0.4, xpd = TRUE)
+  # plot copyright 
+  if (country == "^S") {
+    text(0.75,-0.32,"Contains public sector information licensed\n under the Open Government Licence v3.0.", 
+         cex = 0.4, xpd = TRUE)} else {
+           text(0.85,-0.32,"Contains public sector information licensed\n under the Open Government Licence v3.0.", 
+                cex = 0.4, xpd = TRUE)      }
   
   # plot legend.
   FunScaleLegend(pal[[1]], full[!is.na(full)])

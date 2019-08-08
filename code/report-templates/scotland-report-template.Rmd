@@ -91,8 +91,8 @@ Table \@ref(tab:sumtab) and Figure \@ref(fig:fig1) show the summary accounts for
 `r ifelse(sco.summary$change[1] < -0.05, paste("fallen by", FunDec(-sco.summary$change[1], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[1], dp.text), "%"),"stayed approximately the same"))`, the expenditure has 
 `r ifelse(sco.summary$change[2] < -0.05, paste("fallen by", FunDec(-sco.summary$change[2], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[2], dp.text), "%"),"stayed approximately the same"))`, and the surplus has
 `r ifelse(sco.summary$change[3] < -0.05, paste("fallen by", FunDec(-sco.summary$change[3], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[3], dp.text), "%"),"stayed approximately the same"))`
-compared to the previous fiscal year. Total transport costs have
-`r ifelse(sco.summary$change[4] < -0.05, paste("fallen by", FunDec(-sco.summary$change[4], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[4], dp.text), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(FunDec(sco.summary[5, 6], dp.text), "%")` of transport costs. Parking makes a 
+compared to the previous fiscal year. Total transport expenditures have
+`r ifelse(sco.summary$change[4] < -0.05, paste("fallen by", FunDec(-sco.summary$change[4], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[4], dp.text), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(FunDec(sco.summary[5, 6], dp.text), "%")` of net transport expenditure. Parking makes a 
 `r ifelse(sco.summary[5, 6] < eng.trans - 0.05 , "smaller", ifelse(sco.summary[5, 6] > eng.trans + 0.05,  "larger","similar"))` contribution to overall transport expenditure in Scotland compared with England where it is around `r FunDec(eng.trans, dp.text)` % of total transport.
 
 ```{r sumtab, echo = FALSE, message = FALSE, warning = FALSE}
@@ -217,8 +217,9 @@ Total council parking income from all sources in Scotland for `r FunFisc()` was 
 
 The top three Scottish cities by income were `r paste0(names(sco.income.top3)[1], ", ", names(sco.income.top3)[2], ", and ", names(sco.income.top3)[3])`, and between them accounted for `r FunDec(sco.income.top3[1], dp.text)` % of parking income. 
 
-`r sco.income.change.top3[1,2]` increased their income by `r FunDec(sco.income.change.top3$change[1], dp.text)` %
-while `r sco.income.change.top3[2,2]` and `r sco.income.change.top3[3,2]` increased  by `r FunDec(sco.income.change.top3$change[2], dp.text)` % and `r FunDec(sco.income.change.top3$change[3], dp.text)` % respectively`r if(nrow(sco.income.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.income.excluded.top$auth.name), " with income under £30,000)")`. The biggest decreases were in `r sco.income.change.bottom2[2,2]` (`r FunDec(abs(sco.income.change.bottom2$change[2]), dp.text)` %), and `r sco.income.change.bottom2[1,2]` (`r FunDec(abs(sco.income.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(sco.income.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.income.excluded.bottom$auth.name), " with income under £30,000)")`.
+The three councils which had the largest year-on-year percentage increases in income were `r sco.income.change.top3[1,2]` (up `r FunDec(sco.income.change.top3$change[1], dp.text)` %), `r sco.income.change.top3[2,2]` (up `r FunDec(sco.income.change.top3$change[2], dp.text)` %) and `r sco.income.change.top3[3,2]` (up `r FunDec(sco.income.change.top3$change[3], dp.text)` %).
+`r if(nrow(sco.income.excluded.top) > 0) paste0(FunMultiText(sco.income.excluded.top$auth.name), " showed a larger percentage change but parking income was under £30,000.")` The biggest decreases were in `r sco.income.change.bottom2[2,2]` (`r FunDec(abs(sco.income.change.bottom2$change[2]), dp.text)` %), and `r sco.income.change.bottom2[1,2]` (`r FunDec(abs(sco.income.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(sco.income.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.income.excluded.bottom$auth.name), " where income was under £30,000)")`.
+
 
 ```{r incometab, echo = FALSE, message = FALSE, warning = FALSE}
 sco.income.formatted %>% 
