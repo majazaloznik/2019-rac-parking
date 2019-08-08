@@ -895,6 +895,7 @@ And set up packrat
 
 # Thursday 8.8.2019
 
+* try to get ssh to work?
 
 
 
