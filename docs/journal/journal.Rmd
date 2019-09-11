@@ -936,7 +936,30 @@ It's the mapping that is the problem, thinking through all the possible inputs, 
 
 * Remove packrat and initialise to renv!
 * initialisation ok, additionally manually added knitr and markdown as per warnings. lock file written, commit. 
+* also add bookdown
 
+
+**England**
+
+Run through all data originally entered and imported for england:
+* England outturn data are in files `orig.eng-17-18.xls` and so on
+* about 9 or so cells have to be manually entered in the update file to get the right data out
+* england budget data are in files `orig.eng.17-18-budget.xls`
+* a few cells and rows have to be manually entered ...
+* WPL data for Nottingham has to be manually entered, including the reference data
+
+I think this is it.
+
+OK, so I'll now start working through england.R and the report template. The update script will currenlty only use the begining and compiling sections. I will complete the new data section last. SO as I go along this works for the current year and can test it like that. 
+
+* OK, bibliography. Looks like the budget and income/expenditure sources for england are OK, but not the WPL?
+* OK, looks like this neds to be first updated in the 00-orig-data-entry
+* careful! i've now added the wpl refs to the master bib. in the scotland and wales update scripts i select the relevant bibliographies, which includes england data, but i have to remove england budget and england wpl rows, because those are not used. ok, done. 
+* in the england reports I presumably also don't need the PCM data for Scotland, right? Oh, the report actually has no comparison with Wales or Scotland at all?! *Ask Ivo about this* 
+* I'll remove all non england references for now though. 
+* there's a check in the update script to make sure there are enough rows in the data. This is tricky since England has a bunch of different types of rows: 1 gla, 353 LAs, 9 national parks and 1 national total, thats 364. So i'll put the check in.i guess. 
+* OK, updating script works so far: creating new rmd and compiling, with working bibliography.
+* commit
 
 
 

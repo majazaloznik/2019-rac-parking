@@ -171,7 +171,7 @@ saveRDS(bib.master, "data/03-processed/bib.master.rds")
 
 # create a bibliography for the wales report
 bib.master %>% 
-  filter(fiscyear > current.year - 5, !content %in% c("budget", "pcn")) %>% 
+  filter(fiscyear > current.year - 5, !content %in% c("budget", "pcn", "wpl")) %>% 
   mutate(refs = paste0("@", key)) %>% 
   column_to_rownames("key") -> bib.wales
 

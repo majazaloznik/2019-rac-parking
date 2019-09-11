@@ -156,192 +156,192 @@ bib.master <- readRDS("data/03-processed/bib.master.rds")
 orig.eng.name.lookup <- readRDS("data/01-raw/orig.eng.name.lookup.rds")
 
 # new report name
-report.name <- paste0("scotland-report-", current.year, "-",
+report.name <- paste0("england-report-", current.year, "-",
                       current.year - 1999)
 
-if (add.new.data){  
-  ################################################################################
-  ## AUTOMATIC DATA IMPORT AND CLEANING
-  ################################################################################
-  # loop through each sheet of the excel file to extract the income/expenditure data
-  FunScotlandLoopIE(year = current.year,
-                    file.name = sco.i.e.file,
-                    start.sh =  sco.i.e.start.sh,
-                    end.sh =  sco.i.e.end.sh,
-                    exp.cell =  sco.i.e.exp.cell,
-                    inc.cell =  sco.i.e.inc.cell,
-                    transp.cell = sco.i.e.transp.cell,
-                    auth.cell = sco.i.e.auth.cell) -> scotland.i.e.
-  
-  aberdeen <- data.frame(auth.name = "Aberdeen City",
-                         year = current.year,
-                         income.total = sco.aberdeen.income.total,
-                         expend.total =  sco.aberdeen.expend.total)
-  
-  # slot in manual aberdeen city data
-  scotland.i.e. %>% 
-    filter(auth.name == "Aberdeen City") %>% 
-    select(auth.name, transport.total, year) %>% 
-    full_join(aberdeen) -> full.aberdeen
-  
-  # merge back with scotland i.e.
-  scotland.i.e. %>% 
-    filter(auth.name != "Aberdeen City") %>%
-    bind_rows(full.aberdeen) -> scotland.i.e.
-  
-  # extract the dpe table from the pdf
-  scotland.dpe <- extract_tables(sco.pdf.file, pages = sco.pdf.dpe.tab)
-  
-  # clean DPE type table
-  scotland.dpe <- FunScotlandDPE(scotland.dpe, current.year)
-  
-  # extract PCN type table
-  scotland.pcn <- extract_tables(sco.pdf.file,
-                                 pages = sco.pdf.pcn.tab,
-                                 output = "data.frame")[[1]]
-  
-  # clean PCN table
-  scotland.pcn <- FunScotlandPCN(scotland.pcn, current.year)
-  
-  # extract TfS i.e. type table directly into a data.frame
-  scotland.tfs.i.e <- extract_tables(sco.pdf.file,
-                                     pages = sco.pdf.i.e.tab,
-                                     output = "data.frame")[[1]]
-  
-  # clean TFS income expenditure table
-  scotland.tfs.i.e <- FunScotlandTFSIE(scotland.tfs.i.e, current.year)
-  
-  # join all 3 tables from the pdf
-  scotland.pdf <- full_join(full_join(scotland.dpe,
-                                      scotland.pcn,by = c("auth.name", "year")),
-                            scotland.tfs.i.e,  by = c("auth.name", "year"))
-  
-  # now merge income exp data from the Excel files with the pdf data
-  update <- full_join(scotland.i.e., scotland.pdf)
-  
-  # add Scotland data and calculate surplus
-  update %>%
-    mutate(country = "Scotland",
-           auth.type = "LA",
-           surplus.total = income.total - expend.total) -> master.update
-  
-  # double check the update is OK:
-  if (nrow(master.update) != 32) {
-    paste("Something is wrong. The update should have 32 rows, but it has",
-          nrow(master.update), "instead.")} else {
-            "Everything checks out, the update has 32 rows"}
-  
-  ################################################################################
-  ## Add (or overwrite) new rows to master #######################################
-  ################################################################################
-  
-  # add update - if that year already exists, it will be overwritten!!!
-  if (exists("master.update")){
-    master %>%
-      anti_join(master.update, by = c("country", "auth.name", "year")) %>%
-      bind_rows(master.update) -> master}
-  
-  
-  # save updated datafile to master
-  saveRDS(master, "data/03-processed/master.rds")
-  write.csv(master, "outputs/csv-tables/master.csv")
-  
-  ## IMPORT AND CLEAN RPI DATA ###################################################
-  # if RPI file doesn't exist, or if it doesn't have today's date, download it again. 
-  if (!file.exists("data/01-raw/rpi.csv") | 
-      format(file.mtime("data/01-raw/rpi.csv"), "%d.%m.%Y") != 
-      format(Sys.Date(), "%d.%m.%Y")) {
-    url <- paste0("https://docs.google.com/spreadsheets/d/e/2PACX-1vTisg2eXAykXY-",
-                  "jcDJRXBf7LlL8IBFRmwBgJGF6-kcFVTlx96kAurVWCohG1ryXMvtvD1dNvQ6otS2R",
-                  "/pub?gid=543857295&single=true&output=csv")
-    
-    download.file(url, destfile = "data/01-raw/rpi.csv", method="curl")
-  }
-  
-  # update RPI data acces date and year of publication in the bibliography
-  bib.master %>%
-    mutate(urldate = ifelse(content == "rpi",
-                            as.character(format(Sys.Date(), "%d.%m.%Y")), urldate),
-           year = ifelse(content == "rpi",
-                         as.numeric(format(Sys.Date(), "%Y")), year)) ->
-    bib.master
-  ################################################################################
-  # add new files to bibliography master #########################################
-  ################################################################################
-  # add new rows to bibliography #################################################
-  # add i.e. source:
-  sco.i.e.bib <- data.frame(fiscyear = current.year,
-                            url = sco.i.e.url,
-                            country = "Scotland",
-                            content = "i.e",
-                            bibtype = "misc",
-                            year = sco.i.e.year.published,
-                            author = "{Scottish Government}",
-                            urldate = sco.i.e.date.accessed,
-                            title = sco.i.e.title,
-                            key = paste0("Scotland.i.e.", current.year))
-  
-  # add it to bib.master (overwriting if already exists)
-  bib.master %>%
-    anti_join(sco.i.e.bib, by = c("fiscyear", "country", "content")) %>%
-    bind_rows(sco.i.e.bib) -> bib.master
-  
-  # add aberdeen data source:
-  sco.aberdeen.bib <- data.frame(fiscyear = current.year,
-                                 url = sco.aberdeen.url,
-                                 country = "Scotland",
-                                 content = "i.e.",
-                                 bibtype = "misc",
-                                 year = sco.aberdeen.year.published,
-                                 author = "{Aberdeen City Council}",
-                                 urldate = sco.aberdeen.date.accessed,
-                                 title = sco.aberdeen.title,
-                                 key = paste0("Scotland.abd.", current.year))
-  
-  
-  # if exists add it to bib.master (overwriting if already exists)
-  bib.master %>%
-    anti_join(sco.aberdeen.bib, by = c("fiscyear", "country", "content")) %>%
-    bind_rows(sco.aberdeen.bib) -> bib.master
-  
-  # add pdf source:
-  sco.pdf.bib <- data.frame(fiscyear = current.year,
-                            url = sco.pdf.url,
-                            country = "Scotland",
-                            content = "pcn",
-                            bibtype = "misc",
-                            year = sco.pdf.year.published,
-                            author = "{Transport Scotland}",
-                            urldate = sco.pdf.date.accessed,
-                            title = sco.pdf.title,
-                            key = paste0("Scotland.pdf.", current.year))
-  
-  # add it to bib.master (overwriting if already exists)
-  bib.master %>%
-    anti_join(sco.pdf.bib, by = c("fiscyear", "country", "content")) %>%
-    bind_rows(sco.pdf.bib) -> bib.master
-  
-  
-  
-  # save updated datafile to master
-  saveRDS(bib.master, "data/03-processed/bib.master.rds")
-}
+# if (add.new.data){  
+#   ################################################################################
+#   ## AUTOMATIC DATA IMPORT AND CLEANING
+#   ################################################################################
+#   # loop through each sheet of the excel file to extract the income/expenditure data
+#   FunScotlandLoopIE(year = current.year,
+#                     file.name = sco.i.e.file,
+#                     start.sh =  sco.i.e.start.sh,
+#                     end.sh =  sco.i.e.end.sh,
+#                     exp.cell =  sco.i.e.exp.cell,
+#                     inc.cell =  sco.i.e.inc.cell,
+#                     transp.cell = sco.i.e.transp.cell,
+#                     auth.cell = sco.i.e.auth.cell) -> scotland.i.e.
+#   
+#   aberdeen <- data.frame(auth.name = "Aberdeen City",
+#                          year = current.year,
+#                          income.total = sco.aberdeen.income.total,
+#                          expend.total =  sco.aberdeen.expend.total)
+#   
+#   # slot in manual aberdeen city data
+#   scotland.i.e. %>% 
+#     filter(auth.name == "Aberdeen City") %>% 
+#     select(auth.name, transport.total, year) %>% 
+#     full_join(aberdeen) -> full.aberdeen
+#   
+#   # merge back with scotland i.e.
+#   scotland.i.e. %>% 
+#     filter(auth.name != "Aberdeen City") %>%
+#     bind_rows(full.aberdeen) -> scotland.i.e.
+#   
+#   # extract the dpe table from the pdf
+#   scotland.dpe <- extract_tables(sco.pdf.file, pages = sco.pdf.dpe.tab)
+#   
+#   # clean DPE type table
+#   scotland.dpe <- FunScotlandDPE(scotland.dpe, current.year)
+#   
+#   # extract PCN type table
+#   scotland.pcn <- extract_tables(sco.pdf.file,
+#                                  pages = sco.pdf.pcn.tab,
+#                                  output = "data.frame")[[1]]
+#   
+#   # clean PCN table
+#   scotland.pcn <- FunScotlandPCN(scotland.pcn, current.year)
+#   
+#   # extract TfS i.e. type table directly into a data.frame
+#   scotland.tfs.i.e <- extract_tables(sco.pdf.file,
+#                                      pages = sco.pdf.i.e.tab,
+#                                      output = "data.frame")[[1]]
+#   
+#   # clean TFS income expenditure table
+#   scotland.tfs.i.e <- FunScotlandTFSIE(scotland.tfs.i.e, current.year)
+#   
+#   # join all 3 tables from the pdf
+#   scotland.pdf <- full_join(full_join(scotland.dpe,
+#                                       scotland.pcn,by = c("auth.name", "year")),
+#                             scotland.tfs.i.e,  by = c("auth.name", "year"))
+#   
+#   # now merge income exp data from the Excel files with the pdf data
+#   update <- full_join(scotland.i.e., scotland.pdf)
+#   
+#   # add Scotland data and calculate surplus
+#   update %>%
+#     mutate(country = "Scotland",
+#            auth.type = "LA",
+#            surplus.total = income.total - expend.total) -> master.update
+#   
+#   # double check the update is OK:
+#   if (nrow(master.update) != 32) {
+#     paste("Something is wrong. The update should have 32 rows, but it has",
+#           nrow(master.update), "instead.")} else {
+#             "Everything checks out, the update has 32 rows"}
+#   
+#   ################################################################################
+#   ## Add (or overwrite) new rows to master #######################################
+#   ################################################################################
+#   
+#   # add update - if that year already exists, it will be overwritten!!!
+#   if (exists("master.update")){
+#     master %>%
+#       anti_join(master.update, by = c("country", "auth.name", "year")) %>%
+#       bind_rows(master.update) -> master}
+#   
+#   
+#   # save updated datafile to master
+#   saveRDS(master, "data/03-processed/master.rds")
+#   write.csv(master, "outputs/csv-tables/master.csv")
+#   
+#   ## IMPORT AND CLEAN RPI DATA ###################################################
+#   # if RPI file doesn't exist, or if it doesn't have today's date, download it again. 
+#   if (!file.exists("data/01-raw/rpi.csv") | 
+#       format(file.mtime("data/01-raw/rpi.csv"), "%d.%m.%Y") != 
+#       format(Sys.Date(), "%d.%m.%Y")) {
+#     url <- paste0("https://docs.google.com/spreadsheets/d/e/2PACX-1vTisg2eXAykXY-",
+#                   "jcDJRXBf7LlL8IBFRmwBgJGF6-kcFVTlx96kAurVWCohG1ryXMvtvD1dNvQ6otS2R",
+#                   "/pub?gid=543857295&single=true&output=csv")
+#     
+#     download.file(url, destfile = "data/01-raw/rpi.csv", method="curl")
+#   }
+#   
+#   # update RPI data acces date and year of publication in the bibliography
+#   bib.master %>%
+#     mutate(urldate = ifelse(content == "rpi",
+#                             as.character(format(Sys.Date(), "%d.%m.%Y")), urldate),
+#            year = ifelse(content == "rpi",
+#                          as.numeric(format(Sys.Date(), "%Y")), year)) ->
+#     bib.master
+#   ################################################################################
+#   # add new files to bibliography master #########################################
+#   ################################################################################
+#   # add new rows to bibliography #################################################
+#   # add i.e. source:
+#   sco.i.e.bib <- data.frame(fiscyear = current.year,
+#                             url = sco.i.e.url,
+#                             country = "Scotland",
+#                             content = "i.e",
+#                             bibtype = "misc",
+#                             year = sco.i.e.year.published,
+#                             author = "{Scottish Government}",
+#                             urldate = sco.i.e.date.accessed,
+#                             title = sco.i.e.title,
+#                             key = paste0("Scotland.i.e.", current.year))
+#   
+#   # add it to bib.master (overwriting if already exists)
+#   bib.master %>%
+#     anti_join(sco.i.e.bib, by = c("fiscyear", "country", "content")) %>%
+#     bind_rows(sco.i.e.bib) -> bib.master
+#   
+#   # add aberdeen data source:
+#   sco.aberdeen.bib <- data.frame(fiscyear = current.year,
+#                                  url = sco.aberdeen.url,
+#                                  country = "Scotland",
+#                                  content = "i.e.",
+#                                  bibtype = "misc",
+#                                  year = sco.aberdeen.year.published,
+#                                  author = "{Aberdeen City Council}",
+#                                  urldate = sco.aberdeen.date.accessed,
+#                                  title = sco.aberdeen.title,
+#                                  key = paste0("Scotland.abd.", current.year))
+#   
+#   
+#   # if exists add it to bib.master (overwriting if already exists)
+#   bib.master %>%
+#     anti_join(sco.aberdeen.bib, by = c("fiscyear", "country", "content")) %>%
+#     bind_rows(sco.aberdeen.bib) -> bib.master
+#   
+#   # add pdf source:
+#   sco.pdf.bib <- data.frame(fiscyear = current.year,
+#                             url = sco.pdf.url,
+#                             country = "Scotland",
+#                             content = "pcn",
+#                             bibtype = "misc",
+#                             year = sco.pdf.year.published,
+#                             author = "{Transport Scotland}",
+#                             urldate = sco.pdf.date.accessed,
+#                             title = sco.pdf.title,
+#                             key = paste0("Scotland.pdf.", current.year))
+#   
+#   # add it to bib.master (overwriting if already exists)
+#   bib.master %>%
+#     anti_join(sco.pdf.bib, by = c("fiscyear", "country", "content")) %>%
+#     bind_rows(sco.pdf.bib) -> bib.master
+#   
+#   
+#   
+#   # save updated datafile to master
+#   saveRDS(bib.master, "data/03-processed/bib.master.rds")
+# }
 
-# select scotland only bibliograpy #############################################
-# select a bibliography for the scotland report - only the rows needed
+# select england only bibliograpy #############################################
+# select a bibliography for the england report - only the rows needed
 bib.master %>%
-  filter(fiscyear > current.year - 5, !content %in% c("budget")) %>%
+  filter(fiscyear > current.year - 5, country  == "England") %>%
   mutate(refs = paste0("@", key)) %>%
-  column_to_rownames("key") -> bib.scotland
+  column_to_rownames("key") -> bib.england
 
 # create bib file
-bib.scotland %>%
+bib.england %>%
   as.BibEntry() %>%
-  WriteBib(file = "code/report-rmds/scotland.bib",
+  WriteBib(file = "code/report-rmds/england.bib",
            biblatex = FALSE, verbose = FALSE)
 
 # also save the data.frame
-saveRDS(bib.scotland, paste0("data/03-processed/", report.name, "-bib.rds"))
+saveRDS(bib.england, paste0("data/03-processed/", report.name, "-bib.rds"))
 
 
 
@@ -350,17 +350,17 @@ saveRDS(bib.scotland, paste0("data/03-processed/", report.name, "-bib.rds"))
 ################################################################################
 # check if master data is available for current year?
 
-if(nrow(filter(master, country == "Scotland", year == current.year)) == 0) {
+if(nrow(filter(master, country == "England", year == current.year)) == 0) {
   paste0("There are no records for the year ", current.year) } else {
-    if(nrow(filter(master, country == "Scotland", year == current.year)) !=32) {
-      paste0("Something has gone wrong. There should be 32 rows for ", 
+    if(nrow(filter(master, country == "England", year == current.year)) !=364) {
+      paste0("Something has gone wrong. There should be 364 rows for ", 
              current.year, " but there are not. I suggest you revert to a ",
              "previous version of the repository and try again.")} else {
                
                
                if(!recompile.rmd){
-                 # create a fresh copy of the scotland report template
-                 file.copy("code/report-templates/scotland-report-template.Rmd",
+                 # create a fresh copy from the england report template
+                 file.copy("code/report-templates/england-report-template.Rmd",
                            paste0("code/report-rmds/", report.name, ".Rmd"),
                            overwrite = TRUE)}
                

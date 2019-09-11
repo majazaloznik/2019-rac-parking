@@ -1,0 +1,40 @@
+---
+################################################################################
+##                 YOU CANNOT KNIT THIS FILE DIRECTLY FROM HERE!              ##
+##              Instead use the england-update-template.R script             ##
+################################################################################
+output:
+  bookdown::pdf_document2: 
+  toc: FALSE
+fontsize: 12pt
+header-includes:
+  - \usepackage{xcolor}
+  - \usepackage{float}
+  - \usepackage{tabu}
+  - \usepackage{multirow}
+  - \usepackage{colortbl}
+  - \usepackage{lscape}
+  - \newcommand{\blandscape}{\begin{landscape}}
+  - \newcommand{\elandscape}{\end{landscape}}
+  - \usepackage{flafter}
+params:
+  current.year: 2016
+  dp.text: 1
+  dp.tables: 2
+bibliography: england.bib
+csl: apa-with-notes.csl
+---
+  
+```{r setup, echo = FALSE, warning=FALSE, message=FALSE}
+source(here::here("code/england.R"))
+```
+
+---
+title: "`r paste("Local Authority Parking Finances in England", params$current.year, "-", params$current.year-1999)`"
+nocite: |
+  `r paste0(bib$refs, collapse = ", ")`
+---
+  
+\renewcommand{\arraystretch}{1.2}
+
+# Introduction

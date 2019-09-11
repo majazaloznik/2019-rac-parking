@@ -110,6 +110,13 @@
       "Repository": "CRAN",
       "Hash": "be63e68dae6e75f240cf5e674d20deaf"
     },
+    "bookdown": {
+      "Package": "bookdown",
+      "Version": "0.13",
+      "Source": "CRAN",
+      "Repository": "CRAN",
+      "Hash": "2ac6b83fbe5c15bbdd3113bb9402c277"
+    },
     "broom": {
       "Package": "broom",
       "Version": "0.5.2",

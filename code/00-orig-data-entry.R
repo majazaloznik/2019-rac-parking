@@ -34,6 +34,7 @@ library(tibble)
 library(curl)
 options(stringsAsFactors = FALSE)
 source("code/functions.R")
+
 ## 1. EXISTING REPORTS #########################################################
 country <- c(rep("England", 8), rep("Scotland", 8),rep("Wales", 8))
 
@@ -730,7 +731,7 @@ england.outturn.17.18 %>%
                author = "{Office for National Statistics}",
          urldate = "10.03.2019",
          title = paste0("{Local authority revenue expenditure and financing England: ", fiscyear,
-         "to", fiscyear + 1, ", individual local authority data - outturn}")) %>% 
+         " to ", fiscyear + 1, ", individual local authority data - outturn}")) %>% 
   bind_rows(bib.master) -> bib.master
            
 # add England budget data
@@ -745,9 +746,25 @@ england.budget.18.19 %>%
          author = "{Office for National Statistics}",
          urldate = "10-03-2019",
          title = paste0("{Local authority revenue expenditure and financing England: ", fiscyear,
-                       "to", fiscyear + 1, ", budget (Revenue Account budget)}")) %>% 
+                       " to ", fiscyear + 1, ", budget (Revenue Account budget)}")) %>% 
   bind_rows(bib.master) -> bib.master
 
+
+# add Nottingham WPL data
+# assuming it is published in the year of end of the fiscal year
+nottingham.wpl %>% 
+  select(fiscyear = year, url = link) %>% 
+  mutate(url = ifelse(is.na(url), NA, gsub("[\\{\\}]", "", 
+                                           regmatches(url, regexpr("\\{.*?\\}", url)))),
+         country = "England",
+         content = "wpl",
+         bibtype = "misc",
+         year = as.numeric(substr(fiscyear, 1, 4)) + 1,
+         fiscyear = as.numeric(substr(fiscyear, 1, 4)),
+         author = "{Nottingham City Council}",
+         urldate = "10-03-2019",
+         title = paste0("{Statement of Accounts ", fiscyear, "}")) %>% 
+  bind_rows(bib.master) -> bib.master
 
 bib.master %>% 
   mutate(key = paste0(country,".", content, ".", fiscyear)) -> bib.master
