@@ -5,7 +5,7 @@
 ##                                                                            ##
 ##              You do not need to run this directly ever.                    ##
 ##                                                                            ##
-##                 Also, DO NOT MAKE ANT CHANGES HERE.                        ##
+##                 Also, DO NOT MAKE ANY CHANGES HERE.                        ##
 ##                                                                            ##
 ################################################################################
 
@@ -41,12 +41,13 @@ master <- readRDS(here::here("data/03-processed/master.rds"))
 orig.sco.name.lookup <- readRDS(here::here("data/01-raw/orig.sco.name.lookup.rds"))
 uc <- st_read(here::here("data/01-raw/maps/Local_Administrative_Units_Level_1_January_2018_Ultra_Generalised_Clipped_Boundaries_in_United_Kingdom.shp"), quiet = TRUE)
 rpi <- read.csv(here::here("data/01-raw/rpi.csv"))
+
 # load bibliography from report.name
 report.name <- paste0("scotland-report-", current.year, "-",
                       current.year - 1999)
 bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
-# change the year variable 
 
+# pass parameters for decimal points in text and tables
 dp.text <-  params$dp.text
 dp.tables <-  params$dp.tables
 

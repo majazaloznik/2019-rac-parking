@@ -18,6 +18,7 @@
 ##  MANDATORY INPUTS                                                          ##
 ################################################################################
 # which fiscal year do you want to produce a report for?
+# NB: the current year is the year in which the fiscal year starts
 current.year <- 2016
 
 # if you want to produce a report based on current data - but for a previous year

@@ -1,8 +1,8 @@
 ################################################################################
-## SCOTLAND UPDATE TEMPLATE ####################################################
+## ENGLAND  UPDATE TEMPLATE ####################################################
 ################################################################################
 ## This is the script used to add new data to the master data file and        ##
-## produce the report for Scotland for any year available in the file         ##
+## produce the report for England for any year available in the file          ##
 ################################################################################
 ## Instructions (detailed instructions are in /docs/technical):
 ## 1. mandatory input: input (update) the current year and whether or not you
@@ -12,6 +12,7 @@
 ## 3. Run through the rest of the script that imports the data, cleans it,  
 ##      creates an .Rmd file and produces the compiled .pdf report.
 ################################################################################
+
 ################################################################################
 ##  MANDATORY INPUTS                                                          ##
 ################################################################################
@@ -22,114 +23,113 @@ current.year <- 2016
 
 # if you want to produce a report based on current data - but for a previous year
 # set add.new.data to FALSE. Run the rest of the script.
-# If you want to add new data from GS, TS and Aberdeen council, then change to 
+# If you want to add new data for the current fiscal year then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
-# matches the current.year variable. 
+# matches the current.year variable above
 add.new.data <- FALSE
 
 # If you have already produced an .Rmd file by running this script, and have 
 # made changes to the .Rmd file and just want to recompile it switch to TRUE.
 # If you want to produce a fresh copy of the template for this year switch
 # to FALSE
-recompile.rmd <- TRUE
+recompile.rmd <- FALSE
 
 # number of decimal places in text and tables:
 dp.text <- 1
 dp.tables <- 2
 
 
-
 ################################################################################
-## MANUAL DATA INPUT ###########################################################
-################################################################################
-if (add.new.data){
-  ## after dowloading the Scotland files into the data/01-raw folder, enter their
-  ## metadata here:
-  
-  # Scottish Local Government Finance Statistics (Income and Expenditure data)####
-  ################################################################################
-  # title as it will appear in the references:
-  sco.i.e.title <- "Scottish Local Government Finance Statistics 2016-17 Annex A by LA"
-  
-  # url of the file:
-  sco.i.e.url <- "https://www2.gov.scot/Resource/0053/00536018.xlsx"
-  
-  # year published, as it will appear in the references:
-  sco.i.e.year.published <- 2018
-  
-  ## replace with date of access to data:
-  sco.i.e.date.accessed <- "13.03.2019"
-  
-  # path and name of file where you have saved it:
-  sco.i.e.file <- "data/01-raw/orig.sco-16-17.xlsx"
-  
-  # which sheet has the first LA (Aberdeen city) on it?
-  sco.i.e.start.sh <- 2
-  
-  # which sheet has the last LA (West Lothian) on it?
-  sco.i.e.end.sh <- 33
-  
-  # which cell has the Parking "Gross Expenditure on a Funding Basis"?
-  sco.i.e.exp.cell <- "B41"
-  
-  # which cell has the Parking "Gross Income on a Funding Basis"?
-  sco.i.e.inc.cell <- "C41"
-  
-  # which cell has the Total Roads and Transport "Net revenue Expenditure on a funding basis"?
-  sco.i.e.transp.cell <- "D34"
-  
-  # On individual LA sheets, which cell has the name of the LA?
-  sco.i.e.auth.cell <- "A1"
-  
-  # Aberdeen city - separate data source if available? ###########################
-  ################################################################################
-  # title as it will appear in the references:
-  sco.aberdeen.title <- "{Aberdeen City Council Annual Accounts 2016-17}"
-  
-  # url of the file:
-  sco.aberdeen.url <- "https://www.aberdeencity.gov.uk/media/5702"
-  
-  # year published, as it will appear in the references:
-  sco.aberdeen.year.published <- 2017
-  
-  ## replace with date of access to data:
-  sco.aberdeen.date.accessed <- "4.4.2019"
-  
-  # How much parking Income did Aberdeen City report this year??
-  sco.aberdeen.income.total <- 8040
-  
-  # How much parking Expenditure did Aberdeen City report this year??
-  sco.aberdeen.expend.total <- 4821
-  
-  
-  # Transport Scotland (PCN) data  ###############################################
-  ################################################################################
-  # title as it will appear in the references:
-  sco.pdf.title <- "Decriminalised Parking Enforcement: Local Authorites’ Income
-and Expenditure: 2016 to 2017"
-  
-  # url of the file:
-  sco.pdf.url <- "https://www.transport.gov.scot/publication/
-decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/"
-  
-  # year published, as it will appear in the references:
-  sco.pdf.year.published <- 2017
-  
-  ## replace with date of access to data:
-  sco.pdf.date.accessed <- "13.03.2019"
-  
-  # path and name of file where you have saved it:
-  sco.pdf.file <- "data/01-raw/orig.sco-16-17-pcn.pdf"
-  
-  # which page in the report is the DPE table on?
-  sco.pdf.dpe.tab <- 4
-  
-  # which page in the report is the number of PCNs table on?
-  sco.pdf.pcn.tab <- 5
-  
-  # which page in the report is the income/expenditure table on?
-  sco.pdf.i.e.tab <- 6
-} 
+# ## MANUAL DATA INPUT ###########################################################
+# ################################################################################
+# if (add.new.data){
+#   ## after dowloading the Scotland files into the data/01-raw folder, enter their
+#   ## metadata here:
+#   
+#   # Scottish Local Government Finance Statistics (Income and Expenditure data)####
+#   ################################################################################
+#   # title as it will appear in the references:
+#   sco.i.e.title <- "Scottish Local Government Finance Statistics 2016-17 Annex A by LA"
+#   
+#   # url of the file:
+#   sco.i.e.url <- "https://www2.gov.scot/Resource/0053/00536018.xlsx"
+#   
+#   # year published, as it will appear in the references:
+#   sco.i.e.year.published <- 2018
+#   
+#   ## replace with date of access to data:
+#   sco.i.e.date.accessed <- "13.03.2019"
+#   
+#   # path and name of file where you have saved it:
+#   sco.i.e.file <- "data/01-raw/orig.sco-16-17.xlsx"
+#   
+#   # which sheet has the first LA (Aberdeen city) on it?
+#   sco.i.e.start.sh <- 2
+#   
+#   # which sheet has the last LA (West Lothian) on it?
+#   sco.i.e.end.sh <- 33
+#   
+#   # which cell has the Parking "Gross Expenditure on a Funding Basis"?
+#   sco.i.e.exp.cell <- "B41"
+#   
+#   # which cell has the Parking "Gross Income on a Funding Basis"?
+#   sco.i.e.inc.cell <- "C41"
+#   
+#   # which cell has the Total Roads and Transport "Net revenue Expenditure on a funding basis"?
+#   sco.i.e.transp.cell <- "D34"
+#   
+#   # On individual LA sheets, which cell has the name of the LA?
+#   sco.i.e.auth.cell <- "A1"
+#   
+#   # Aberdeen city - separate data source if available? ###########################
+#   ################################################################################
+#   # title as it will appear in the references:
+#   sco.aberdeen.title <- "{Aberdeen City Council Annual Accounts 2016-17}"
+#   
+#   # url of the file:
+#   sco.aberdeen.url <- "https://www.aberdeencity.gov.uk/media/5702"
+#   
+#   # year published, as it will appear in the references:
+#   sco.aberdeen.year.published <- 2017
+#   
+#   ## replace with date of access to data:
+#   sco.aberdeen.date.accessed <- "4.4.2019"
+#   
+#   # How much parking Income did Aberdeen City report this year??
+#   sco.aberdeen.income.total <- 8040
+#   
+#   # How much parking Expenditure did Aberdeen City report this year??
+#   sco.aberdeen.expend.total <- 4821
+#   
+#   
+#   # Transport Scotland (PCN) data  ###############################################
+#   ################################################################################
+#   # title as it will appear in the references:
+#   sco.pdf.title <- "Decriminalised Parking Enforcement: Local Authorites’ Income
+# and Expenditure: 2016 to 2017"
+#   
+#   # url of the file:
+#   sco.pdf.url <- "https://www.transport.gov.scot/publication/
+# decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/"
+#   
+#   # year published, as it will appear in the references:
+#   sco.pdf.year.published <- 2017
+#   
+#   ## replace with date of access to data:
+#   sco.pdf.date.accessed <- "13.03.2019"
+#   
+#   # path and name of file where you have saved it:
+#   sco.pdf.file <- "data/01-raw/orig.sco-16-17-pcn.pdf"
+#   
+#   # which page in the report is the DPE table on?
+#   sco.pdf.dpe.tab <- 4
+#   
+#   # which page in the report is the number of PCNs table on?
+#   sco.pdf.pcn.tab <- 5
+#   
+#   # which page in the report is the income/expenditure table on?
+#   sco.pdf.i.e.tab <- 6
+# } 
 
 ################################################################################
 ################################################################################
@@ -153,7 +153,7 @@ options(stringsAsFactors = FALSE)
 # load existing master file, bib.master and name lookup table
 master <- readRDS("data/03-processed/master.rds")
 bib.master <- readRDS("data/03-processed/bib.master.rds")
-orig.sco.name.lookup <- readRDS("data/01-raw/orig.sco.name.lookup.rds")
+orig.eng.name.lookup <- readRDS("data/01-raw/orig.eng.name.lookup.rds")
 
 # new report name
 report.name <- paste0("scotland-report-", current.year, "-",
@@ -321,27 +321,27 @@ if (add.new.data){
     anti_join(sco.pdf.bib, by = c("fiscyear", "country", "content")) %>%
     bind_rows(sco.pdf.bib) -> bib.master
   
-
+  
   
   # save updated datafile to master
   saveRDS(bib.master, "data/03-processed/bib.master.rds")
 }
 
-  # select scotland only bibliograpy #############################################
-  # select a bibliography for the scotland report - only the rows needed
-  bib.master %>%
-    filter(fiscyear > current.year - 5, !content %in% c("budget")) %>%
-    mutate(refs = paste0("@", key)) %>%
-    column_to_rownames("key") -> bib.scotland
-  
-  # create bib file
-  bib.scotland %>%
-    as.BibEntry() %>%
-    WriteBib(file = "code/report-rmds/scotland.bib",
-             biblatex = FALSE, verbose = FALSE)
-  
-  # also save the data.frame
-  saveRDS(bib.scotland, paste0("data/03-processed/", report.name, "-bib.rds"))
+# select scotland only bibliograpy #############################################
+# select a bibliography for the scotland report - only the rows needed
+bib.master %>%
+  filter(fiscyear > current.year - 5, !content %in% c("budget")) %>%
+  mutate(refs = paste0("@", key)) %>%
+  column_to_rownames("key") -> bib.scotland
+
+# create bib file
+bib.scotland %>%
+  as.BibEntry() %>%
+  WriteBib(file = "code/report-rmds/scotland.bib",
+           biblatex = FALSE, verbose = FALSE)
+
+# also save the data.frame
+saveRDS(bib.scotland, paste0("data/03-processed/", report.name, "-bib.rds"))
 
 
 
@@ -367,7 +367,7 @@ if(nrow(filter(master, country == "Scotland", year == current.year)) == 0) {
                
                # compile the report (but check if file exists first)
                if(recompile.rmd & !file.exists(paste0("code/report-rmds/", 
-                                                     report.name, ".Rmd"))){
+                                                      report.name, ".Rmd"))){
                  paste("The Rmd file does not exist. Rerun this script with",
                        "recompile.rmd swithced to FALSE.")} else { 
                          

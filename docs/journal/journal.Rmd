@@ -889,13 +889,54 @@ And set up packrat
 
 # Wednesday 7.8.2019
 
-* Start Wales
+* Start Wales comments
 * in all the maps the legend labels get slightly clipped...
 * TODO: table 3, annual changes only works if all countries have data for current year. need to fix this.. 
 
 # Thursday 8.8.2019
 
 * try to get ssh to work?
+* still not looking good
+
+# Friday 9.8.2019
+
+* Start on England:
+  + england.R to run all the code and 
+  + england-report-template.Rmd and
+  + england-update-script.R
+
+# Monday 2.9.2019
+
+* Update Wales template with Ivo's comments from 30.8.
+* Update Scotland template wiht Ivo's comments from 30.8.
+* Reply to his last comment:
+
+Yeah, I get that reading the text it isn't immediately obvious which things are easy to automate, which are a bit trickier and which are prohibitively complex. This section is perhaps in the tricky category. (But I could reuse the code several times in each of the reports.) But if you look carefully, all it does is pick a variable (e.g. change in surplus - yes, this means first filtering out all the councils with deficits) and then pick the top three and bottom two. Additionally (to make it even more finicky) you then have to take out any councils with extra small surpluses, because they look crazy. 
+
+So yeah, it's finicky, but managable. 
+
+The only thing I really had to worry about here was if there are fewer than 5 councils with a surplus or deficit (because then I cannot have top 3 and bottom 2) and to make sure that the sentence structure works regardless of the number of councils that are excluded. 
+
+So e.g. I might have
+* no excluded councils -> the sentence simply ends with "."
+* one council to exclude -> I addd the text "(excluding XX because..)"
+* two councils to exlude -> I add the text "(excluding XX, and YY because)"
+* more councils to exclude -> same as before, but make sure the "and" is only before the last council. 
+
+The point being that there are four possibities, this comprehensively covers all the eventualities, and I can map an outcome for each of them. 
+
+The problem with some of the ones you flagged in the last round of comments is that  the "tree" of possible inputs and outputs is just too unwieldly. Just thinking about what all the possible inputs could be and what one might want it to output to makes my head hurt.. Of course, if you write me the mapping, then I would be more than happy to code it up. 
+
+It's the mapping that is the problem, thinking through all the possible inputs, making sure you're not missing any, and then mapping it on specific outcomes. The one you pointed out here is quite really quite simple compared to the ones last time. Hope this makes sense!
+
+
+
+# Wednesday 11.9.2019
+
+
+* Remove packrat and initialise to renv!
+* initialisation ok, additionally manually added knitr and markdown as per warnings. lock file written, commit. 
+
 
 
 

@@ -129,7 +129,7 @@ sum.gb.formatted %>%
          align = c("r"),
          col.names = c("", "England without London", "London", 
                        "Scotland", "Wales", "Great Britain"),
-         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain (£ millions)"), 
+         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain (£ millions, latest year available)"), 
          format.args = list(big.mark = ","),
          linesep = "") %>% 
   kable_styling(full_width = TRUE, 

@@ -48,7 +48,7 @@ The Transport Scotland report deals with the statutory returns which are require
 
 # Introduction
 
-Table 1 shows that as of \color{red}December \color{black} `r current.year+1`, `r nrow(sco.dpe)` councils were operating DPE (using local traffic wardens and civil enforcement), while two more were actively working towards DPE, \color{red}one of which--Midlothian--introduced DPE in January 2018. \color{black} The remaining ten authorities were not currently considering DPE, but still use fixed penalty notices issued instead of fines enforced by the Justice of the Peace courts. See Figure \@ref(fig:map1) for the map[^2].
+Table 1 shows that as of the end of `r current.year+1`, `r nrow(sco.dpe)` councils were operating DPE (using local traffic wardens and civil enforcement), while two more were actively working towards DPE. The remaining ten authorities were not currently considering DPE, but still use fixed penalty notices issued instead of fines enforced by the Justice of the Peace courts. See Figure \@ref(fig:map1) for the map[^2].
 
 [^2]:  Boundary data for this and all further maps is from `r sco.bib.map`. Contains public sector information licensed under the [Open Government Licence v3.0.](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
 
@@ -93,7 +93,7 @@ Table \@ref(tab:sumtab) and Figure \@ref(fig:fig1) show the summary accounts for
 `r ifelse(sco.summary$change[3] < -0.05, paste("fallen by", FunDec(-sco.summary$change[3], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[3], dp.text), "%"),"stayed approximately the same"))`
 compared to the previous fiscal year. Total transport expenditures have
 `r ifelse(sco.summary$change[4] < -0.05, paste("fallen by", FunDec(-sco.summary$change[4], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[4], dp.text), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(FunDec(sco.summary[5, 6], dp.text), "%")` of net transport expenditure. Parking makes a 
-`r ifelse(sco.summary[5, 6] < eng.trans - 0.05 , "smaller", ifelse(sco.summary[5, 6] > eng.trans + 0.05,  "larger","similar"))` contribution to overall transport expenditure in Scotland compared with England where it is around `r FunDec(eng.trans, dp.text)` % of total transport.
+`r ifelse(sco.summary[5, 6] < eng.trans - 0.05 , "smaller", ifelse(sco.summary[5, 6] > eng.trans + 0.05,  "larger","similar"))` contribution to overall transport expenditure in Scotland compared with England where it is `r FunDec(eng.trans, dp.text)` % of total transport.
 
 ```{r sumtab, echo = FALSE, message = FALSE, warning = FALSE}
 # print summary data
@@ -302,7 +302,7 @@ sco.pcn.prop.formatted %>%
   row_spec(nrow(sco.pcn.numbers)-1, hline_after = TRUE)
 ```
 
-Scottish councils with DPE earn `r FunDec(sco.pcn.prop[nrow(sco.pcn.numbers), ncol(sco.pcn.prop)], dp.text)` % of their income from PCNs, which is \color{red}about half of the equivalent proportions for London and for the rest of England \color{black} (see Table \@ref(tab:pcnprop)). 
+Scottish councils with DPE earn `r FunDec(sco.pcn.prop[nrow(sco.pcn.numbers), ncol(sco.pcn.prop)], dp.text)` % of their income from PCNs (see Table \@ref(tab:pcnprop)). 
 
 # Expenditure
 
@@ -356,7 +356,7 @@ FunMap(sco.expend, which = 4, shp = uc, country = "^S",dir = -1)
 
 Table \@ref(tab:expendprop) shows the proportion of income taken up by expenditure over the previous four years. Across Scotland it was `r FunDec(sco.expend.of.income[33,6], dp.text)` % compared to `r FunDec(sco.expend.of.income[33,5], dp.text)` % in the previous year.
 
-Edinburgh’s expenditure was `r FunDec(sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",6], dp.text)` % having `r ifelse(sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",6] < sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",5], "fallen", "risen")` since last year, and Glasgow's has `r ifelse(sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",6] < sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",5], "fallen", "risen")` to `r FunDec(sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",6], dp.text)` %. \color{red} Most of the medium-sized councils spend 50–90% of their income on parking management, which includes enforcement. \color{black} Care should be taken in interpreting the percentages towards the bottom of the table, as the very low parking incomes can lead to extreme values which are less meaningful.   
+Edinburgh’s expenditure was `r FunDec(sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",6], dp.text)` % having `r ifelse(sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",6] < sco.expend.of.income[sco.expend.of.income$auth.name == "Edinburgh City",5], "fallen", "risen")` since last year, and Glasgow's has `r ifelse(sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",6] < sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",5], "fallen", "risen")` to `r FunDec(sco.expend.of.income[sco.expend.of.income$auth.name == "Glasgow City",6], dp.text)` %. Care should be taken in interpreting the percentages towards the bottom of the table, as the very low parking incomes can lead to extreme values which are less meaningful.   
 
 ```{r expendprop}
 sco.expend.of.income.formatted %>% 
@@ -396,6 +396,8 @@ while `r sco.surplus.change.top3[2,2]` and `r sco.surplus.change.top3[3,2]` incr
 
 `r sco.deficit.change.top3[1,2]` increased their deficits by `r FunDec(sco.deficit.change.top3$change[1], dp.text)` %
 while `r sco.deficit.change.top3[2,2]` and `r sco.deficit.change.top3[3,2]` increased  by `r FunDec(sco.deficit.change.top3$change[2], dp.text)` % and `r FunDec(sco.deficit.change.top3$change[3], dp.text)` % respectively`r if(nrow(sco.deficit.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.deficit.excluded.top$auth.name), " with a deficit under £30,000)")`. The biggest decreases were in `r sco.deficit.change.bottom2[2,2]` (`r FunDec(abs(sco.deficit.change.bottom2$change[2]), dp.text)` %), and `r sco.deficit.change.bottom2[1,2]` (`r FunDec(abs(sco.deficit.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(sco.deficit.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.deficit.excluded.bottom$auth.name), " with a deficit under £30,000)")`.
+
+\newpage 
 
 ```{r surplustab}
 
