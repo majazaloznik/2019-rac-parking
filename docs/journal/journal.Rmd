@@ -335,7 +335,7 @@ OK, back to the Scotland PNC data scraped from the pdf
 * Conditional text, seems to work fine. A bit wooden though.. 
 * Now have to pull out england's surplus as proportion of transport costs.
 
-* OK, I get England surplus/transport to be 21% not Leibling's 12 %. Additionally if I go directly to the 17/18 file I can confirm that my totals are correct, or rather that the Excel files have an error: the off-street column does not add up to the total they have down (cell DF455 is wrong), probably something to do with Copeland? But the difference is 250 only (thoushands), so it doens't affect the 21 % I get. 
+* OK, I get England surplus/transport to be 21% not Leibling's 12 %. Additionally if I go directly to the 17/18 file I can confirm that my totals are correct, or rather that the Excel files have an error: the off-street column does not add up to the total they have down (cell DF455 is wrong), probably something to do with Copeland? But the difference is 250 only (thousands), so it doens't affect the 21 % I get. 
 * Next the plot.
 * Ahh, the ugly fonts.. was it install.packages("extrafont") that did the trick before? 
 * I think if you use extrafonts you have to upon installation also run `import_fonts()`, but only once, this needs to be in the instructions!
@@ -987,6 +987,13 @@ OK, so I'll now start working through england.R and the report template. The upd
 
 * OK, so budgeted transport expenditure totals are now extraceted in the original data import. This required another function as well. 
 * Does this add an extra row to the the table, let me check? Yes there is, fix the technical documentation. Nice, i automated the shit out of that report, just reran it and is now up to date :)
+* commit. 
+* OK, merging all the table elements - by the way, these tables are such messy ad hoc messes it pains me to make them... but ok, just following the instructions. 
+* damn it, the transposing and formatting somehow changes some NAs into "  NA" chars, which is ridiculous and super annoying. i need to make a repext for htis. 
+* OK, almost there with the formatting, how do i do the thousands again? aha, `format.args = list(big.mark = ",")`
+* This is due a write up with a min repex: transposing a table in order to get row and column percentages formatted correctly, all the while preserving the order of the variables/cases. Cause it's a fucking minefield. esp. if you want different formatting for the percentages.. 
+* The there is the issue of getting formatting to rows that start out with a multirow, beacuse the text is too long, this doesn't seem to work with kableextrs (repex), so you instead just paste in directly the latex code into the cells rquired. 
+* OK, the summary table is now finished...
 * commit
 
 

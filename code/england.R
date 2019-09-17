@@ -170,44 +170,63 @@ la.data %>%
 la.data %>%
   select(year, surplus.budget) %>% 
   group_by(year) %>% 
-  summarise(sum =  sum(surplus.budget)) %>% 
-  filter(year %in% c(current.year, current.year +1)) -> summary.budg
+  summarise(surplus.total =  sum(surplus.budget)) %>% 
+  filter(year %in% c(current.year, current.year +1)) -> budget.surplus
 
 # budgeted total for current and next year 
+data %>%
+  filter(auth.type == "X", year %in% c(current.year, current.year +1)) %>% 
+  select(year, transport.total = budg.trans) -> budget.transport
+
+# merge budgeted totals
+full_join(budget.surplus, budget.transport) %>% 
+  mutate_at(vars(-year), function(x) x/1000) %>% 
+  mutate(prop.net.expen = surplus.total/transport.total * 100) %>% 
+  mutate(year = paste0(year, "B")) -> summary.budget
+  
+
+bind_rows(mutate_at(summary.i.e, vars(year), as.character), summary.budget) -> summary
 
 
 # transpose table and add change variable and budget lines
-summary.i.e %>% 
-  t() %>% 
-  as.data.frame() %>% 
-  rownames_to_column() %>% 
-  filter(rowname != "year") %>%  
-  mutate(change = ifelse(rowname == "prop.net.expen", NA,  100*(V5 / V4 - 1))) -> summary.prep
-  
-# budget data for current and next year
-la.data %>%
-  select(year, surplus.budget) %>% 
-  group_by(year) %>% 
-  summarise(sum =  sum(surplus.budget)) %>% 
-  filter(year %in% c(current.year, current.year +1)) -> summary.budg
+summary %>% 
+  rownames_to_column %>%
+  gather(variable, value, -rowname) %>% 
+  mutate(order = row_number()) %>% 
+  group_by(variable) %>% 
+  mutate(order = first(order)) %>% 
+  spread(rowname, value) %>% 
+  arrange(order) %>% 
+  filter(variable != "year") %>% 
+  mutate_at(vars(-variable), as.numeric) %>% 
+  select(-order) %>% 
+  ungroup() %>% 
+  mutate(change = ifelse(variable == "prop.net.expen", NA,  100*(`5` / `4` - 1))) %>% 
+  mutate(change = ifelse(is.na(change), NA, FunDec(change,0))) %>% 
+  mutate_at(vars(-variable, -change), function(x) ifelse(.$variable == "prop.net.expen",
+                                                FunDec(x, 0),
+                                                ifelse(is.na(x), NA, 
+                                                formatC(round(x,0), big.mark = ",")))) -> summary.prep
 
 
 # prepare data for tabulation. 
 
 summary.prep %>% 
-  mutate(change = ifelse(rowname == "prop.net.expen", NA, 
-                         paste(FunDec(change, dp.tables), "\\%"))) %>% 
-  mutate(rowname = c("Fees and permits", "Penalties", "Total Income", "Expenditure", "Surplus",
+  mutate(change = ifelse(variable == "prop.net.expen", NA, 
+                         paste(change, "\\%"))) %>% 
+  mutate(variable = c("Fees \\& permits", "Penalties", "Total Income", "Expenditure", "Surplus",
          "Total Income", "Expenditure", "Surplus", "Total Income", "Expenditure", "Surplus",
-         "Net Expenditure", "Parking surplus as percentage of net transport expenditure"))%>% 
-  mutate_at(vars(-rowname, -change), function(x) FunDec(x,0)) %>% 
-  mutate_at(vars(-rowname, -change), function(x) ifelse(
-    .$rowname == "Parking surplus as percentage of net transport expenditure", 
-    paste0(x, " \\%"), x)) %>% 
+         "Net Expenditure", "Parking surplus as percentage of net transport expenditure")) %>% 
   mutate(collapsed = c(rep("On-street", 5), 
                        rep("Off-street", 3),
                        rep("All parking", 3),
                        "All England transport", "")) %>% 
-  select(collapsed, rowname:change) -> eng.summary.formatted
+  mutate_at(vars(-variable, -change, -collapsed), function(x) ifelse(
+    .$variable == "Parking surplus as percentage of net transport expenditure", 
+    paste0(x, " \\%"), x)) %>% 
+  mutate_at(vars(-collapsed), function(x)  ifelse(.$collapsed == "All parking" & 
+                                                    .$variable == "Surplus",  
+                                                  paste0("\\textbf{", x, "}"), x)) %>% 
+  select(collapsed, variable:change) -> eng.summary.formatted
   
   

@@ -18,7 +18,7 @@ header-includes:
   - \newcommand{\elandscape}{\end{landscape}}
   - \usepackage{flafter}
 params:
-  current.year: 2016
+  current.year: 2017
   dp.text: 1
   dp.tables: 2
 bibliography: england.bib
@@ -67,15 +67,24 @@ eng.summary.formatted %>%
          longtable = T,
          align = c("r"),
          caption = "Summary of parking accounts for England (£ millions)",
-         col.names = c("", "", yearz, paste0("Change ", current.year, "-", 
+         col.names = c("", "", yearz, 
+                       paste0(FunFisc(), " budget"),
+                       paste0(FunFisc(-1), " budget"),
+                       paste0("Change ", current.year, "-", 
                                              current.year-1999, " on ", current.year-1, "-", current.year-1999-1)),
+       #  format.args = list(big.mark = ","),
          linesep = "") %>% 
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position"), 
                 font_size = 10) %>% 
-  column_spec(1, width = "2cm") %>% 
-  column_spec(2, width = "3cm")
+  column_spec(1, width = "1.6cm") %>% 
+  column_spec(2, width = "2.4cm") %>% 
+  column_spec(8:9, width = "1.2cm") %>% 
+  column_spec(10, width = "1.2cm")  %>% 
+  row_spec(c(4, 7), extra_latex_after = "\\cline{2-7} \\cline{10-10}") %>% 
+  row_spec(c(10),  extra_latex_after = "\\cline{2-10}") %>% 
+  row_spec(11, bold = TRUE)
 ```
 
 
