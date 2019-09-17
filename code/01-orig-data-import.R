@@ -1,4 +1,4 @@
-################################################################################
+
 ## IMPORT OF ORIGINAL DATA - AVAILABLE MARCH 2019 ##############################
 ################################################################################
 ## This file extracts and merges all available data for all three countries as
@@ -53,9 +53,11 @@ original.data <- data.frame(country = character(),
                             expend.total = integer(),
                             surplus.budget = integer(),
                             transport.total = integer(),
+                            budg.trans = integer(),
                             dpe.status = character(),
                             dpe.year = integer(),
-                            pcn.number = integer())
+                            pcn.number = integer(),
+                            surplus.total = integer())
                             
 
 ## 1. ENGLAND DATA IMPORT ######################################################
@@ -124,6 +126,21 @@ for (row in 3:nrow(orig.eng.meta.budget.18)){
   england.budget <- bind_rows(england.budget, x)
 }
 
+## 1.2.1. ENGLAND budget transport totals ###############################################
+# initialise data frame
+england.budget.trans <- data.frame()
+
+for (row in 3:nrow(orig.eng.meta.budget.18)){
+  file = orig.eng.meta.budget.18$file.name[row]
+  budg.t.t = orig.eng.meta.budget.18$budg.trans[row]
+  year = orig.eng.meta.budget.18$year[row]
+ x <- FunEnglandBudgetTransport(file, budg.trans = budg.t.t,
+                               year)
+ england.budget.trans <- bind_rows(england.budget.trans, x)
+}
+england.budget.trans$auth.name <- "England"
+england.budget.trans$auth.type <- "X"
+
 
 ## 2.3. MERGE all england data together ########################################
 # remove authorities we're not interested in:
@@ -141,9 +158,16 @@ full_join(england.outturn, england.budget) -> england.outturn.and.budget
 
 full_join(england.outturn.and.budget, orig.eng.nott.wpl.17) -> england.outturn.and.budget
 
-bind_rows(original.data, england.outturn.totals) -> original.data 
-bind_rows(original.data, england.outturn.and.budget) -> original.data 
-original.data$country <- "England"
+# join the england totals for outturn and budgeted transport
+full_join(england.budget.trans, england.outturn.totals) -> england.totals
+
+# add everything to the original.data table
+bind_rows(england.outturn.and.budget, england.totals) -> original.england 
+original.england$country <- "England"
+
+
+bind_rows(original.data, original.england) -> original.data 
+
 
 
 
@@ -307,6 +331,6 @@ original.data %>%
 
 saveRDS(original.data, "data/02-interim/original.data.rds")
 saveRDS(original.data, "data/03-processed/master.rds")
-write.csv(master, "outputs/csv-tables/master.csv")
+write.csv(original.data, "outputs/csv-tables/master.csv")
 
 # rm(list=setdiff(ls(), "original.data"))

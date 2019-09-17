@@ -89,6 +89,18 @@ FunEnglandOutturnTotals <- function(file ,
   vec
 }
 
+## England budgeted transport totals 
+FunEnglandBudgetTransport <- function(file , 
+                                    budg.trans,
+                                    year,
+                                    sheet = 2 ) {
+  budg.trans <- colnames(read_excel(file, sheet, budg.trans))
+  vec <- as.numeric(c(year, budg.trans))
+  names(vec) <- c("year", "budg.trans")
+  vec
+}
+
+
 ## England budget surplus import function
 
 FunEnglandBudget <- function(file =file, 
@@ -260,7 +272,7 @@ FunFirstup <- function(x) {
   x
 }
 
-# funciton to round to n decimal points precisely
+# funciton to round to d decimal points precisely
 FunDec <- function(x,d) {
   format(round(x, d), nsmall = d)
 }

@@ -5,7 +5,7 @@
 ################################################################################
 output:
   bookdown::pdf_document2: 
-  toc: FALSE
+    toc: FALSE
 fontsize: 12pt
 header-includes:
   - \usepackage{xcolor}
@@ -38,3 +38,32 @@ nocite: |
 \renewcommand{\arraystretch}{1.2}
 
 # Introduction
+
+
+This report uses the MHCLG (formerly DCLG) tables on parking income and expenditure for the period from `r FunFisc(4)` to `r FunFisc()`. All councils are required to report their financial information to government, in a consistent format, although there may be some differences in interpretation of what that format is and what it covers. Earlier, councils also submitted budgets for the `r FunFisc(-1)` financial year but on a less detailed basis. These figures are included where appropriate. The figures have to be on an as-received cash basis without any provision for bad debts or any allowance for capital charges (interest or deprecation).
+
+This report covers the 353 local authorities in England but excludes `r FunN2W(n.nat.parks)`  national parks which declare income from parking and show a total surplus of £`r FunDec(surplus.nat.parks/1000, 1)` million. 
+
+It also excludes the Nottingham workplace parking levy which is estimated to have generated £1r FunDec(surplus.wpl/1000,1)` million surplus in `r FunFisc()`. 
+
+The income and cost headings used in this analysis are: 
+
+1. On-street income, expenditure and income from penalty charges 
+2. Off-street income, expenditure 
+3. Total transport income, expenditure 
+
+\color{red} These headings do not always agree with accounts published by local authorities because of their different treatment of overheads and allocation of surpluses to other transport projects. Furthermore six local authorities include off-street parking in their internal trading accounts which leads to further inconsistencies. These trading figures have been added to the revenue accounts. \color{black}
+
+
+
+
+
+
+
+
+
+
+
+
+
+## References {-}

@@ -53,7 +53,7 @@ The income and cost headings used in this analysis are:
 \color{red} These headings do not always agree with accounts published by local authorities because of their different treatment of overheads and allocation of surpluses to other transport projects. Furthermore six local authorities include off-street parking in their internal trading accounts which leads to further inconsistencies. These trading figures have been added to the revenue accounts. \color{black}
 
 
-\newpage
+
 
 # Summary
 
@@ -74,8 +74,7 @@ eng.summary.formatted %>%
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position"), 
                 font_size = 10) %>% 
-  column_spec(1, width = "2cm") %>% 
-  column_spec(2, width = "3cm")
+  column_spec(1:2, width = "3cm")
 ```
 
 

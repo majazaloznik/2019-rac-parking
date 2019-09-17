@@ -1,0 +1,12 @@
+---
+title: "RAC Parking Report Automation---Queries for England, round 2"
+author: mz
+date: 12.9.2019
+output:
+  pdf_document: default
+---
+
+5. The summary table for England compares the parking surpluses with "All England transport expenditure". The surpluses are for the 353 LAs only. So no national parks, and no GLA. But the total transport expenditure is inclusice of these authorities. Is that cool? 
+  
+  
+  

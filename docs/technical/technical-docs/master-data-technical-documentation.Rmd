@@ -50,10 +50,12 @@ master %>%
     "Expenditure for the Congestion Charge, only reported for the Greater London Authority (£ thousand)",
     "Expenditure for parking as reported by Scotland and Wales",
     "The estimated surplus as in the budget, only reported by England from 2010/11 onward",
-    "Total transport expenditures",
+    "Total transport net expenditures",
+    "Budgeted net transport expenditures", 
     "Whether or not a Decriminalised Parking Enforcement (DPE) regime is operated in the (Scottish) LA",
     "Which year did the DPE regime start operating in the (Scottish) LA",
-    "Number of Penalty Charge Notices (PCN) issued")) %>% 
+    "Number of Penalty Charge Notices (PCN) issued",
+    "Total surplus")) %>% 
   kable( "latex", booktabs = T, longtable = T,
          caption = "Columns in master table",
          col.names = c("Variable name", "Description")) %>% 
@@ -70,7 +72,7 @@ master %>%
 
 Each row in the master table epresents a single *authority-year* combination.
 
-The file currenlty has `r nrow(master)` rows as shown in Table \@ref(tab:rows). Note that the most recent year for England is actually just the budgeted surplus data, which is why there is no row for the national transport totals. 
+The file currenlty has `r nrow(master)` rows as shown in Table \@ref(tab:rows). Note that the most recent year for England is actually just the budgeted surplus data, so most of the columns are NA. 
 
 ```{r rows, message = FALSE, echo = FALSE}
 master %>% 

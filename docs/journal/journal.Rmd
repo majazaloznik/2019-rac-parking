@@ -955,13 +955,39 @@ OK, so I'll now start working through england.R and the report template. The upd
 * OK, bibliography. Looks like the budget and income/expenditure sources for england are OK, but not the WPL?
 * OK, looks like this neds to be first updated in the 00-orig-data-entry
 * careful! i've now added the wpl refs to the master bib. in the scotland and wales update scripts i select the relevant bibliographies, which includes england data, but i have to remove england budget and england wpl rows, because those are not used. ok, done. 
-* in the england reports I presumably also don't need the PCM data for Scotland, right? Oh, the report actually has no comparison with Wales or Scotland at all?! *Ask Ivo about this* 
+* in the england reports I presumably also don't need the PCM data for Scotland, right? Oh, the report actually has no comparison with Wales or Scotland at all?! Ask Ivo about this. OK.  
 * I'll remove all non england references for now though. 
 * there's a check in the update script to make sure there are enough rows in the data. This is tricky since England has a bunch of different types of rows: 1 gla, 353 LAs, 9 national parks and 1 national total, thats 364. So i'll put the check in.i guess. 
 * OK, updating script works so far: creating new rmd and compiling, with working bibliography.
 * commit
+* careful with the bidget references, aren't they for the next year? Doubleckecked, all good. 
+* total WPL surplus is the difference between wpl income and wpl expenditure. 
+* OK, so england totals are without Nottingham and the national parks? Did i remove these before? 
+* data import to england.R needs to calculate separate surpluses for on and off street parking. Done
+* Double check this matches the total surplus. Done. it does. 
+* Also need to calculate the "fees and permits" which is the on street income minus the penalties. so income.on - income.pnc = income.fnp
 
+* ok, the budgets, i can just add them all up. But they are originally negative for some reasone. I'll fix that in the england.R scritp. 
 
+# Monday 16.9.2019
+
+* don't forget to use dp.text and dp.tables in FunDec for rounding consistenlty!
+* there are two relevant budgets, current and next years. 
+* OK, summary table for England. 
+* The budget numbers I get do not match David's. But double checking them with the excel file shows mine are right. they include all the LAs, but not the national parks. *do i remove nottingham here as well?*
+* looks like the budget data also has budgeted data for total transport that i did not import./.
+* OK, so I imported the LA data for budgeted parking surpluses, but not the budgeted transport totals. so i need to do that now. 
+* that means finding the correct cells in all the raw excel files, adding them to the original data entry file first. 
+* i'll just replace the `budg.tot` variable, which i don't use, because i total up the las instead. i'll change it to `budg.trans`
+* no, actually i cannot do that, because the total includes also GLA and national parks, anywya, i'll as ivo
+* so then i need to import the data in the 01-orig-import file. done
+* now i need to merge it with the other england totals
+
+# Tuesday 17.9.2019
+
+* OK, so budgeted transport expenditure totals are now extraceted in the original data import. This required another function as well. 
+* Does this add an extra row to the the table, let me check? Yes there is, fix the technical documentation. Nice, i automated the shit out of that report, just reran it and is now up to date :)
+* commit
 
 
 
