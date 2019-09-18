@@ -39,7 +39,9 @@ source(here::here("code/functions.R"))
 # load data
 master <- readRDS(here::here("data/03-processed/master.rds"))
 orig.eng.name.lookup <- readRDS(here::here("data/01-raw/orig.eng.name.lookup.rds"))
-uc <- st_read(here::here("data/01-raw/maps/Local_Administrative_Units_Level_1_January_2018_Ultra_Generalised_Clipped_Boundaries_in_United_Kingdom.shp"), quiet = TRUE)
+uc <- st_read(here::here(paste0("data/01-raw/maps/Local_Administrative_Units_",
+                                "Level_1_January_2018_Ultra_Generalised_Clipped_",
+                                "Boundaries_in_United_Kingdom.shp")), quiet = TRUE)
 rpi <- read.csv(here::here("data/01-raw/rpi.csv"))
 
 # load bibliography from report.name
@@ -52,8 +54,8 @@ dp.text <-  1# params$dp.text
 dp.tables <- 2#  params$dp.tables
 
 # create folder for csv tables if it does not exist already
-suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/england-", FunFisc())), 
-                            showWarnings =TRUE))
+suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/england-", 
+                                              FunFisc())), showWarnings =TRUE))
 
 ## data preparation ############################################################
 # extract relevant country subset of data for all years
@@ -184,9 +186,7 @@ full_join(budget.surplus, budget.transport) %>%
   mutate(prop.net.expen = surplus.total/transport.total * 100) %>% 
   mutate(year = paste0(year, "B")) -> summary.budget
   
-
 bind_rows(mutate_at(summary.i.e, vars(year), as.character), summary.budget) -> summary
-
 
 # transpose table and add change variable and budget lines
 summary %>% 
@@ -203,19 +203,21 @@ summary %>%
   ungroup() %>% 
   mutate(change = ifelse(variable == "prop.net.expen", NA,  100*(`5` / `4` - 1))) %>% 
   mutate(change = ifelse(is.na(change), NA, FunDec(change,0))) %>% 
-  mutate_at(vars(-variable, -change), function(x) ifelse(.$variable == "prop.net.expen",
-                                                FunDec(x, 0),
-                                                ifelse(is.na(x), NA, 
-                                                formatC(round(x,0), big.mark = ",")))) -> summary.prep
+  mutate_at(vars(-variable, -change),
+            function(x) ifelse(.$variable == "prop.net.expen",
+                               FunDec(x, 0),
+                               ifelse(is.na(x), NA, 
+                                      formatC(round(x,0), big.mark = ",")))) -> summary.prep
 
 
 # prepare data for tabulation. 
 summary.prep %>% 
   mutate(change = ifelse(variable == "prop.net.expen", NA, 
                          paste(change, "\\%"))) %>% 
-  mutate(variable = c("Fees \\& permits", "Penalties", "Total Income", "Expenditure", "Surplus",
-         "Total Income", "Expenditure", "Surplus", "Total Income", "Expenditure", "Surplus",
-         "Net Expenditure", "Parking surplus as percentage of net transport expenditure")) %>% 
+  mutate(variable = c("Fees \\& permits", "Penalties", "Total Income", "Expenditure",
+                      "Surplus", "Total Income", "Expenditure", "Surplus", 
+                      "Total Income", "Expenditure", "Surplus", "Net Expenditure", 
+                      "Parking surplus as percentage of net transport expenditure")) %>% 
   mutate(collapsed = c(rep("On-street", 5), 
                        rep("Off-street", 3),
                        rep("All parking", 3),
@@ -266,7 +268,8 @@ la.data.current %>%
   group_by(london) %>% 
   summarise_at(vars(income.on, income.off, income.total,
                     expend.on, expend.off, expend.total,
-                    surplus.on, surplus.off, surplus.total), funs(sum(., na.rm = TRUE))) %>% 
+                    surplus.on, surplus.off, surplus.total), 
+               list(~sum(., na.rm = TRUE))) %>% 
   rownames_to_column %>%
   gather(variable, value, -rowname) %>% 
   mutate(order = row_number()) %>% 
@@ -282,8 +285,33 @@ la.data.current %>%
   mutate(total = london + rest,
          prop = london/total*100, 
          prop = paste(FunDec(prop, dp.tables), "\\%") )%>% 
-  mutate_at(vars(-variable, -prop), function(x) formatC(round(x/1000,0), big.mark = ",")) -> summary.london.prep
+  mutate_at(vars(-variable, -prop), function(x) 
+    formatC(round(x/1000,0), big.mark = ",")) -> summary.london.prep
 
+# prepare data for london/rest of england summary table including penalty and fee charges
+la.data %>% 
+  filter(year %in% c(current.year, current.year -1)) %>% 
+  mutate(london = ifelse(auth.type == "L", "london", "rest")) %>% 
+  group_by(london, year) %>% 
+  summarise_at(vars(income.pcn, income.fnp,income.on, income.off, income.total,
+                    expend.on, expend.off, expend.total,
+                    surplus.on, surplus.off, surplus.total), 
+               list(~sum(., na.rm = TRUE))) %>% 
+  rownames_to_column %>%
+  gather(variable, value, -rowname) %>% 
+  mutate(order = row_number()) %>% 
+  group_by(variable) %>% 
+  mutate(order = first(order)) %>% 
+  spread(rowname, value) %>% 
+  arrange(order)  %>% 
+  filter(variable != "london", variable != "year") %>% 
+  mutate_at(vars(-variable,), as.numeric) %>% 
+  select(-order) %>% 
+  ungroup()  %>% 
+  rename(london16 = `1`, london17 = `2`,
+         rest16 = `3`, rest17 = `4`) %>% 
+  mutate(prop.london.ch = london17/london16*100-100, 
+         prop.rest.ch = rest17/rest16*100-100) -> summary.london.prep.plus
 
 # prepare data for tabulation. 
 summary.london.prep %>% 
@@ -296,19 +324,43 @@ summary.london.prep %>%
   select(collapsed, variable:prop) -> eng.summary.london.formatted
 
 # easy access for variables in text
-lnd.prop.off <- 100*as.numeric(summary.london.prep$london[2])/as.numeric(summary.london.prep$london[3])
-rest.prop.off <- 100*as.numeric(summary.london.prep$rest[2])/as.numeric(summary.london.prep$rest[3])
+lnd.prop.off <- 100*as.numeric(summary.london.prep$london[2])/
+  as.numeric(summary.london.prep$london[3])
+rest.prop.off <- 100*as.numeric(summary.london.prep$rest[2])/
+  as.numeric(summary.london.prep$rest[3])
 lnd.surplus <- as.numeric(summary.london.prep$london[9])
 lnd.prop.surplus <- 100*as.numeric(summary.london.prep$london[9])/
   as.numeric(summary.london.prep$total[9])
 
+## income #####################################################################
+inc.tot <- summary$income.total[5]
 
 
+inc.fnp <- summary$income.fnp[5]
+inc.fnp.ch <- 100*(summary$income.fnp[5]/summary$income.fnp[4]-1)
+inc.pcn <- summary$income.pcn[5]
+inc.pcn.ch <- 100*(summary$income.pcn[5]/summary$income.pcn[4]-1)
+inc.off <- summary$income.off[5]
 
 
+# income for london
 
+inc.london.pcn <- summary.london.prep.plus$london17[1]/1000
+inc.london.pcn.ch <- summary.london.prep.plus$london17[1]/
+  summary.london.prep.plus$london16[1]*100-100
 
+inc.rest.pcn <- summary.london.prep.plus$rest17[1]/1000
+inc.rest.pcn.ch <- summary.london.prep.plus$rest17[1]/
+  summary.london.prep.plus$rest16[1]*100-100
 
+## expenditure #####################################################################
+exp.tot <- summary$expend.total[5]
 
+# expenditure for london
+exp.london.tot.ch <- summary.london.prep.plus$london17[8]/
+  summary.london.prep.plus$london16[8]*100-100
+exp.rest.tot.ch <- summary.london.prep.plus$rest17[8]/
+  summary.london.prep.plus$rest16[8]*100-100
 
-
+exp.prop.inc.on <- summary$expend.on[5]/summary$income.on[5]* 100
+exp.prop.inc.off <- summary$expend.off[5]/summary$income.off[5]* 100

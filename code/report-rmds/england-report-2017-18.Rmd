@@ -90,7 +90,7 @@ eng.summary.formatted %>%
 
 Total income from parking in `r FunFisc()` in England was £`r FunDec(pull(summary[5,10]/1000), 2)` billion, `r FunDec(inc.ch, dp.text)` % `r ifelse(inc.ch < 0, "lower", "higher")` than in `r FunFisc(1)`. On-street income `r ifelse(inc.on.ch < 0, "fell", "rose")` by `r FunDec(inc.on.ch, dp.text)` % and off-street income `r ifelse(sign(inc.on.ch) == sign(inc.off.ch), "", ifelse(inc.off.ch < 0, "fell", "rose"))` by `r FunDec(inc.off.ch, dp.text)` % . Expenditure `r ifelse(exp.on.ch < 0, "fell", "rose")` by `r FunDec(exp.on.ch, dp.text)` % for on-street and `r ifelse(sign(exp.on.ch) == sign(exp.off.ch), "", ifelse(exp.off.ch < 0, "fell", "rose"))` by `r FunDec(exp.off.ch, dp.text)` % off-street parking. As a result, the combined surplus from both on- and off-street parking was £`r FunDec(pull(summary[5,12]), 0)` million, `r FunDec(sur.ch, dp.text)`% `r ifelse(sur.ch < 0, "lower", "higher")`  than the previous financial year and `r FunDec(sur.ch4, dp.text)`% `r ifelse(sur.ch4 < 0, "lower", "higher")`  than four years ago. 
 
-Local authorities `r ifelse(sur.budg.diff > 0, "exceeded", "fell short of")` their `r FunFisc()` budgeted surplus of £`r FunDec(summary$surplus.total[6], 0)` million by `r FunDec(sur.budg.diff, dp.text)` %. Their budgeted surplus for this bext financial year (`r FunFisc(-1)`) is £`r FunDec(summary$surplus.total[7], 0)` million, `r FunDec(sur.budg.inc, dp.text)`% `r ifelse(sur.budg.inc < 0, "lower", "higher")`   than the actual for `r FunFisc()`. If the `r FunFisc(-1)` budget `r ifelse(sur.budg.diff > 0, "is exceeded", "falls short")` by the same proportion as the `r FunFisc()` outcome, then total parking surpluses would amount to £`r FunDec(sur.hyp, 0)`million.
+Local authorities `r ifelse(sur.budg.diff > 0, "exceeded", "fell short of")` their `r FunFisc()` budgeted surplus of £`r FunDec(summary$surplus.total[6], 0)` million by `r FunDec(sur.budg.diff, dp.text)` %. Their budgeted surplus for this next financial year (`r FunFisc(-1)`) is £`r FunDec(summary$surplus.total[7], 0)` million, `r FunDec(sur.budg.inc, dp.text)`% `r ifelse(sur.budg.inc < 0, "lower", "higher")`   than the actual for `r FunFisc()`. If the `r FunFisc(-1)` budget `r ifelse(sur.budg.diff > 0, "is exceeded", "falls short")` by the same proportion as the `r FunFisc()` outcome, then total parking surpluses would amount to £`r FunDec(sur.hyp, 0)`million.
 
 The on-street parking surpluses must by law be used for transport projects. Overall, local transport net expenditure in `r FunFisc()` `r ifelse(abs(tran.ch) < 0.5, "remained relatively unchanged at", ifelse(tran.ch < 0, "fell to", "increased to"))`  £`r FunDec(summary$transport.total[5]/1000, 1)` billion. Without the contribution from parking surpluses, net expenditure would have been `r FunDec(summary$prop.net.expen[5], dp.text)`% higher.
 
@@ -164,20 +164,31 @@ eng.summary.london.formatted %>%
 
 Only `r FunDec(lnd.prop.off, dp.text)` % of London boroughs’ parking income comes from off-street car parking as most off-street parking is commercially run. For the rest of England `r FunDec(rest.prop.off, dp.text)` % of income is from off-street parking. 
 
-The parking surplus in London was £`r lnd.surplus`million, `r FunDec(lnd.prop.surplus, dp.text)`% of the total for England although London only has only \color{red}10% \color{black}of the total cars in England but of course incoming commuters and visitors will contribute to parking fees and penalties which are much higher than in the rest of England.
+The parking surplus in London was £`r lnd.surplus`million, `r FunDec(lnd.prop.surplus, dp.text)`% of the total for England, although London only has only \color{red}10% \color{black}of the total cars in England but of course incoming commuters and visitors will contribute to parking fees and penalties which are much higher than in the rest of England.
+
+\newpage
+
+# Income 
+
+Parking income is derived from three main sources: meter income, residents’  business permits, and penalties. Other sources are towing and storage charges although relatively few councils operate pounds now. Total income in `r FunFisc()` was £`r formatC(inc.tot, big.mark = ",")` million, `r FunDec(inc.ch, dp.text)`% higher than in `r FunFisc(1)`. 
+
+Income from on-street tickets and permits was £`r FunDec(inc.fnp, 0)` million, (`r ifelse(inc.fnp.ch>0, "up", "down")` `r FunDec(inc.fnp.ch, dp.text)` %), and a further £`r FunDec(inc.pcn, 0)` million came from on-street penalty charges (`r ifelse(inc.pcn.ch>0, "up", "down")` `r FunDec(inc.pcn.ch, dp.text)` %) and £`r FunDec(inc.off, 0)` million (`r ifelse(inc.off.ch>0, "up", "down")` `r FunDec(inc.off.ch, dp.text)` %)from off-street charges and penalties. Note that this does not include off-street income received by commercial off-street parking facilities. 
+
+Penalty income in London was £`r FunDec(inc.london.pcn, 0)` million, `r FunDec(inc.london.pcn.ch, dp.text)`% `r ifelse(inc.london.pcn > 0, "higher", "lower")` than in 2016-17. \color{red} The number of parking PCNs in London rose by 4% to 3.3 million (excluding TfL) but the average income per PCN was £74 in 2017-18 unchanged from 2016-17. \color{black} Penalty income in the rest of England was £`r FunDec(inc.rest.pcn, 0)` million, `r FunDec(inc.rest.pcn.ch, dp.text)`% `r ifelse(inc.rest.pcn > 0, "higher", "lower")` than the previous year but \color{red}only just over a half\color{black} of that collected in London reflecting the lower penalty tariffs outside London.^[\color{red}The penalty for more serious parking offences in London is £130 or £110 and £70 outside. For less serious offences the penalties are £80 or £60 and £50. These a reduced by 50% for payment within14 days. \color{black}]
+
+
+# Expenditure
+
+Overall expenditure on parking rose to £`r FunDec(exp.tot,0)`million, up `r FunDec(exp.ch , dp.text)`% from `r FunFisc(1)` for both on-street and off-street. Expenditure in London went `r ifelse( exp.london.tot.ch > 0, "up", "down")` by `r FunDec(exp.london.tot.ch, dp.text)` % and `r ifelse(sign(exp.london.tot.ch == exp.rest.tot.ch), "", ifelse(exp.rest.tot.ch > 0, "up", "down"))` by `r FunDec(exp.rest.tot.ch, dp.text)` % in the rest of England. Expenditure represents `r FunDec(exp.prop.inc.on, dp.text)` % of income for on-street parking and `r FunDec(exp.prop.inc.on, dp.text)` % for off-street. 
 
 
 
+# Surpluses 
 
-
-
-
-
-
-
-
+...
 
 
 
 \newpage
+
 ## References {-}
