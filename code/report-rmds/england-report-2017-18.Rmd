@@ -84,14 +84,100 @@ eng.summary.formatted %>%
   column_spec(10, width = "1.2cm")  %>% 
   row_spec(c(4, 7), extra_latex_after = "\\cline{2-7} \\cline{10-10}") %>% 
   row_spec(c(10),  extra_latex_after = "\\cline{2-10}") %>% 
-  row_spec(11, bold = TRUE)
+  row_spec(11, bold = TRUE) %>% 
+  footnote(symbol = "Cells may not add up exactly due to rounding.")
+```
+
+Total income from parking in `r FunFisc()` in England was £`r FunDec(pull(summary[5,10]/1000), 2)` billion, `r FunDec(inc.ch, dp.text)` % `r ifelse(inc.ch < 0, "lower", "higher")` than in `r FunFisc(1)`. On-street income `r ifelse(inc.on.ch < 0, "fell", "rose")` by `r FunDec(inc.on.ch, dp.text)` % and off-street income `r ifelse(sign(inc.on.ch) == sign(inc.off.ch), "", ifelse(inc.off.ch < 0, "fell", "rose"))` by `r FunDec(inc.off.ch, dp.text)` % . Expenditure `r ifelse(exp.on.ch < 0, "fell", "rose")` by `r FunDec(exp.on.ch, dp.text)` % for on-street and `r ifelse(sign(exp.on.ch) == sign(exp.off.ch), "", ifelse(exp.off.ch < 0, "fell", "rose"))` by `r FunDec(exp.off.ch, dp.text)` % off-street parking. As a result, the combined surplus from both on- and off-street parking was £`r FunDec(pull(summary[5,12]), 0)` million, `r FunDec(sur.ch, dp.text)`% `r ifelse(sur.ch < 0, "lower", "higher")`  than the previous financial year and `r FunDec(sur.ch4, dp.text)`% `r ifelse(sur.ch4 < 0, "lower", "higher")`  than four years ago. 
+
+Local authorities `r ifelse(sur.budg.diff > 0, "exceeded", "fell short of")` their `r FunFisc()` budgeted surplus of £`r FunDec(summary$surplus.total[6], 0)` million by `r FunDec(sur.budg.diff, dp.text)` %. Their budgeted surplus for this bext financial year (`r FunFisc(-1)`) is £`r FunDec(summary$surplus.total[7], 0)` million, `r FunDec(sur.budg.inc, dp.text)`% `r ifelse(sur.budg.inc < 0, "lower", "higher")`   than the actual for `r FunFisc()`. If the `r FunFisc(-1)` budget `r ifelse(sur.budg.diff > 0, "is exceeded", "falls short")` by the same proportion as the `r FunFisc()` outcome, then total parking surpluses would amount to £`r FunDec(sur.hyp, 0)`million.
+
+The on-street parking surpluses must by law be used for transport projects. Overall, local transport net expenditure in `r FunFisc()` `r ifelse(abs(tran.ch) < 0.5, "remained relatively unchanged at", ifelse(tran.ch < 0, "fell to", "increased to"))`  £`r FunDec(summary$transport.total[5]/1000, 1)` billion. Without the contribution from parking surpluses, net expenditure would have been `r FunDec(summary$prop.net.expen[5], dp.text)`% higher.
+
+```{r fig1, echo = FALSE, fig.cap = "Parking revenues--England", fig.pos = "H", fig.showtext=TRUE,}
+old.par <- par(mar = c(5.1, 4.1, 3.1, 2.1))
+plot(eng.plot$year, eng.plot$income.total, 
+     ylim = c(0, max(eng.plot$income.total, na.rm = TRUE) ), 
+     type = "l",
+     lwd = 2,
+     col = viridis(3)[1],
+     bty = "n",
+     xlab = "Fiscal Year",
+     ylab = "£ (millions)",
+     axes = FALSE, family = "meri", cex.lab = 0.8)
+axis(1, at = eng.plot$year, 
+     labels = rep("", length(eng.plot$year),
+                  family = "meri", cex.axis = 0.6, las = 2, srt = 45))
+text(eng.plot$year, par("usr")[3] - 0.5, 
+     labels = paste0(eng.plot$year, "-", eng.plot$year-1999), 
+     srt = 45, adj = c(1.2,1.5), xpd = TRUE, family = "meri", cex = 0.6)
+axis(2, las = 2, family = "meri", cex.axis = 0.6 )
+grid(nx = NA, ny = NULL, lty = "93")
+lines(eng.plot$year, eng.plot$surplus.budget, 
+      type = "l",
+      lwd = 2, lty = "63",
+      col = viridis(3)[3])
+lines(eng.plot$year, eng.plot$expend.total, 
+      type = "l",
+      lwd = 2,
+      col = viridis(3)[2])
+lines(eng.plot$year, eng.plot$surplus.total, 
+      type = "l",
+      lwd = 2,
+      col = viridis(3)[3])
+
+par(family = "meri")
+legend("bottomright",
+       legend = c("Income", "Expenditure", "Surplus", "Budgeted surplus"),
+       bty = "n",
+       col = viridis(3)[c(1,2,3,3)], 
+       lwd = 2, cex = 0.8, lty = c("99","99","99","63"), xpd = TRUE)
+par(old.par)
 ```
 
 
+\newpage
+\renewcommand{\arraystretch}{1.35}
+```{r sumtablondon, echo = FALSE, message = FALSE, warning = FALSE}
+# print summary data
+eng.summary.london.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = 2, 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Summary of parking accounts for England (£ millions)",
+         col.names = c("", "", "London", "Rest of England", "All of England",
+                       "London percentage"),
+         linesep = "") %>% 
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "2cm") %>% 
+  column_spec(2, width = "2cm")  %>% 
+    row_spec(c(2,5, 8),  extra_latex_after = "\\cline{2-6}") 
+```
+
+\renewcommand{\arraystretch}{1.2}
+
+Only `r FunDec(lnd.prop.off, dp.text)` % of London boroughs’ parking income comes from off-street car parking as most off-street parking is commercially run. For the rest of England `r FunDec(rest.prop.off, dp.text)` % of income is from off-street parking. 
+
+The parking surplus in London was £`r lnd.surplus`million, `r FunDec(lnd.prop.surplus, dp.text)`% of the total for England although London only has only \color{red}10% \color{black}of the total cars in England but of course incoming commuters and visitors will contribute to parking fees and penalties which are much higher than in the rest of England.
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+\newpage
 ## References {-}

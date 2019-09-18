@@ -997,6 +997,18 @@ OK, so I'll now start working through england.R and the report template. The upd
 * commit
 
 
+# Wednesday 18.9.2019
+
+* OK, start on summary text. 
+* Avoid repetition in sentence if two things both increase or decrease, by only saying the second one explicitly if it is different from the previous one. Neat trick that no one will ever notice. 
+* The numbers are pulled into the summary text from the summary thable buy row and column indices, so *make sure the size of the table stays the same always*
+* finished trend chart. added budgeted surplus line as well, even though it wasn't in the original. 
+* OK, now the london /rest of england split. What a horrible table to read, this would be beautiful with a nice stacked bar chart. *ask*
+* OK, summary chapter finished, commit. 
+
+
+
+
 
 ### Wales (based on 17/18) #####################################################
 

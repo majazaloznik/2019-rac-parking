@@ -210,7 +210,6 @@ summary %>%
 
 
 # prepare data for tabulation. 
-
 summary.prep %>% 
   mutate(change = ifelse(variable == "prop.net.expen", NA, 
                          paste(change, "\\%"))) %>% 
@@ -229,4 +228,87 @@ summary.prep %>%
                                                   paste0("\\textbf{", x, "}"), x)) %>% 
   select(collapsed, variable:change) -> eng.summary.formatted
   
-  
+# easy access vars for the text
+inc.ch <- 100*(summary[5,10]/summary[4,10] -1)
+inc.on.ch <- 100*(summary[5,4]/summary[4,4] -1)
+inc.off.ch <- 100*(summary[5,7]/summary[4,7] -1)
+
+exp.ch <- 100*(summary[5,11]/summary[4,11] -1)
+exp.on.ch <- 100*(summary[5,5]/summary[4,5] -1)
+exp.off.ch <- 100*(summary[5,8]/summary[4,8] -1)
+
+sur.ch <-  100*(summary[5,12]/summary[4,12] -1)
+sur.ch4 <- 100*(summary[5,12]/summary[1,12] -1)
+
+sur.budg.diff <- 100*(summary$surplus.total[5]/summary$surplus.total[6]-1)
+sur.budg.inc <- 100*(summary$surplus.total[7]/summary$surplus.total[5]-1)
+
+sur.hyp <- (sur.budg.diff/100+1) * summary$surplus.total[7]
+
+tran.ch <-100*(summary[5,13]/summary[4,13] -1)
+
+summary$prop.net.expen[5]
+
+
+# prepare data for trends plot
+# prepare summary trend data for chart
+data.full  %>% 
+  select(year, income.total, expend.total, surplus.total, surplus.budget) %>% 
+  group_by(year) %>% 
+  summarise_at(vars(income.total:surplus.budget), list(~sum(.,na.rm=TRUE))) %>% 
+  mutate_at(vars(income.total:surplus.budget), list(~./1000)) %>% 
+  mutate_all(function(x) ifelse(x == 0, NA, x)) -> eng.plot
+
+# prepare data for london/rest of england summary table
+
+la.data.current %>% 
+  mutate(london = ifelse(auth.type == "L", "london", "rest")) %>% 
+  group_by(london) %>% 
+  summarise_at(vars(income.on, income.off, income.total,
+                    expend.on, expend.off, expend.total,
+                    surplus.on, surplus.off, surplus.total), funs(sum(., na.rm = TRUE))) %>% 
+  rownames_to_column %>%
+  gather(variable, value, -rowname) %>% 
+  mutate(order = row_number()) %>% 
+  group_by(variable) %>% 
+  mutate(order = first(order)) %>% 
+  spread(rowname, value) %>% 
+  arrange(order)  %>% 
+  filter(variable != "london") %>% 
+  mutate_at(vars(-variable), as.numeric) %>% 
+  select(-order) %>% 
+  ungroup()  %>% 
+  rename(london = `1`, rest = `2`) %>% 
+  mutate(total = london + rest,
+         prop = london/total*100, 
+         prop = paste(FunDec(prop, dp.tables), "\\%") )%>% 
+  mutate_at(vars(-variable, -prop), function(x) formatC(round(x/1000,0), big.mark = ",")) -> summary.london.prep
+
+
+# prepare data for tabulation. 
+summary.london.prep %>% 
+  mutate(variable = c(rep(c("On-street", "Off-street", "Total"), 3))) %>% 
+  mutate(collapsed = c(rep("Income", 3), 
+                       rep("Expenditure", 3),
+                       rep("Surplus", 3))) %>% 
+ mutate_at(vars(-collapsed), function(x)  ifelse(.$variable == "Total",
+                                                  paste0("\\textbf{", x, "}"), x)) %>% 
+  select(collapsed, variable:prop) -> eng.summary.london.formatted
+
+# easy access for variables in text
+lnd.prop.off <- 100*as.numeric(summary.london.prep$london[2])/as.numeric(summary.london.prep$london[3])
+rest.prop.off <- 100*as.numeric(summary.london.prep$rest[2])/as.numeric(summary.london.prep$rest[3])
+lnd.surplus <- as.numeric(summary.london.prep$london[9])
+lnd.prop.surplus <- 100*as.numeric(summary.london.prep$london[9])/
+  as.numeric(summary.london.prep$total[9])
+
+
+
+
+
+
+
+
+
+
+

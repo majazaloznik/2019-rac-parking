@@ -7,6 +7,15 @@ output:
 ---
 
 5. The summary table for England compares the parking surpluses with "All England transport expenditure". The surpluses are for the 353 LAs only. So no national parks, and no GLA. But the total transport expenditure is inclusice of these authorities. Is that cool? 
-  
-  
-  
+
+6. The summary text currenlty reads 
+
+> "If the 2018-19 budget is exceeded by the same proportion as the 2017-18 outcome, then parking surpluses could be very nearly £1 billion."
+
+I've changed it to:
+
+> "then total parking surpluses would amount to £ XYZ million."
+
+with the alternative option being that it "falls short" by the same proporiton. That OK?
+
+7. In the summary chart I have added a separate line for the budgeted surplus - instead of the previous continuation of the surplus line to just the next year's budgeted surplus. That OK?
