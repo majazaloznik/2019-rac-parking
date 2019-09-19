@@ -185,8 +185,61 @@ Overall expenditure on parking rose to £`r FunDec(exp.tot,0)`million, up `r Fun
 
 # Surpluses 
 
-...
+In total, councils in England made a surplus of £`r FunDec(sur.tot,0)` million in `r FunFisc()`, `r FunDec(sur.ch, dp.text)` % `r ifelse(sur.ch > 0, "higher", "lower")` than in `r FunFisc(1)`. Of this total, £`r FunDec(sur.london, 0)` million (`r FunDec(sur.london.prop, dp.text)` %) came from London and £`r FunDec(sur.rest, 0)` million from the rest of England. This excludes a £`r FunDec(surplus.nat.parks/1000, dp.text)` million surplus from parking in National Parks and a £`r FunDec(surplus.wpl/1000, dp.text)` million surplus from the Nottingham workplace parking levy.
 
+The London surplus of £`r FunDec(sur.london,0)` million in `r FunFisc()` was `r FunFisc()`, `r FunDec(sur.london.tot.ch, dp.text)` % `r ifelse(sur.london.tot.ch > 0, "higher", "lower")` than in  `r FunFisc(1)`. `r sur.london.top.la` was the highest earning council in London and England with a surplus in `r FunFisc()` of £`r FunDec(sur.london.top.amount, dp.text)` million, `r FunDec(abs(sur.london.top.ch), dp.text)` % `r ifelse(sur.london.top.ch > 0, "higher", "lower")` than in `r FunFisc(1)`.
+
+\newpage
+
+```{r surlondtab}
+# print summary data
+london.surplus.totals.table.formatted %>% 
+  kable("latex", 
+         booktabs = T, 
+         digits = 0, 
+         longtable = T,
+         escape = F,
+         align = c("r"),
+         caption = "Parking surpluses (and deficits) for London (£ millions)",
+       # format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", current.year, "-", current.year-1999, 
+                              " on ", current.year-1, "-", current.year-1999-1))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_headers"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "4.5cm") %>% 
+  row_spec(c(33, 35), hline_after = TRUE) %>% 
+  footnote(symbol = "Where the change in surplus is actually a change in deficit, the values are in italics")
+```
+
+```{r surengtab}
+# print summary data
+eng.rest.surplus.totals.table.formatted %>% 
+  kable("latex", 
+         booktabs = T, 
+         digits = 0, 
+         longtable = T,
+         escape = F,
+         align = c("r"),
+         caption = "Parking surpluses (on-street and off-street) for top 20 councils outside London (£ millions)",
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", current.year, "-", current.year-1999, 
+                              " on ", current.year-1, "-", current.year-1999-1))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_headers"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "4cm") %>% 
+  row_spec(c(20), hline_after = TRUE) 
+```
+
+The total surplus from parking outside London in `r FunFisc()` was £460.8 million, a 5% increase on `r FunFisc(1)`. With £`r sur.rest.top.amount` million, `r sur.rest.top.la` made the largest surplus outside London, which aslo ranks as the `r ordinal(sur.rest.top.rank)` largest  nationally.
+
+# Comparison with budgets for `r FunFisc()` and `r FunFisc(-1)`
+
+The total budgeted parking surplus for `r FunFisc()` was £`r FunDec(budg.curr, 0)`  million compared with the actual outturn of £`r FunDec(sur.tot, 0)` million (excluding national parks and \color{red}trading\color{black}). `r FunFirstup(xfun::numbers_to_words(budg.over))` councils exceeded their budgets by a total of £`r FunDec(budg.over.amount,0)` million and `r budg.under`  were below budget by a total of £`r FunDec(abs(budg.under.amount),0)` million.  \color{red} The London boroughs, with their larger incomes, were more likely to have large excess surpluses compared with budget \color{black}.  `r budg.over.la` made a £`r FunDec(budg.over.sur, dp.text)` million `r ifelse(budg.over.sur > 0, "surplus", "deficit")` compared with a budget `r ifelse(budg.over.bud > 0, "surplus", "deficit")` of £`r FunDec(abs(budg.over.bud), dp.text)` million. `r budg.under.la`, on the other hand, fell £`r FunDec(abs(budg.under.diff), dp.text)` million short of meeting its budgeted `r ifelse(budg.under.bud > 0, "surplus", "deficit")` of £`r FunDec(abs(budg.under.bud), dp.text)` million. 
 
 
 \newpage

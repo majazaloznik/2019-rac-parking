@@ -25,6 +25,7 @@ suppressWarnings(suppressMessages(library(sf)))
 suppressWarnings(suppressMessages(library(viridis)))
 suppressWarnings(suppressMessages(library(classInt)))
 suppressWarnings(suppressMessages(library(colorspace)))
+suppressWarnings(suppressMessages(library(english)))
 options(knitr.kable.NA = '')
 options(stringsAsFactors = FALSE)
 
@@ -76,7 +77,11 @@ data.full %>%
 data %>% 
   filter(year == current.year) -> data.current
 
-# data for 353 LAs only
+# data for 353 LAs only for all available years
+data.full %>% 
+  filter(!auth.type %in% c("X", "GLA", "O")) -> la.data.all
+
+# data for 353 LAs only for last 5 years
 data %>% 
   filter(!auth.type %in% c("X", "GLA", "O")) -> la.data
 
@@ -254,15 +259,14 @@ summary$prop.net.expen[5]
 
 # prepare data for trends plot
 # prepare summary trend data for chart
-data.full  %>% 
+la.data.all %>% 
   select(year, income.total, expend.total, surplus.total, surplus.budget) %>% 
   group_by(year) %>% 
   summarise_at(vars(income.total:surplus.budget), list(~sum(.,na.rm=TRUE))) %>% 
   mutate_at(vars(income.total:surplus.budget), list(~./1000)) %>% 
   mutate_all(function(x) ifelse(x == 0, NA, x)) -> eng.plot
 
-# prepare data for london/rest of england summary table
-
+# prepare data for london/rest of england summary table. LAs only
 la.data.current %>% 
   mutate(london = ifelse(auth.type == "L", "london", "rest")) %>% 
   group_by(london) %>% 
@@ -364,3 +368,203 @@ exp.rest.tot.ch <- summary.london.prep.plus$rest17[8]/
 
 exp.prop.inc.on <- summary$expend.on[5]/summary$income.on[5]* 100
 exp.prop.inc.off <- summary$expend.off[5]/summary$income.off[5]* 100
+
+
+## surplus variables ##############################################################
+
+sur.tot <- summary$surplus.total[5]
+
+# surplus for london and rest
+sur.london <- summary.london.prep.plus$london17[11]/1000
+sur.rest <- summary.london.prep.plus$rest17[11]/1000
+sur.london.prop <- sur.london/(sur.london + sur.rest)*100
+
+sur.london.tot.ch <- summary.london.prep.plus$london17[11]/
+  summary.london.prep.plus$london16[11]*100-100
+sur.rest.tot.ch <- summary.london.prep.plus$rest17[11]/
+  summary.london.prep.plus$rest16[11]*100-100
+
+# london surplus table 
+## SURPLUS #####################################################################
+# clean up surplus data
+data %>% 
+  filter(auth.type == "L") %>% 
+  filter(year <= current.year) %>% 
+  select(auth.name, year, surplus.total) %>% 
+  spread(key = year, value = surplus.total) %>% 
+  arrange(desc(.[[6]])) -> london.surplus
+
+# get numbers of +/-/0 surplus change
+london.surplus %>% 
+  filter(auth.name != "Total") %>% 
+  mutate(sign = ifelse(!!as.name(current.year) > 0, "poz",
+                       ifelse(!!as.name(current.year) == 0, "zero", "neg"))) %>% 
+  group_by(sign) %>% 
+  summarise(n = n()) %>% 
+  deframe() -> surplus.bin
+
+# create totals row for surpluses and deficits. 
+data %>% 
+  filter(auth.type == "L") %>% 
+  filter(year <= current.year) %>% 
+  select(auth.name, year, surplus.total) %>% 
+  mutate(poz.neg = ifelse(surplus.total >= 0, "poz", "neg")) %>% 
+  group_by(year, poz.neg) %>%
+  summarise_at(vars(-auth.name), sum) %>% 
+  full_join(expand.grid(year = (current.year - 4):current.year,
+                        poz.neg = c("poz", "neg", NA)) %>% 
+              mutate(poz.neg = as.character(poz.neg))) %>% 
+  gather(variable, value, -c(year, poz.neg)) %>%
+  unite(temp, year, variable) %>%
+  spread(temp, value) %>% 
+  filter(!is.na(poz.neg)) %>% 
+  select(poz.neg, contains("surplus")) %>% 
+  mutate(poz.neg = c("Total deficit", "Total surplus")) %>% 
+  rename_all(~c("auth.name", (current.year-4):(current.year))) %>% 
+  bind_rows(group_by(., auth.name) %>% 
+              ungroup() %>% 
+              summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>%
+              mutate(auth.name = c("Total"))) -> london.surplus.totals
+
+# bind both tables together
+bind_rows(london.surplus, london.surplus.totals) %>% 
+  mutate(change =100*(!!as.name(current.year)/!!as.name(current.year - 1)-1))%>% 
+  mutate(change = ifelse(abs(sign(!!as.name(current.year)) -
+                               sign(!!as.name(current.year-1))) == 2, NA, 
+                         change)) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change))) %>% 
+  mutate_at(vars(-auth.name, -change), list(~./1000)) %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name)) -> london.surplus.totals.table
+
+## save csv table 10
+#write.csv(sco.surplus.totals.table, here::here(
+#  paste0("outputs/csv-tables/scotland-", FunFisc(), "/scotland-", 
+#         FunFisc(), "-table-10.csv")), row.names = FALSE)
+
+# format for tabulation
+london.surplus.totals.table  %>% 
+  mutate(change = ifelse(is.na(change), NA, 
+                         paste(FunDec(change, dp.tables), "%"))) %>% 
+  mutate(change =cell_spec(change, "latex", 
+                           italic = ifelse(is.na(.[[7]]), FALSE,
+                                           ifelse(.[[6]] < 0 , TRUE, FALSE)))) %>% 
+  mutate(change = ifelse(change == "NA", NA, change)) %>% 
+  mutate_at(vars(-auth.name, -change), list(~ifelse(is.na(.), NA, FunDec(., dp.tables)))) ->
+  london.surplus.totals.table.formatted
+
+# format surplus list of london boroughs. 
+# top boroug
+sur.london.top.la <- london.surplus.totals.table$auth.name[1]
+sur.london.top.amount <- london.surplus.totals.table[1,6]
+sur.london.top.ch <- london.surplus.totals.table$change[1]
+
+
+# top 20 surplus table  not london
+## SURPLUS #####################################################################
+# clean up surplus data
+la.data %>% 
+  filter(year <= current.year,
+         auth.type != "L") %>% 
+  select(auth.name, year, surplus.total) %>% 
+  spread(key = year, value = surplus.total) %>% 
+  arrange(desc(.[[6]])) %>% 
+  filter(row_number() < 21) -> eng.rest.surplus
+
+
+# create totals row for surpluses and deficits. 
+la.data %>% 
+  filter(year <= current.year,
+         auth.type != "L") %>% 
+  select(auth.name, year, surplus.total) %>% 
+  spread(key = year, value = surplus.total)  %>% 
+              summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>%
+              mutate(auth.name = c("All England excl. London")) -> eng.rest.surplus.total
+
+# bind both tables together
+bind_rows(eng.rest.surplus, eng.rest.surplus.total) %>% 
+  mutate(change =100*(!!as.name(current.year)/!!as.name(current.year - 1)-1))%>% 
+  mutate(change = ifelse(abs(sign(!!as.name(current.year)) -
+                               sign(!!as.name(current.year-1))) == 2, NA, 
+                         change)) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change))) %>% 
+  mutate_at(vars(-auth.name, -change), list(~./1000))-> eng.rest.surplus.totals.table
+
+## save csv table 10
+#write.csv(sco.surplus.totals.table, here::here(
+#  paste0("outputs/csv-tables/scotland-", FunFisc(), "/scotland-", 
+#         FunFisc(), "-table-10.csv")), row.names = FALSE)
+
+# format for tabulation
+eng.rest.surplus.totals.table  %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
+  mutate(change = ifelse(is.na(change), NA, 
+                         paste(FunDec(change, dp.tables), "%"))) %>% 
+  mutate(change =cell_spec(change, "latex", 
+                           italic = ifelse(is.na(.[[7]]), FALSE,
+                                           ifelse(.[[6]] < 0 , TRUE, FALSE)))) %>% 
+  mutate(change = ifelse(change == "NA", NA, change)) %>% 
+  mutate_at(vars(-auth.name, -change), list(~ifelse(is.na(.), NA, FunDec(., dp.tables)))) ->
+  eng.rest.surplus.totals.table.formatted
+
+
+# format surplus list of london boroughs. 
+
+# top boroug
+sur.rest.top.la <-   eng.rest.surplus.totals.table$auth.name[1]
+sur.rest.top.amount <-   eng.rest.surplus.totals.table[1,6]
+
+la.data %>% 
+  filter(year == current.year) %>% 
+  select(auth.name, surplus.total) %>% 
+  arrange(desc(surplus.total)) %>% 
+  mutate(rank = row_number()) %>% 
+  filter(auth.name == sur.rest.top.la) %>% 
+  pull(rank) -> sur.rest.top.rank
+
+
+## budget comparison ##########################################################
+
+budg.curr <- summary$surplus.total[6]
+
+# top 10 and bottom 10 over and underpreformers when it comes to budgeting 
+## SURPLUS #####################################################################
+la.data %>% 
+  filter(year == current.year) %>% 
+  select(auth.name, year, auth.type, surplus.total, surplus.budget) %>% 
+  mutate_at(vars(surplus.total: surplus.budget), list(~./1000)) %>% 
+  filter(complete.cases(.)) %>% 
+  mutate(over.under = ifelse(surplus.total > surplus.budget, "over", "under"),
+         diff = surplus.total - surplus.budget) %>% 
+  arrange(desc(diff)) -> budg.diff.table
+
+budg.diff.table %>%   
+group_by(over.under) %>% 
+  summarise(count = n(), diff = sum(diff)) -> budg.diff.sums
+
+budg.over <- budg.diff.sums %>% filter(over.under == "over") %>% pull(count)
+
+budg.over.amount <- budg.diff.sums %>% filter(over.under == "over") %>% pull(diff)
+
+budg.under <- budg.diff.sums %>% filter(over.under == "under") %>% pull(count)
+
+budg.under.amount <- budg.diff.sums %>% filter(over.under == "under") %>% pull(diff)
+
+# top overpreformer
+budg.diff.table %>% 
+  filter(row_number() ==1 ) -> budg.over.top
+
+budg.over.la <- budg.over.top$auth.name
+budg.over.sur <- budg.over.top$surplus.total
+budg.over.bud <- budg.over.top$surplus.budget
+budg.over.diff <- budg.over.top$diff
+
+# top underpreformer
+budg.diff.table %>% 
+  filter(row_number() == nrow(.) ) -> budg.under.top
+
+budg.under.la <- budg.under.top$auth.name
+budg.under.sur <- budg.under.top$surplus.total
+budg.under.bud <- budg.under.top$surplus.budget
+budg.under.diff <- budg.under.top$diff

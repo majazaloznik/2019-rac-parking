@@ -1003,8 +1003,40 @@ OK, so I'll now start working through england.R and the report template. The upd
 * Avoid repetition in sentence if two things both increase or decrease, by only saying the second one explicitly if it is different from the previous one. Neat trick that no one will ever notice. 
 * The numbers are pulled into the summary text from the summary thable buy row and column indices, so *make sure the size of the table stays the same always*
 * finished trend chart. added budgeted surplus line as well, even though it wasn't in the original. 
-* OK, now the london /rest of england split. What a horrible table to read, this would be beautiful with a nice stacked bar chart. *ask*
+* OK, now the london /rest of england split. What a horrible table to read, this would be beautiful with a nice stacked bar chart. ask. ok.
 * OK, summary chapter finished, commit. 
+* income and expenditure chapters also finished. commit. 
+
+# Thursday 19.9.2019
+
+* start on surplus data
+* hmmm, check you are using the right data in the chart, Las only.. Good thing I checked, I was in fact using the national park data as well, but have removed it now. 
+* OK, the auth names for england have & signs in them, they need to be escaped.. Done
+* ah, and the surplus changes need to be split between surpluses and deficits.. This was not done in the originals.. 
+* bloody NAs and formatting these tables, such a faff every time. 
+* OK, london surplus table done.
+* Now the england one, top 20. looks like i could deduce nottingham from there? *later*
+* the package `english` has the function `ordinal` for writing out ordinal numbers, nice. 
+* finished surpluses. 
+* start on budget comparison. 
+* Hm, i could add budget surplus per council into a table
+* Also, i don't have council level total transport expenditure yet. should i add it into the import? That would make the surplus table comparable to the others? *check*
+* comparisong of budget to realisation done. 
+commit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

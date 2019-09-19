@@ -1,0 +1,41 @@
+---
+title: "RAC Parking Report Automation---Queries for England, round 3"
+author: mz
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document: default
+---
+  
+14. In *Surpluses* the third sentence is a repeat of one in the introduction section. I don't know, there is just so much data here, being so minimal and repeating yourself seems a bit daft...
+
+15. In surpluses, we don't currenlty compare them with the total transport net expenditure (except nationally). In Scotland and Wales we did however. Do you want me to pull the council level data in for that as well and do the same for England?
+
+16. In *Budget surplus comparison* : wouldn't it be cool to see the budgeted and realised surpluses for each council? And the proporiton difference?
+
+
+17. The sentence 
+
+> "The London boroughs, with their larger incomes, were more likely to have large excess surpluses compared with budget."
+
+Is problematic, no? I mean  because they have larger incomes means they are bad at budgeting? I guess the variance is larger? Anyway, even if you think so, it's still a tricky sentence to leave in in case there comes a day when London boroughs get better at writing their budgets, and this isn't sth that can really be automated. Should I throw it out?
+
+ 
+
+
+
+9  X
+10
+11
+12 X
+13
+14
+15 
+16 X
+17
+18 
+19 X
+20 X
+21 
+22 X
+23 
+24 X
