@@ -8,9 +8,9 @@ output:
 
 # Saturday 9.3.2019
 
-* Initialised public github repo.
+* Initialized public github repo.
 
-* Setup folder structure, currenlty looks like this (output of `tree --charset=ascii -d`):
+* Setup folder structure, currently looks like this (output of `tree --charset=ascii -d`):
 ```
 |-- code
 |-- data
@@ -56,13 +56,13 @@ This looks like the data [here](https://www.gov.uk/government/collections/local-
 * There are three columns we are interested in: expenditures, incomes and capital charges, these are usually on separate sheets. There is one of these for both on street and off street parking. So that's 6 columns in total.
 * There are also summaries, but I don't need them, maybe only for manually double-checking.
 * Appendix 2 lists all the files, their links, the number or rows (local authorities) in the table and the sheets on which the data can be found.
-* TODO Add the starting row and the actual columns where the data in question can be found and I can write a funciton to extract the data automatically. 
+* TODO Add the starting row and the actual columns where the data in question can be found and I can write a function to extract the data automatically. 
 * Download all `.xls` files to `/data/raw`
 
 * "Earlier, councils also submitted budgets for the 2018-19financial year but on a less detailed basis." where are these budgets? Do I need to include them as well? Ah, yes.
 
 * At one point the England data stops including capital charges..2013/14 is last one. This means current reports are less data rich, and if I stick to the brief, it means that the code won't be able to replicate the old reports. 
-* At one point the Englad data starts including penalty charges for individual Local authorities, although the reports don't do anything special with that, just use the aggregates. 
+* At one point the England data starts including penalty charges for individual Local authorities, although the reports don't do anything special with that, just use the aggregates. 
 
 * England totals do not include the national parks and the Nottingham levy. Not sure what to do with that!?
 
@@ -71,7 +71,7 @@ This looks like the data [here](https://www.gov.uk/government/collections/local-
 * OK, so England outturn data is tabled in Appendix 2.
 * Now England Budget data
   + not in *Local authority revenue expenditure and financing tables*
-  + under *Budget estimates of local authority revenue expenditure and financing for the financial year* the table *Revenue account budget (RA)* has the parking surplus down as 792, but the report says 782. There have been a few other differnces, not sure if these are typos/errors?
+  + under *Budget estimates of local authority revenue expenditure and financing for the financial year* the table *Revenue account budget (RA)* has the parking surplus down as 792, but the report says 782. There have been a few other differences, not sure if these are typos/errors?
   
 * download data into `\data\raw` and fill out appendix two table with relevant info. 
 * careful because at one point there are capital charges and then not. So make sure you've got the correct column. Because these are sums, I would even set up a check?
@@ -91,10 +91,10 @@ This looks like the data [here](https://www.gov.uk/government/collections/local-
   + on street parking is all the same
   + off street parking: there is a discrepancy. Leibling's income is 670 vs 674 in the table, and Leibling's expenditures are are 340 vs 337 in the table. 
 
-* Trying to figure out where these discrepancies come from: It must be the nottingham workplace levy? Which I don't have data for. 
+* Trying to figure out where these discrepancies come from: It must be the Nottingham workplace levy? Which I don't have data for. 
 * Second thing, presumably the difference is also due to not including the national parks. Although I have the data for that, I cannot confirm, because I don't know the levy numbers. 
 
-* TODO write (find) a funtion to convert excel column names to column numbers. 
+* TODO write (find) a function to convert excel column names to column numbers. 
 * Oh, congestion charge data needs to be read as well, that's in a different couple of cells than what i've been looking at until now, so add that to the appendix. 
 
 
@@ -103,8 +103,8 @@ This looks like the data [here](https://www.gov.uk/government/collections/local-
 * Clean up queries for Ivo for England. 
 * Look at Scotland data. 2015/16 is the last year with a report but the data on  [this link](https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats] seems to go to 2016/17
 * I'm looking at `Annex A by LA` excel files, which have LA level data. 
-* OK, so data checking: compare surplusses in individual sheets of `sco-15-16.xlss` with table 9, parking surpluses in report 15/16. 
-  + Edinburg is same, so is Glasgow, Dundee, Renfrewshire, Fife, South Lank, East Ayr, Highland, Argyle, Aberdeenshire, Angus, South Ary, Moray,Perth, Stirling, 
+* OK, so data checking: compare surpluses in individual sheets of `sco-15-16.xlss` with table 9, parking surpluses in report 15/16. 
+  + Edinburgh is same, so is Glasgow, Dundee, Refreshing, Fife, South Lank, East Ayr, Highland, Argyle, Aberdeenshire, Angus, South Ary, Moray,Perth, Stirling, 
   + Aberdeen city is 4.89 vs 0?
   + If I add Aberdeen city form Leibling to the Excel totals get the Leibling totals for Surplus.OK 
 * But if I add the Aberdeen city incomes to the Excel ones, it's still not enough. And same for expenditures... So there is another LA that has a discrepancy. 
@@ -114,29 +114,29 @@ This looks like the data [here](https://www.gov.uk/government/collections/local-
 * OK, now for the expenditure discrepancies:
   + Aberdeen city: 0 -> 4.32 
   + South Ayershire expenditure discrepancy: -.327 -> .470
-  + ANd these now also add up. 
+  + And these now also add up. 
 * Start Scotish data query file for Ivo
 * Start outline of Scotland report based on *newly discovered* 16/17 report
-* Penalty notice charge data is apparenlty out of a scanned pdf in 2015/16.... And 16/18 data in a regular pdf. But perhaps the tabulizer package could help me out? Unfortunatley there are some sort of java issues in installing the package...
+* Penalty notice charge data is apparenlty out of a scanned pdf in 2015/16.... And 16/18 data in a regular pdf. But perhaps the tabulizer package could help me out? Unfortunately there are some sort of java issues in installing the package...
 * solved issue using [this link](https://stackoverflow.com/questions/51256462/r-cannot-install-rjava-what-is-r-api-3-4/51267282#51267282), installed rJava, but first had to  also run `sudo R CMD javareconf`. This is presumably only an ubuntu issue, so should work fine on Windows. * Tried tabulizer on the 17/18 pdf and it works!
 
 #### PNC data
 
-*Decriminalised Parking Enforcement - Local Authorities - Income and Expenditure*
+*Decriminalized Parking Enforcement - Local Authorities - Income and Expenditure*
 
 * pdf's exist for 2016/17 and 2017/18. Additionally a scanned pdf exists for 2013/14/15/16. All have:
   + a table of which LAs are doing DPE, and which are considering it etc, this is in the report
-  + a table of PNC incomes. However this last table also has other incomes and expenditures in it, so you'd think it would match with the gov.sco data in the Excel tables, but it doesn't. SOme are quite close, e.g. Glasgow, but others not.   
-* Added table of PCN data to the appendix, created table to summarise the sources. 
+  + a table of PNC incomes. However this last table also has other incomes and expenditures in it, so you'd think it would match with the gov.sco data in the Excel tables, but it doesn't. Some are quite close, e.g. Glasgow, but others not.   
+* Added table of PCN data to the appendix, created table to summaries the sources. 
 
-*Todo: outline scotland data. 
+*Todo: outline Scotland data. 
 
 # Tuesday 19.3.2019
 
-* Found the 16/17 scotland files, they're not under press, but under publications...
+* Found the 16/17 Scotland files, they're not under press, but under publications...
 * Add them to app1
 * Actually clean up the data source tables and move them to code, these are manual data entry files. 
-* Saving the tables into rds? Probably, it is serialised, and as opposed to csv it retains the data types. Let's me cleanly load individual objects and assign then names, and there's no danger of overwriting an object of the same name. But is not human readable. 
+* Saving the tables into rds? Probably, it is serialized, and as opposed to csv it retains the data types. Let's me cleanly load individual objects and assign then names, and there's no danger of overwriting an object of the same name. But is not human readable. 
 * This also involves using here::here() to load the data in the child .rmd documents for the appendices. 
 
 * **mapping England**: OK, so the data is for 353 "local authorities", or are they actually "councils"? Shapefiles seem to have 326 shapes. Wikipedia says there are 27 county and 201 district councils, *which cover the same physical area*. plus 55 UAs, 36 met burroughs and 32 London ones, plus the city, plus scilly. But they overlap..
@@ -146,21 +146,21 @@ This looks like the data [here](https://www.gov.uk/government/collections/local-
 * Download UK map shapefile: *Local Administrative Units Level 1 (January 2018) Super Generalised Clipped Boundaries in United Kingdom * [this link](https://data.gov.uk/dataset/e892da8a-bf06-4d00-a8fd-a578b30b1dca/local-administrative-units-level-1-january-2018-super-generalised-clipped-boundaries-in-united-kingdom)
 * install `sf` package.
 * Get basic maps to work, hooray. 
-* Probably want ultra generalised, this is too fine. Yeah. 
+* Probably want ultra generalized, this is too fine. Yeah. 
 
 * OK, now back to outlining Scotland data. 
 * OK, so there is crossover in the scottish report, and requires picking up data from the other two reports...
 * Check conditional formatting of tables that work in pdf. `condformat` might work. Do they want it?
 * Actually cell_spec in kableExtra probably does the trick [see here](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf). 
 * OK, now queries for Ivo. 
-* I also now have a much better oveview of how much manual tweaking the reports will require (not too much), so I have the idea of highlighting all the spots that need a manual double check (e.g. in red) so that nothing like that gets accidentally published. 
+* I also now have a much better overview of how much manual tweaking the reports will require (not too much), so I have the idea of highlighting all the spots that need a manual double check (e.g. in red) so that nothing like that gets accidentally published. 
 * Add the four Nottingham workplace levy files to data. Need to try if extracting the tables works there as well. 
 
 
 # Wednesday 20.3.2019
 
 * OUTLINE the whole project scheme. 
-* Try extracting the WPL data. No, it doens't work. There are two other tables on the page and this table is too small I guess, or sth, so it will have to be manually input. 
+* Try extracting the WPL data. No, it doesn't work. There are two other tables on the page and this table is too small I guess, or sth, so it will have to be manually input. 
 * Actually, I need to have a look at Wales quickly before I do this. For 2017/18
 * OK, summary looks cool: income, expenditure and total transport as well, all match
 * Participation in the *Wales Penalty Processing Partnership* and councils where "on-street parking controlled by Gwent Police who are planning to transfer it to the
@@ -171,7 +171,7 @@ councils" probably requires an external source, this is in a map legend.
 * Unfortunately `tabulizer` does not extract the tables properly. 
 * meanwhile have a look at importing json objects..
 * OK, so figured out how to extract the json file, and even the table, but that's only the first 1000 records. In order to get what I want I need to query it. 
-* hmm, ok, massive issues with fromJSON giving different results each time. If i don't figure it out, then it will have to me manual downloading of csv files. Not the worst thing in the world, it's still probably better than the ENgland and Scotland data..
+* hmm, ok, massive issues with fromJSON giving different results each time. If i don't figure it out, then it will have to me manual downloading of csv files. Not the worst thing in the world, it's still probably better than the England and Scotland data..
 
 # Thursday, 21.3.2019
 
@@ -217,11 +217,11 @@ councils" probably requires an external source, this is in a map legend.
 
 OK, back to the Scotland PNC data scraped from the pdf
 
-* Becasue the 13-16 data is aleady transcribed in the old Leibling reports, i can try using tabulizer on them instead of dealing with the scanned pdf file. Actually, no they're not htere, and it isn't even important. 
+* Because the 13-16 data is already transcribed in the old Leibling reports, i can try using tabulizer on them instead of dealing with the scanned pdf file. Actually, no they're not there, and it isn't even important. 
 * Next the PCN tables with tabulizer
-* Nah, actually these all have to be written as funcitons, so they can be reused..
+* Nah, actually these all have to be written as functions, so they can be reused..
 * So extra file with functions now. Which will be reused in the templates
-* OK, so extracting PCN numbers. The reusable funciton will only pick out the last year. But I also need to pick out the previous years. So I need a function that picks one or more columns based on the year passed as an argument?
+* OK, so extracting PCN numbers. The reusable function will only pick out the last year. But I also need to pick out the previous years. So I need a function that picks one or more columns based on the year passed as an argument?
 * And of course the numbers have commas in them, so they need to be regexed to become numeric. Actually remove all non-numeric characters. 
 * OK, PCN tables done, phew. 
 * Next, PCN income from pdf
@@ -232,9 +232,9 @@ OK, back to the Scotland PNC data scraped from the pdf
 * Ah, there are some spaces in the authority names.. in the DPE tables. Fixed
 * Additionally five LAs have non-standard name spellings. Need to figure out which ones are standard.. 
 * Additionally there is an empty row in the ie table. Damn, this is getting kludgy..
-* OK, no3 there is a funciton for changing spellings of scottish LAs, I'll add it to all the funcitons. Fixed
-* Now go back to scotland excel import and rewrite as funcitons. I mean move them to the funcitons.R file 
-* OK, all of scotland works now, there are only some column type issues . fixed
+* OK, no3 there is a function for changing spellings of scottish LAs, I'll add it to all the functions. Fixed
+* Now go back to Scotland excel import and rewrite as functions. I mean move them to the functions.R file 
+* OK, all of Scotland works now, there are only some column type issues . fixed
 * Oh, and welsh income is negative .
 
 ** ENGLAND IMPORT ORIGINAL DATA**
@@ -246,17 +246,17 @@ OK, back to the Scotland PNC data scraped from the pdf
 * WHY doesn't this work? Because one cell has "..." in it instead of numbers..
 * FFS, ok, this now works for expend.on and expend. off. Now extend to incomes as well. Done.
 
-# Satyrday 23.3.2019
+# Saturday 23.3.2019
 
 * prealocating a data.frame does not need to list columns, this are small applications anyway, so it's not necessary to worry about efficiency. 
 * Now add the totals for ENgland, transport and PCN totals, so only one row for the whole country, for each year. `auth.type` classed as "X"
-* Now again, because these are single cells, they get exported as the column headers..Same as the scotland data. 
+* Now again, because these are single cells, they get exported as the column headers..Same as the Scotland data. 
 * Totals import OK.
 * Forgot to add country var to England. OK.
 * Add the penalty ranges to the I.E. outturn code as well. This possibly requires checking if the data is there..because it's only there for the last three years.  OK. **this turns out was not true!? not sure how i missed this!!**
-* Remove authorities we don't need. That's all the ones with an O type, except ones with Naitonal park in the name?OK
+* Remove authorities we don't need. That's all the ones with an O type, except ones with National park in the name?OK
 * Congestion charges. 
-* OK, added congestion charges from the main otturn import, so the whole column is imported for everyone, it doesn't matter, since we only use Greater London. 
+* OK, added congestion charges from the main outturn import, so the whole column is imported for everyone, it doesn't matter, since we only use Greater London. 
 * But now i see that some other authorities are kept, ones with WM and YH, and one that's even n/a, this is all 2014 data...Ah, I had the auth.name and auth.type wrong in the metadata, fixed.
 * Double check no of authorities: 9 \* 353 = 3177, that's perfect! In addition also 9\* Greater London and  The national parks, 9 of them each year, except in 2008/09, so that's another 80 records, total of 3266 records. 
 
@@ -280,11 +280,11 @@ OK, back to the Scotland PNC data scraped from the pdf
 # Sunday 24.3.2019
 
 * Change Scotland lookup tables to the same style as the England one. OK
-* move both to separete rds files. OK
+* move both to separate rds files. OK
 * rename data sources file to 00-manual-data-input.R. OIK
 * move the .rds files for metadata into /data/01-raw. OK
 * also rename all of these to start with orig. OK. 
-* **ToDo : Wales doens't have a metadata file, should update that **
+* **ToDo : Wales doesn't have a metadata file, should update that **
 * **ToDo: for consistency, all the original data files names should end with the single year, not the double ones as they do now.. that means also changing all the metadata...**
 * Clean up code to read all meta .rds files at once? OK
 * Looks like this mass import using assign and lapply is changing the character columns into factors. fixed (stringsasfactors option was off in 00-manual-data-input.R)
@@ -325,25 +325,25 @@ OK, back to the Scotland PNC data scraped from the pdf
 * Oh, and also wpl.expend should be expend.wpl, fix it. OK
 * So make sure all the income data is in thousands.. i.e. the Scotland PCN data isn't, so fix it. OK
 * AND the England total PCN incomes don't need to be in their own column, htey should be in the income.pcn one. OK
-* Finished rows and columns in tehcnical documentation for master data. Commit.
+* Finished rows and columns in technical documentation for master data. Commit.
 * **The data for 2013-16 is in a scanned pdf..**
 * **List different definitions?**
-* **TODO maybe figure out thos NA warnings in the import..**
+* **TODO maybe figure out throws NA warnings in the import..**
 * cross-referencing tables.. bookdown seems to be the easiest way.OK
-* **ToDO: sources in tecnical documentation**
+* **ToDO: sources in technical documentation**
 * OK, back to Wales, add % symbols
 * Conditional text, seems to work fine. A bit wooden though.. 
-* Now have to pull out england's surplus as proportion of transport costs.
+* Now have to pull out England's surplus as proportion of transport costs.
 
-* OK, I get England surplus/transport to be 21% not Leibling's 12 %. Additionally if I go directly to the 17/18 file I can confirm that my totals are correct, or rather that the Excel files have an error: the off-street column does not add up to the total they have down (cell DF455 is wrong), probably something to do with Copeland? But the difference is 250 only (thousands), so it doens't affect the 21 % I get. 
+* OK, I get England surplus/transport to be 21% not Leibling's 12 %. Additionally if I go directly to the 17/18 file I can confirm that my totals are correct, or rather that the Excel files have an error: the off-street column does not add up to the total they have down (cell DF455 is wrong), probably something to do with Copeland? But the difference is 250 only (thousands), so it doesn't affect the 21 % I get. 
 * Next the plot.
 * Ahh, the ugly fonts.. was it install.packages("extrafont") that did the trick before? 
 * I think if you use extrafonts you have to upon installation also run `import_fonts()`, but only once, this needs to be in the instructions!
 * This [here](https://stackoverflow.com/questions/36453126/embedding-fonts-in-ggplot2-charts-in-rmarkdown-documents) says you need to specify dev = cairo_pdf to make sure the fonts are embedded. 
 * Hmm, can't figure out how to use extrafont in knitr, only directly to pdf. 
-* OK, shotext seems to be working. But you have to add family to each text bit..OK
+* OK, showtext seems to be working. But you have to add family to each text bit..OK
 * the labels are still too large. OK
-* legned. OK
+* legend. OK
 * OK, also fixed axis ticks so they are all there. OK
 * Now remove ToC from bookdown OK
 * gridlines?OK
@@ -358,7 +358,7 @@ OK, back to the Scotland PNC data scraped from the pdf
 * Now table 2, OK
 * Thousands separator. OK
 * Actually, might as well do all three tables while i'm at it :)
-* There are these odd gaps in the table. turns out there is an `\addlinespace` added randomly because of booktabs beign true. but i have striped anyway, so it looks ugly. using `linesep = ""` fixed that, thanks stackoverflow! OK. 
+* There are these odd gaps in the table. turns out there is an `\addlinespace` added randomly because of booktabs being true. but i have striped anyway, so it looks ugly. using `linesep = ""` fixed that, thanks stackoverflow! OK. 
 * Forgot the total line. OK
 * Make sure the percent change for the total is also calculated. OK
 * add hline on last row. OK
@@ -374,7 +374,7 @@ OK, back to the Scotland PNC data scraped from the pdf
 * Oh, just in case anyone wants to redo old reports I have to limit full data to stop at current.year. OK
 * Now I need to convert numbers to words. `xfun::numbers_to_words()` does the trick.
 * Now I need to capitalise these words as well 
-* Just did a summersault to exclude Torfaen or any other LA with an income under 30,000 from a condiotnal text tree. 
+* Just did a somersault to exclude Torfaen or any other LA with an income under 30,000 from a conditional text tree. 
 * More conditional trees... 
 * Damn, the auth.names have spaces at the end.. I need to strip them. Update function and rerun data import. OK
 * maybe a page break would be nice for each new section? OK
@@ -384,21 +384,21 @@ OK, back to the Scotland PNC data scraped from the pdf
 
 * Finish the surplus text in the Wales report. OK
 * Because Leibling splits up the surpluses into surpluses and deficits, I can add two extra rows at the bottom. Hm, but that's not that simple since it is different ones every year...OK. 
-* OMG, that was a heroic effortl, and it worked! To get the sub group sums conditional on each year's surpluses or deficits, and additionally keep the transport data only for the last year in there.. crazy. OK.
+* OMG, that was a heroic efforts, and it worked! To get the sub group sums conditional on each year's surpluses or deficits, and additionally keep the transport data only for the last year in there.. crazy. OK.
 * Now the text requires I extract the proportion that the top three councils contribute to the positive surplus.. OK
-* Foudn an error in Leibling, the 56% is from the total surlpus, not the 15m positive surplus. 
+* Found an error in Leibling, the 56% is from the total surplus, not the 15m positive surplus. 
 * Wales report complete. OK
-* Committ
+* Commit
 * check the 2015/16 report/
 * weird error in the expend table 15-16: Wrexham down as 583 instead of 304 in 2013/14
-* oh, this format round stuff is so ugly, need to make a fucntion.OK
+* oh, this format round stuff is so ugly, need to make a function.OK
 * surplus as proportion of total transport expenditure is different in 15/16 compared to Leibling. But that's because he's using gross expenditure before parking surplus, although he doesn't say that in the text. error?
 * OK, go through queries and see what is missing. 
 * Saving the reports, can i pick the name and folder?
 * OK, folder is fixed in yaml. 
 * What about name? Looks like you can't change that dynamically if you want to use rstudio - knit. 
 
-* I'm getting an  ! LaTeX Error: Unknown float option `H'. errror.. didn't have it before. [looks like this answe](https://stackoverflow.com/questions/48014265/unable-to-use-format-latex-in-knitrkable-within-a-rmarkdown-document-g?rq=1) is the solution, i need to load the latex packages in the yaml
+* I'm getting an  ! LaTeX Error: Unknown float option `H'. error.. didn't have it before. [looks like this answe](https://stackoverflow.com/questions/48014265/unable-to-use-format-latex-in-knitrkable-within-a-rmarkdown-document-g?rq=1) is the solution, i need to load the latex packages in the yaml
 * Send off Wales reports. 
 * parametrize the report. but doesn't work - Error in eval(expr, envir, enclos) : object 'params' not found . Sorted
 * Hmm, let's try some updates and read up on param to make sure i;ve got this right, otherwise an repex will be in order. 
@@ -410,8 +410,8 @@ OK, back to the Scotland PNC data scraped from the pdf
 * If what you're adding always has the same year-auth.name combinations? And then just issue a warning when you are overwriting them? repex.
 
 1. If the anti_join with the master has the same number of rows as master, then you are adding X new rows, and not overwriting anything.
-2. If the anti_join is smaller, you are overwritting. 
-2.1. If the difference is smaller than the update, then you are overwritting X with X+Y rows. 
+2. If the anti_join is smaller, you are overwriting. 
+2.1. If the difference is smaller than the update, then you are overwriting X with X+Y rows. 
 2.2. If the difference is larger, than the update, then I can't know.
 Instead I can just make sure that the update is always the correct nrows. e.g. 22 for Wales, 32 for Scotland? What about england? if there are different number of national parks, that will mess things up? 
 
@@ -423,23 +423,23 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * Todo Now clean up the Wales references as well! OK
 
 * OK, now Scotland
-* TODO: shoudl I move all the code out of the Rmds? It would look nicer for sure. Done
+* TODO: should I move all the code out of the Rmds? It would look nicer for sure. Done
 * OK, DPE table done! And that was not easy!
-* let's try a map. The scotland map has 41 polygons, I need to colapse them into 32.. 
+* let's try a map. The scotland map has 41 polygons, I need to collapse them into 32.. 
 * More lookup table updating.. 
 * map works, but for some reason the font won't work - if i leave the par command there it stops working. *todo*?
 * Ugh, East dunbartonshire has lost it's year.. that's the import of the DPE table..Fixed
-* UGH, turns out i also dont have Scotland total transport data. OK
-* i had originally entered both income and expenditure cells for the total transport into the metadata, but that seems unnecesary, so i'll change that now to just the net revenue expenditure one. fixed in 00-orig-data-entry. OK
-* OK, added funciton for importing scotland transport totals, added the code to 01-orig-data-import, and now reran the whole thing. OK
-* Now need to update the technical doc, to take itno acount new lines, six of them? Aah, nice, code just works! OK
+* UGH, turns out i also don't have Scotland total transport data. OK
+* i had originally entered both income and expenditure cells for the total transport into the metadata, but that seems unnecessary, so I'll change that now to just the net revenue expenditure one. fixed in 00-orig-data-entry. OK
+* OK, added function for importing scotland transport totals, added the code to 01-orig-data-import, and now reran the whole thing. OK
+* Now need to update the technical doc, to take into account new lines, six of them? Aah, nice, code just works! OK
 
 * OK< back to Scotland summary. 
 * After 2013 Scotland started reporting their incomes as negative. LOL. OK, where do I fix this? In the import function I think. best. Yeah, added an abs there. OK
 * Summary table looks great - but (error) it massively disagrees with the Leibling report. No idea how that's possible, although the fact that there is no data for Aberdeen city in the excel files could be the cause!?
 * Still haven't added the percentages to the bottom row. need to fix that in the Wales one as well. OK 
 * Wales as well. OK
-* Instructions: ammending tables with a footnote!
+* Instructions: amending tables with a footnote!
 * scotland summary table and text are now OK
 * plot. OK
 * issues: floats of tables and figures, little control..use "H". OK
@@ -458,7 +458,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * top/bottom. first use deframe() instead of pull in order to get a named vector. nice tip!
 * top/bottom: exclude from list if they have under 30,000 income/expenditure.
 * *clean up code: stop using column indices!*
-* in dplyr nrow(.) can be replaced wiht n() .tip
+* in dplyr nrow(.) can be replaced whit n() .tip
 * excluding rows for under 30.000 is now only done for largest decreases, but should also be for largest increases... That needs to then be fixed in the text.
 * change that in wales as well.. 
 * OK, done for sco.expend. OK
@@ -470,7 +470,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * OK < a bit of wrangling, but i got the top 3 incomes out. OK
 * add to Wales. OK. 
 * need to create function for 2017-18 etc..OK
-* Note: i'm getting latex warnign; label multiply defined, but it seems that's because of longtable meaning the table caption is on two pages. So you can ignore it. tip!
+* Note: i'm getting latex warning; label multiply defined, but it seems that's because of longtable meaning the table caption is on two pages. So you can ignore it. tip!
 * OK, income and expenditure codes and texts OK in both Scotland and Wales. 
 * ToDo funfisc, replace all. OK
 * fundec, replace all. OK
@@ -479,7 +479,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * I've moved the sco surplus code to the top, because in wales it is used in the text there, don't forget. 
 * surplus totals for deficits and sufficits are different from Wales, since in Scotland we don't have individual level transport totals. So that needs to be rewritten
 * but that isn't actually true, the information is in the IE excel files... Need to rewrite the import.. OK
-* fixed in funcitons.R and 01-import. create new original/master data. OK
+* fixed in functions.R and 01-import. create new original/master data. OK
 * Now first rerun the technical.rmd. OK
 * OK, back to surplus. table OK
 * First fix the binning function to let you have 0 as well as poz and neg/.OK
@@ -488,7 +488,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * width of first column.. OK. 
 * now surplus text. 
 * top three surplus councils need to be named..OK
-* do that in Walse as well. OK
+* do that in Wales as well. OK
 * Now add the top 3 bottom 2 thing that we did everywhere else, but seems to be missing here. OK
 * HMM, when i exclude the extremes because they have too little income/expenditure/surplus, then I am only looking at the top/bottom 2/3. But what if after excluding them there are still very low values left? OK
 * OK, turn it around. first find the top three and bottom two. Then anti_join, but just below/above, to get the excluded ones out... let's try this. OK
@@ -497,7 +497,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * Replicated for Wales surpluses. OK
 * still need to replicate for incomes and expenditures. in scotland OK.
 * still need to replicate for incomes and expenditures. in wales.OK
-* SHit, if surplus goes from poz to neg or vv, there should be no change. OK.
+* Shit, if surplus goes from poz to neg or vv, there should be no change. OK.
 * Also, the transport numbers for scotland are definitely wrong. I am using net expenditure, but I should presumably be using gross expenditure? OK, I'll fix that now... BUT still no correspondence with the Leibling report.. 
 * TODO: table of expenditure as proportion of income over the years? That removes the need for the final column in the expend.table
 * SO if a change or proportion is nan or inf it should become NA, right? Yeah, but now the problem seem to be the italics... If it's NA and italic, it won't make it disappear. Because the whole column is now character.. So I need to fix that as well. This is done in Scotland. OK
@@ -517,7 +517,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * change in all scotland and wales reports. ok.
 * Now DPE east dumbartonshire's lost year. OK, fixed. 
 * also cleaned up some of the warnings. all of them actually. OK
-* OK, table 3 - comparing the 3 nations summaries. Can it be generalised, so it can be in every report. Most recent year available. 
+* OK, table 3 - comparing the 3 nations summaries. Can it be generalized, so it can be in every report. Most recent year available. 
 * oops, there might be an error in the england calc in wales forgot to group? NO, it;s OK. 
 * error: the england and london figures in table 3 of scotland report 16/17 don't quite add up, specifically the non London income is about 2mill smaller and the expenditure about 7 million smaller. 
 * OK, table 3 is now done, for both Scotland and copied to Wales as well. OK
@@ -529,15 +529,15 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * Summaries for all three tables make the fact that on and off are not added up already seem a bit odd. And requires more ugly code. Maybe I should do that in the import function. Then I should also do the surpluses? Probably. It would be nicer anyway for giving out the open data. 
 * OK, import adds up england totals and calculates surplus now.OK
 * OK, import calculates surplus for Scotland now. OK 
-* could remove the superflous claculations of it later - although it makes no difference. OK
+* could remove the superfluous calculations of it later - although it makes no difference. OK
 * Now wales: OK, added that, and also changed that in the wales update.R file.OK 
-* Reran wales update, make sure the copy.file has overwrite swithced on!
+* Reran wales update, make sure the copy.file has overwrite switched on!
 * technical: add this: only on+off and surplus have been calculated. Despite it being bad practice probably. 
-* Now clean up all the unnecessary calculatoins of surpluses.. ok.
+* Now clean up all the unnecessary calculations of surpluses.. ok.
 * OK, now fix that in Wales as well.OK.
 * Commit. 
-* OK, the summary changes over past 4 years work now, but odn't quite match up with Leibling's ones... 
-* Also, he has a GB total as well inthere...Add that. OK
+* OK, the summary changes over past 4 years work now, but don't quite match up with Leibling's ones... 
+* Also, he has a GB total as well in there...Add that. OK
 * actually, add GB total to table 3 as well.., OK
 * This is such a stupid table. It should be annual change, not over 4 years, who can interpret that!? I'll do both. OK, done.
 * Now need to add formatting ..OK
@@ -559,7 +559,7 @@ Instead I can just make sure that the update is always the correct nrows. e.g. 2
 * double check everything. OK
 * OK, scotland report: PCN numbers table now goes back to 2013. 
 * Next: the PCN income as prop of DPE income table (table 7 in the original report). 
-* ffs, turns out there is LA level PCN data for england for before 2015 afterall, somehow.
+* ffs, turns out there is LA level PCN data for england for before 2015 after all, somehow.
 i just missed it... better sort that out now...OK
 * *todo*: in the end re-download all the original data files!!
 * OK, the PCN columns for England are now input, although I'm a bit worried about the 08/09 one, not that that matters much tbh.. But also it isn't added up in the total income column there? weird. not important. OK
@@ -580,19 +580,19 @@ i just missed it... better sort that out now...OK
 # Monday 1.4.2019
 
 * respond to Ivo and Phill's answers. OK
-* Incorportate the following:
+* Incorporate the following:
 + change visible in text  is described as such in text. (difference smaller than 0.05 is under FunDec threshold). OK.
 + add 30.000 explanation sentence> OK
 + Table 2 units.OK
 * There are still some format's that haven't been FunDec-ed.OK 
-* changed all the 0.02 to 0.05 when saying two things are the same, since 0.05 at FunDec disappeares. OK.
+* changed all the 0.02 to 0.05 when saying two things are the same, since 0.05 at FunDec disappears. OK.
 + delete for in tfs.ok
 + unit in table 2. OK
 *  "Income has .. sentence". OK, so there are 12 possible income/expenditure/surplus combinations... I should write a function I guess. Later. Nah, simplified it. 
 * million/m. OK
 * all other typos. OK
 * The surplus/deficit top/bottom 3 are wrong because some are deficits.. query.OK
-* also in the surlus table Clackmanshire has no change, but it should, -100%, consistent with the others. AH, comparing signs. but zero has a zero sign. so instead of signs being different, i have to have signs being 2 apart. Fixed. 
+* also in the surplus table Clackmanshire has no change, but it should, -100%, consistent with the others. AH, comparing signs. but zero has a zero sign. so instead of signs being different, i have to have signs being 2 apart. Fixed. 
 * oops, looks like the FunMulti text was not done in Wales? OK
 * add tfs table.OK
 * *add total to tfs table.OK
@@ -614,35 +614,35 @@ i just missed it... better sort that out now...OK
 * Man, took a while, but finally got it to work! OK
 * OK, Wales references are now all cool, only problem is this (!?) has somehow broken the table cross-referencing!?
 * Let's try Scotland and see how that fares. Yeah, as soon as bibliography is added to the yaml, the other references seem to stop working...
-* No idea how this is happening!? ALso no idea how it suddenly started working again?! Anyway, refs are in Scotland, needs cleaning up
+* No idea how this is happening!? Also no idea how it suddenly started working again?! Anyway, refs are in Scotland, needs cleaning up
 * rename rds bibs, to have bib in the name. OK
 * ONS for maps name needs {}.OK
 
 # Tuesday 2.4.2019
 
 * make sure the references work for Wales as well
-* cleaning up: turns out i need to be careful distinguishing between the fiscal year and year published.. in the bibs it's not the publihsed year that's called year, because that's what the ref manager picks up it seems. And so the key actually has the fiscal year in the name because that's the one I can pass to it from current.year. OK
+* cleaning up: turns out i need to be careful distinguishing between the fiscal year and year published.. in the bibs it's not the published year that's called year, because that's what the ref manager picks up it seems. And so the key actually has the fiscal year in the name because that's the one I can pass to it from current.year. OK
 * referencing style
   + date accessed. update APA, OK.using [this style editor](http://editor.citationstyles.org/visualEditor/)
   + But change text of date accessed in refmanager. meh, this seems a bit involved.. i think i would need to switch from bibtex to biblatex, and then update the style again... Not important anyway. it happens in the WriteBib function. 
-  + capitalisation. solve by using {}. OK.
+  + capitalization. solve by using {}. OK.
   + italics instead of quotations, OK APA. 
   * tip: when using WriteBib form a dataframe, column names shouldn't have "." in them. 
 * add conditional formatting to change columns. OK
 * crossing zero requires a bit more work...But done for income, now expenditure. This one is tricky. Actually it's the bloody South Ayershire that's wrong that's fucking everything up. I should manually fix it to what Leibling has. OK
 * font size of table captions changes. why? oh, because they are longtable... hmm, that means i best make them all longtables. OK
-* ALso striped rows don't work if you have colapsed. There's an unspported hack, but it doesn't work with Table 2 in Scotland I'm afraid. OK
+* Also striped rows don't work if you have collapsed. There's an unsupported hack, but it doesn't work with Table 2 in Scotland I'm afraid. OK
 * add note on comparison table.OK
 
 * maps? OK, done
-* OK, mapping means figuring out palattes, make them nice and make them match the ones in the tables. It also means centering on zero. So probably two palattes diverging. OK [this link](https://stackoverflow.com/questions/10985224/r-heatmap-with-diverging-colour-palette/10986203#10986203) was useful. 
+* OK, mapping means figuring out palettes, make them nice and make them match the ones in the tables. It also means centering on zero. So probably two palettes diverging. OK [this link](https://stackoverflow.com/questions/10985224/r-heatmap-with-diverging-colour-palette/10986203#10986203) was useful. 
 * but the example there is silly, if the data is skewed the zero will be way off. Maybe it isn't silly, just need to fix the scale/legend?
 * kinda works, but i need to figure out the scale legend as well. OK
 * and then split it into two palettes. 
 * aah, viridis is great, does the interpolation for you, colorbrewer has only 11 max and then you have to use colorramp to interpolate. 
 * yeah, palettes work!!OK
 * Now need to be able to swap D and C if i want. 
-* phew, some messines, but it seems to work. 
+* phew, some messiness, but it seems to work. 
 * Not as pretty as before, but at least consistent..
 * font for scale legend can't be fixed?
 * adding % to scale.. means need to get nice axis `at` . OK
@@ -653,7 +653,7 @@ i just missed it... better sort that out now...OK
 # Wednesday 3.4.2019
 
 * change plot line colours and map. OK
-* add aplha to the conditional tables at least? Hmm, so the findColours function drops the alpha values. This sucks. 
+* add alpha to the conditional tables at least? Hmm, so the findColours function drops the alpha values. This sucks. 
 * OK, but i can use findCols instead. I get that to work, the palettes now have 8-character colours, the last two being the alpha. And it works in the maps. But in the conditional formatting it doesn't come through. No, it won't, seems LaTeX doesn't handle it. Could try mixing with white? But too much effort. Nope, sorted it out. `FunLigthen()` But i don't like it, so revert to normal..
 * instructions: install Latex, tinytex maybe?
 * fix palette function for non-negative scales
@@ -668,8 +668,8 @@ i just missed it... better sort that out now...OK
 * efficiency error somewhere.OK
 * instructions: you do have to read the text through. It will say things like 14% and 14% respectively, which you might want to smooth over..
 * todo: millions wales.ok
-* instructions: sometimes the float cause text to ovwerflow... not sure why, but the alternative you don't want: where floats are actually floating. This won't work well in a document like this with so many tables and figures, you want them to stay in the correct order with the text. So if this happens manually insert `\pagebreak` at any location that is overflowing to force a new page. 
-* fix words to numbers function so that it only works if number is > 10. killin it.OK
+* instructions: sometimes the float cause text to overflow... not sure why, but the alternative you don't want: where floats are actually floating. This won't work well in a document like this with so many tables and figures, you want them to stay in the correct order with the text. So if this happens manually insert `\pagebreak` at any location that is overflowing to force a new page. 
+* fix words to numbers function so that it only works if number is > 10. killing it.OK
 * add conditional formatting of tables.OK
 * move code out of rmd. OK for wales
 * OK, testing external code:
@@ -690,64 +690,64 @@ i just missed it... better sort that out now...OK
   + Done for Wales. OK
   + done for Scotland. OK
 * fix an extra space in the references titles somewhere. OK
-* CPI, add to both reports.  and bibiography
-  + add reference: add to original input. update must do what? change date accessed and year (publihsed)? yes. in both Wales and Scotland updates. OK
+* CPI, add to both reports.  and bibliography
+  + add reference: add to original input. update must do what? change date accessed and year (published)? yes. in both Wales and Scotland updates. OK
   + also update the Wales data reference with the current year as year published. 
 * OK, how does this RPI table work then?
 + first need to download it, but only if a current version doesn't exist already. This happens in the update file. 
 + OK, so what do I want: for each report I want the annual RPI for the previous 5 years. So i need the RPI for 3/4/current.year-4, and 3/4/currentyear. 
 + Write function, double check [here](https://www.investing.com/economic-calendar/rpi-267), all checks out. 
-+ insert into Wales and Scotlan, works!
++ insert into Wales and Scotland, works!
 * add reference in text for RPI. 
 * ffs, one of the update scripts was turning the year in the bib. master into a character vector each time, and every time i fixed it on one side it overwrote it on the other.. fixed. 
 * instructions: change the style file for citations if you want. 
 * annual/not annual change for countries. OK
-* That calculation is limited by how far back you can go - 2012/13 is the last year that has numbers for all 3 countries. So let's just never do one earlier?Nah, the code should work. try it out? Yeah, it works! also the RPI is caclucated for the correct period. 
+* That calculation is limited by how far back you can go - 2012/13 is the last year that has numbers for all 3 countries. So let's just never do one earlier?Nah, the code should work. try it out? Yeah, it works! also the RPI is calculated for the correct period. 
 * first clean up a bit, move the bib, report file. OK. 
-* while working on wales.R comment out the params, so I can sournce the file direclty instead of compiling the pdf. don't forget to swithc back OK
+* while working on wales.R comment out the params, so I can source the file directly instead of compiling the pdf. don't forget to switch back OK
 * also, after fixing wales.R i removed some objects that are references in the text in the rmd, don't forget those. OK
 * Wales done. repeat steps for Scotland.OK
 * annual/not annual change for LAs. OK
 * OK, adding the average annual change column to the table is easy. The problem is now the divergent palette. Since it only takes the range of the input to determine the palette, but I need it to take into account the other column as well). But I fixed it by adding another argument for the full range of the data. COOL!!
 * that had the consequence that my poor style - not explicitly naming arguments in my own functions, which i later rewrite and add more arguments!! tip, don't do that - but it's all good. OK
-* don't forget to add another column heading in the kable call after adding a new column. and in expenditures, fix the last column widht. 1.5 and font to 9.OK 
+* don't forget to add another column heading in the kable call after adding a new column. and in expenditures, fix the last column width. 1.5 and font to 9.OK 
 * expenditure table Wales. OK
 * income table Scotland. OK
 * expend table Scotland. ok
-* there are stil some infinite values in expend scotland..
+* there are still some infinite values in expend scotland..
 * income maps Wales.ok
-* income maps Scoltalnd.ok
-* enxpend maps Walse.ok
-* Expend maps Scoltand.ok
-* instrucitons: this is all stupidly backwards compatible..
-* dear lord, getting the maps to play along is a mess... for some reason anything i tried there was somehting wrong, and my bespoke palette function was not making it easy. especially since the pairs of maps now have to share a palette. Still not sure this is working OK, but separating the plots seems to be the safest option. 
+* income maps Scotland.ok
+* expend maps Wales.ok
+* Expend maps Scotland.ok
+* instructions: this is all stupidly backwards compatible..
+* dear lord, getting the maps to play along is a mess... for some reason anything i tried there was something wrong, and my bespoke palette function was not making it easy. especially since the pairs of maps now have to share a palette. Still not sure this is working OK, but separating the plots seems to be the safest option. 
 * What if I move them all into an appendix? Oh, that won't work, because there has to be some text in between.. oh, if there are two lines it's OK? [here](https://stackoverflow.com/questions/27444804/some-figure-captions-from-rmarkdown-not-showing)
-* Still not sure the merged palette is OK, there seems to be a bit of a shift in the scale, but it doens't affect the actual readability or usefulness of the maps. 
+* Still not sure the merged palette is OK, there seems to be a bit of a shift in the scale, but it doesn't affect the actual readability or usefulness of the maps. 
 * Also these bloody floats won't stay in place, even in the appendix..Keeps putting it above the section title.. apparently [from this question here here](https://tex.stackexchange.com/questions/285238/avoid-figure-above-section-title)
 the latex flafter package stops that from happening. But now I'm getting an empty page instead. Just leave it, let them fall where they may. 
-* Comitt
-* aberdeen. OK
+* Commit
+* Aberdeen. OK
 * add manually original data. OK
 * merge in import with the rest of scotland data
 * add template to update.OK
 * add bibliography.OK
 * quick test and clean up. 
-* instructions: scotland don't try 2015, because it doens't have 4 years of preceeding data. 
+* instructions: scotland don't try 2015, because it doesn't have 4 years of preceding data. 
 * network graph of pipeline. OK!
 * commit
 
-# friday 5.4.2019
+# Friday 5.4.2019
 
 * where did the joining from lines come from!? fixed, it was because the knit options had been moved into the .R script, so they had not been read. OK
 * forgot to calculate the surpluses somewhere!? Aberdeen. fixed. 
 * update files should have inputs set to current year! Added check. 
-* hmm, but think about this, for testing this is problematic, it adds things to the master files that shouldn't be there!? saorted. 
+* hmm, but think about this, for testing this is problematic, it adds things to the master files that shouldn't be there!? sorted. 
 * Add check to stop from running year for which no data exists. OK
 * instructions: tables are still being pushed off the page. use newpage to control 
 * if you are recompiling a modified RMD, you can't rerun the update file, it will have overwritten it! why can't you run it directly again? because it compiles it to the same folder. maybe i can fix that. No, I can't the solution I have doesn't work because of the params that need to be passed, especially current.year. 
 * OK, so instead I have to add an option to the update file. OK
 * changed name: update templates to scripts. OK
-* SOme defensive coding - the surplus/deficit stuff is still not clean.. 
+* Some defensive coding - the surplus/deficit stuff is still not clean.. 
 * SO fix Wales update as well:
   + add check for adding new data
   + add check for recompiling. OK
@@ -757,8 +757,8 @@ the latex flafter package stops that from happening. But now I'm getting an empt
 * OK, updates work!
 * Commit
 * surplus/deficit text. OK for Scotland, now Wales
-* surplus/deficit fixed in Wales as wel 
-* david's transport totals. sent email. 
+* surplus/deficit fixed in Wales as well 
+* David's transport totals. sent email. 
 * instructions
   + folder tree colour coded?OK
   + step by step
@@ -771,7 +771,7 @@ the latex flafter package stops that from happening. But now I'm getting an empt
   + formatting.OK
   + multiple labels defined. 
 * write readme.md
-* remove Scotladn 2017/18
+* remove Scotland 2017/18
 * cleaned up the Wales tables a bit. 
 * why is master.csv not updating? fixed. 
 next: 
@@ -821,13 +821,13 @@ loaded via a namespace (and not attached):
 [53] hms_0.4.2           yaml_2.2.0          rvest_0.3.4         rJava_0.9-11       
 [57] knitr_1.23         
 ```
-* doens't work because of `summarise_at` where i used a list to name the function. I never wrote how i got to that in the first place..the `list(~sum)` notation that i have there, i remember it being fiddly, and now it's wrong. and shockingly it worked on Ivo's computer, which might just mean he had an onlder dplyr package?
+* doesn't work because of `summarise_at` where i used a list to name the function. I never wrote how i got to that in the first place..the `list(~sum)` notation that i have there, i remember it being fiddly, and now it's wrong. and shockingly it worked on Ivo's computer, which might just mean he had an older dplyr package?
 * I should use **packrat** for this!
 * Also, add the packages you forgot into the instructions!
 
-# Moday  15.7.2019
+# Monday  15.7.2019
 
-* Installing some of the packages needed for knitting the user manual. They are not in the instructions though, becuase i'm the only one supposed to knit the user manual.
+* Installing some of the packages needed for knitting the user manual. They are not in the instructions though, because i'm the only one supposed to knit the user manual.
 * OK, then seems `wales.R` works fine. but if I run the whole script i get `error while loading shared libraries: libHSpandoc-2.7.3-52CDSbRvPJE5dmoqyPvjM8-ghc8.6.5.so: cannot open shared object file: No such file or directory`. 
 * let's see if i can narrow down the location..Seems to be related to citeproc i.e. the bibliography. but even if i remove it it fails to compile, although i do gave a .tex file and **See https://yihui.name/tinytex/r/#debugging for debugging tips.**
 * Once added the option tinytex verbose i see **I can't find the format file `pdflatex.fmt**. 
@@ -835,19 +835,19 @@ loaded via a namespace (and not attached):
 * reinstalled `texlive-most` and get pdfs to compile, but still have citeproc issue.
 * installed pandoc instead of pandoc-bin, and that finally worked.. 
 * Wales script works for 2016 and 2017
-* Let's try Scotland. Wokrs
-* I have a `.hidden` empty file in the outputs folder, but i don't know why? maybe to keep the folder in the repositrory even if it is empty?
+* Let's try Scotland. Works
+* I have a `.hidden` empty file in the outputs folder, but i don't know why? maybe to keep the folder in the repository even if it is empty?
 * OK, so both reports are working. and both have been updated to work with the new dplyr version or whichever package has changed in between. 
 * so this means I have to set up packrat for this to be reproducible, otherwise this will keep breaking...
 * commit
-* had to sort out ssh authentication. still doens't work. or rather works only sometimes!?
+* had to sort out ssh authentication. still doesn't work. or rather works only sometimes!?
 
 # Tuesday 16.7.2019
 
 OK, let's go through the comments!
 And set up packrat
 
-* Packrat didn't work - because of V8 not working. WHy did i need V8? 
+* Pack rat didn't work - because of V8 not working. Why did i need V8? 
 * also ssh only works from shell, not from Rstudio. Asked question: https://community.rstudio.com/t/ssh-authentication-not-working-with-git/35456, no answer a week later..
 * Instead I'm pushing manually: `git push -u origin master`
 * ToDo: look out, there seem to be some log files being created when compiling to latex, not sure why?
@@ -855,16 +855,16 @@ And set up packrat
 
 # Tuesday 30.7.2019
 
-* OK, so still no good answer for gettting ssh-agent to work through Rstudio, continue pushing manually.
+* OK, so still no good answer for getting ssh-agent to work through Rstudio, continue pushing manually.
 * Next in order to get packrat to work have to get V8 to work, but that seems to be very tricky on arch [[https://github.com/jeroen/V8/issues/66]]. But I can avoid this if i avoid diagrammeRsvg. Can I do this? 
 * Only if I rewrite `scheme.R` in `docs/technical/instructions` to get the png out of the dot in a different way. 
 * use the system command `dot` instead. careful though, this needs the quotation marks to be the double ones, but replaced all and now works perfectly. 
-* OK, so this removes the need for `DiagrammeRsvg`, so should allow me to use packrat properly. * ok, let's try initialising packrat again
-* ugh, this is weird, it is still listing diagrammeR and Rsvg, i don't know why though? Ach, they were mistekenly loaded in the instructions. fixed
-* packrat initialised
+* OK, so this removes the need for `DiagrammeRsvg`, so should allow me to use packrat properly. * ok, let's try initializing packrat again
+* ugh, this is weird, it is still listing diagrammeR and Rsvg, i don't know why though? Ach, they were mistakenly loaded in the instructions. fixed
+* packrat initialized
 * change packrat.opts option: `vcs.ignore.src: TRUE` so that the actual package sources can be ignored by github. 
-* this means that if cloned, oackrat will cause it to download any packages required from cran instead of having them in the github repo. which is fine. 
-* very annoyingly at the end of initialising packrat you get the message "initialization complete! there were 50 or more warnings.." but then it restarts the R session, which means you cannot see the warnings.. So i don't knwo what it is. ToDo open issue?
+* this means that if cloned, packrat will cause it to download any packages required from cran instead of having them in the github repo. which is fine. 
+* very annoyingly at the end of initializing packrat you get the message "initialization complete! there were 50 or more warnings.." but then it restarts the R session, which means you cannot see the warnings.. So i don't know what it is. ToDo open issue?
 
 
 * annoyingly packrat seems to knit all the rmd files in the project, which also produces a bunch of log files that i do not need.. 
@@ -876,15 +876,15 @@ And set up packrat
 *TODO: try out cloning project to other laptop, test out packrat in practice. 
 * OK, now actually have a look at the Scotland and Wales comments
 * Scotland first
-* FFuckssake. the plots are suddenly not rendering anymore. No idea what happened there..Alwyas source the update script?
+* FFuckssake. the plots are suddenly not rendering anymore. No idea what happened there..Always source the update script?
 * really should have a makefile doing all this...
 * Copyright notice for maps can be on map, but reference cannot
 * can the reference be in the caption? [apparenlty yes](https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html#text-references)
 * Seems to work OK, add to all maps
-* What is the dea with the "label mutliply defined warnings?" they are not mulitply defined. And only some of them cause an issue? But it's only a warning the pdf is fine!? what gives?
+* What is the deal with the "label multiply defined warnings?" they are not multiply defined. And only some of them cause an issue? But it's only a warning the pdf is fine!? what gives?
 
 * There were weird symbols in front of the pound sign in one of the tables. They went away, but not sure why? 
-* Todo: mention this to Ivo, the weird sign could be an artefact on his computer, hopefully packrat will solve this. 
+* Todo: mention this to Ivo, the weird sign could be an artifact on his computer, hopefully packrat will solve this. 
 * Scotland done
 
 # Wednesday 7.8.2019
@@ -908,24 +908,24 @@ And set up packrat
 # Monday 2.9.2019
 
 * Update Wales template with Ivo's comments from 30.8.
-* Update Scotland template wiht Ivo's comments from 30.8.
+* Update Scotland template whit Ivo's comments from 30.8.
 * Reply to his last comment:
 
 Yeah, I get that reading the text it isn't immediately obvious which things are easy to automate, which are a bit trickier and which are prohibitively complex. This section is perhaps in the tricky category. (But I could reuse the code several times in each of the reports.) But if you look carefully, all it does is pick a variable (e.g. change in surplus - yes, this means first filtering out all the councils with deficits) and then pick the top three and bottom two. Additionally (to make it even more finicky) you then have to take out any councils with extra small surpluses, because they look crazy. 
 
-So yeah, it's finicky, but managable. 
+So yeah, it's finicky, but manageable. 
 
 The only thing I really had to worry about here was if there are fewer than 5 councils with a surplus or deficit (because then I cannot have top 3 and bottom 2) and to make sure that the sentence structure works regardless of the number of councils that are excluded. 
 
 So e.g. I might have
 * no excluded councils -> the sentence simply ends with "."
-* one council to exclude -> I addd the text "(excluding XX because..)"
-* two councils to exlude -> I add the text "(excluding XX, and YY because)"
+* one council to exclude -> I add the text "(excluding XX because..)"
+* two councils to exclude -> I add the text "(excluding XX, and YY because)"
 * more councils to exclude -> same as before, but make sure the "and" is only before the last council. 
 
-The point being that there are four possibities, this comprehensively covers all the eventualities, and I can map an outcome for each of them. 
+The point being that there are four possibilities, this comprehensively covers all the eventualities, and I can map an outcome for each of them. 
 
-The problem with some of the ones you flagged in the last round of comments is that  the "tree" of possible inputs and outputs is just too unwieldly. Just thinking about what all the possible inputs could be and what one might want it to output to makes my head hurt.. Of course, if you write me the mapping, then I would be more than happy to code it up. 
+The problem with some of the ones you flagged in the last round of comments is that  the "tree" of possible inputs and outputs is just too unwieldy. Just thinking about what all the possible inputs could be and what one might want it to output to makes my head hurt.. Of course, if you write me the mapping, then I would be more than happy to code it up. 
 
 It's the mapping that is the problem, thinking through all the possible inputs, making sure you're not missing any, and then mapping it on specific outcomes. The one you pointed out here is quite really quite simple compared to the ones last time. Hope this makes sense!
 
@@ -934,8 +934,8 @@ It's the mapping that is the problem, thinking through all the possible inputs, 
 # Wednesday 11.9.2019
 
 
-* Remove packrat and initialise to renv!
-* initialisation ok, additionally manually added knitr and markdown as per warnings. lock file written, commit. 
+* Remove packrat and initialize to renv!
+* initialization ok, additionally manually added knitr and markdown as per warnings. lock file written, commit. 
 * also add bookdown
 
 
@@ -950,49 +950,49 @@ Run through all data originally entered and imported for england:
 
 I think this is it.
 
-OK, so I'll now start working through england.R and the report template. The update script will currenlty only use the begining and compiling sections. I will complete the new data section last. SO as I go along this works for the current year and can test it like that. 
+OK, so I'll now start working through england.R and the report template. The update script will currently only use the beginning and compiling sections. I will complete the new data section last. SO as I go along this works for the current year and can test it like that. 
 
 * OK, bibliography. Looks like the budget and income/expenditure sources for england are OK, but not the WPL?
-* OK, looks like this neds to be first updated in the 00-orig-data-entry
+* OK, looks like this needs to be first updated in the 00-orig-data-entry
 * careful! i've now added the wpl refs to the master bib. in the scotland and wales update scripts i select the relevant bibliographies, which includes england data, but i have to remove england budget and england wpl rows, because those are not used. ok, done. 
 * in the england reports I presumably also don't need the PCM data for Scotland, right? Oh, the report actually has no comparison with Wales or Scotland at all?! Ask Ivo about this. OK.  
 * I'll remove all non england references for now though. 
-* there's a check in the update script to make sure there are enough rows in the data. This is tricky since England has a bunch of different types of rows: 1 gla, 353 LAs, 9 national parks and 1 national total, thats 364. So i'll put the check in.i guess. 
+* there's a check in the update script to make sure there are enough rows in the data. This is tricky since England has a bunch of different types of rows: 1 gla, 353 LAs, 9 national parks and 1 national total, that's 364. So i'll put the check in.i guess. 
 * OK, updating script works so far: creating new rmd and compiling, with working bibliography.
 * commit
-* careful with the bidget references, aren't they for the next year? Doubleckecked, all good. 
+* careful with the budget references, aren't they for the next year? Doubleckecked, all good. 
 * total WPL surplus is the difference between wpl income and wpl expenditure. 
 * OK, so england totals are without Nottingham and the national parks? Did i remove these before? 
 * data import to england.R needs to calculate separate surpluses for on and off street parking. Done
 * Double check this matches the total surplus. Done. it does. 
 * Also need to calculate the "fees and permits" which is the on street income minus the penalties. so income.on - income.pnc = income.fnp
 
-* ok, the budgets, i can just add them all up. But they are originally negative for some reasone. I'll fix that in the england.R scritp. 
+* ok, the budgets, i can just add them all up. But they are originally negative for some reason. I'll fix that in the england.R script. 
 
 # Monday 16.9.2019
 
-* don't forget to use dp.text and dp.tables in FunDec for rounding consistenlty!
+* don't forget to use dp.text and dp.tables in FunDec for rounding consistently!
 * there are two relevant budgets, current and next years. 
 * OK, summary table for England. 
-* The budget numbers I get do not match David's. But double checking them with the excel file shows mine are right. they include all the LAs, but not the national parks. *do i remove nottingham here as well?*
+* The budget numbers I get do not match David's. But double checking them with the excel file shows mine are right. they include all the LAs, but not the national parks. *do i remove Nottingham here as well?*
 * looks like the budget data also has budgeted data for total transport that i did not import./.
 * OK, so I imported the LA data for budgeted parking surpluses, but not the budgeted transport totals. so i need to do that now. 
 * that means finding the correct cells in all the raw excel files, adding them to the original data entry file first. 
 * i'll just replace the `budg.tot` variable, which i don't use, because i total up the las instead. i'll change it to `budg.trans`
-* no, actually i cannot do that, because the total includes also GLA and national parks, anywya, i'll as ivo
+* no, actually i cannot do that, because the total includes also GLA and national parks, anyway, i'll as ivo
 * so then i need to import the data in the 01-orig-import file. done
 * now i need to merge it with the other england totals
 
 # Tuesday 17.9.2019
 
-* OK, so budgeted transport expenditure totals are now extraceted in the original data import. This required another function as well. 
+* OK, so budgeted transport expenditure totals are now extracted in the original data import. This required another function as well. 
 * Does this add an extra row to the the table, let me check? Yes there is, fix the technical documentation. Nice, i automated the shit out of that report, just reran it and is now up to date :)
 * commit. 
 * OK, merging all the table elements - by the way, these tables are such messy ad hoc messes it pains me to make them... but ok, just following the instructions. 
-* damn it, the transposing and formatting somehow changes some NAs into "  NA" chars, which is ridiculous and super annoying. i need to make a repext for htis. 
+* damn it, the transposing and formatting somehow changes some NAs into "  NA" chars, which is ridiculous and super annoying. i need to make a repex for this. 
 * OK, almost there with the formatting, how do i do the thousands again? aha, `format.args = list(big.mark = ",")`
 * This is due a write up with a min repex: transposing a table in order to get row and column percentages formatted correctly, all the while preserving the order of the variables/cases. Cause it's a fucking minefield. esp. if you want different formatting for the percentages.. 
-* The there is the issue of getting formatting to rows that start out with a multirow, beacuse the text is too long, this doesn't seem to work with kableextrs (repex), so you instead just paste in directly the latex code into the cells rquired. 
+* The there is the issue of getting formatting to rows that start out with a multirow, because the text is too long, this doesn't seem to work with kableextrs (repex), so you instead just paste in directly the latex code into the cells required. 
 * OK, the summary table is now finished...
 * commit
 
@@ -1001,7 +1001,7 @@ OK, so I'll now start working through england.R and the report template. The upd
 
 * OK, start on summary text. 
 * Avoid repetition in sentence if two things both increase or decrease, by only saying the second one explicitly if it is different from the previous one. Neat trick that no one will ever notice. 
-* The numbers are pulled into the summary text from the summary thable buy row and column indices, so *make sure the size of the table stays the same always*
+* The numbers are pulled into the summary text from the summary table buy row and column indices, so *make sure the size of the table stays the same always*
 * finished trend chart. added budgeted surplus line as well, even though it wasn't in the original. 
 * OK, now the london /rest of england split. What a horrible table to read, this would be beautiful with a nice stacked bar chart. ask. ok.
 * OK, summary chapter finished, commit. 
@@ -1015,18 +1015,34 @@ OK, so I'll now start working through england.R and the report template. The upd
 * ah, and the surplus changes need to be split between surpluses and deficits.. This was not done in the originals.. 
 * bloody NAs and formatting these tables, such a faff every time. 
 * OK, london surplus table done.
-* Now the england one, top 20. looks like i could deduce nottingham from there? *later*
+* Now the england one, top 20. looks like i could deduce Nottingham from there? *later*
 * the package `english` has the function `ordinal` for writing out ordinal numbers, nice. 
 * finished surpluses. 
 * start on budget comparison. 
 * Hm, i could add budget surplus per council into a table
 * Also, i don't have council level total transport expenditure yet. should i add it into the import? That would make the surplus table comparable to the others? *check*
-* comparisong of budget to realisation done. 
+* comparison of budget to realization done. 
 commit
 
+# Tuesday 24.9.2019
 
+* Add last paragraph to budget comparison. 
+* spellcheck journal
+* spellcheck template
+* congestion charge. I seem to only have income and expenditure data - so i have surplus data, but the original reports also seem to have budgeted surplus data... 
+* calculate surplus in data table. OK
+* find budgeted surpluses in budget excel prob. OK, this now needs to be added to the data import...OK, added. 
+* Now make sure you have the data nice and clean in england.R
+* and change the sign of the budgeted congestion charge. 
+* OK, congestion charge table and text done. 
+* Now the apendices, the full 353 tables, i guess one alphabetical, one in order, but add the ranking?
+* repeat headers not working, nor is stripped table rows?
+* OK, repeat headers works, because i had "repeat_headers" instead of "repeat_heaer"... 
+* still *not figured out the stripped rows..*
+* aaaa, labels mutliply defined happens because of repeated headers on each page!! SO all good, nothing to worry about, but also not sure how to remove the warning. maybe *open an issue with kableextra?*
 
-
+* *figure out how to get rid of/ or control the highlights on the links, the red is a bit much..*
+* OK, but draft England report is finished - following the Leibling original.  Commit. 
 
 
 
@@ -1078,7 +1094,7 @@ This data is massively time lagged, Ivo suggested removing it?
 
 * Table based on Tables 3 and4
 * Text based on table
-* Some text has explanations for the reducitons/increases that are too tricky to write conditionally. But could potentially be done. 
+* Some text has explanations for the reductions/increases that are too tricky to write conditionally. But could potentially be done. 
 
 #### 6. reporting
 
@@ -1088,7 +1104,7 @@ This data is massively time lagged, Ivo suggested removing it?
 
 * Mainly pure text chunk.
 * Available data: fiscal year, link to income and expenditure data, link to PNC data, link to SPRECC report with previous data. 
-* Paragraph on data availability on Penalty Charne Notices, incl. source, which is a scanned pdf...
+* Paragraph on data availability on Penalty Charge Notices, incl. source, which is a scanned pdf...
 
 
 #### 1. Introduction
@@ -1109,7 +1125,7 @@ This data is massively time lagged, Ivo suggested removing it?
 
 ##### Text
 
-* based on table 2. Conditoinal tree must be able to describe temporal trend..
+* based on table 2. Conditional tree must be able to describe temporal trend..
 
 ##### Table 2
 
@@ -1139,7 +1155,7 @@ This data is massively time lagged, Ivo suggested removing it?
 
 ##### Table 5
 
-* Based on data in income and expendidure files, except for Aberdeen City.. And possibly some other local authorities?
+* Based on data in income and expenditure files, except for Aberdeen City.. And possibly some other local authorities?
 * Also includes data from Table 1, i.e. the pdf scraped table.
 
 ##### Text
@@ -1150,7 +1166,7 @@ This data is massively time lagged, Ivo suggested removing it?
 
 ##### Table 6
 
-* NUmbers of PNCs are from the table scraped in the pdf. 
+* Numbers of PNCs are from the table scraped in the pdf. 
 * Additionally the calculated average cost of a PNC is from the income table also scraped from the PNC. 
 * 3 year window in 16/17
 
@@ -1175,7 +1191,7 @@ This data is massively time lagged, Ivo suggested removing it?
 
 * Expenditure data from excel files only. 
 * Proportion calculated from income also from xls files. 
-* Additionally DPE in operaction data from first scraped table from pdf. 
+* Additionally DPE in operation data from first scraped table from pdf. 
 
 #### 5. Surpluses
 
@@ -1187,14 +1203,14 @@ This data is massively time lagged, Ivo suggested removing it?
 ##### Table 9
  * Surplus data calculated from incomes and expenditures in xls
  * changes also. 
- * again DPE data drom table 1 in the pdf
+ * again DPE data from table 1 in the pdf
  
 ##### Table 10
 
 * Contribution of surplus towards total transport expenditure. 
 * OK, but which one is the total transport expenditure!?
 
-#### 6 Comparison between Local Government Finance figures and Transport Scotland decriminalised parking enforcement figures
+#### 6 Comparison between Local Government Finance figures and Transport Scotland decriminalized parking enforcement figures
 
 * OOh, interesting! But should it really be in this report, haha
 * So combine data from xls and pdf and look at discrepancies, which should be mainly off street parking, but maybe are not just that. 
@@ -1209,7 +1225,7 @@ This data is massively time lagged, Ivo suggested removing it?
 
 * Mainly pure text chunk.
 * Available data: fisc.year
-* Missing data: national parks, Notthingham workplace parking levy? (17/18)
+* Missing data: national parks, Nottingham workplace parking levy? (17/18)
 
 #### 2. Summary
 
@@ -1251,7 +1267,7 @@ This data is massively time lagged, Ivo suggested removing it?
 ##### Text
 
 * Conditional tree based on data from Tables 1 and 2
-* Includes footnote on penalty tarrifs. 
+* Includes footnote on penalty tariffs. 
 
 #### 4. Expenditure
 
@@ -1281,7 +1297,7 @@ This data is massively time lagged, Ivo suggested removing it?
 
 #### 6. Comparison with budgets for2017-18and 2018-19
 
-* Conditional text based on comparison of indovidual LA surpluses with individual LA budgets
+* Conditional text based on comparison of individual LA surpluses with individual LA budgets
 
 #### 7. Congestion charge
 

@@ -232,8 +232,10 @@ budg.trans <- c("-", "-", "E32", "E33", "E34", "E34", "F40", "F40", "E41", "E41"
 
 budg.la <- c("-", "-", "U", "V", "V", "V", "U", "U", "U",  "V", "V") 
 
+budg.cong.ch <- c("-", "-", "E24", "E25", "E25", "E25", "F31", "F30", "E31", "E31", "E31") 
+
 england.budget.18.19 <- data.frame(fisc.year, year, file.name, link, rows, first, las,
-                             budg.trans, budg.la, la.name, la.type)
+                             budg.trans, budg.la, budg.cong.ch, la.name, la.type)
 
 ## commented out to stop overwriting!
 saveRDS(england.budget.18.19, "data/01-raw/orig.eng.meta.budget.18.rds")

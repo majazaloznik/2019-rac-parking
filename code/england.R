@@ -66,7 +66,9 @@ master %>%
   mutate(surplus.on = income.on - expend.on,
          surplus.off = income.off - expend.off,
          income.fnp = income.on - income.pcn,
-         surplus.budget = -surplus.budget) %>% 
+         surplus.budget = -surplus.budget,
+         surplus.cong.ch = income.cong.ch - expend.cong.ch,
+         budg.cong.ch = -budg.cong.ch) %>% 
   filter(year <= current.year + 1) -> data.full
 
 # only for the last four years and next year (for budget)
@@ -212,7 +214,7 @@ summary %>%
             function(x) ifelse(.$variable == "prop.net.expen",
                                FunDec(x, 0),
                                ifelse(is.na(x), NA, 
-                                      formatC(round(x,0), big.mark = ",")))) -> summary.prep
+                                      formatC(x, format = "f", digits = 0, big.mark = ",")))) -> summary.prep
 
 
 # prepare data for tabulation. 
@@ -290,7 +292,7 @@ la.data.current %>%
          prop = london/total*100, 
          prop = paste(FunDec(prop, dp.tables), "\\%") )%>% 
   mutate_at(vars(-variable, -prop), function(x) 
-    formatC(round(x/1000,0), big.mark = ",")) -> summary.london.prep
+    formatC(x/1000, format = "f", digits = 0, big.mark = ",")) -> summary.london.prep
 
 # prepare data for london/rest of england summary table including penalty and fee charges
 la.data %>% 
@@ -527,7 +529,8 @@ la.data %>%
 ## budget comparison ##########################################################
 
 budg.curr <- summary$surplus.total[6]
-
+budg.next <- summary$surplus.total[7]
+sur.curr <- summary$surplus.total[5]
 # top 10 and bottom 10 over and underpreformers when it comes to budgeting 
 ## SURPLUS #####################################################################
 la.data %>% 
@@ -568,3 +571,80 @@ budg.under.la <- budg.under.top$auth.name
 budg.under.sur <- budg.under.top$surplus.total
 budg.under.bud <- budg.under.top$surplus.budget
 budg.under.diff <- budg.under.top$diff
+
+
+## COGNESTION CHARGE ##########################################################
+
+
+data %>% 
+  filter(auth.type == "GLA") %>% 
+  select(year, income.cong.ch, expend.cong.ch, surplus.cong.ch, budg.cong.ch) %>% 
+  mutate_at(vars(income.cong.ch:budg.cong.ch), list(~./1000)) %>% 
+  mutate(prop.net.expen = expend.cong.ch/income.cong.ch * 100) %>% 
+  rownames_to_column %>%
+  gather(variable, value, -rowname) %>% 
+  mutate(order = row_number()) %>% 
+  group_by(variable) %>% 
+  mutate(order = first(order)) %>% 
+  spread(rowname, value) %>% 
+  arrange(order) %>% 
+  filter(variable != "year") %>% 
+  select(-order) %>% 
+  ungroup()  -> cong.ch.prep
+
+cong.ch.prep %>% 
+  mutate_at(vars(-variable),
+            function(x) ifelse(is.na(x), NA,
+                               ifelse(.$variable == "prop.net.expen",
+                                paste(FunDec(x, dp.tables), "\\%"),
+                                FunDec(x, 0)))) %>% 
+  mutate(variable = c("Income", "Expenditure", "Surplus", "Budgeted surplus", 
+                      "Expenditure as \\% of income")) -> cong.ch.formatted
+
+# easy access variables for the text
+sur.c.c.curr <- pull(cong.ch.prep[3,6])
+sur.c.c.last<- pull(cong.ch.prep[3,5])
+
+inc.c.c.ch <- pull(cong.ch.prep[1,6]/cong.ch.prep[1,5]) -1
+exp.c.c.ch <- pull(cong.ch.prep[2,6]/cong.ch.prep[2,5]) -1
+
+budg.c.c.curr <- pull(cong.ch.prep[4,6])
+budg.c.c.next <- pull(cong.ch.prep[4,7])
+
+prop.net.expen <- pull(cong.ch.prep[5,6])
+
+        
+## APPENDICES #################################################################
+
+# ALPHABETICAL LIST OF ALL 353 LAS
+
+la.data %>% 
+  filter(year < current.year +1) %>% 
+  select(year, auth.name, auth.type, surplus.total) %>%  
+  spread(key = year, value = surplus.total ) %>% 
+  mutate(ranking = paste0(row_number(desc(!!as.name(current.year))), ".")) %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
+  mutate_at(vars(-auth.name, -auth.type, -ranking),
+            list(~ifelse(is.na(.), NA, 
+                         formatC(., format = "f", digits = 0,  
+                                 big.mark = ",")))) -> england.alpha
+
+
+la.data %>% 
+  filter(year < current.year +1) %>% 
+  select(year, auth.name, auth.type, surplus.total) %>%  
+  spread(key = year, value = surplus.total ) %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  mutate_at(vars(-auth.name, -auth.type),
+            list(~ifelse(is.na(.), NA, 
+                         formatC(., format = "f", digits = 0,  
+                                 big.mark = ",")))) -> england.sorted
+
+
+
+
+
+
+
+

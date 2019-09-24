@@ -54,6 +54,7 @@ original.data <- data.frame(country = character(),
                             surplus.budget = integer(),
                             transport.total = integer(),
                             budg.trans = integer(),
+                            budg.cong.ch = integer(),
                             dpe.status = character(),
                             dpe.year = integer(),
                             pcn.number = integer(),
@@ -141,6 +142,20 @@ for (row in 3:nrow(orig.eng.meta.budget.18)){
 england.budget.trans$auth.name <- "England"
 england.budget.trans$auth.type <- "X"
 
+## 1.2.1. ENGLAND budget congestion charge #############################################
+# initialise data frame
+england.budget.cong.ch <- data.frame()
+
+for (row in 3:nrow(orig.eng.meta.budget.18)){
+  file = orig.eng.meta.budget.18$file.name[row]
+  budg.c.c = orig.eng.meta.budget.18$budg.cong.ch[row]
+  year = orig.eng.meta.budget.18$year[row]
+  x <- FunEnglandBudgetCongestion(file, budg.cong.ch = budg.c.c,
+                                 year)
+  england.budget.cong.ch <- bind_rows(england.budget.cong.ch, x)
+}
+england.budget.cong.ch$auth.name <- "Greater London Authority"
+england.budget.cong.ch$auth.type <- "GLA"
 
 ## 2.3. MERGE all england data together ########################################
 # remove authorities we're not interested in:
@@ -158,6 +173,9 @@ full_join(england.outturn, england.budget) -> england.outturn.and.budget
 
 full_join(england.outturn.and.budget, orig.eng.nott.wpl.17) -> england.outturn.and.budget
 
+# add congestion charge data
+full_join(england.outturn.and.budget, england.budget.cong.ch) -> england.outturn.and.budget
+
 # join the england totals for outturn and budgeted transport
 full_join(england.budget.trans, england.outturn.totals) -> england.totals
 
@@ -165,10 +183,8 @@ full_join(england.budget.trans, england.outturn.totals) -> england.totals
 bind_rows(england.outturn.and.budget, england.totals) -> original.england 
 original.england$country <- "England"
 
-
+# add to original dataset
 bind_rows(original.data, original.england) -> original.data 
-
-
 
 
 ## 2. SCOTLAND DATA IMPORT #####################################################

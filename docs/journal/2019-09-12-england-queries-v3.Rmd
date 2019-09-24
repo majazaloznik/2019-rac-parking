@@ -19,6 +19,9 @@ output:
 
 Is problematic, no? I mean  because they have larger incomes means they are bad at budgeting? I guess the variance is larger? Anyway, even if you think so, it's still a tricky sentence to leave in in case there comes a day when London boroughs get better at writing their budgets, and this isn't sth that can really be automated. Should I throw it out?
 
+18. In *Comparison with budgets* I changed the text to read "compared with a budgeted deficit of XX" instead of "compared with a budget deficit", that makes more sense to me?
+
+
  
 
 
