@@ -95,6 +95,8 @@ compared to the previous fiscal year. Total transport expenditures have
 `r ifelse(sco.summary$change[4] < -0.05, paste("fallen by", FunDec(-sco.summary$change[4], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[4], dp.text), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(FunDec(sco.summary[5, 6], dp.text), "%")` of net transport expenditure. Parking makes a 
 `r ifelse(sco.summary[5, 6] < eng.trans - 0.05 , "smaller", ifelse(sco.summary[5, 6] > eng.trans + 0.05,  "larger","similar"))` contribution to overall transport expenditure in Scotland compared with England where it is `r FunDec(eng.trans, dp.text)` % of total transport.
 
+\newpage 
+
 ```{r sumtab, echo = FALSE, message = FALSE, warning = FALSE}
 # print summary data
 sco.summary.formatted %>% 
@@ -158,7 +160,7 @@ par(old.par)
 Since `r FunFisc(4)` income has `r ifelse(sco.summary[1,6] > sco.summary[1,2], "risen", "fallen")` by 
 `r FunDec(100*sco.summary[1,6]/sco.summary[1,2] - 100, dp.text)` % and expenditure has `r ifelse(sco.summary[2,6] > sco.summary[2,2], "risen", "fallen")` by `r FunDec(100*sco.summary[2,6]/sco.summary[2,2] - 100, dp.text)` %. Over the same period the surplus has `r ifelse(sco.summary[3,6] > sco.summary[3,2], "risen", "fallen")` by `r FunDec(100*sco.summary[3,6]/sco.summary[3,2] - 100, dp.text)` %. Figure \@ref(fig:fig1) gives a longer term overview of the trends in incomes, expenditures and surpluses. 
 
-\newpage 
+\newpage
 
 ```{r compare, echo = FALSE}
 # pring comparison table for all three countrires
@@ -171,7 +173,7 @@ sum.gb.formatted %>%
          align = c("r"),
          col.names = c("", "England without London", "London", 
                        "Scotland", "Wales", "Great Britain"),
-         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain (£ millions)"), 
+         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain (£ millions, latest year available)"), 
          format.args = list(big.mark = ","),
          linesep = "") %>% 
   kable_styling(full_width = TRUE, 
@@ -181,11 +183,13 @@ sum.gb.formatted %>%
   row_spec(c(1, 4), hline_after = TRUE)
 ```
 
-Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and `r FunFisc(1)` with the average annual change over the `r FunN2W(current.year - ref.year)`-year period from `r FunFisc(current.year-ref.year)`.
 
-On average, parking surpluses in Great Britain have risen by about `r FunDec(sum.gb.change$surplus.change.4[sum.gb.change$country == "Great Britain"], dp.text)` % annually over the past `r FunN2W(current.year - ref.year)` years compared with `r FunDec(rpi.annual, dp.text)` % annually for the Retail Prices Index during the same period (`r sco.bib.rpi`).
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and the previous year, with the average annual change over the four-year period starting in `r FunFisc(4)` (or the most recent four-year period for which data is available). In the last year the surpluses for Scotland have increased by `r FunDec(sco.ann, dp.text)` %, which is `r ifelse(sco.ann < sco.4av, "less", "more")` than the average annual increase observed over the preceding four years, which was `r FunDec(sco.4av, dp.text)` %. 
 
-\newpage 
+
+On average, parking surpluses in Great Britain have risen by about `r FunDec(gb.ann, dp.text)` % annually over the four years compared with `r FunDec(rpi.annual.gb, dp.text)` % annually for the Retail Prices Index during the same period (`r sco.bib.rpi`).`r ifelse(gb.mr.year != current.year,  paste0("^[The most recent data available for Great Britain as a whole is from the year ", FunFisc(current.year-gb.mr.year), " and all calculations are therefore performed for the four years previous i.e. from ", FunFisc(current.year-gb.mr.year+4), ".]"), "")`
+
+\newpage
 
 ```{r change}
 # print change over 5 years. 
@@ -198,16 +202,18 @@ sum.gb.change.tab.formatted  %>%
          align = c("r"),
          col.names = c("",  "England without London", "London", 
                        "Scotland", "Wales", "Great Britain"),
-         caption = paste0("Changes in parking income and expenditure from ", FunFisc(current.year - ref.year), " to ", FunFisc(), " across the nations of Great Britain"), 
+         caption = paste0("Changes in parking income and expenditure over previous four years (from most recent year available) across the nations of Great Britain"), 
          format.args = list(big.mark = ","),
          linesep = "") %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
-                font_size = 10) %>% 
-  column_spec(1, width = "6.7cm") %>% 
-  column_spec(6, width = "1.8cm") %>% 
-  row_spec(c(2,4), hline_after = TRUE)
+                font_size = 9) %>% 
+  column_spec(1, width = "6cm") %>% 
+  # column_spec(6, width = "1.8cm") %>% 
+  row_spec(c(1,3,5), hline_after = TRUE)
 ```
+
+
 
 #  Income
 
@@ -396,8 +402,6 @@ while `r sco.surplus.change.top3[2,2]` and `r sco.surplus.change.top3[3,2]` incr
 
 `r sco.deficit.change.top3[1,2]` increased their deficits by `r FunDec(sco.deficit.change.top3$change[1], dp.text)` %
 while `r sco.deficit.change.top3[2,2]` and `r sco.deficit.change.top3[3,2]` increased  by `r FunDec(sco.deficit.change.top3$change[2], dp.text)` % and `r FunDec(sco.deficit.change.top3$change[3], dp.text)` % respectively`r if(nrow(sco.deficit.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.deficit.excluded.top$auth.name), " with a deficit under £30,000)")`. The biggest decreases were in `r sco.deficit.change.bottom2[2,2]` (`r FunDec(abs(sco.deficit.change.bottom2$change[2]), dp.text)` %), and `r sco.deficit.change.bottom2[1,2]` (`r FunDec(abs(sco.deficit.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(sco.deficit.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.deficit.excluded.bottom$auth.name), " with a deficit under £30,000)")`.
-
-\newpage 
 
 ```{r surplustab}
 

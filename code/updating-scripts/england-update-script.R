@@ -330,7 +330,7 @@ report.name <- paste0("england-report-", current.year, "-",
 # select england only bibliograpy #############################################
 # select a bibliography for the england report - only the rows needed
 bib.master %>%
-  filter(fiscyear > current.year - 5, country  == "England") %>%
+  filter(fiscyear > current.year - 5, country  == "England" | country == "GB") %>%
   mutate(refs = paste0("@", key)) %>%
   column_to_rownames("key") -> bib.england
 

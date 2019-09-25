@@ -91,7 +91,6 @@ data.current %>%
   filter(!auth.type %in% c("X", "GLA", "O")) -> la.data.current
 
 
-
 # extract some useful variables like bib references and column headers ########
 # current main I.E. reference
 bib %>% 
@@ -105,7 +104,8 @@ bib %>%
 
 # next  budget reference
 bib %>% 
-  filter(country == "England", fiscyear == current.year + 1, content == "budget") %>% 
+  filter(country == "England", fiscyear == current.year + 1, 
+         content == "budget") %>% 
   pull(refs) -> eng.bib.next.budget
 
 # wpl nottinggan reference
@@ -193,7 +193,8 @@ full_join(budget.surplus, budget.transport) %>%
   mutate(prop.net.expen = surplus.total/transport.total * 100) %>% 
   mutate(year = paste0(year, "B")) -> summary.budget
   
-bind_rows(mutate_at(summary.i.e, vars(year), as.character), summary.budget) -> summary
+bind_rows(mutate_at(summary.i.e, vars(year), as.character), 
+          summary.budget) -> summary
 
 # transpose table and add change variable and budget lines
 summary %>% 
@@ -208,23 +209,27 @@ summary %>%
   mutate_at(vars(-variable), as.numeric) %>% 
   select(-order) %>% 
   ungroup() %>% 
-  mutate(change = ifelse(variable == "prop.net.expen", NA,  100*(`5` / `4` - 1))) %>% 
+  mutate(change = ifelse(variable == "prop.net.expen", NA,  
+                         100*(`5` / `4` - 1))) %>% 
   mutate(change = ifelse(is.na(change), NA, FunDec(change,0))) %>% 
-  mutate_at(vars(-variable, -change),
-            function(x) ifelse(.$variable == "prop.net.expen",
-                               FunDec(x, 0),
-                               ifelse(is.na(x), NA, 
-                                      formatC(x, format = "f", digits = 0, big.mark = ",")))) -> summary.prep
+  mutate_at(vars(-variable, -change), function(x) 
+    ifelse(.$variable == "prop.net.expen",
+           FunDec(x, 0),
+           ifelse(is.na(x), NA, 
+                  formatC(x, format = "f", 
+                          digits = 0, big.mark = ",")))) -> summary.prep
 
 
 # prepare data for tabulation. 
 summary.prep %>% 
   mutate(change = ifelse(variable == "prop.net.expen", NA, 
                          paste(change, "\\%"))) %>% 
-  mutate(variable = c("Fees \\& permits", "Penalties", "Total Income", "Expenditure",
-                      "Surplus", "Total Income", "Expenditure", "Surplus", 
-                      "Total Income", "Expenditure", "Surplus", "Net Expenditure", 
-                      "Parking surplus as percentage of net transport expenditure")) %>% 
+  mutate(variable = 
+           c("Fees \\& permits", "Penalties", "Total Income",
+             "Expenditure", "Surplus", "Total Income", "Expenditure",
+             "Surplus",  "Total Income", "Expenditure", "Surplus", 
+             "Net Expenditure", 
+             "Parking surplus as percentage of net transport expenditure")) %>% 
   mutate(collapsed = c(rep("On-street", 5), 
                        rep("Off-street", 3),
                        rep("All parking", 3),
@@ -232,11 +237,11 @@ summary.prep %>%
   mutate_at(vars(-variable, -change, -collapsed), function(x) ifelse(
     .$variable == "Parking surplus as percentage of net transport expenditure", 
     paste0(x, " \\%"), x)) %>% 
-  mutate_at(vars(-collapsed), function(x)  ifelse(.$collapsed == "All parking" & 
-                                                    .$variable == "Surplus",  
-                                                  paste0("\\textbf{", x, "}"), x)) %>% 
+  mutate_at(vars(-collapsed), function(x)  
+    ifelse(.$collapsed == "All parking" & .$variable == "Surplus",  
+           paste0("\\textbf{", x, "}"), x)) %>% 
   select(collapsed, variable:change) -> eng.summary.formatted
-  
+
 # easy access vars for the text
 inc.ch <- 100*(summary[5,10]/summary[4,10] -1)
 inc.on.ch <- 100*(summary[5,4]/summary[4,4] -1)
@@ -258,8 +263,166 @@ tran.ch <-100*(summary[5,13]/summary[4,13] -1)
 
 summary$prop.net.expen[5]
 
+## comparison for all of GB ###################################################
+# comparing summaries for all three countries
+# get all the data summarised for all 3 countries, separating out London
+master %>% 
+  mutate(country = recode(auth.type, "X" = "X", "L" = "London",
+                          .default = country),
+         country = recode(country, "England" =  "England without London",
+                          .default = country)) %>% 
+  group_by(country) %>% 
+  filter(country != "X") %>% 
+  group_by(country, year) %>% 
+  select(country, year, income.total, expend.total, surplus.total) %>% 
+  summarise(income = sum(income.total, na.rm = TRUE),
+            expend = sum(expend.total, na.rm = TRUE),
+            surplus = sum(surplus.total, na.rm = TRUE)) %>% 
+  bind_rows(group_by(., year) %>% 
+              mutate(n = n()) %>% 
+              filter(n == 4) %>% 
+              summarise_at(vars(income:surplus), sum) %>% 
+              mutate(country = "Great Britain")) -> sub.gb.years
 
-# prepare data for trends plot
+
+# extract most recent year, calculate proportion and reshape
+sub.gb.years %>% 
+  filter(year == min(current.year, max(year)))  %>% 
+  mutate(prop.of.income = surplus/income,
+         year = paste0("(", year, "-", year-1999, ")"),
+         surplus = surplus/1000, 
+         income = income/1000, 
+         expend = expend/1000, 
+         prop.of.income = prop.of.income*100) %>% 
+  t() %>% 
+  as.data.frame(stringsAsFactors = FALSE) %>% 
+  tibble::rownames_to_column("var") %>% 
+  setNames(.[1,]) %>% 
+  filter(country != "country") %>% 
+  mutate(country = c("Fiscal year", "Parking income", "Parking expenditure", 
+                     "Surplus", "Surplus as proportion of income")) -> sum.gb
+
+# # save csv table 3
+# write.csv(sum.gb, here::here(paste0("outputs/csv-tables/scotland-",
+#                                     FunFisc(), "/scotland-", 
+#                                     FunFisc(), "-table-03.csv")),
+#           row.names = FALSE)
+
+
+# same as before, but add % signs to bottom row for tabulation
+sub.gb.years %>% 
+  filter(year == min(current.year, max(year)))  %>% 
+  mutate(prop.of.income = surplus/income,
+         year = paste0("(", year, "-", year-1999, ")"),
+         surplus = FunDec(surplus/1000, dp.tables), 
+         income = FunDec(income/1000, dp.tables), 
+         expend = FunDec(expend/1000, dp.tables), 
+         prop.of.income = paste0(FunDec(prop.of.income*100, dp.tables),"\\%")) %>% 
+  t() %>% 
+  as.data.frame(stringsAsFactors = FALSE) %>% 
+  tibble::rownames_to_column("var") %>% 
+  setNames(.[1,]) %>% 
+  filter(country != "country") %>% 
+  mutate(country = c("Fiscal year", "Parking income", "Parking expenditure", 
+                     "Surplus", "Surplus as proportion of income")) -> 
+  sum.gb.formatted
+
+# table annual and average changes ############################################
+# extract current year, 1 year back,and 4 years back from most recent year
+sub.gb.years %>% 
+  filter(income != 0) %>% 
+  group_by(country) %>% 
+  mutate(most.recent = max(year)) %>% 
+  filter(year == most.recent | year == most.recent - 1 |
+                  year == most.recent-4) -> sub.gb.ref
+     
+# calculate change over 4 years as well as last year. 
+sub.gb.ref  %>% 
+  mutate(year = paste0("m",abs(year - most.recent))) %>% 
+  gather(var, value, 3:5) %>% 
+  unite(temp, year, var) %>% 
+  spread(temp, value) %>% 
+  mutate(income.change.4 = 100*(m0_income / m4_income - 1), 
+         expend.change.4 = 100*(m0_expend / m4_expend - 1),
+         surplus.change.4 = 100*(m0_surplus / m4_surplus - 1)) %>% 
+  mutate_at(vars(ends_with(".4")), function(x) 100*(x/100 + 1) ^ 
+              ( 1 / (current.year - ref.year)) - 100) %>% 
+  mutate(income.change = 100*(m0_income/ m1_income - 1), 
+         expend.change = 100*(m0_expend/ m1_expend - 1), 
+         surplus.change = 100*(m0_surplus/ m1_surplus - 1),
+         most.recent = paste0("(", most.recent, "-", most.recent-1999, ")")) %>% 
+  select(country, most.recent, income.change.4, income.change,
+         expend.change.4, expend.change, 
+         surplus.change.4, surplus.change) -> sum.gb.change
+
+# prepare for tabulation
+sum.gb.change %>% 
+  t() %>% 
+  as.data.frame(stringsAsFactors = FALSE) %>% 
+  tibble::rownames_to_column("var") %>% 
+  setNames(.[1,]) %>% 
+  filter(country != "country") %>% 
+  select(country, "England without London", "London", 
+         "Scotland", "Wales", "Great Britain") %>% 
+  mutate(country = c( "Most recent year available", 
+                      "Average annual change in income", 
+                      "Change in income since previous year", 
+                      "Average annual change in expenditure", 
+                      "Change in expenditure since previous year", 
+                      "Average annual change in surplus",
+                      "Change in surplus since previous year")) -> 
+  sum.gb.change.tab
+
+# # save csv table 4
+# write.csv(sum.gb.change.tab, here::here(paste0("outputs/csv-tables/scotland-",
+#                                                FunFisc(), "/scotland-", 
+#                                                FunFisc(), "-table-04.csv")),
+#           row.names = FALSE)
+
+
+# prepare for tabulation with formatting
+
+sum.gb.change %>% 
+  ungroup() %>% 
+  mutate_at(vars(-country, -most.recent), 
+            list(~ paste0(FunDec(., dp.tables), " \\%"))) %>% 
+  t() %>% 
+  as.data.frame(stringsAsFactors = FALSE) %>% 
+  tibble::rownames_to_column("var") %>% 
+  setNames(.[1,]) %>% 
+  filter(country != "country") %>% 
+  select(country, "England without London", "London", 
+         "Scotland", "Wales", "Great Britain") %>% 
+  mutate(country = c( "Most recent year available", 
+                      "Average annual change in income", 
+                      "Change in income since previous year", 
+                      "Average annual change in expenditure", 
+                      "Change in expenditure since previous year", 
+                      "Average annual change in surplus",
+                      "Change in surplus since previous year")) ->  
+  sum.gb.change.tab.formatted
+
+# some values for text
+lond.ann <- as.numeric(sum.gb.change.tab$London[7])
+rest.ann <- as.numeric(sum.gb.change.tab$`England without London`[7])
+
+lond.4av <- as.numeric(sum.gb.change.tab$London[6])
+rest.4av <- as.numeric(sum.gb.change.tab$`England without London`[6])
+
+gb.ann <- as.numeric(sum.gb.change.tab$`Great Britain`[7])
+gb.4av <- as.numeric(sum.gb.change.tab$`Great Britain`[6])
+
+# gb most recent year
+sub.gb.ref %>% 
+  ungroup() %>% 
+  filter(country == "Great Britain") %>% 
+  select(most.recent) %>% max() -> gb.mr.year
+
+# RPI calculation 
+rpi.annual.gb <- FunRpi(gb.mr.year, n = 4)
+
+
+# prepare data for trends plot ################################################
 # prepare summary trend data for chart
 la.data.all %>% 
   select(year, income.total, expend.total, surplus.total, surplus.budget) %>% 

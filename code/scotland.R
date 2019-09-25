@@ -212,8 +212,11 @@ master %>%
             expend = sum(expend.total, na.rm = TRUE),
             surplus = sum(surplus.total, na.rm = TRUE)) %>% 
   bind_rows(group_by(., year) %>% 
+              mutate(n = n()) %>% 
+              filter(n == 4) %>% 
               summarise_at(vars(income:surplus), sum) %>% 
               mutate(country = "Great Britain")) -> sub.gb.years
+
 
 # extract most recent year, calculate proportion and reshape
 sub.gb.years %>% 
@@ -256,39 +259,35 @@ sub.gb.years %>%
                      "Surplus", "Surplus as proportion of income")) -> 
   sum.gb.formatted
 
-# change over time for all three countries
-# figure out how far back you can go
-max(sub.gb.years %>% 
-      summarise(min.year = min(year)) %>% 
-      pull(min.year)) %>% 
-  max(current.year-4) -> ref.year
 
-# extract current year, 1 year back,  and 4 years back, or as far as min.year lets you
+
+
+
+# table annual and average changes ############################################
+# extract current year, 1 year back,and 4 years back from to most recent year
 sub.gb.years %>% 
-  filter(year == current.year | year == current.year - 1 |
-           year == ref.year) -> sub.gb.ref
+  filter(income != 0) %>% 
+  group_by(country) %>% 
+  mutate(most.recent = max(year)) %>% 
+  filter(year == most.recent | year == most.recent - 1 |
+           year == most.recent-4) -> sub.gb.ref
 
 # calculate change over 4 years as well as last year. 
 sub.gb.ref  %>% 
+  mutate(year = paste0("m",abs(year - most.recent))) %>% 
   gather(var, value, 3:5) %>% 
   unite(temp, year, var) %>% 
   spread(temp, value) %>% 
-  mutate(income.change.4 = 100*(!!as.name(paste0(current.year, "_income")) / 
-                                  !!as.name(paste0(ref.year, "_income")) - 1), 
-         expend.change.4 = 100*(!!as.name(paste0(current.year, "_expend")) / 
-                                  !!as.name(paste0(ref.year, "_expend")) - 1), 
-         surplus.change.4 = 100*(!!as.name(paste0(current.year, "_surplus")) / 
-                                   !!as.name(paste0(ref.year, "_surplus")) - 1) ) %>% 
+  mutate(income.change.4 = 100*(m0_income / m4_income - 1), 
+         expend.change.4 = 100*(m0_expend / m4_expend - 1),
+         surplus.change.4 = 100*(m0_surplus / m4_surplus - 1)) %>% 
   mutate_at(vars(ends_with(".4")), function(x) 100*(x/100 + 1) ^ 
               ( 1 / (current.year - ref.year)) - 100) %>% 
-  mutate(income.change = 100*(!!as.name(paste0(current.year, "_income")) / 
-                                !!as.name(paste0(current.year - 1, "_income")) - 1), 
-         expend.change = 100*(!!as.name(paste0(current.year, "_expend")) / 
-                                !!as.name(paste0(current.year - 1, "_expend")) - 1), 
-         surplus.change = 100*(!!as.name(paste0(current.year, "_surplus")) / 
-                                 !!as.name(paste0(current.year - 1, "_surplus")) - 1) ) %>%
-  
-  select(country, income.change.4, income.change,
+  mutate(income.change = 100*(m0_income/ m1_income - 1), 
+         expend.change = 100*(m0_expend/ m1_expend - 1), 
+         surplus.change = 100*(m0_surplus/ m1_surplus - 1),
+         most.recent = paste0("(", most.recent, "-", most.recent-1999, ")")) %>% 
+  select(country, most.recent, income.change.4, income.change,
          expend.change.4, expend.change, 
          surplus.change.4, surplus.change) -> sum.gb.change
 
@@ -301,27 +300,61 @@ sum.gb.change %>%
   filter(country != "country") %>% 
   select(country, "England without London", "London", 
          "Scotland", "Wales", "Great Britain") %>% 
-  mutate(country = c( "Average annual change in income", 
+  mutate(country = c( "Most recent year available", 
+                      "Average annual change in income", 
                       "Change in income since previous year", 
                       "Average annual change in expenditure", 
                       "Change in expenditure since previous year", 
                       "Average annual change in surplus",
-                      "Change in surplus since previous year")) -> sum.gb.change.tab
+                      "Change in surplus since previous year")) -> 
+  sum.gb.change.tab
 
 # save csv table 4
 write.csv(sum.gb.change.tab, here::here(paste0("outputs/csv-tables/scotland-",
-                                               FunFisc(), "/scotland-", 
+                                               FunFisc(), "/scotland-",
                                                FunFisc(), "-table-04.csv")),
           row.names = FALSE)
 
 
 # prepare for tabulation with formatting
-sum.gb.change.tab %>% 
-  mutate_at(2:6, function(x) paste(FunDec(as.numeric(x), dp.tables), "\\%")) -> 
+sum.gb.change %>% 
+  ungroup() %>% 
+  mutate_at(vars(-country, -most.recent), 
+            list(~ paste0(FunDec(., dp.tables), " \\%"))) %>% 
+  t() %>% 
+  as.data.frame(stringsAsFactors = FALSE) %>% 
+  tibble::rownames_to_column("var") %>% 
+  setNames(.[1,]) %>% 
+  filter(country != "country") %>% 
+  select(country, "England without London", "London", 
+         "Scotland", "Wales", "Great Britain") %>% 
+  mutate(country = c( "Most recent year available", 
+                      "Average annual change in income", 
+                      "Change in income since previous year", 
+                      "Average annual change in expenditure", 
+                      "Change in expenditure since previous year", 
+                      "Average annual change in surplus",
+                      "Change in surplus since previous year")) ->  
   sum.gb.change.tab.formatted
 
+# some values for text
+sco.ann <- as.numeric(sum.gb.change.tab$Scotland[7])
+
+sco.4av <- as.numeric(sum.gb.change.tab$Scotland[6])
+
+gb.ann <- as.numeric(sum.gb.change.tab$`Great Britain`[7])
+gb.4av <- as.numeric(sum.gb.change.tab$`Great Britain`[6])
+
+# gb most recent year
+sub.gb.ref %>% 
+  ungroup() %>% 
+  filter(country == "Great Britain") %>% 
+  select(most.recent) %>% max() -> gb.mr.year
+
 # RPI calculation 
-rpi.annual <- FunRpi(current.year, n = current.year - ref.year)
+rpi.annual.gb <- FunRpi(gb.mr.year, n = 4)
+
+
 
 ## INCOME ######################################################################
 # clean up income data, add totals row and change variable

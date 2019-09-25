@@ -1044,9 +1044,23 @@ commit
 * *figure out how to get rid of/ or control the highlights on the links, the red is a bit much..*
 * OK, but draft England report is finished - following the Leibling original.  Commit. 
 
+# Wednesday 25.9.2019
 
-
-
+* go through England draft and compare with Wales and Scotland listing differnces. 
+* make sure Scotland and Wales long term trends in 2. Summary actually use all available data, not just the last 5 years. *todo*
+* OK, there are two summary tables in Scotland, one comparing the revenues and the other comparing them wiht RPI. Both of these should be repeated in England.  Let's try that then. 
+* OK, there might be an issue with the GB sum, since it should be for the most recent year available data exists for all the countries.. OK, GB is calculated for years where there are four entries. copied into scotland and wales as well. OK
+* second table, annual change etc also doesn't work if you don't have the same spread of years for each country... SO this needs to be rewritten a bit.. 
+* OK, i think i need to revamp this whole thing. now i went back max four years, or as  many as possible given the data. but the number was the same for all the countries, which obviously doesn't work. 
+* instead i stop testing how far back we can go and siply assume no one will ever start earslier than 2016/17, which means going back to 2012/13, which we have data for anyway, so it's fine
+* then go back 4 years separately for each country, depending on their current year -  most reacent available data. 
+* add some text, because it is boring otherwise
+* careful, if the four year period is different, we also need to recalculate the RPI. ok
+* where is the rpi reference? OK
+* this will then need to be copied to wales and scotland. Scotland OK. Wales OK. 
+* at what point should i *consolidate all the R scripts!?*
+* how is GB average annual change in expenditure negative, when all the four countries are positive? Ah, it's OK, it's because they are for different periods. all good. 
+* commit
 
 
 

@@ -31,7 +31,7 @@ add.new.data <- FALSE
 # made changes to the .Rmd file and just want to recompile it switch to TRUE.
 # If you want to produce a fresh copy of the template for this year switch
 # to FALSE
-recompile.rmd <- TRUE
+recompile.rmd <- FALSE
 
 # number of decimal places in text and tables:
 dp.text <- 1

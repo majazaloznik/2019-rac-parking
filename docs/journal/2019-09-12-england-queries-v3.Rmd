@@ -22,23 +22,11 @@ Is problematic, no? I mean  because they have larger incomes means they are bad 
 18. In *Comparison with budgets* I changed the text to read "compared with a budgeted deficit of XX" instead of "compared with a budget deficit", that makes more sense to me?
 
 
- 
+# finished draft following Leibling
+
+OK, so now you have the draft England report that basically follows what Leibling had. So the following questions are to do with consolidating all three reports
+
+19. The two  national comparison tables for the outturns and the average annual changes have now been repeated in all three reports. I've adjusted the text a bit to take into account that the data can be for different years. Which also means that e.g. GB data is calculated for the most recent year *all* countries have data avialable. I've added a bit more text in all three reports, because it's a shame to have so many numbers in tables and so little text. Check that this is OK in all 3 reports.
 
 
 
-9  X
-10
-11
-12 X
-13
-14
-15 
-16 X
-17
-18 
-19 X
-20 X
-21 
-22 X
-23 
-24 X
