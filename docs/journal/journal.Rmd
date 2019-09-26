@@ -1061,14 +1061,20 @@ commit
 * at what point should i *consolidate all the R scripts!?*
 * how is GB average annual change in expenditure negative, when all the four countries are positive? Ah, it's OK, it's because they are for different periods. all good. 
 * commit
+* OK, Income. The other two reports list the numbers increased/decreased/stayed the same and the top 3 by income and top 3 year-on-year increases. They also have tables with both previous annual change and 4-year average annual change. Should i do this for top X councils?
+* damn, is there some issue with background colour generally? hasn't the highlighting of the tables disappeared for scotland and wales as well? *need another pdf viewer..*
+* careful, the total row in the income table (probably elsewhere as well) doesn't handle NAs..
+* meh, i need to escape the & signs from the start, not randomly when i need to in england auth.name. I've done that, but need to clean up old ones. ok
+* OK, and there is sht wrong, but not with the income table? confusing, that's the only thign i've changed.. i'll figure it out later. 
 
 
+# Thursday 26.9.2019
 
-
-
-
-
-
+* OK, found the reason for the problems, it was the extra gsubs replacing the & wiht \\&, that were now doubled. i've cleaned them out, so the reports are fine.
+* the problem now is what to do with the exported csv tables, which will also now have the escape characters.. maybe i should go back and change this. it is formatting afterall, it should happen when you format a table, not when you import the data...
+* but first clean up income table so that it has top 50 councils plust total. OK. 
+* move gsub back to formatting table code. four times i think. OK, done
+* commit
 
 
 

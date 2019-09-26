@@ -169,6 +169,7 @@ sum.gb.change.tab.formatted  %>%
 ```
 
 
+\newpage
 
 # Income
 

@@ -136,59 +136,6 @@ par(old.par)
 ```
 
 
-
-```{r compare, echo = FALSE}
-# pring comparison table for all three countrires
-sum.gb.formatted %>% 
-  kable( "latex", 
-         booktabs = T, 
-         digits = c(rep(0, 6), 2), 
-         escape = F,
-         longtable = T,
-         align = c("r"),
-         col.names = c("", "England without London", "London", 
-                       "Scotland", "Wales", "Great Britain"),
-         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain (£ millions, latest year available)"), 
-         format.args = list(big.mark = ","),
-         linesep = "") %>% 
-  kable_styling(full_width = TRUE, 
-                latex_options =c("hold_position", "striped", "repeat_header"), 
-                font_size = 10) %>% 
-  column_spec(1, width = "5cm") %>% 
-  row_spec(c(1, 4), hline_after = TRUE)
-```
-
-Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and the previous year, with the average annual change over the four-year period from ending in `r FunFisc(current.year)` (or the most recent year data is available for). In the last year the surpluses for London have increased by `r FunDec(lond.ann, dp.text)` %, which is `r ifelse(lond.ann < lond.4av, "less", "more")` than the average annual increase observed over the preceding four years, which was `r FunDec(lond.4av, dp.text)` %. For the rest of England excluding London the surpluses have increased by `r FunDec(rest.ann, dp.text)` %, which is `r ifelse(rest.ann < rest.4av, "less", "more")` than the four-year average annual increase at `r FunDec(rest.4av, dp.text)` %.
-
-On average, parking surpluses in Great Britain have risen by about `r FunDec(gb.ann, dp.text)` % annually over the four years compared with `r FunDec(rpi.annual.gb, dp.text)` % annually for the Retail Prices Index during the same period (`r eng.bib.rpi`).`r ifelse(gb.mr.year != current.year,  paste0("^[The most recent data available for Great Britain as a whole is from the year ", FunFisc(current.year-gb.mr.year), " and all calculations are therefore performed for the four years previous i.e. from ", FunFisc(current.year-gb.mr.year+4), ".]"), "")`
-
-\newpage
-
-```{r change}
-# print change over 5 years. 
-sum.gb.change.tab.formatted  %>% 
-  kable( "latex", 
-         booktabs = T, 
-         digits = c(rep(0, 6), 2), 
-         escape = F,
-         longtable = T,
-         align = c("r"),
-         col.names = c("",  "England without London", "London", 
-                       "Scotland", "Wales", "Great Britain"),
-         caption = paste0("Changes in parking income and expenditure over previous four years (from most recent year available) across the nations of Great Britain"), 
-         format.args = list(big.mark = ","),
-         linesep = "") %>% 
-  kable_styling(full_width = TRUE, 
-                latex_options =c("HOLD_position", "striped", "repeat_header"), 
-                font_size = 9) %>% 
-  column_spec(1, width = "6cm") %>% 
-  # column_spec(6, width = "1.8cm") %>% 
-  row_spec(c(1,3,5), hline_after = TRUE)
-```
-
-
-\newpage
-\renewcommand{\arraystretch}{1.35}
 ```{r sumtablondon, echo = FALSE, message = FALSE, warning = FALSE}
 # print summary data
 eng.summary.london.formatted %>% 
@@ -217,6 +164,56 @@ Only `r FunDec(lnd.prop.off, dp.text)` % of London boroughs’ parking income co
 
 The parking surplus in London was £`r lnd.surplus`million, `r FunDec(lnd.prop.surplus, dp.text)`% of the total for England, although London only has only \color{red}10% \color{black}of the total cars in England but of course incoming commuters and visitors will contribute to parking fees and penalties which are much higher than in the rest of England.
 
+
+
+```{r compare, echo = FALSE}
+# pring comparison table for all three countrires
+sum.gb.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         col.names = c("", "England without London", "London", 
+                       "Scotland", "Wales", "Great Britain"),
+         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain (£ millions, latest year available)"), 
+         format.args = list(big.mark = ","),
+         linesep = "") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("hold_position", "striped", "repeat_header"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "5cm") %>% 
+  row_spec(c(1, 4), hline_after = TRUE)
+```
+
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, Wales, and Scotland for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and the previous year, with the average annual change over the four-year period starting in `r FunFisc(4)` (or the most recent four-year period for which data is available). In the last year the surpluses for London have increased by `r FunDec(lond.ann, dp.text)` %, which is `r ifelse(lond.ann < lond.4av, "less", "more")` than the average annual increase observed over the preceding four years, which was `r FunDec(lond.4av, dp.text)` %. For the rest of England excluding London the surpluses have increased by `r FunDec(rest.ann, dp.text)` %, which is `r ifelse(rest.ann < rest.4av, "less", "more")` than the four-year average annual increase at `r FunDec(rest.4av, dp.text)` %.
+
+On average, parking surpluses in Great Britain have risen by about `r FunDec(gb.ann, dp.text)` % annually over the four years compared with `r FunDec(rpi.annual.gb, dp.text)` % annually for the Retail Prices Index during the same period (`r eng.bib.rpi`).`r ifelse(gb.mr.year != current.year,  paste0("^[The most recent data available for Great Britain as a whole is from the year ", FunFisc(current.year-gb.mr.year), " and all calculations are therefore performed for the four years previous i.e. from ", FunFisc(current.year-gb.mr.year+4), ".]"), "")`
+
+
+```{r change}
+# print change over 5 years. 
+sum.gb.change.tab.formatted  %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         col.names = c("",  "England without London", "London", 
+                       "Scotland", "Wales", "Great Britain"),
+         caption = paste0("Changes in parking income and expenditure over previous four years (from most recent year available) across the nations of Great Britain"), 
+         format.args = list(big.mark = ","),
+         linesep = "") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "6cm") %>% 
+  # column_spec(6, width = "1.8cm") %>% 
+  row_spec(c(1,3,5), hline_after = TRUE)
+```
+
 \newpage
 
 # Income 
@@ -227,6 +224,32 @@ Income from on-street tickets and permits was £`r FunDec(inc.fnp, 0)` million, 
 
 Penalty income in London was £`r FunDec(inc.london.pcn, 0)` million, `r FunDec(inc.london.pcn.ch, dp.text)`% `r ifelse(inc.london.pcn > 0, "higher", "lower")` than in 2016-17. \color{red} The number of parking PCNs in London rose by 4% to 3.3 million (excluding TfL) but the average income per PCN was £74 in 2017-18 unchanged from 2016-17. \color{black} Penalty income in the rest of England was £`r FunDec(inc.rest.pcn, 0)` million, `r FunDec(inc.rest.pcn.ch, dp.text)`% `r ifelse(inc.rest.pcn > 0, "higher", "lower")` than the previous year but \color{red}only just over a half\color{black} of that collected in London reflecting the lower penalty tariffs outside London.^[\color{red}The penalty for more serious parking offences in London is £130 or £110 and £70 outside. For less serious offences the penalties are £80 or £60 and £50. These a reduced by 50% for payment within14 days. \color{black}]
 
+
+```{r incometab, echo = FALSE, message = FALSE, warning = FALSE}
+eng.income.formatted %>% 
+  slice(1:50, 354) %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Parking income for England (£,000)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)),
+                       paste0("Average annual change since ", FunFisc(4)))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("hold_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  column_spec(7, width = "1.5cm") %>% 
+  column_spec(8, width = "1.5cm") %>% 
+  row_spec(50, hline_after = TRUE)
+
+```
 
 # Expenditure
 
@@ -241,6 +264,7 @@ In total, councils in England made a surplus of £`r FunDec(sur.tot,0)` million 
 The London surplus of £`r FunDec(sur.london,0)` million in `r FunFisc()` was `r FunFisc()`, `r FunDec(sur.london.tot.ch, dp.text)` % `r ifelse(sur.london.tot.ch > 0, "higher", "lower")` than in  `r FunFisc(1)`. `r sur.london.top.la` was the highest earning council in London and England with a surplus in `r FunFisc()` of £`r FunDec(sur.london.top.amount, dp.text)` million, `r FunDec(abs(sur.london.top.ch), dp.text)` % `r ifelse(sur.london.top.ch > 0, "higher", "lower")` than in `r FunFisc(1)`.
 
 \newpage
+
 
 ```{r surlondtab}
 # print summary data

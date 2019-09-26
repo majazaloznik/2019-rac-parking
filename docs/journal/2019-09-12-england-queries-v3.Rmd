@@ -28,5 +28,6 @@ OK, so now you have the draft England report that basically follows what Leiblin
 
 19. The two  national comparison tables for the outturns and the average annual changes have now been repeated in all three reports. I've adjusted the text a bit to take into account that the data can be for different years. Which also means that e.g. GB data is calculated for the most recent year *all* countries have data avialable. I've added a bit more text in all three reports, because it's a shame to have so many numbers in tables and so little text. Check that this is OK in all 3 reports.
 
+20. *Income* The other two reports list the numbers increased/decreased/stayed the same and the top 3 by income and top 3 year-on-year increases. They also have tables with both previous annual change and 4-year average annual change. I've now approx replicated this, except that I don't know what to do about the tables. Should i do this for top X councils? SHould I add the full table to the appendix?
 
 
