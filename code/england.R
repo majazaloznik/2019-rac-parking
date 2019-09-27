@@ -804,7 +804,7 @@ exp.prop.inc.on <- summary$expend.on[5]/summary$income.on[5]* 100
 exp.prop.inc.off <- summary$expend.off[5]/summary$income.off[5]* 100
 
 
-## surplus variables ##############################################################
+## surplus variables in text  #################################################
 
 sur.tot <- summary$surplus.total[5]
 
@@ -818,8 +818,9 @@ sur.london.tot.ch <- summary.london.prep.plus$london17[11]/
 sur.rest.tot.ch <- summary.london.prep.plus$rest17[11]/
   summary.london.prep.plus$rest16[11]*100-100
 
-# london surplus table 
-## SURPLUS #####################################################################
+
+## SURPLUS ####################################################################
+# london surplus table  #######################################################
 # clean up surplus data
 data %>% 
   filter(auth.type == "L") %>% 
@@ -893,9 +894,120 @@ sur.london.top.la <- london.surplus.totals.table$auth.name[1]
 sur.london.top.amount <- london.surplus.totals.table[1,6]
 sur.london.top.ch <- london.surplus.totals.table$change[1]
 
+# tob bottom three london #####################################################
+# get top three LAs and proportion they command
+  london.surplus %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  filter(!!as.name(current.year) >= 0) %>% 
+  group_by(row_number() == 1, row_number() == 2, 
+           row_number() == 3, row_number() > 3) %>% 
+  mutate(sum = sum(!!as.name(current.year))) %>% 
+  ungroup() %>% 
+  filter(row_number() <= 4) %>% 
+  mutate(auth.name = ifelse(row_number() == 4, "Other", auth.name)) %>% 
+  select(auth.name, sum)  %>% 
+  mutate(total = sum(sum)) %>% 
+  group_by(auth.name == "Other") %>% 
+  mutate(proportion = 100*sum(sum)/total) %>% 
+  ungroup() %>% 
+  select(auth.name, proportion) %>% 
+  deframe() -> london.surplus.top3
 
-# top 20 surplus table  not london
-## SURPLUS #####################################################################
+# surplus.councils (pozitive)
+london.poz.surplus <- nrow(filter(london.surplus, !!as.name(current.year) >= 0))
+
+# extract "surplus" table where only valid changes are 
+london.surplus %>% 
+  mutate(change =100*(!!as.name(current.year)/!!as.name(current.year 
+                                                        - 1) - 1)) %>% 
+  filter(!is.nan(change) & !is.infinite(change)) %>% 
+  filter(!!as.name(current.year) >= 0,
+         !!as.name(current.year - 1) >= 0) %>% 
+  arrange(desc(change)) %>% 
+  rownames_to_column() %>% 
+  mutate(rowname = as.numeric(rowname))-> london.surplus.valid
+
+# get top three relevant surplus changes
+london.surplus.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() <= 3) -> london.surplus.change.top3
+
+# find excluded rows in top of the table 
+london.surplus.valid %>% 
+  filter(rowname <= max(london.surplus.change.top3$rowname)) %>% 
+  anti_join(london.surplus.change.top3) -> london.surplus.excluded.top
+
+# get bottom two relevant surplus changes
+london.surplus.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() > n()-2) -> london.surplus.change.bottom2
+
+# find excluded rows in bottom of the table 
+london.surplus.valid %>% 
+  filter(rowname > min(london.surplus.change.bottom2$rowname)) %>% 
+  anti_join(london.surplus.change.bottom2) -> london.surplus.excluded.bottom
+
+
+# extract "deficit" table where only valid changes are 
+london.surplus %>% 
+  mutate(change =100*(!!as.name(current.year)/!!as.name(current.year 
+                                                        - 1) - 1)) %>% 
+  filter(!is.nan(change) & !is.infinite(change)) %>% 
+  filter(!!as.name(current.year) < 0,
+         !!as.name(current.year - 1) < 0) %>% 
+  arrange(desc(change)) %>% 
+  rownames_to_column() %>% 
+  mutate(rowname = as.numeric(rowname))-> london.deficit.valid
+
+# get top three relevant surplus changes
+london.deficit.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() <= 3) -> london.deficit.change.top3
+
+# find excluded rows in top of the table 
+london.deficit.valid %>% 
+  filter(rowname <= max(london.deficit.change.top3$rowname)) %>% 
+  anti_join(london.deficit.change.top3) -> london.deficit.excluded.top
+
+# get bottom two relevant surplus changes
+london.deficit.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() > n()-2) -> london.deficit.change.bottom2
+
+# find excluded rows in bottom of the table 
+london.deficit.valid %>% 
+  filter(rowname > min(london.deficit.change.bottom2$rowname)) %>% 
+  anti_join(london.deficit.change.bottom2) -> london.deficit.excluded.bottom
+
+# london text variables 
+
+london.surplus.totals.table %>% 
+  filter(auth.name == "Total surplus") %>% 
+  select(!!as.name(current.year)) %>% 
+  pull() -> london.surplus.totals.table.tot
+  
+london.surplus.totals.table %>% 
+  filter(auth.name == "Total surplus") %>% 
+  select(!!as.name(current.year-1)) %>% 
+  pull() -> london.surplus.totals.table.tot.last
+
+london.surplus.totals.table %>% 
+  filter(auth.name == "Total surplus") %>% 
+  select(change) %>% 
+  pull() -> london.surplus.totals.table.ch
+
+london.surplus.totals.table %>% 
+  filter(auth.name == "Total deficit") %>% 
+  select(!!as.name(current.year)) %>% 
+  pull() -> london.surplus.totals.table.def
+
+london.surplus.totals.table %>% 
+  filter(auth.name == "Total deficit") %>% 
+  select(!!as.name(current.year-1)) %>% 
+  pull() -> london.surplus.totals.table.def.last
+
+
+# top 20 surplus table  not london ############################################
 # clean up surplus data
 la.data %>% 
   filter(year <= current.year,
@@ -925,11 +1037,6 @@ bind_rows(eng.rest.surplus, eng.rest.surplus.total) %>%
                          ifelse(is.infinite(change), NA, change))) %>% 
   mutate_at(vars(-auth.name, -change), list(~./1000))-> eng.rest.surplus.totals.table
 
-## save csv table 10
-#write.csv(sco.surplus.totals.table, here::here(
-#  paste0("outputs/csv-tables/scotland-", FunFisc(), "/scotland-", 
-#         FunFisc(), "-table-10.csv")), row.names = FALSE)
-
 # format for tabulation
 eng.rest.surplus.totals.table  %>% 
   mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
@@ -943,11 +1050,169 @@ eng.rest.surplus.totals.table  %>%
   eng.rest.surplus.totals.table.formatted
 
 
-# format surplus list of london boroughs. 
+# all  surplus table  not london - for appendix only ?################################
+# clean up surplus data
+la.data %>% 
+  filter(year <= current.year,
+         auth.type != "L") %>% 
+  select(auth.name, year, surplus.total) %>% 
+  spread(key = year, value = surplus.total) %>% 
+  arrange(desc(.[[6]]))  -> eng.rest.surplus.full
 
-# top boroug
+# get numbers of +/-/0 surplus change
+eng.rest.surplus.full %>% 
+  filter(auth.name != "Total") %>% 
+  mutate(sign = ifelse(!!as.name(current.year) > 0, "poz",
+                       ifelse(!!as.name(current.year) == 0, "zero", "neg"))) %>% 
+  group_by(sign) %>% 
+  summarise(n = n()) %>% 
+  deframe() -> surplus.bin.rest
+
+# create totals row for surpluses and deficits. 
+la.data %>% 
+  filter(auth.type != "L") %>% 
+  filter(year <= current.year) %>% 
+  select(auth.name, year, surplus.total) %>% 
+  mutate(poz.neg = ifelse(surplus.total >= 0, "poz", "neg")) %>% 
+  group_by(year, poz.neg) %>%
+  summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>% 
+  full_join(expand.grid(year = (current.year - 4):current.year,
+                        poz.neg = c("poz", "neg", NA)) %>% 
+              mutate(poz.neg = as.character(poz.neg))) %>% 
+  gather(variable, value, -c(year, poz.neg)) %>%
+  unite(temp, year, variable) %>%
+  spread(temp, value) %>% 
+  filter(!is.na(poz.neg)) %>% 
+  select(poz.neg, contains("surplus")) %>% 
+  mutate(poz.neg = c("Total deficit", "Total surplus")) %>% 
+  rename_all(~c("auth.name", (current.year-4):(current.year))) %>% 
+  bind_rows(group_by(., auth.name) %>% 
+              ungroup() %>% 
+              summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>%
+              mutate(auth.name = c("Total"))) -> rest.surplus.totals.full
+
+# bind both tables together
+bind_rows(eng.rest.surplus.full, rest.surplus.totals.full) %>% 
+  mutate(change =100*(!!as.name(current.year)/!!as.name(current.year - 1)-1))%>% 
+  mutate(change = ifelse(abs(sign(!!as.name(current.year)) -
+                               sign(!!as.name(current.year-1))) == 2, NA, 
+                         change)) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change))) %>% 
+  mutate_at(vars(-auth.name, -change), list(~./1000)) -> rest.surplus.totals.table.full
+
+## save csv table 10
+#write.csv(sco.surplus.totals.table, here::here(
+#  paste0("outputs/csv-tables/scotland-", FunFisc(), "/scotland-", 
+#         FunFisc(), "-table-10.csv")), row.names = FALSE)
+
+# format for tabulation
+rest.surplus.totals.table.full  %>% 
+  mutate(change = ifelse(is.na(change), NA, 
+                         paste(FunDec(change, dp.tables), "%"))) %>% 
+  mutate(change =cell_spec(change, "latex", 
+                           italic = ifelse(is.na(.[[7]]), FALSE,
+                                           ifelse(.[[6]] < 0 , TRUE, FALSE)))) %>% 
+  mutate(change = ifelse(change == "NA", NA, change)) %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
+  mutate_at(vars(-auth.name, -change), list(~ifelse(is.na(.), NA, FunDec(., dp.tables)))) ->
+  rest.surplus.totals.table.full.formatted
+
+
+
+
+# tob bottom three rest of england #####################################################
+# get top three LAs and proportion they command
+eng.rest.surplus.full %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  filter(!!as.name(current.year) >= 0) %>% 
+  group_by(row_number() == 1, row_number() == 2, 
+           row_number() == 3, row_number() > 3) %>% 
+  mutate(sum = sum(!!as.name(current.year))) %>% 
+  ungroup() %>% 
+  filter(row_number() <= 4) %>% 
+  mutate(auth.name = ifelse(row_number() == 4, "Other", auth.name)) %>% 
+  select(auth.name, sum)  %>% 
+  mutate(total = sum(sum)) %>% 
+  group_by(auth.name == "Other") %>% 
+  mutate(proportion = 100*sum(sum)/total) %>% 
+  ungroup() %>% 
+  select(auth.name, proportion) %>% 
+  deframe() -> rest.surplus.top3
+
+# surplus.councils (pozitive)
+rest.poz.surplus <- nrow(filter(eng.rest.surplus.full, !!as.name(current.year) >= 0))
+
+# extract "surplus" table where only valid changes are 
+eng.rest.surplus.full %>% 
+  mutate(change =100*(!!as.name(current.year)/!!as.name(current.year 
+                                                        - 1) - 1)) %>% 
+  filter(!is.nan(change) & !is.infinite(change)) %>% 
+  filter(!!as.name(current.year) >= 0,
+         !!as.name(current.year - 1) >= 0) %>% 
+  arrange(desc(change)) %>% 
+  rownames_to_column() %>% 
+  mutate(rowname = as.numeric(rowname))-> rest.surplus.valid
+
+# get top three relevant surplus changes
+rest.surplus.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() <= 3) -> rest.surplus.change.top3
+
+# find excluded rows in top of the table 
+rest.surplus.valid %>% 
+  filter(rowname <= max(rest.surplus.change.top3$rowname)) %>% 
+  anti_join(rest.surplus.change.top3) -> rest.surplus.excluded.top
+
+# get bottom two relevant surplus changes
+rest.surplus.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() > n()-2) -> rest.surplus.change.bottom2
+
+# find excluded rows in bottom of the table 
+rest.surplus.valid %>% 
+  filter(rowname > min(rest.surplus.change.bottom2$rowname)) %>% 
+  anti_join(rest.surplus.change.bottom2) -> rest.surplus.excluded.bottom
+
+
+# extract "deficit" table where only valid changes are 
+eng.rest.surplus.full %>% 
+  mutate(change =100*(!!as.name(current.year)/!!as.name(current.year 
+                                                        - 1) - 1)) %>% 
+  filter(!is.nan(change) & !is.infinite(change)) %>% 
+  filter(!!as.name(current.year) < 0,
+         !!as.name(current.year - 1) < 0) %>% 
+  arrange(desc(change)) %>% 
+  rownames_to_column() %>% 
+  mutate(rowname = as.numeric(rowname))-> rest.deficit.valid
+
+# get top three relevant surplus changes
+rest.deficit.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() <= 3) -> rest.deficit.change.top3
+
+# find excluded rows in top of the table 
+rest.deficit.valid %>% 
+  filter(rowname <= max(rest.deficit.change.top3$rowname)) %>% 
+  anti_join(rest.deficit.change.top3) -> rest.deficit.excluded.top
+
+# get bottom two relevant surplus changes
+rest.deficit.valid %>% 
+  filter(abs(!!as.name(current.year)) >= 30) %>% 
+  filter(row_number() > n()-2) -> rest.deficit.change.bottom2
+
+# find excluded rows in bottom of the table 
+rest.deficit.valid %>% 
+  filter(rowname > min(rest.deficit.change.bottom2$rowname)) %>% 
+  anti_join(rest.deficit.change.bottom2) -> rest.deficit.excluded.bottom
+
+
+
+# out of london text variables 
+# top borough
 sur.rest.top.la <-   eng.rest.surplus.totals.table$auth.name[1]
 sur.rest.top.amount <-   eng.rest.surplus.totals.table[1,6]
+sur.rest.top.ch <- eng.rest.surplus.totals.table$change[1]
 
 la.data %>% 
   filter(year == current.year) %>% 
@@ -956,6 +1221,43 @@ la.data %>%
   mutate(rank = row_number()) %>% 
   filter(auth.name == sur.rest.top.la) %>% 
   pull(rank) -> sur.rest.top.rank
+
+
+surplus.bin.rest["neg"]
+
+
+# total sufficit and deficit
+rest.surplus.totals.table.full %>% 
+  filter(auth.name == "Total") %>% 
+  select(!!as.name(current.year)) %>% 
+  pull() -> rest.surplus.totals.table.tot.net
+
+rest.surplus.totals.table.full %>% 
+  filter(auth.name == "Total surplus") %>% 
+  select(!!as.name(current.year)) %>% 
+  pull() -> rest.surplus.totals.table.tot
+
+rest.surplus.totals.table.full %>% 
+  filter(auth.name == "Total surplus") %>% 
+  select(!!as.name(current.year-1)) %>% 
+  pull() -> rest.surplus.totals.table.tot.last
+
+rest.surplus.totals.table.full %>% 
+  filter(auth.name == "Total surplus") %>% 
+  select(change) %>% 
+  pull() -> rest.surplus.totals.table.ch
+
+rest.surplus.totals.table.full %>% 
+  filter(auth.name == "Total deficit") %>% 
+  select(!!as.name(current.year)) %>% 
+  pull() -> rest.surplus.totals.table.def
+
+rest.surplus.totals.table.full %>% 
+  filter(auth.name == "Total deficit") %>% 
+  select(!!as.name(current.year-1)) %>% 
+  pull() -> rest.surplus.totals.table.def.last
+
+
 
 
 ## budget comparison ##########################################################

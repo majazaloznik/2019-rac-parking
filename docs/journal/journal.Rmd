@@ -1088,6 +1088,16 @@ commit
 * hmm, the total rows, should probably be *also total london and total rest of UK?*
 * also the expenditure as proportion of income, there is no text about it? add to querries. 
 * commit. 
+* ah, when i finished the surpluses i copied the code from scotland, but only used it for the tables, not for the text. let's add that as well. But they need to be split between london and rest of england presumably?
+* error: there was a sentence that said X councils, which didn't work if there was only one. fixed in scotland, *still need to fix in wales*
+* text on deficits falling or rising is wrong, in all reports. OK. 
+* also there is an "increase" not automated in all reports *fix*
+* bottom two deficits only work if you have two councils with deficits!! fixed in england. scotland. wales. OK. 
+* *should probably double check this doens't happen anywhere else..*
+* surplus text for rest of england. OK. 
+* add table to appendix of all non london coucnils. OK
+* commit
+
 
 
 

@@ -282,7 +282,7 @@ sub.gb.ref  %>%
          expend.change.4 = 100*(m0_expend / m4_expend - 1),
          surplus.change.4 = 100*(m0_surplus / m4_surplus - 1)) %>% 
   mutate_at(vars(ends_with(".4")), function(x) 100*(x/100 + 1) ^ 
-              ( 1 / (current.year - ref.year)) - 100) %>% 
+              ( 1 / (4)) - 100) %>% 
   mutate(income.change = 100*(m0_income/ m1_income - 1), 
          expend.change = 100*(m0_expend/ m1_expend - 1), 
          surplus.change = 100*(m0_surplus/ m1_surplus - 1),

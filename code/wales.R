@@ -11,7 +11,7 @@
 
 ## preliminaries ###############################################################
 # change the year variable 
-current.year <- params$current.year
+current.year <- 2017#params$current.year
 
 # knitr options
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
@@ -50,8 +50,8 @@ report.name <- paste0("wales-report-", current.year, "-",current.year - 1999)
 bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
 
 # get the number of decimal points
-dp.text <- params$dp.text
-dp.tables <- params$dp.tables
+dp.text <- 1# params$dp.text
+dp.tables <- 2# params$dp.tables
 
 # create folder for csv tables if it does not exist already
 suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/wales-", FunFisc())), 
@@ -227,7 +227,7 @@ sub.gb.ref  %>%
          expend.change.4 = 100*(m0_expend / m4_expend - 1),
          surplus.change.4 = 100*(m0_surplus / m4_surplus - 1)) %>% 
   mutate_at(vars(ends_with(".4")), function(x) 100*(x/100 + 1) ^ 
-              ( 1 / (current.year - ref.year)) - 100) %>% 
+              ( 1 / (4)) - 100) %>% 
   mutate(income.change = 100*(m0_income/ m1_income - 1), 
          expend.change = 100*(m0_expend/ m1_expend - 1), 
          surplus.change = 100*(m0_surplus/ m1_surplus - 1),

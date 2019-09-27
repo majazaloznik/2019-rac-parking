@@ -329,7 +329,15 @@ eng.expend.of.income.formatted %>%
 
 In total, councils in England made a surplus of £`r FunDec(sur.tot,0)` million in `r FunFisc()`, `r FunDec(sur.ch, dp.text)` % `r ifelse(sur.ch > 0, "higher", "lower")` than in `r FunFisc(1)`. Of this total, £`r FunDec(sur.london, 0)` million (`r FunDec(sur.london.prop, dp.text)` %) came from London and £`r FunDec(sur.rest, 0)` million from the rest of England. This excludes a £`r FunDec(surplus.nat.parks/1000, dp.text)` million surplus from parking in National Parks and a £`r FunDec(surplus.wpl/1000, dp.text)` million surplus from the Nottingham workplace parking levy.
 
-The London surplus of £`r FunDec(sur.london,0)` million in `r FunFisc()` was `r FunFisc()`, `r FunDec(sur.london.tot.ch, dp.text)` % `r ifelse(sur.london.tot.ch > 0, "higher", "lower")` than in  `r FunFisc(1)`. `r sur.london.top.la` was the highest earning council in London and England with a surplus in `r FunFisc()` of £`r FunDec(sur.london.top.amount, dp.text)` million, `r FunDec(abs(sur.london.top.ch), dp.text)` % `r ifelse(sur.london.top.ch > 0, "higher", "lower")` than in `r FunFisc(1)`.
+
+The total *surpluses* for London amounted to £`r FunDec((london.surplus.totals.table.tot), dp.text)` million between `r  london.poz.surplus ` authorities, of which the top three--`r paste0(names(london.surplus.top3)[1], ", ", names(london.surplus.top3)[2], ", and ", names(london.surplus.top3)[3])`--accounted for `r FunDec(london.surplus.top3[1],  dp.text)` %.  `r FunFirstup(FunN2W(surplus.bin["neg"]))` `r ifelse(surplus.bin["neg"] == 1, "council", "councils")` made a loss with the total of parking deficits `r ifelse(london.surplus.totals.table.def > london.surplus.totals.table.def.last, "falling", "rising")` to £`r FunDec(-london.surplus.totals.table.def, dp.text)` million from £`r FunDec(-london.surplus.totals.table.def.last, dp.text)` million last year. 
+
+Overall, parking contributed £`r FunDec(london.surplus.totals.table.tot, dp.text)` million to local authority finances in London in `r FunFisc()` compared with £`r FunDec(london.surplus.totals.table.tot.last, dp.text)` million in `r FunFisc()`, an increase of `r FunDec(london.surplus.totals.table.ch, dp.text)` %. 
+
+`r london.surplus.change.top3[1,2]` increased their surplus by `r FunDec(london.surplus.change.top3$change[1], dp.text)` %
+while `r london.surplus.change.top3[2,2]` and `r london.surplus.change.top3[3,2]` increased  by `r FunDec(london.surplus.change.top3$change[2], dp.text)` % and `r FunDec(london.surplus.change.top3$change[3], dp.text)` % respectively`r if(nrow(london.surplus.excluded.top) > 0) paste0(" (excluding ", FunMultiText(london.surplus.excluded.top$auth.name), " with a surplus under £30,000)")`. The biggest decreases were in `r london.surplus.change.bottom2[2,2]` (`r FunDec(abs(london.surplus.change.bottom2$change[2]), dp.text)` %), and `r london.surplus.change.bottom2[1,2]` (`r FunDec(abs(london.surplus.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(london.surplus.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(london.surplus.excluded.bottom$auth.name), " with a surplus under £30,000)")`.
+
+`r ifelse(nrow(london.deficit.valid) == 0, "None of the London boroughs has had a deficit two years in a row", paste0(london.deficit.change.top3[1,2], " increased their deficits by ", FunDec(london.deficit.change.top3$change[1], dp.text)," % while ", london.deficit.change.top3[2,2], " and ",  london.deficit.change.top3[3,2], " increased  by ", FunDec(london.deficit.change.top3$change[2], dp.text), " % and ", FunDec(london.deficit.change.top3$change[3], dp.text), " % respectively ",  if(nrow(london.deficit.excluded.top) > 0) paste0(" (excluding ", FunMultiText(london.deficit.excluded.top$auth.name), " with a deficit under £30,000)"), " The biggest decreases were in ",  london.deficit.change.bottom2[2,2], " (", FunDec(abs(london.deficit.change.bottom2$change[2]), dp.text), " %), and ", london.deficit.change.bottom2[1,2], "  (",  FunDec(abs(london.deficit.change.bottom2$change[1]), dp.text), " %)", if(nrow(london.deficit.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(london.deficit.excluded.bottom$auth.name), " with a deficit under £30,000)")))`
 
 \newpage
 
@@ -358,7 +366,7 @@ london.surplus.totals.table.formatted %>%
 ```
 
 ```{r surengtab}
-# print summary data
+# print surpluses for non london councils 
 eng.rest.surplus.totals.table.formatted %>% 
   kable("latex", 
          booktabs = T, 
@@ -373,12 +381,22 @@ eng.rest.surplus.totals.table.formatted %>%
                               " on ", current.year-1, "-", current.year-1999-1))) %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
-                font_size = 10) %>% 
-  column_spec(1, width = "4cm") %>% 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
   row_spec(c(20), hline_after = TRUE) 
 ```
 
-The total surplus from parking outside London in `r FunFisc()` was £460.8 million, a 5% increase on `r FunFisc(1)`. With £`r sur.rest.top.amount` million, `r sur.rest.top.la` made the largest surplus outside London, which also ranks as the `r ordinal(sur.rest.top.rank)` largest  nationally.
+
+The total surplus from parking outside London of £`r FunDec(sur.rest,0)` million in `r FunFisc()` was  `r FunDec(sur.rest.tot.ch, dp.text)` % `r ifelse(sur.rest.tot.ch > 0, "higher", "lower")` than in  `r FunFisc(1)`. `r sur.rest.top.la` was the highest earning council outside London, ranking as the `r ordinal(sur.rest.top.rank)` largest  nationally, and with a surplus in `r FunFisc()` of £`r FunDec(sur.rest.top.amount, dp.text)` million, `r FunDec(abs(sur.rest.top.ch), dp.text)` % `r ifelse(sur.rest.top.ch > 0, "higher", "lower")` than in `r FunFisc(1)`.
+
+The total *surpluses* outside London amounted to £`r FunDec((rest.surplus.totals.table.tot), dp.text)` million between `r  rest.poz.surplus ` authorities, of which the top three--`r paste0(names(rest.surplus.top3)[1], ", ", names(rest.surplus.top3)[2], ", and ", names(rest.surplus.top3)[3])`--accounted for `r FunDec(rest.surplus.top3[1],  dp.text)` %.  `r FunFirstup(FunN2W(surplus.bin.rest["neg"]))` `r ifelse(surplus.bin.rest["neg"] == 1, "council", ifelse(surplus.bin.rest["neg"] == 0, "No councils", "councils"))` made a loss with the total of parking deficits `r ifelse(rest.surplus.totals.table.def > rest.surplus.totals.table.def.last, "falling", "rising")` to £`r FunDec(-rest.surplus.totals.table.def, dp.text)` million from £`r FunDec(-rest.surplus.totals.table.def.last, dp.text)` million last year. 
+
+
+`r rest.surplus.change.top3[1,2]` increased their surplus by `r FunDec(rest.surplus.change.top3$change[1], dp.text)` %
+while `r rest.surplus.change.top3[2,2]` and `r rest.surplus.change.top3[3,2]` increased  by `r FunDec(rest.surplus.change.top3$change[2], dp.text)` % and `r FunDec(rest.surplus.change.top3$change[3], dp.text)` % respectively`r if(nrow(rest.surplus.excluded.top) > 0) paste0(" (excluding ", FunMultiText(rest.surplus.excluded.top$auth.name), " with a surplus under £30,000)")`. The biggest decreases were in `r rest.surplus.change.bottom2[2,2]` (`r FunDec(abs(rest.surplus.change.bottom2$change[2]), dp.text)` %), and `r rest.surplus.change.bottom2[1,2]` (`r FunDec(abs(rest.surplus.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(rest.surplus.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(rest.surplus.excluded.bottom$auth.name), " with a surplus under £30,000)")`.
+
+`r ifelse(nrow(rest.deficit.valid) == 0, "None of the councils has had a deficit two years in a row", paste0(rest.deficit.change.top3[1,2], " increased their deficits by ", FunDec(rest.deficit.change.top3$change[1], dp.text)," % while ", rest.deficit.change.top3[2,2], " and ",  rest.deficit.change.top3[3,2], " increased  by ", FunDec(rest.deficit.change.top3$change[2], dp.text), " % and ", FunDec(rest.deficit.change.top3$change[3], dp.text), " % respectively ",  if(nrow(rest.deficit.excluded.top) > 0) paste0(" (excluding ", FunMultiText(rest.deficit.excluded.top$auth.name), " with a deficit under £30,000)"), " The biggest decreases were in ",  rest.deficit.change.bottom2[2,2], " (", FunDec(abs(rest.deficit.change.bottom2$change[2]), dp.text), " %), and ", rest.deficit.change.bottom2[1,2], "  (",  FunDec(abs(rest.deficit.change.bottom2$change[1]), dp.text), " %)", if(nrow(rest.deficit.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(rest.deficit.excluded.bottom$auth.name), " with a deficit under £30,000)")))`
+
 
 # Comparison with budgets for `r FunFisc()` and `r FunFisc(-1)`
 
@@ -462,4 +480,25 @@ england.sorted %>%
 
 \newpage
 
+
+```{r surrestfull}
+# print surpluses for non london councils 
+rest.surplus.totals.table.full.formatted %>% 
+  kable("latex", 
+         booktabs = T, 
+         digits = 0, 
+         longtable = T,
+         escape = F,
+         align = c("r"),
+         caption = "Parking surpluses (on-street and off-street) for all councils outside London (£ millions)",
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", current.year, "-", current.year-1999, 
+                              " on ", current.year-1, "-", current.year-1999-1))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  row_spec(c(20), hline_after = TRUE) 
+```
 ## References {-}
