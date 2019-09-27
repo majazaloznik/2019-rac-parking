@@ -1078,6 +1078,19 @@ commit
 
 
 
+# Friday 27.09.2019
+
+* no, first there is some text in income yet. OK that's done
+* OK, next is the expenditure tables from scotland or wales, let's have a look.
+* *add csv table code to all england tables* 
+* OK, expenditure code in england.r OK
+* add text to template. OK
+* hmm, the total rows, should probably be *also total london and total rest of UK?*
+* also the expenditure as proportion of income, there is no text about it? add to querries. 
+* commit. 
+
+
+
 ### Wales (based on 17/18) #####################################################
 
 #### 1. Introduction

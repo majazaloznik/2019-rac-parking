@@ -30,4 +30,11 @@ OK, so now you have the draft England report that basically follows what Leiblin
 
 20. *Income* The other two reports list the numbers increased/decreased/stayed the same and the top 3 by income and top 3 year-on-year increases. They also have tables with both previous annual change and 4-year average annual change. I've now approx replicated this, except that I don't know what to do about the tables. Should i do this for top X councils? SHould I add the full table to the appendix?
 
+21. In the other reports we list the top 3 councils for whatever measure. I've repeated this in the England report. But within the England report we also distinguish between London and rest of London councils. So that's one way of spliting the data and reporting top 3 councils in each. Furhtermore we have data for off-street and on-street parking as well, so instead of the totals like now, we could also report separately for each revenue stream?
+
+
+22. in *Expenditure* we have the final column on the proportion of income that is used up by expenditure. But there is no text relating to it. (e.g. in scotland there's sth about Edinburgh and Glasgow). What do you want to write about this here?
+
+
+
 
