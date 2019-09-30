@@ -1098,6 +1098,17 @@ commit
 * add table to appendix of all non london coucnils. OK
 * commit
 
+# Monday 30.09.2019
+
+* ok, so which tables are where and which are in teh appendices? This should also be clear in the text. 
+* So maybe all london, with added three totals, and top 20 non-london with added three totals? 
+* Then the whole table in the appendix. 
+* OK, income table prepared. Split into two tables, third one into appendix.
+* added some more income text, income kinda done now
+* commit
+
+
+
 
 
 

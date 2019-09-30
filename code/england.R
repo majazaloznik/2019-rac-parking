@@ -477,10 +477,10 @@ la.data %>%
   mutate_at(vars(-variable,), as.numeric) %>% 
   select(-order) %>% 
   ungroup()  %>% 
-  rename(london16 = `1`, london17 = `2`,
-         rest16 = `3`, rest17 = `4`) %>% 
-  mutate(prop.london.ch = london17/london16*100-100, 
-         prop.rest.ch = rest17/rest16*100-100) -> summary.london.prep.plus
+  rename(london.last = `1`, london.this = `2`,
+         rest.last = `3`, rest.this = `4`) %>% 
+  mutate(prop.london.ch = london.this/london.last*100-100, 
+         prop.rest.ch = rest.this/rest.last*100-100) -> summary.london.prep.plus
 
 # prepare data for tabulation. 
 summary.london.prep %>% 
@@ -501,18 +501,66 @@ lnd.surplus <- as.numeric(summary.london.prep$london[9])
 lnd.prop.surplus <- 100*as.numeric(summary.london.prep$london[9])/
   as.numeric(summary.london.prep$total[9])
 
-## INCOME ######################################################################
+###############################################################################
+##                                                                          ###
+## INCOME #####################################################################
+##                                                                          ###
+###############################################################################
+
 # clean up income data, add totals row and change variable
+# create three totals row for income data
 la.data %>% 
   filter(year <= current.year) %>% 
-  select(auth.name, year, income.total) %>% 
+  select(auth.name, year, income.total, auth.type) %>% 
   spread(key = year, value = income.total) %>% 
   arrange(desc(!!as.name(current.year))) %>% 
-  filter(auth.name != "England") %>% 
-  bind_rows(group_by(. ,auth.name) %>%
+  mutate(auth.name = ifelse(auth.type == "L", "Total for London", "Total for rest of England")) %>% 
+  group_by(auth.name) %>% 
+  summarise_if(is.numeric, sum, na.rm = TRUE) %>% 
+bind_rows(group_by(. ,auth.name) %>%
               ungroup() %>% 
               summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>%
-              mutate(auth.name='Total for all of England')) %>% 
+              mutate(auth.name='Total for all of England')) -> income.totals
+
+# only london income
+la.data %>% 
+  filter(year <= current.year) %>% 
+  select(auth.name, year, income.total, auth.type) %>% 
+  spread(key = year, value = income.total) %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  filter(auth.type == "L") %>% 
+  select(-auth.type) %>% 
+  bind_rows(income.totals) %>% 
+  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
+         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change)),
+         change.4 = ifelse(is.nan(change.4), NA, 
+                           ifelse(is.infinite(change.4), NA, change.4))) -> eng.income.london
+
+# only non-london income
+la.data %>% 
+  filter(year <= current.year) %>% 
+  select(auth.name, year, income.total, auth.type) %>% 
+  spread(key = year, value = income.total) %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  filter(auth.type != "L") %>% 
+  select(-auth.type) %>% 
+  bind_rows(income.totals) %>% 
+  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
+         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change)),
+         change.4 = ifelse(is.nan(change.4), NA, 
+                           ifelse(is.infinite(change.4), NA, change.4))) -> eng.income.rest
+
+# all councils income
+la.data %>% 
+  filter(year <= current.year) %>% 
+  select(auth.name, year, income.total, auth.type) %>% 
+  spread(key = year, value = income.total) %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  bind_rows(income.totals) %>% 
   mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
          change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100) %>% 
   mutate(change = ifelse(is.nan(change), NA, 
@@ -520,8 +568,9 @@ la.data %>%
          change.4 = ifelse(is.nan(change.4), NA, 
                            ifelse(is.infinite(change.4), NA, change.4))) -> eng.income
 
+
 eng.income %>% 
-  filter(auth.name !='Total for all of England') -> e.g.icnome.353
+  filter(!grepl("Total", auth.name)) -> e.g.icnome.353
 
 # # save csv table 5
 # write.csv(sco.income, here::here(paste0("outputs/csv-tables/scotland-",
@@ -529,24 +578,50 @@ eng.income %>%
 #                                         FunFisc(), "-table-05.csv")),
 #           row.names = FALSE)
 
-# format table for kable
-eng.income %>% 
+# format table for kable london
+eng.income.london %>% 
   mutate(auth.name = gsub("&", "\\\\&", auth.name),
          change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%")),
          change.4 = ifelse(is.na(change.4), "", paste(FunDec(change.4, dp.tables), "%"))) %>% 
   mutate(change = cell_spec(change, "latex",
                             background = 
-                              FunDivergePalette(eng.income$change, 
-                                                c(eng.income$change, 
-                                                  eng.income$change.4),
+                              FunDivergePalette(eng.income.london$change, 
+                                                c(eng.income.london$change, 
+                                                  eng.income.london$change.4),
                                                 dir = 1, factor = 1.2)[[3]]),
          change.4 = cell_spec(change.4, "latex",
                               background = 
-                                FunDivergePalette(eng.income$change.4, 
-                                                  c(eng.income$change, 
-                                                    eng.income$change.4),
-                                                  dir = 1, factor = 1.2)[[3]])) ->
-  eng.income.formatted
+                                FunDivergePalette(eng.income.london$change.4, 
+                                                  c(eng.income.london$change, 
+                                                    eng.income.london$change.4),
+                                                  dir = 1, factor = 1.2)[[3]])) %>% 
+  as_tibble() ->
+  eng.income.london.formatted
+
+
+
+# format table for kable rest of england
+eng.income.rest %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name),
+         change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%")),
+         change.4 = ifelse(is.na(change.4), "", paste(FunDec(change.4, dp.tables), "%"))) %>% 
+  mutate(change = cell_spec(change, "latex",
+                            background = 
+                              FunDivergePalette(eng.income.rest$change, 
+                                                c(eng.income.rest$change, 
+                                                  eng.income.rest$change.4),
+                                                dir = 1, factor = 1.2)[[3]]),
+         change.4 = cell_spec(change.4, "latex",
+                              background = 
+                                FunDivergePalette(eng.income.rest$change.4, 
+                                                  c(eng.income.rest$change, 
+                                                    eng.income.rest$change.4),
+                                                  dir = 1, factor = 1.2)[[3]])) %>% 
+  as_tibble() ->
+  eng.income.rest.formatted
+
+
+
 
 # no income councils
 eng.no.income <- nrow(filter(e.g.icnome.353, !!as.name(current.year) == 0))
@@ -616,13 +691,45 @@ inc.off <- summary$income.off[5]
 
 
 # income for london
-inc.london.pcn <- summary.london.prep.plus$london17[1]/1000
-inc.london.pcn.ch <- summary.london.prep.plus$london17[1]/
-  summary.london.prep.plus$london16[1]*100-100
+summary.london.prep.plus %>% 
+  filter(variable == "income.pcn") %>% 
+  pull(london.this)/1000 -> inc.london.pcn 
 
-inc.rest.pcn <- summary.london.prep.plus$rest17[1]/1000
-inc.rest.pcn.ch <- summary.london.prep.plus$rest17[1]/
-  summary.london.prep.plus$rest16[1]*100-100
+summary.london.prep.plus %>% 
+  filter(variable == "income.pcn") %>% 
+  mutate(ch = london.this/london.last) %>% 
+  pull(ch)*100-100 -> inc.london.pcn.ch 
+
+
+summary.london.prep.plus %>% 
+  filter(variable == "income.total") %>% 
+  pull(london.this)/1000 -> inc.london.tot
+
+summary.london.prep.plus %>% 
+  filter(variable == "income.total") %>% 
+  mutate(ch = london.this/london.last) %>% 
+  pull(ch)*100-100 -> inc.london.tot.ch 
+  
+# income for rest of england
+
+summary.london.prep.plus %>% 
+  filter(variable == "income.pcn") %>% 
+  pull(rest.this)/1000 -> inc.rest.pcn 
+
+summary.london.prep.plus %>% 
+  filter(variable == "income.pcn") %>% 
+  mutate(ch = rest.this/rest.last) %>% 
+  pull(ch)*100-100 -> inc.rest.pcn.ch 
+
+
+summary.london.prep.plus %>% 
+  filter(variable == "income.total") %>% 
+  pull(rest.this)/1000 -> inc.rest.tot
+
+summary.london.prep.plus %>% 
+  filter(variable == "income.total") %>% 
+  mutate(ch = rest.this/rest.last) %>% 
+  pull(ch)*100-100 -> inc.rest.tot.ch 
 
 
 
@@ -795,10 +902,10 @@ eng.expend.of.income %>%
 exp.tot <- summary$expend.total[5]
 
 # expenditure for london
-exp.london.tot.ch <- summary.london.prep.plus$london17[8]/
-  summary.london.prep.plus$london16[8]*100-100
-exp.rest.tot.ch <- summary.london.prep.plus$rest17[8]/
-  summary.london.prep.plus$rest16[8]*100-100
+exp.london.tot.ch <- summary.london.prep.plus$london.this[8]/
+  summary.london.prep.plus$london.last[8]*100-100
+exp.rest.tot.ch <- summary.london.prep.plus$rest.this[8]/
+  summary.london.prep.plus$rest.last[8]*100-100
 
 exp.prop.inc.on <- summary$expend.on[5]/summary$income.on[5]* 100
 exp.prop.inc.off <- summary$expend.off[5]/summary$income.off[5]* 100
@@ -809,14 +916,14 @@ exp.prop.inc.off <- summary$expend.off[5]/summary$income.off[5]* 100
 sur.tot <- summary$surplus.total[5]
 
 # surplus for london and rest
-sur.london <- summary.london.prep.plus$london17[11]/1000
-sur.rest <- summary.london.prep.plus$rest17[11]/1000
+sur.london <- summary.london.prep.plus$london.this[11]/1000
+sur.rest <- summary.london.prep.plus$rest.this[11]/1000
 sur.london.prop <- sur.london/(sur.london + sur.rest)*100
 
-sur.london.tot.ch <- summary.london.prep.plus$london17[11]/
-  summary.london.prep.plus$london16[11]*100-100
-sur.rest.tot.ch <- summary.london.prep.plus$rest17[11]/
-  summary.london.prep.plus$rest16[11]*100-100
+sur.london.tot.ch <- summary.london.prep.plus$london.this[11]/
+  summary.london.prep.plus$london.last[11]*100-100
+sur.rest.tot.ch <- summary.london.prep.plus$rest.this[11]/
+  summary.london.prep.plus$rest.last[11]*100-100
 
 
 ## SURPLUS ####################################################################

@@ -1,0 +1,38 @@
+---
+  output: pdf_document
+---
+  
+```{r setup, include=FALSE}
+library(kableExtra)
+library(dplyr)
+
+options(knitr.kable.NA = '')
+
+# Create Data
+set.seed(2)
+d <- data_frame(group = sample(LETTERS[1:5], 10, replace=TRUE), cat1=runif(10, 0, 100), cat2=runif(10, 0, 100))
+d[3:5,2:3] <- NA
+
+# Functions to format cell
+max.val = max(d[ , sapply(d, is.numeric)], na.rm=TRUE)
+pal.fnc <- colorRamp(c("red", "yellow", "green"))
+
+colourCell <- function(x) {
+  cell_spec(round(x,1), "latex",
+            bold = F,
+            color=grey(.3),
+            background = rgb(pal.fnc(x/max.val) %>% 
+                               replace(., is.na(.), 200), maxColorValue=255))
+}
+```
+
+```{r table, echo = FALSE}
+d %>%
+  mutate_if(is.numeric, function(x) {
+    case_when(!is.na(x) ~ colourCell(x))
+  })  %>%
+  kable("latex", 
+    linesep = "",
+    booktabs = T, 
+    escape = F)
+```

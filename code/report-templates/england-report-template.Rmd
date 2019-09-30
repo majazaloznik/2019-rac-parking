@@ -165,7 +165,7 @@ Only `r FunDec(lnd.prop.off, dp.text)` % of London boroughs’ parking income co
 The parking surplus in London was £`r lnd.surplus`million, `r FunDec(lnd.prop.surplus, dp.text)`% of the total for England, although London only has only \color{red}10% \color{black}of the total cars in England but of course incoming commuters and visitors will contribute to parking fees and penalties which are much higher than in the rest of England.
 
 
-
+\newpage
 ```{r compare, echo = FALSE}
 # pring comparison table for all three countrires
 sum.gb.formatted %>% 
@@ -218,30 +218,22 @@ sum.gb.change.tab.formatted  %>%
 
 # Income 
 
-Parking income is derived from three main sources: meter income, residents’  business permits, and penalties. Other sources are towing and storage charges although relatively few councils operate pounds now. Total income in `r FunFisc()` was £`r formatC(inc.tot, big.mark = ",")` million, `r FunDec(inc.ch, dp.text)`% higher than in `r FunFisc(1)`. 
+Parking income is derived from three main sources: meter income, residents’  business permits, and penalties. Other sources are towing and storage charges although relatively few councils operate pounds now. Total income in `r FunFisc()` was £`r formatC(inc.tot, big.mark = ",")` million, `r FunDec(inc.ch, dp.text)`% higher than in `r FunFisc(1)`. In London boroughs the total cinome was £`r FunDec(inc.london.tot, dp.text)`million, `r FunDec(inc.london.tot.ch, dp.text)` % more than in the previous year, while the total for the rest of England was £`r FunDec(inc.rest.tot, dp.text)`million, `r FunDec(inc.rest.tot.ch, dp.text)` % more than in the previous year. 
 
-Income from on-street tickets and permits was £`r FunDec(inc.fnp, 0)` million, (`r ifelse(inc.fnp.ch>0, "up", "down")` `r FunDec(inc.fnp.ch, dp.text)` %), and a further £`r FunDec(inc.pcn, 0)` million came from on-street penalty charges (`r ifelse(inc.pcn.ch>0, "up", "down")` `r FunDec(inc.pcn.ch, dp.text)` %) and £`r FunDec(inc.off, 0)` million (`r ifelse(inc.off.ch>0, "up", "down")` `r FunDec(inc.off.ch, dp.text)` %)from off-street charges and penalties. Note that this does not include off-street income received by commercial off-street parking facilities. 
+Income from on-street tickets and permits was £`r FunDec(inc.fnp, 0)` million, (`r ifelse(inc.fnp.ch>0, "up", "down")` `r FunDec(inc.fnp.ch, dp.text)` %), and a further £`r FunDec(inc.pcn, 0)` million came from on-street penalty charges (`r ifelse(inc.pcn.ch>0, "up", "down")` `r FunDec(inc.pcn.ch, dp.text)` %) and £`r FunDec(inc.off, 0)` million (`r ifelse(inc.off.ch>0, "up", "down")` `r FunDec(inc.off.ch, dp.text)` %)from off-street charges and penalties. Note that this does not include off-street income received by commercial off-street parking facilities. Table \@ref(tab:incometablondon) shows the incomes for all the London boroughs for the previous 5 years, their most recent annual change and the average annual change in income over the preceding 5 years. Table \@ref(tab:incometabrest) has the same information for the top 20 councils outside of London. For a full table of all the local authrities in London see Table \@ref(tab:incometab)  in the Appendix. 
 
 Penalty income in London was £`r FunDec(inc.london.pcn, 0)` million, `r FunDec(inc.london.pcn.ch, dp.text)`% `r ifelse(inc.london.pcn > 0, "higher", "lower")` than in 2016-17. \color{red} The number of parking PCNs in London rose by 4% to 3.3 million (excluding TfL) but the average income per PCN was £74 in 2017-18 unchanged from 2016-17. \color{black} Penalty income in the rest of England was £`r FunDec(inc.rest.pcn, 0)` million, `r FunDec(inc.rest.pcn.ch, dp.text)`% `r ifelse(inc.rest.pcn > 0, "higher", "lower")` than the previous year but \color{red}only just over a half\color{black} of that collected in London reflecting the lower penalty tariffs outside London.^[\color{red}The penalty for more serious parking offences in London is £130 or £110 and £70 outside. For less serious offences the penalties are £80 or £60 and £50. These a reduced by 50% for payment within14 days. \color{black}]
 
-`r FunFirstup(FunN2W(income.bin[2]))` councils increased their income over the past year and `r FunN2W(income.bin[1])` decreased their income. `r if (eng.no.income > 0 ) {paste0(" ", FunFirstup(FunN2W(eng.no.income)), " councils did not show any income in ", FunFisc(), ".")}` 
 
-The top three English counils by income were `r paste0(names(eng.income.top3)[1], ", ", names(eng.income.top3)[2], ", and ", names(eng.income.top3)[3])`, and between them accounted for `r FunDec(eng.income.top3[1], dp.text)` % of parking income. 
-
-The three councils which had the largest year-on-year percentage increases in income were `r eng.income.change.top3[1,2]` (up `r FunDec(eng.income.change.top3$change[1], dp.text)` %), `r eng.income.change.top3[2,2]` (up `r FunDec(eng.income.change.top3$change[2], dp.text)` %) and `r eng.income.change.top3[3,2]` (up `r FunDec(eng.income.change.top3$change[3], dp.text)` %).
-`r if(nrow(eng.income.excluded.top) > 0) paste0(FunMultiText(eng.income.excluded.top$auth.name), " showed a larger percentage change but parking income was under £30,000.")` The biggest decreases were in `r eng.income.change.bottom2[2,2]` (`r FunDec(abs(eng.income.change.bottom2$change[2]), dp.text)` %), and `r eng.income.change.bottom2[1,2]` (`r FunDec(abs(eng.income.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(eng.income.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(eng.income.excluded.bottom$auth.name), " where income was under £30,000)")`.
-
-
-```{r incometab, echo = FALSE, message = FALSE, warning = FALSE}
-eng.income.formatted %>% 
-  slice(1:50, 354) %>% 
+```{r incometablondon, echo = FALSE, message = FALSE, warning = FALSE}
+eng.income.london.formatted %>% 
   kable( "latex", 
          booktabs = T, 
          digits = c(rep(0, 6), 2), 
          escape = F,
          longtable = T,
          align = c("r"),
-         caption = "Parking income for England (£,000)",
+         caption = "Parking income for London boroughs (£,000)",
          format.args = list(big.mark = ","),
          linesep = "",
          col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
@@ -254,9 +246,47 @@ eng.income.formatted %>%
   column_spec(1, width = "4.2cm") %>% 
   column_spec(7, width = "1.5cm") %>% 
   column_spec(8, width = "1.5cm") %>% 
-  row_spec(50, hline_after = TRUE)
+  row_spec(c(33, 35), hline_after = TRUE)
 
 ```
+
+
+In England as a whole `r FunFirstup(FunN2W(income.bin[2]))` councils increased their income over the past year and `r FunN2W(income.bin[1])` decreased their income. `r if (eng.no.income > 0 ) {paste0(" ", FunFirstup(FunN2W(eng.no.income)), " councils did not show any income in ", FunFisc(), ".")}` 
+
+The top three English councils by income were `r paste0(names(eng.income.top3)[1], ", ", names(eng.income.top3)[2], ", and ", names(eng.income.top3)[3])`, and between them accounted for `r FunDec(eng.income.top3[1], dp.text)` % of parking income. 
+
+The three councils which had the largest year-on-year percentage increases in income were `r eng.income.change.top3[1,2]` (up `r FunDec(eng.income.change.top3$change[1], dp.text)` %), `r eng.income.change.top3[2,2]` (up `r FunDec(eng.income.change.top3$change[2], dp.text)` %) and `r eng.income.change.top3[3,2]` (up `r FunDec(eng.income.change.top3$change[3], dp.text)` %).
+`r if(nrow(eng.income.excluded.top) > 0) paste0(FunMultiText(eng.income.excluded.top$auth.name), " showed a larger percentage change but parking income was under £30,000.")` The biggest decreases were in `r eng.income.change.bottom2[2,2]` (`r FunDec(abs(eng.income.change.bottom2$change[2]), dp.text)` %), and `r eng.income.change.bottom2[1,2]` (`r FunDec(abs(eng.income.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(eng.income.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(eng.income.excluded.bottom$auth.name), " where income was under £30,000)")`.
+
+
+
+```{r incometabrest, echo = FALSE, message = FALSE, warning = FALSE}
+eng.income.rest.formatted %>% 
+  slice(1:20, (n()-3):n()) %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Parking income for the rest of England outside London (£,000)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)),
+                       paste0("Average annual change since ", FunFisc(4)))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("hold_position", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  column_spec(7, width = "1.5cm") %>% 
+  column_spec(8, width = "1.5cm") %>% 
+  row_spec(c(21, 23), hline_after = TRUE)
+
+```
+
+
 
 # Expenditure
 
@@ -435,6 +465,31 @@ cong.ch.formatted %>%
 
 # Appendix 
 
+## Income data
+```{r incometab, echo = FALSE, message = FALSE, warning = FALSE}
+eng.income.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Parking income for England (£,000)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)),
+                       paste0("Average annual change since ", FunFisc(4)))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("hold_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  column_spec(7, width = "1.5cm") %>% 
+  column_spec(8, width = "1.5cm") %>% 
+  row_spec(c(353, 355), hline_after = TRUE)
+
+```
 
 ```{r alphatab}
 
