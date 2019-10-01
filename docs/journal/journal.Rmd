@@ -1108,6 +1108,16 @@ commit
 * commit
 
 
+# Tuesday 1.10.2019
+
+* repeat the same thing for expenditure as i did for income yesterday. 
+* actually, once i get the palettes to work again,*make sure the palettes are the same* across tables! 
+* OK, done for regular expenditure tables and text. 
+* Now there is also the expenditure as proportion of income tables for the previous five years.. I guess i have to do that as well to be consistent. Nah, instead i'll take the top three and bottom three in London and England?
+* blog/issue todo: order of variables in spread/gather.. 
+* OK, expenditure tables done, two sets in text and two in appendix. 
+
+
 
 
 

@@ -218,7 +218,7 @@ sum.gb.change.tab.formatted  %>%
 
 # Income 
 
-Parking income is derived from three main sources: meter income, residents’  business permits, and penalties. Other sources are towing and storage charges although relatively few councils operate pounds now. Total income in `r FunFisc()` was £`r formatC(inc.tot, big.mark = ",")` million, `r FunDec(inc.ch, dp.text)`% higher than in `r FunFisc(1)`. In London boroughs the total cinome was £`r FunDec(inc.london.tot, dp.text)`million, `r FunDec(inc.london.tot.ch, dp.text)` % more than in the previous year, while the total for the rest of England was £`r FunDec(inc.rest.tot, dp.text)`million, `r FunDec(inc.rest.tot.ch, dp.text)` % more than in the previous year. 
+Parking income is derived from three main sources: meter income, residents’  business permits, and penalties. Other sources are towing and storage charges although relatively few councils operate pounds now. Total income in `r FunFisc()` was £`r formatC(inc.tot, big.mark = ",")` million, `r FunDec(inc.ch, dp.text)`% higher than in `r FunFisc(1)`. In London boroughs the total income was £`r FunDec(inc.london.tot, dp.text)`million, `r FunDec(inc.london.tot.ch, dp.text)` % more than in the previous year, while the total for the rest of England was £`r FunDec(inc.rest.tot, dp.text)`million, `r FunDec(inc.rest.tot.ch, dp.text)` % more than in the previous year. 
 
 Income from on-street tickets and permits was £`r FunDec(inc.fnp, 0)` million, (`r ifelse(inc.fnp.ch>0, "up", "down")` `r FunDec(inc.fnp.ch, dp.text)` %), and a further £`r FunDec(inc.pcn, 0)` million came from on-street penalty charges (`r ifelse(inc.pcn.ch>0, "up", "down")` `r FunDec(inc.pcn.ch, dp.text)` %) and £`r FunDec(inc.off, 0)` million (`r ifelse(inc.off.ch>0, "up", "down")` `r FunDec(inc.off.ch, dp.text)` %)from off-street charges and penalties. Note that this does not include off-street income received by commercial off-street parking facilities. Table \@ref(tab:incometablondon) shows the incomes for all the London boroughs for the previous 5 years, their most recent annual change and the average annual change in income over the preceding 5 years. Table \@ref(tab:incometabrest) has the same information for the top 20 councils outside of London. For a full table of all the local authrities in London see Table \@ref(tab:incometab)  in the Appendix. 
 
@@ -262,7 +262,7 @@ The three councils which had the largest year-on-year percentage increases in in
 
 ```{r incometabrest, echo = FALSE, message = FALSE, warning = FALSE}
 eng.income.rest.formatted %>% 
-  slice(1:20, (n()-3):n()) %>% 
+  slice(1:20, (n()-2):n()) %>% 
   kable( "latex", 
          booktabs = T, 
          digits = c(rep(0, 6), 2), 
@@ -290,29 +290,29 @@ eng.income.rest.formatted %>%
 
 # Expenditure
 
-Overall expenditure on parking rose to £`r FunDec(exp.tot,0)`million, up `r FunDec(exp.ch , dp.text)`% from `r FunFisc(1)` for both on-street and off-street. Expenditure in London went `r ifelse( exp.london.tot.ch > 0, "up", "down")` by `r FunDec(exp.london.tot.ch, dp.text)` % and `r ifelse(sign(exp.london.tot.ch == exp.rest.tot.ch), "", ifelse(exp.rest.tot.ch > 0, "up", "down"))` by `r FunDec(exp.rest.tot.ch, dp.text)` % in the rest of England. Expenditure represents `r FunDec(exp.prop.inc.on, dp.text)` % of income for on-street parking and `r FunDec(exp.prop.inc.on, dp.text)` % for off-street. 
+Overall expenditure on parking rose to £`r FunDec(exp.tot,0)`million, up `r FunDec(exp.ch , dp.text)`% from `r FunFisc(1)` for both on-street and off-street. Expenditure in London went `r ifelse( exp.london.tot.ch > 0, "up", "down")` by `r FunDec(exp.london.tot.ch, dp.text)` % and `r ifelse(sign(exp.london.tot.ch == exp.rest.tot.ch), "", ifelse(exp.rest.tot.ch > 0, "up", "down"))` by `r FunDec(exp.rest.tot.ch, dp.text)` % in the rest of England. Expenditure represents `r FunDec(exp.prop.inc.on, dp.text)` % of income for on-street parking and `r FunDec(exp.prop.inc.off, dp.text)` % for off-street. 
 
-Table \@ref(tab:expendtab) ranks the top 50 English councils in terms of expenditure on parking.
+Table \@ref(tab:expendtablondon) ranks the London boroughs in terms of expenditure on parking while thable  \@ref(tab:expendtabrest) lists the top 20 English councils outside London. See Table \@ref(tab:expendtab) in the Appendix for a comprehensive list of all 353 local authorities in England. 
+
 
 Overall expenditure has `r ifelse( eng.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(eng.expend.t[2]), dp.text)` million (`r FunDec(abs(eng.expend.t[1]), dp.text)` %) after a `r ifelse( eng.expend.t[3] > 0, paste0("rise of £", FunDec(eng.expend.t[3], dp.text), " million last year"), paste0("fall of £", FunDec(abs(eng.expend.t[3]), dp.text), " million last year"))`, with `r FunN2W(expend.bin[2])` councils having increased their costs and `r FunN2W(expend.bin[1])` having reduced them. 
 
-The largest increase in expenditure occured in `r eng.expend.change.top3[1,2]` where it increased by `r FunDec(eng.expend.change.top3$change[1], dp.text)` %
+The top three English councils by expenditure `r paste0(names(eng.expend.top3)[1], ", ", names(eng.expend.top3)[2], ", and ", names(eng.expend.top3)[3])`, and between them accounted for `r FunDec(eng.expend.top3[1], dp.text)` % of parking expenditure in the country.  
+
+The largest increase in expenditure in England occured in `r eng.expend.change.top3[1,2]` where it increased by `r FunDec(eng.expend.change.top3$change[1], dp.text)` %
 while `r eng.expend.change.top3[2,2]` and `r eng.expend.change.top3[3,2]` increased  by `r FunDec(eng.expend.change.top3$change[2], dp.text)` % and `r FunDec(eng.expend.change.top3$change[3], dp.text)` % respectively`r if(nrow(eng.expend.excluded.top) > 0) paste0(" (excluding ", FunMultiText(eng.expend.excluded.top$auth.name), " with expenditure under £30,000)")`. The biggest decreases were in `r eng.expend.change.bottom2[2,2]` (`r FunDec(abs(eng.expend.change.bottom2$change[2]), dp.text)` %), and `r eng.expend.change.bottom2[1,2]` (`r FunDec(abs(eng.expend.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(eng.expend.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(eng.expend.excluded.bottom$auth.name), " with expenditure under £30,000)")`.
 
-The table also shows the proportion of income taken up by costs in `r FunFisc()`. 
+In the final columns Tables \@ref(tab:expendtablondon) and  \@ref(tab:expendtabrest) also show the proportion of income taken up by costs in each authority for `r FunFisc()`. For London boroughs as a group `r FunDec(prop.income.summary[1], dp.text)` % of their parking income was used for expenditure, while for the other authorities in England was  `r FunDec(prop.income.summary[2], dp.text)` %, and for England as a whole the number was `r FunDec(prop.income.summary[3], dp.text)` %. 
 
-
-
-```{r expendtab, echo = FALSE, message = FALSE, warning = FALSE}
-eng.expend.formatted %>% 
-  slice(1:50, 354) %>% 
+```{r expendtablondon, echo = FALSE, message = FALSE, warning = FALSE}
+eng.expend.london.formatted %>% 
   kable( "latex", 
          booktabs = TRUE, 
          digits = 0, 
          escape = FALSE,
          longtable = TRUE,
          align = c("r"),
-         caption = "Parking expenditure for England (£,000)",
+         caption = "Parking expenditure for London boroughs (£,000)",
          format.args = list(big.mark = ","),
          linesep = "",
          col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
@@ -327,22 +327,50 @@ eng.expend.formatted %>%
     column_spec(7, width = "1.5cm") %>%
     column_spec(8, width = "1.5cm") %>%
   column_spec(9, width = "1.5cm") %>% 
-  row_spec(50, hline_after = TRUE)
+  row_spec(c(33,35), hline_after = TRUE)
 ```
 
-Table \@ref(tab:expendprop) shows the proportion of income taken up by expenditure over the previous four years. Across England it was `r FunDec(eng.expend.of.income.tot, dp.text)` % compared to `r FunDec(eng.expend.of.income.tot.prev, dp.text)` % in the previous year.
 
 
-```{r expendprop}
-eng.expend.of.income.formatted %>% 
-  slice(1:50, 354) %>% 
+```{r expendtabrest, echo = FALSE, message = FALSE, warning = FALSE}
+eng.expend.rest.formatted %>% 
+  slice(1:20, (n()-2):n()) %>% 
   kable( "latex", 
          booktabs = TRUE, 
          digits = 0, 
          escape = FALSE,
          longtable = TRUE,
          align = c("r"),
-         caption = "Parking expenditure as proportion of parking income",
+         caption = "Parking expenditure for London boroughs (£,000)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)), 
+                       paste0("Average annual change since ", FunFisc(4)),
+                       "Expenditure as proportion of income")) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+    column_spec(7, width = "1.5cm") %>%
+    column_spec(8, width = "1.5cm") %>%
+  column_spec(9, width = "1.5cm") %>% 
+  row_spec(c(20,22), hline_after = TRUE)
+```
+
+
+Table \@ref(tab:expendprop) shows the proportion of income taken up by expenditure over the previous four years for London and table \@ref(tab:expendprop2) for the top 20 councils outside London. For data for all English councils, see Table \@ref(tab:expendprop3) in the Appendix. 
+
+```{r expendprop}
+eng.expend.props.london.formatted %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         digits = 0, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure as proportion of parking income for London boroughs",
          format.args = list(big.mark = ","),
          linesep = "",
          col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz)) %>% 
@@ -350,10 +378,32 @@ eng.expend.of.income.formatted %>%
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
                 font_size = 9) %>% 
   column_spec(1, width = "4.2cm") %>% 
-  row_spec(50, hline_after = TRUE) %>% 
+  row_spec(c(33, 35), hline_after = TRUE) %>% 
   footnote(symbol = "Empty cells indicate the council reported no income and/or no expenditure")
 ```
 
+
+
+```{r expendprop2}
+eng.expend.props.rest.formatted %>% 
+  slice(1:20, (n()-2):n()) %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         digits = 0, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure as proportion of parking income for the rest of England, top 20 councils",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz)) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  row_spec(c(20, 22), hline_after = TRUE) %>% 
+  footnote(symbol = "Empty cells indicate the council reported no income and/or no expenditure")
+```
 
 # Surpluses 
 
@@ -491,6 +541,60 @@ eng.income.formatted %>%
 
 ```
 
+\newpage
+## Expenditure data
+
+```{r expendtab, echo = FALSE, message = FALSE, warning = FALSE}
+eng.expend.formatted %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         digits = 0, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure(£,000)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)), 
+                       paste0("Average annual change since ", FunFisc(4)),
+                       "Expenditure as proportion of income")) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+    column_spec(7, width = "1.5cm") %>%
+    column_spec(8, width = "1.5cm") %>%
+  column_spec(9, width = "1.5cm") %>% 
+  row_spec(c(353,355), hline_after = TRUE)
+```
+
+
+
+```{r expendprop3}
+eng.expend.props.formatted %>% 
+  slice(1:20, (n()-2):n()) %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         digits = 0, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure as proportion of parking income for all of England",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz)) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  row_spec(c(20, 22), hline_after = TRUE) %>% 
+  footnote(symbol = "Empty cells indicate the council reported no income and/or no expenditure")
+```
+
+
+\newpage
 ```{r alphatab}
 
 england.alpha %>% 

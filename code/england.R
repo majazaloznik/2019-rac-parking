@@ -561,6 +561,7 @@ la.data %>%
   spread(key = year, value = income.total) %>% 
   arrange(desc(!!as.name(current.year))) %>% 
   bind_rows(income.totals) %>% 
+  select(-auth.type) %>% 
   mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
          change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100) %>% 
   mutate(change = ifelse(is.nan(change), NA, 
@@ -579,6 +580,7 @@ eng.income %>%
 #           row.names = FALSE)
 
 # format table for kable london
+
 eng.income.london %>% 
   mutate(auth.name = gsub("&", "\\\\&", auth.name),
          change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%")),
@@ -620,7 +622,25 @@ eng.income.rest %>%
   as_tibble() ->
   eng.income.rest.formatted
 
-
+# format table for kable rest of england
+eng.income %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name),
+         change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%")),
+         change.4 = ifelse(is.na(change.4), "", paste(FunDec(change.4, dp.tables), "%"))) %>% 
+  mutate(change = cell_spec(change, "latex",
+                            background = 
+                              FunDivergePalette(eng.income.rest$change, 
+                                                c(eng.income.rest$change, 
+                                                  eng.income.rest$change.4),
+                                                dir = 1, factor = 1.2)[[3]]),
+         change.4 = cell_spec(change.4, "latex",
+                              background = 
+                                FunDivergePalette(eng.income.rest$change.4, 
+                                                  c(eng.income.rest$change, 
+                                                    eng.income.rest$change.4),
+                                                  dir = 1, factor = 1.2)[[3]])) %>% 
+  as_tibble() ->
+  eng.income.formatted
 
 
 # no income councils
@@ -733,26 +753,96 @@ summary.london.prep.plus %>%
 
 
 
-## EXPENDITURE #################################################################
+###############################################################################
+##                                                                          ###
+## EXPENDITURE ################################################################
+##                                                                          ###
+###############################################################################
+
 # get england totals for expenditure for each year in data,
-# caluclate change on previous year and proportion of income
+# create three totals row for expenditure data
 la.data %>% 
   filter(year <= current.year) %>% 
-  select(auth.name, year, expend.total) %>% 
-  filter(auth.name != "England") %>% 
+  select(auth.name, auth.type, year, expend.total) %>% 
   spread(key = year, value = expend.total) %>% 
   full_join(la.data %>% 
-              filter(auth.name != "England") %>% 
               select(auth.name, year, income.total) %>% 
               filter(year == current.year)) %>% 
   select(-year) %>% 
-  arrange(desc(.[[6]])) %>% 
+  mutate(auth.name = ifelse(auth.type == "L", "Total for London", "Total for rest of England")) %>% 
+  group_by(auth.name) %>% 
+  summarise_if(is.numeric, sum, na.rm = TRUE) %>% 
   bind_rows(group_by(. ,auth.name) %>%
               ungroup() %>% 
               summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>%
-              mutate(auth.name='Total for all of England')) %>% 
-  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
-         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100,
+              mutate(auth.name='Total for all of England')) ->  expend.totals
+
+
+# only london expenditure
+la.data %>% 
+  filter(year <= current.year) %>% 
+  select(auth.name, year, expend.total, auth.type) %>% 
+  spread(key = year, value = expend.total) %>% 
+  full_join(la.data %>% 
+              select(auth.name, year, income.total) %>% 
+              filter(year == current.year)) %>% 
+  select(-year) %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  filter(auth.type == "L") %>% 
+  select(-auth.type) %>% 
+  bind_rows(expend.totals)  %>% 
+  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year - 1 ) - 1),
+         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year - 4)))^0.25 - 100,
+         prop.income = 100 *!!as.name(current.year)/income.total) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change)),
+         change.4 = ifelse(is.nan(change.4), NA, 
+                           ifelse(is.infinite(change.4), NA, change.4)),
+         prop.income = ifelse(is.nan(prop.income), NA, 
+                              ifelse(is.infinite(prop.income), NA, prop.income))) %>% 
+  select(-income.total) -> eng.expend.london
+  
+
+# rest of england expenditure, with totals
+la.data %>% 
+  filter(year <= current.year) %>% 
+  select(auth.name, year, expend.total, auth.type) %>% 
+  spread(key = year, value = expend.total) %>% 
+  full_join(la.data %>% 
+              select(auth.name, year, income.total) %>% 
+              filter(year == current.year)) %>% 
+  select(-year) %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  filter(auth.type != "L") %>% 
+  select(-auth.type) %>% 
+  bind_rows(expend.totals)  %>% 
+  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year - 1 ) - 1),
+         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year - 4)))^0.25 - 100,
+         prop.income = 100 *!!as.name(current.year)/income.total) %>% 
+  mutate(change = ifelse(is.nan(change), NA, 
+                         ifelse(is.infinite(change), NA, change)),
+         change.4 = ifelse(is.nan(change.4), NA, 
+                           ifelse(is.infinite(change.4), NA, change.4)),
+         prop.income = ifelse(is.nan(prop.income), NA, 
+                              ifelse(is.infinite(prop.income), NA, prop.income))) %>% 
+  select(-income.total) -> eng.expend.rest
+
+
+
+# all england LAs expenditure, with totals
+la.data %>% 
+  filter(year <= current.year) %>% 
+  select(auth.name, year, expend.total, auth.type) %>% 
+  spread(key = year, value = expend.total) %>% 
+  full_join(la.data %>% 
+              select(auth.name, year, income.total) %>% 
+              filter(year == current.year)) %>% 
+  select(-year) %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  select(-auth.type) %>% 
+  bind_rows(expend.totals)  %>% 
+  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year - 1 ) - 1),
+         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year - 4)))^0.25 - 100,
          prop.income = 100 *!!as.name(current.year)/income.total) %>% 
   mutate(change = ifelse(is.nan(change), NA, 
                          ifelse(is.infinite(change), NA, change)),
@@ -762,15 +852,61 @@ la.data %>%
                               ifelse(is.infinite(prop.income), NA, prop.income))) %>% 
   select(-income.total) -> eng.expend
 
+
 # # save csv table 8
 # write.csv(sco.expend, here::here(paste0("outputs/csv-tables/scotland-",
 #                                         FunFisc(), "/scotland-", 
 #                                         FunFisc(), "-table-08.csv")),
 #           row.names = FALSE)
 
-# format cells for tabulations
+# format cells for tabulations for london
+eng.expend.london %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
+  mutate(prop.income = ifelse(is.na(prop.income), NA, 
+                              paste(FunDec(prop.income, dp.tables), "\\%"))) %>% 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%")),
+         change.4 = ifelse(is.na(change.4), "", paste(FunDec(change.4, dp.tables), "%"))) %>% 
+  mutate(change = cell_spec(change, "latex",
+                            background = 
+                              FunDivergePalette(eng.expend.london$change,
+                                                c(eng.expend$change,
+                                                  eng.expend$change.4),dir = -1,
+                                                factor = 1)[[3]]),
+         change.4 = cell_spec(change.4, "latex",
+                              background = 
+                                FunDivergePalette(eng.expend.london$change.4,
+                                                  c(eng.expend$change,
+                                                    eng.expend$change.4),dir = -1,
+                                                  factor = 1)[[3]])) ->
+  eng.expend.london.formatted
 
-eng.expend %>% 
+
+# format cells for tabulations for rest of england
+eng.expend.rest %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
+  mutate(prop.income = ifelse(is.na(prop.income), NA, 
+                              paste(FunDec(prop.income, dp.tables), "\\%"))) %>% 
+  mutate(change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%")),
+         change.4 = ifelse(is.na(change.4), "", paste(FunDec(change.4, dp.tables), "%"))) %>% 
+  mutate(change = cell_spec(change, "latex",
+                            background = 
+                              FunDivergePalette(eng.expend.rest$change,
+                                                c(eng.expend$change,
+                                                  eng.expend$change.4),dir = -1,
+                                                factor = 1)[[3]]),
+         change.4 = cell_spec(change.4, "latex",
+                              background = 
+                                FunDivergePalette(eng.expend.rest$change.4,
+                                                  c(eng.expend$change,
+                                                    eng.expend$change.4),dir = -1,
+                                                  factor = 1)[[3]])) ->
+  eng.expend.rest.formatted
+
+
+
+
+# format cells for tabulations for all of england for the appendix
+eng.expend%>% 
   mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
   mutate(prop.income = ifelse(is.na(prop.income), NA, 
                               paste(FunDec(prop.income, dp.tables), "\\%"))) %>% 
@@ -791,7 +927,9 @@ eng.expend %>%
   eng.expend.formatted
 
 
-# calculate change and prop of income for Scotland total row. 
+
+
+# calculate change and prop of income for ENglandtotal row. 
 eng.expend %>% 
   filter(auth.name == "Total for all of England") %>% 
   mutate(current.change = (.[[6]]-.[[5]])/1000,
@@ -810,7 +948,7 @@ eng.expend %>%
 
 # select only valid
 eng.expend %>% 
-  filter(auth.name != "Total for all of England") %>% 
+  filter(!grepl("Total", auth.name)) %>% 
   filter(!is.nan(change) & !is.infinite(change) & !is.na(change)) %>% 
   arrange(desc(change)) %>%
   rownames_to_column() %>% 
@@ -854,23 +992,70 @@ eng.expend.valid %>%
   anti_join(eng.expend.change.bottom2) -> eng.expend.excluded.bottom
 
 
-# calculate proportion of expenditure in income for all LA/year combinations
-# and also for each year's total. 
+
+eng.expend %>% 
+  filter(grepl("Total", auth.name)) %>% 
+  select(auth.name, prop.income) %>% 
+  deframe() -> prop.income.summary
+
+
+## second set of expenditure tables on proportion of income. 
+# first get the totals 
 
 la.data %>% 
-  select(auth.name, year, expend.total, income.total) %>% 
+  select(auth.name, auth.type, year, expend.total, income.total) %>% 
   filter(year <= current.year) %>% 
-  bind_rows(group_by(., year) %>% 
+  mutate(auth.name = ifelse(auth.type == "L", "Total for London", "Total for rest of England")) %>% 
+  group_by(auth.name, year) %>% 
+  summarise_if(is.numeric, sum, na.rm = TRUE) %>% 
+  bind_rows(group_by(. ,auth.name) %>%
+              group_by(year) %>% 
               summarise_at(vars(-auth.name), list(~sum(., na.rm = TRUE))) %>%
-              mutate(auth.name='Total for all of England'))  %>% 
+              mutate(auth.name='Total for all of England')) %>% 
+  ungroup() %>% 
+  mutate(expend.prop = expend.total/income.total*100) %>% 
+  select(auth.name, year, expend.prop) %>%
+  mutate(n = row_number()) %>% 
+  group_by(auth.name) %>% 
+  mutate(n = first(n)) %>% 
+  spread(key = year, value = expend.prop) %>% 
+  arrange(n) %>% 
+  select(-n)  ->  expend.props.totals
+
+
+# get propo of expenditure in income for london borougns only
+la.data %>% 
+  select(auth.name, year, expend.total, income.total, auth.type) %>% 
+  filter(year <= current.year, auth.type == "L") %>% 
   mutate(expend.prop = expend.total/income.total*100) %>% 
   select(auth.name, year, expend.prop) %>%
   spread(key = year, value = expend.prop) %>% 
-  full_join(la.data %>% 
-              filter( year == current.year) %>% 
-              select(auth.name, year, expend.total)) %>% 
-  arrange(desc(expend.total)) %>% 
-  select(-year, -expend.total) -> eng.expend.of.income
+  arrange(desc(!!as.name(current.year))) %>% 
+  bind_rows(expend.props.totals) -> eng.expend.props.london
+
+
+# get propo of expenditure in income for rest of england 
+la.data %>% 
+  select(auth.name, year, expend.total, income.total, auth.type) %>% 
+  filter(year <= current.year, auth.type != "L") %>% 
+  mutate(expend.prop = expend.total/income.total*100) %>% 
+  select(auth.name, year, expend.prop) %>%
+  spread(key = year, value = expend.prop) %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  filter(!is.infinite(!!as.name(current.year))) %>% 
+  bind_rows(expend.props.totals) -> eng.expend.props.rest
+
+
+# get propo of expenditure in income for all of england 
+la.data %>% 
+  select(auth.name, year, expend.total, income.total, auth.type) %>% 
+  filter(year <= current.year) %>% 
+  mutate(expend.prop = expend.total/income.total*100) %>% 
+  select(auth.name, year, expend.prop) %>%
+  spread(key = year, value = expend.prop) %>% 
+  arrange(desc(!!as.name(current.year))) %>% 
+  bind_rows(expend.props.totals) -> eng.expend.props
+
 
 # # save csv table 9
 # write.csv(sco.expend.of.income, here::here(paste0("outputs/csv-tables/scotland-",
@@ -878,8 +1063,10 @@ la.data %>%
 #                                                   FunFisc(), "-table-09.csv")),
 #           row.names = FALSE)
 
-# format for tabulation
-eng.expend.of.income %>% 
+
+
+# format for tabulation london only
+eng.expend.props.london %>% 
   mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
   mutate_at(vars(-auth.name), function(x) ifelse(is.infinite(x), NA, x)) %>% 
   mutate_at(vars(-auth.name), function(x) { 
@@ -887,7 +1074,36 @@ eng.expend.of.income %>%
               background  = spec_color(1/x, begin = 0.3,
                                        end = 0.9, option = "D", 
                                        na_color = "#FFFFFF"))}) ->
-  eng.expend.of.income.formatted
+  eng.expend.props.london.formatted
+
+
+# format for tabulation rest of england
+eng.expend.props.rest %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
+  mutate_at(vars(-auth.name), function(x) ifelse(is.infinite(x), NA, x)) %>% 
+  mutate_at(vars(-auth.name), function(x) { 
+    cell_spec(ifelse(is.na(x), "", paste(FunDec(x, dp.tables), "%")), "latex", 
+              background  = spec_color(1/x, begin = 0.3,
+                                       end = 0.9, option = "D", 
+                                       na_color = "#FFFFFF"))}) ->
+  eng.expend.props.rest.formatted
+
+
+
+# format for tabulation all of england
+eng.expend.props %>% 
+  mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
+  mutate_at(vars(-auth.name), function(x) ifelse(is.infinite(x), NA, x)) %>% 
+  mutate_at(vars(-auth.name), function(x) { 
+    cell_spec(ifelse(is.na(x), "", paste(FunDec(x, dp.tables), "%")), "latex", 
+              background  = spec_color(1/x, begin = 0.3,
+                                       end = 0.9, option = "D", 
+                                       na_color = "#FFFFFF"))}) ->
+  eng.expend.props.formatted
+
+
+
+## expenditure  text variables #################################################
 
 eng.expend.of.income %>% 
   filter(auth.name == "Total for all of England") %>% 
@@ -898,7 +1114,6 @@ eng.expend.of.income %>%
   select(!!as.name(current.year-1)) %>% pull() -> eng.expend.of.income.tot.prev 
 
 
-## expenditure #####################################################################
 exp.tot <- summary$expend.total[5]
 
 # expenditure for london
@@ -909,6 +1124,16 @@ exp.rest.tot.ch <- summary.london.prep.plus$rest.this[8]/
 
 exp.prop.inc.on <- summary$expend.on[5]/summary$income.on[5]* 100
 exp.prop.inc.off <- summary$expend.off[5]/summary$income.off[5]* 100
+
+
+
+
+###############################################################################
+##                                                                          ###
+## SURPLUS     ################################################################
+##                                                                          ###
+###############################################################################
+
 
 
 ## surplus variables in text  #################################################
