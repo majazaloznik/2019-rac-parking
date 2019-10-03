@@ -443,3 +443,10 @@ FunRpi <- function(current.year, n = 4) {
     mutate(rpi = (rpi ^ (1/n) - 1) * 100) %>% pull(rpi) -> rpi.annual
   rpi.annual  
 }
+
+# function to calculate percentage change, including if the change is fro m0 to 0
+# with optional multiplication with 100
+FunPercent <- function(new, old, sto = 100) {
+  p <- ifelse(new == 0 & old == 0, sto, new/old*sto)
+  p 
+}

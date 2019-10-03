@@ -11,7 +11,7 @@
 
 ## preliminaries ###############################################################
 # change the year variable 
-current.year <- 2017#params$current.year
+current.year <- params$current.year
 
 # knitr options
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
@@ -50,8 +50,8 @@ report.name <- paste0("wales-report-", current.year, "-",current.year - 1999)
 bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
 
 # get the number of decimal points
-dp.text <- 1# params$dp.text
-dp.tables <- 2# params$dp.tables
+dp.text <- params$dp.text
+dp.tables <- params$dp.tables
 
 # create folder for csv tables if it does not exist already
 suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/wales-", FunFisc())), 
@@ -104,7 +104,7 @@ data %>%
   as.data.frame() %>% 
   tibble::rownames_to_column() %>%
   filter(rowname != "year") %>%
-  mutate(change = V5/V4 *100 -100) %>% 
+  mutate(change = FunPercent(V5,V4) - 100) %>% 
   rename(!!as.name(current.year -4) := V1,
          !!as.name(current.year -3) := V2,
          !!as.name(current.year -2) := V3,
@@ -223,14 +223,13 @@ sub.gb.ref  %>%
   gather(var, value, 3:5) %>% 
   unite(temp, year, var) %>% 
   spread(temp, value) %>% 
-  mutate(income.change.4 = 100*(m0_income / m4_income - 1), 
-         expend.change.4 = 100*(m0_expend / m4_expend - 1),
-         surplus.change.4 = 100*(m0_surplus / m4_surplus - 1)) %>% 
-  mutate_at(vars(ends_with(".4")), function(x) 100*(x/100 + 1) ^ 
-              ( 1 / (4)) - 100) %>% 
-  mutate(income.change = 100*(m0_income/ m1_income - 1), 
-         expend.change = 100*(m0_expend/ m1_expend - 1), 
-         surplus.change = 100*(m0_surplus/ m1_surplus - 1),
+  mutate(income.change.4 = FunPercent(m0_income , m4_income, 1), 
+         expend.change.4 = FunPercent(m0_expend , m4_expend, 1),
+         surplus.change.4 = FunPercent(m0_surplus,  m4_surplus, 1)) %>% 
+  mutate_at(vars(ends_with(".4")), function(x) 100*(x ^ 0.25 - 1)) %>% 
+  mutate(income.change = FunPercent(m0_income , m1_income) - 100, 
+         expend.change  = FunPercent(m0_expend , m1_expend) - 100,
+         surplus.change  = FunPercent(m0_surplus,  m1_surplus) - 100,
          most.recent = paste0("(", most.recent, "-", most.recent-1999, ")")) %>% 
   select(country, most.recent, income.change.4, income.change,
          expend.change.4, expend.change, 
@@ -312,8 +311,9 @@ data %>%
               ungroup() %>% 
               summarise_at(vars(-auth.name), sum) %>%
               mutate(auth.name='Total')) %>% 
-  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
-         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100) %>% 
+  mutate(change = FunPercent(!!as.name(current.year), !!as.name(current.year -1)) - 100,
+         change.4 = 100*(FunPercent(!!as.name(current.year),!!as.name(current.year -4), 
+                                    sto = 1) ^ 0.25 - 1)) %>% 
   mutate(change = ifelse(is.nan(change), NA, 
                          ifelse(is.infinite(change), NA, change)),
          change.4 = ifelse(is.nan(change.4), NA, 
@@ -331,9 +331,12 @@ wal.no.income <- nrow(filter(wal.income, !!as.name(current.year) == 0))
 
 # split into increase/decrease and NA
 wal.income %>% 
-  mutate(change = ifelse(change >=0, TRUE, FALSE)) %>% 
   filter(auth.name != "Total") %>% 
-  group_by(change) %>% 
+  mutate(dir = ifelse(is.na(!!as.name(current.year) ) | is.na(!!as.name(current.year-1)), "na",
+                      ifelse(!!as.name(current.year) > !!as.name(current.year-1), "poz",
+                             ifelse(!!as.name(current.year) == 
+                                      !!as.name(current.year-1), "zero", "neg")))) %>% 
+  group_by(dir) %>% 
   summarise(n = n()) %>% 
   deframe() -> income.bin
 
@@ -415,8 +418,9 @@ data %>%
               ungroup() %>% 
               summarise_at(vars(-auth.name), sum) %>%
               mutate(auth.name='Total')) %>% 
-  mutate(change = 100*(!!as.name(current.year)/!!as.name(current.year -1 )-1),
-         change.4 = 100*((!!as.name(current.year)/!!as.name(current.year -4)))^0.25 - 100,
+  mutate(change = FunPercent(!!as.name(current.year), !!as.name(current.year -1)) - 100,
+         change.4 = 100*(FunPercent(!!as.name(current.year),!!as.name(current.year -4), 
+                                    sto = 1) ^ 0.25 - 1),
          prop.income = 100 *!!as.name(current.year)/income.total) %>% 
   mutate(change = ifelse(is.nan(change), NA, 
                          ifelse(is.infinite(change), NA, change)),
@@ -440,12 +444,14 @@ wal.expend %>%
 
 # count councils with +/- change
 wal.expend %>% 
-  filter(auth.name != "Total") %>% 
-  mutate(change = ifelse(change >=0, TRUE, FALSE)) %>% 
-  group_by(change) %>% 
+  filter(!grepl("Total", auth.name)) %>% 
+  mutate(dir = ifelse(is.na(!!as.name(current.year) ) | is.na(!!as.name(current.year-1)), "na",
+                      ifelse(!!as.name(current.year) > !!as.name(current.year-1), "poz",
+                             ifelse(!!as.name(current.year) == 
+                                      !!as.name(current.year-1), "zero", "neg")))) %>% 
+  group_by(dir) %>% 
   summarise(n = n()) %>% 
   deframe() -> expend.bin
-
 
 # select only valid
 wal.expend %>% 
@@ -601,9 +607,10 @@ data %>%
               summarise_at(vars(-auth.name), sum) %>%
               mutate(auth.name = c("Total"))) -> wal.surplus.totals
 
+
 # bind both tables together
 bind_rows(wal.surplus, wal.surplus.totals) %>% 
-  mutate(change =100*(.[[6]]/.[[5]]-1),
+  mutate(change = FunPercent(!!as.name(current.year), !!as.name(current.year -1)) - 100,
          prop.transp = 100*.[[6]]/.[[7]]) %>% 
   mutate(change = ifelse(abs(sign(!!as.name(current.year))-
                                sign(!!as.name(current.year-1))) == 2, 
@@ -635,8 +642,7 @@ wal.poz.surplus <- nrow(filter(wal.surplus, !!as.name(current.year) >= 0))
 
 # extract bottom LAs where "surplus" is under 30.000 (i.e. close to 0)
 wal.surplus %>% 
-  mutate(change = 100 * (!!as.name(current.year)/!!as.name(current.year 
-                                                           - 1) - 1)) %>% 
+  mutate(change = FunPercent(!!as.name(current.year), !!as.name(current.year -1)) - 100) %>% 
   filter(!is.nan(change) & !is.infinite(change)) %>% 
   filter(!!as.name(current.year) >= 0,
          !!as.name(current.year - 1) >= 0) %>% 

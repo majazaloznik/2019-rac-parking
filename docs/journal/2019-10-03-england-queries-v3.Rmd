@@ -1,0 +1,100 @@
+---
+title: "RAC Parking Report Automation---Queries for England, round 3"
+author: mz
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document: default
+---
+  
+
+1. The England report introduction ends with the following paragraph:
+
+> "These headings do not always agree with accounts published by local authorities because of their different treatment of overheads and allocation of surpluses to other transport projects. Furthermore six local authorities include off-street parking in their internal trading accounts which leads to further inconsistencies. These trading figures have been added to the revenue accounts"
+
+Basically I do not really understand what this means. I mean I get the first part, if one were to compare this data with LA sources, there might be inconsistencies. But what does the last sentence mean? Which trading figures? Which revenue accounts? Have been added by whom? Or is it by who? 
+
+And back in April in an email from David he said :
+
+> "For your information, I also make an adjustment for trading activities for six councils in the English figures,  the largest of which is Plymouth. They are based on the RO table TSR which only shows the net income.  I assume, based on other similar activities, that the turnover is twice the surplus and the costs are equal to the surplus.  "
+
+So what do you want me to do with this?
+
+2. Just a quick scan seems to indicate that the England reports do not contain any comparisons to Wales and Scotland like the others do. Do you want me to stick to the original England report as a template or should I try to include as much similar stuff as in the new Wales and Scotland reports as possible? *OK, I've basically followed the templates from the other two as much as possible*. 
+
+3. Should the introductory paragraph also include the source of the Nottingham WPL? In the other reports as well it seems the first paragraph introduces the data sources. 
+
+4. So removing the parks is easy, but how exactly do i remove the Nottingham WPL? e.g. for 2017 I have the following data for Nottingham city
+
+* income from on street parking: 5,113 (penalties = 1855, fees and permits = 3258)
+* income from off street parking: 15,445
+* -> total income = 20,558
+* expenditure on street parking: 1,117
+* expenditure off street parking: 4,907
+-> total expenditure = 6,024
+* and of course the surpluses: on street: 3,996 , off street: 10,538 and total surplus: 14,534.
+
+WPL data is:
+
+* wpl income: 9,178
+* wpl expenditure: 219
+* and of course there is a surplus: 8,959
+
+So what do i do with this? Do I subtract the WPL income, expenditure and surplus from the off-street income, expenditure and surplus? e.g.  the new off street parking subtracting the levy would then be 15,445 - 9,178 = 6,267? and then i use this number in calculating the totals etc?
+
+
+5. The summary table for England compares the parking surpluses with "All England transport expenditure". The surpluses are for the 353 LAs only. So no national parks, and no GLA. But the total transport expenditure is inclusive of these authorities. Is that cool? Basically did Leibling do it correctly by comparing surpluses for 353 LAs to the transport expenditure for LAs and national parks?
+
+6. The summary text currently reads 
+
+> "If the 2018-19 budget is exceeded by the same proportion as the 2017-18 outcome, then parking surpluses could be very nearly £1 billion."
+
+I've changed it to:
+
+> "then total parking surpluses would amount to £ XYZ million."
+
+with the alternative option being that it "falls short" by the same proportion. That OK?
+
+7. In the summary chart I have added a separate line for the budgeted surplus - instead of the previous continuation of the surplus line to just the next year's budgeted surplus. That OK?
+
+8. In the *Income* chapter 2017-18 there is the claim that "Penalty income in London was £241 million". According to the outturn excel tables the "On-street parking: Penalty Charge Notice income included in line 61" was £293million for London Boroughs. What do i do with this? At the same time the income for the rest of England is reported as being £134 mill and in the excel table it's down as £135. Which is better. But need to get a handle on this.  
+
+9. Furthermore the next sentence refers to numbers of PCNs issued but I have no idea where the data for that came from, it doesn't seem to be referenced in the report?
+
+> "The number of parking PCNs in London rose by 4% to 3.3 million (excluding TfL) but the average income per PCN was £74 in 2017-18 unchanged from 2016-17. "
+
+10. Furthermore, while in table 1 the on-street  income numbers are split into fees and permits, penalties, and total, in table 2 they are not, and only the income is given. but in the accompanying text, the same split is explicitly used.. I don't know, just as a general principle you should have a data overload in the tables and pull out salient bits in the text. Not have text with numbers that are pulled out of nowhere. Do you want me to add the two rows for fees and penalties to table 2? Well in actual fact I would also need to compare to the previous year, because that's in the text as well. Or do i throw out the text?
+
+11. Additionally / semi-related to q10. In table 2 the column "all of England" is summing up the first two columns, and repeating data in table 1. So could be thrown out. That could make room for the previous year data as suggested in q10. or just be kept empty. but repeating stuff like that also feels like bad form to me. 
+
+12. Last but not least, table 2 is prime material for a good data visualisation, stacked charts and the like. should i attempt one? Should i be offering to?
+
+13. OK, the *Expenditures* "chapter". It has like two sentences? And again numbers that are not in any tables (expenditure as proportion of income). Is that really all you want? *Ignore this, I've just done what i did in Scotland and Wales*
+
+14. In *Surpluses* the third sentence is a repeat of one in the introduction section. I don't know, there is just so much data here, being so minimal and repeating yourself seems a bit daft...*Ignore this, I've just done what i did in Scotland and Wales*
+
+15. In surpluses, we don't currenlty compare them with the total transport net expenditure (except nationally). In Scotland and Wales we did however. Do you want me to pull the council level data in for that as well and do the same for England? 
+
+16. In *Budget surplus comparison* : wouldn't it be cool to see the budgeted and realised surpluses for each council? And the proporiton difference? I mean there is no tables here whatsoever?
+
+17. The sentence 
+
+> "The London boroughs, with their larger incomes, were more likely to have large excess surpluses compared with budget."
+
+Is problematic, no? I mean  because they have larger incomes means they are bad at budgeting? I guess the variance is larger, is that what he's trying to say with this sentence? Anyway, even if you think so, it's still a tricky sentence to leave in in case there comes a day when London boroughs get better at writing their budgets, and this isn't sth that can really be automated. Should I throw it out?
+
+18. In *Comparison with budgets* I changed the text to read "compared with a budgeted deficit of XX" instead of "compared with a budget deficit", that makes more sense to me, but i might have the terminology wrong. 
+
+
+19. The two  national comparison tables for the outturns and the average annual changes have now been repeated in all three reports. I've adjusted the text a bit to take into account that the data can be for different years. Which also means that e.g. GB data is calculated for the most recent year *all* countries have data avialable. I've added a bit more text in all three reports, because it's a shame to have so many numbers in tables and so little text. That OK?
+
+20. *Income* The other two reports list the numbers increased/decreased/stayed the same and the top 3 by income and top 3 year-on-year increases. They also have tables with both previous annual change and 4-year average annual change. I've now approx replicated this, except that I don't know what to do about the tables. Should i do this for top X councils? SHould I add the full table to the appendix? Currently I've kept a table for all London borughs and a table for the top 20 non London councils. The full table for all 353 LAs is in the Appendix. Same for all three headings. That OK?
+
+21. In the other reports we list the top 3 councils for whatever measure. I've repeated this in the England report. But within the England report we also distinguish between London and rest of London councils. So that's one way of spliting the data and reporting top 3 councils in each. Furhtermore we have data for off-street and on-street parking as well... there is really hardly anything with that data in the report. 
+
+22. in *Expenditure* we have the final column on the proportion of income that is used up by expenditure. But there is no text relating to it. (e.g. in scotland there's sth about Edinburgh and Glasgow). What do you want to write about this here?
+
+23. The main tables in the text, I've now switched them to millions. Is that OK? In the appendix, where the whole table is, I've left them as thousands. Should I make them all millions?
+
+24. Actually, in *surpluses* in order to keep it consistent i threw out the ranked and alphabetical lists like they are in the Leibling report, and just included the ranked one like with income and expenditure that includes the change in the last column. This way all three subsections are consistent. The data is in csv tables anyway if people what to play with it. 
+
+25. In all three reports I've changed the function for calculating the percentage change to give 0% if the change has been from 0 to 0. Before this was undefined. Presumably that's fine. 

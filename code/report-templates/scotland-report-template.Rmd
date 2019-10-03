@@ -219,7 +219,8 @@ sum.gb.change.tab.formatted  %>%
 
 Total council parking income from all sources in Scotland for `r FunFisc()` was £`r FunDec(sco.summary[1, 6], dp.text)` million, `r FunDec(sco.summary$change[1], dp.text)` % `r ifelse (sco.summary$change[1] > 0, "higher", "lower")` than `r FunFisc(1)`. Note that this includes meter and penalty income for on- and off-street parking, but does not include income received by private parking companies.  Table \@ref(tab:incometab) ranks the Scottish councils in terms of parking income. 
 
-`r FunFirstup(FunN2W(income.bin[2]))` councils increased their income over the past year and `r FunN2W(income.bin[1])` decreased their income. `r if (sco.no.income > 0 ) {paste0(" ", FunFirstup(FunN2W(sco.no.income)), " councils did not show any income in ", FunFisc(), ".")}` The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:incomefig). 
+In Scotland as a whole `r FunFirstup(FunN2W(income.bin["poz"]))` councils increased their income over the past year and `r FunN2W(income.bin["neg"])` decreased their income. `r if(!is.na(income.bin["zero"])) paste("Another", FunN2W(income.bin["zero"]), "councils' incomes stayed the same.")` `r if(!is.na(income.bin["na"])) paste("There are", FunN2W(income.bin["na"]), "councils that did not report income data in this or the previous fiscal year, so we cannot define the change.")` The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:incomefig). 
+
 
 The top three Scottish cities by income were `r paste0(names(sco.income.top3)[1], ", ", names(sco.income.top3)[2], ", and ", names(sco.income.top3)[3])`, and between them accounted for `r FunDec(sco.income.top3[1], dp.text)` % of parking income. 
 
@@ -320,7 +321,7 @@ FunMap(sco.expend, which = 1, shp = uc,  country = "^S", dir = -1)
 
 Table \@ref(tab:expendtab) ranks the councils in terms of expenditure on parking.
 
-Overall expenditure has `r ifelse( sco.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(sco.expend.t[2]), dp.text)` million (`r FunDec(abs(sco.expend.t[1]), dp.text)` %) after a `r ifelse( sco.expend.t[3] > 0, paste0("rise of £", FunDec(sco.expend.t[3], dp.text), " million last year"), paste0("fall of £", FunDec(abs(sco.expend.t[3]), dp.text), " million last year"))`, with `r FunN2W(expend.bin[2])` councils having increased their costs and `r FunN2W(expend.bin[1])` having reduced them. The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:expendfig). 
+Overall expenditure has `r ifelse( sco.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(sco.expend.t[2]), dp.text)` million (`r FunDec(abs(sco.expend.t[1]), dp.text)` %) after a `r ifelse( sco.expend.t[3] > 0, paste0("rise of £", FunDec(sco.expend.t[3], dp.text), " million last year"), paste0("fall of £", FunDec(abs(sco.expend.t[3]), dp.text), " million last year"))`. In Scotland as a whole `r FunFirstup(FunN2W(expend.bin["poz"]))` councils increased their parking expenditures over the past year and `r FunN2W(expend.bin["neg"])` decreased them. `r if(!is.na(expend.bin["zero"])) paste("Another", FunN2W(expend.bin["zero"]), "councils' expenditures  stayed the same.")` `r if(!is.na(expend.bin["na"])) paste("There are also", FunN2W(expend.bin["na"]), "councils that did not report expenditure data in this or the previous fiscal year, so we cannot define the change.")` The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:expendfig). 
 
 The largest increase in expenditure occured in `r sco.expend.change.top3[1,2]` where it increased by `r FunDec(sco.expend.change.top3$change[1], dp.text)` %
 while `r sco.expend.change.top3[2,2]` and `r sco.expend.change.top3[3,2]` increased  by `r FunDec(sco.expend.change.top3$change[2], dp.text)` % and `r FunDec(sco.expend.change.top3$change[3], dp.text)` % respectively`r if(nrow(sco.expend.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.expend.excluded.top$auth.name), " with expenditure under £30,000)")`. The biggest decreases were in `r sco.expend.change.bottom2[2,2]` (`r FunDec(abs(sco.expend.change.bottom2$change[2]), dp.text)` %), and `r sco.expend.change.bottom2[1,2]` (`r FunDec(abs(sco.expend.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(sco.expend.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.expend.excluded.bottom$auth.name), " with expenditure under £30,000)")`.
@@ -346,8 +347,8 @@ sco.expend.formatted %>%
                        "Expenditure as proportion of income")) %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_header"), 
-                font_size = 9) %>% 
-  column_spec(1, width = "3.1cm") %>% 
+                font_size = 8) %>% 
+  column_spec(1, width = "3.9cm") %>% 
     column_spec(7, width = "1.5cm") %>%
     column_spec(8, width = "1.5cm") %>%
   column_spec(9, width = "1.5cm") %>% 
@@ -402,7 +403,7 @@ while `r sco.surplus.change.top3[2,2]` and `r sco.surplus.change.top3[3,2]` incr
 
 `r ifelse(nrow(sco.deficit.valid) == 0, "None of the Scottish councils has had a deficit two years in a row", paste0(sco.deficit.change.top3[1,2], " increased their deficits by ", FunDec(sco.deficit.change.top3$change[1], dp.text)," % while ", sco.deficit.change.top3[2,2], " and ",  sco.deficit.change.top3[3,2], " increased  by ", FunDec(sco.deficit.change.top3$change[2], dp.text), " % and ", FunDec(sco.deficit.change.top3$change[3], dp.text), " % respectively ",  if(nrow(sco.deficit.excluded.top) > 0) paste0(" (excluding ", FunMultiText(sco.deficit.excluded.top$auth.name), " with a deficit under £30,000)"), " The biggest decreases were in ",  sco.deficit.change.bottom2[2,2], " (", FunDec(abs(sco.deficit.change.bottom2$change[2]), dp.text), " %), and ", sco.deficit.change.bottom2[1,2], "  (",  FunDec(abs(sco.deficit.change.bottom2$change[1]), dp.text), " %)", if(nrow(sco.deficit.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(sco.deficit.excluded.bottom$auth.name), " with a deficit under £30,000)")))`
 
-
+\newpage
 ```{r surplustab}
 
 # setup table
@@ -421,9 +422,11 @@ sco.surplus.totals.table.formatted %>%
                               " on ", current.year-1, "-", current.year-1999-1), "Surplus as proportion of transport spending")) %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position", "striped", "repeat_headers"), 
-                font_size = 10) %>% 
+                font_size = 9) %>% 
   column_spec(1, width = "3.7cm") %>% 
-  row_spec(c(32, 34), hline_after = TRUE) %>% 
+  column_spec(7, width = "1.5cm") %>% 
+  column_spec(8, width = "1.5cm") %>% 
+    row_spec(c(32, 34), hline_after = TRUE) %>% 
   footnote(symbol = "Where the change in surplus is actually a change in deficit, the values are in italics")
 ```
 

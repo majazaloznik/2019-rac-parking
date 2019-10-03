@@ -1085,7 +1085,7 @@ commit
 * *add csv table code to all england tables* 
 * OK, expenditure code in england.r OK
 * add text to template. OK
-* hmm, the total rows, should probably be *also total london and total rest of UK?*
+* hmm, the total rows, should probably be also total london and total rest of UK? ok
 * also the expenditure as proportion of income, there is no text about it? add to querries. 
 * commit. 
 * ah, when i finished the surpluses i copied the code from scotland, but only used it for the tables, not for the text. let's add that as well. But they need to be split between london and rest of england presumably?
@@ -1116,6 +1116,44 @@ commit
 * Now there is also the expenditure as proportion of income tables for the previous five years.. I guess i have to do that as well to be consistent. Nah, instead i'll take the top three and bottom three in London and England?
 * blog/issue todo: order of variables in spread/gather.. 
 * OK, expenditure tables done, two sets in text and two in appendix. 
+* commit. 
+
+
+# Wednesday 2.10.2019
+
+* go through the whole england report
+* OK, there's a mistake with income increase numbers. Actualy, instead of looking at the percentage value, i should look at which is larger. percentage values exclude councils that have gone from zero to sth, becuase they are undefined. fixed.
+* now fix this in wales and scotland as well. OK scotland fixed. and wales. phew..
+* check the counting of councils for expenditure as well, quite possibly similar errors as income..
+*  *don't forget to uncomment the parameters in each of the .R files*
+* Ja, same problem in expenditure, the numbers of increase/decrease were wrong. England now OK.
+* fix Scotland OK.
+* and wales, OK.
+* Hmm, the allignment in the tables, not sure about that, it's right for the percentages, but not for the thousands? repex? OK, figured out. 
+* OK, first of all I'm not clear why some % signs in the tables have `\\` escaping and others dont? Ah, OK, if they have colour specs then they don't need the escape, otherwise they do. i think. yes.
+* Hm, the alignment is to do with the fact that the numbers just get too long, mainly in the last row with the totals. so they become squeezed. 
+* Actually, I'll just turn everything into millions? Except the appendix ones? OK, also question to Ivo.
+* the allignment in the tables is tricky with so much stuff. the non-breakable spaces in front of the percent signs only work in the columns that aren't formatted using cell_spec. i don't know how to get them to work otherwise
+* *still haven't gottent the colours to work though..* 
+* OK, check through surlpus text and fix some minor quibbles
+* now just add the ful surplus tablle to the apendix and we're done for today. Actually, it was already there? in order to keep it consistent i threw out the ranked and alphabetical lists, and just included the ranked one like with income and expenditure that includes the change in the last column. This way all three subsections are consistent. The data is also in csv tables anyway if people what to play with it. 
+
+
+# Thursday 3.10.2019
+
+* OK, so it seems the red highlights for the links was a pdf viewer dependent thing!? i've swithched to xreader now and it all seems fine now, phew. 
+* Expenditure as proportion of income is 1000x wrong because of changing from thousands to millions, fix. ok.
+* there's an issue with councils that have 0 and 0 at two time points having NA for change, when actually the change should simply be 0 percent. This is both in income and expenditure. and presumably in scotland and wales as well. 
+* Write a function to deal with this and place it everywhere. . done
+* OK, income england replaced. and expenditure and everywhere else where change is claculated in england.R
+* OK, all of Scotland as well. And Wales. 
+* OK, sent off querries round 3 and draft england report to Ivo and Phil
+* commmit
+
+
+
+
+
 
 
 
