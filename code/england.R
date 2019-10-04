@@ -211,29 +211,43 @@ summary %>%
   ungroup() %>% 
   mutate(change = ifelse(variable == "prop.net.expen", NA,  
                          100*(`5` / `4` - 1))) %>% 
-  mutate(change = ifelse(is.na(change), NA, FunDec(change,0))) %>% 
-  mutate_at(vars(-variable, -change), function(x) 
-    ifelse(.$variable == "prop.net.expen",
-           FunDec(x, 0),
-           ifelse(is.na(x), NA, 
-                  formatC(x, format = "f", 
-                          digits = 0, big.mark = ",")))) -> summary.prep
-
-
-# prepare data for tabulation. 
-summary.prep %>% 
-  mutate(change = ifelse(variable == "prop.net.expen", NA, 
-                         paste(change, "\\%"))) %>% 
+  rename(!!as.character(current.year - 4) := `1`,
+         !!as.character(current.year - 3) := `2`,
+         !!as.character(current.year - 2) := `3`,
+         !!as.character(current.year - 1) := `4`,
+         !!as.character(current.year ) := `5`,
+         !!paste0(as.character(current.year) , " budget"):= `6`,
+         !!paste0(as.character(current.year + 1) , " budget"):= `7`) %>% 
   mutate(variable = 
            c("Fees \\& permits", "Penalties", "Total Income",
              "Expenditure", "Surplus", "Total Income", "Expenditure",
              "Surplus",  "Total Income", "Expenditure", "Surplus", 
              "Net Expenditure", 
-             "Parking surplus as percentage of net transport expenditure")) %>% 
+             "Parking surplus as percentage of net transport expenditure"))  %>% 
   mutate(collapsed = c(rep("On-street", 5), 
                        rep("Off-street", 3),
                        rep("All parking", 3),
                        "All England transport", "")) %>% 
+  select(collapsed, variable:change) -> summary.prep
+
+# # save csv table 1
+write.csv(summary.prep, here::here(paste0("outputs/csv-tables/england-",
+                                    FunFisc(), "/england-",
+                                    FunFisc(), "-table-01.csv")),
+          row.names = FALSE)
+
+
+# prepare data for tabulation. 
+summary.prep %>% 
+  mutate(change = ifelse(is.na(change), NA, FunDec(change,1))) %>% 
+  mutate_at(vars(-variable, -change, - collapsed), function(x) 
+    ifelse(.$variable == "Parking surplus as percentage of net transport expenditure",
+           FunDec(x, 1),
+           ifelse(is.na(x), NA, 
+                  formatC(x, format = "f", 
+                          digits = 0, big.mark = ",")))) %>% 
+  mutate(change = ifelse(variable == "Parking surplus as percentage of net transport expenditure", NA, 
+                         paste(change, "\\%"))) %>% 
   mutate_at(vars(-variable, -change, -collapsed), function(x) ifelse(
     .$variable == "Parking surplus as percentage of net transport expenditure", 
     paste0(x, " \\%"), x)) %>% 
@@ -241,6 +255,84 @@ summary.prep %>%
     ifelse(.$collapsed == "All parking" & .$variable == "Surplus",  
            paste0("\\textbf{", x, "}"), x)) %>% 
   select(collapsed, variable:change) -> eng.summary.formatted
+
+
+# prepare data for london/rest of england summary table. LAs only
+la.data.current %>% 
+  mutate(london = ifelse(auth.type == "L", "london", "rest")) %>% 
+  group_by(london) %>% 
+  summarise_at(vars(income.on, income.off, income.total,
+                    expend.on, expend.off, expend.total,
+                    surplus.on, surplus.off, surplus.total), 
+               list(~sum(., na.rm = TRUE))) %>% 
+  rownames_to_column %>%
+  gather(variable, value, -rowname) %>% 
+  mutate(order = row_number()) %>% 
+  group_by(variable) %>% 
+  mutate(order = first(order)) %>% 
+  spread(rowname, value) %>% 
+  arrange(order)  %>% 
+  filter(variable != "london") %>% 
+  mutate_at(vars(-variable), as.numeric) %>% 
+  select(-order) %>% 
+  ungroup()  %>% 
+  rename(london = `1`, rest = `2`) %>% 
+  mutate(total = london + rest,
+         prop = london/total*100, 
+         prop = paste(FunDec(prop, dp.tables), "\\%") )%>% 
+  mutate_at(vars(-variable, -prop), function(x) 
+    formatC(x/1000, format = "f", digits = 0, big.mark = ",")) %>% 
+  mutate(variable = c(rep(c("On-street", "Off-street", "Total"), 3))) %>% 
+  mutate(collapsed = c(rep("Income", 3), 
+                       rep("Expenditure", 3),
+                       rep("Surplus", 3)))   %>% 
+  select(collapsed, variable:prop)-> summary.london.prep
+
+# # save csv table 2
+write.csv(summary.london.prep, here::here(paste0("outputs/csv-tables/england-",
+                                                 FunFisc(), "/england-",
+                                                 FunFisc(), "-table-02.csv")),
+          row.names = FALSE)
+
+# prepare data for tabulation. 
+summary.london.prep%>% 
+  mutate_at(vars(-collapsed), function(x)  ifelse(.$variable == "Total",
+                                                  paste0("\\textbf{", x, "}"), x)) -> eng.summary.london.formatted
+# prepare data for london/rest of england summary table including penalty and fee charges
+# this gets used in the text, not table
+la.data %>% 
+  filter(year %in% c(current.year, current.year -1)) %>% 
+  mutate(london = ifelse(auth.type == "L", "london", "rest")) %>% 
+  group_by(london, year) %>% 
+  summarise_at(vars(income.pcn, income.fnp,income.on, income.off, income.total,
+                    expend.on, expend.off, expend.total,
+                    surplus.on, surplus.off, surplus.total), 
+               list(~sum(., na.rm = TRUE))) %>% 
+  rownames_to_column %>%
+  gather(variable, value, -rowname) %>% 
+  mutate(order = row_number()) %>% 
+  group_by(variable) %>% 
+  mutate(order = first(order)) %>% 
+  spread(rowname, value) %>% 
+  arrange(order)  %>% 
+  filter(variable != "london", variable != "year") %>% 
+  mutate_at(vars(-variable,), as.numeric) %>% 
+  select(-order) %>% 
+  ungroup()  %>% 
+  rename(london.last = `1`, london.this = `2`,
+         rest.last = `3`, rest.this = `4`) %>% 
+  mutate(prop.london.ch = london.this/london.last*100-100, 
+         prop.rest.ch = rest.this/rest.last*100-100) -> summary.london.prep.plus
+
+
+# easy access for variables in text
+lnd.prop.off <- 100*as.numeric(summary.london.prep$london[2])/
+  as.numeric(summary.london.prep$london[3])
+rest.prop.off <- 100*as.numeric(summary.london.prep$rest[2])/
+  as.numeric(summary.london.prep$rest[3])
+lnd.surplus <- as.numeric(summary.london.prep$london[9])
+lnd.prop.surplus <- 100*as.numeric(summary.london.prep$london[9])/
+  as.numeric(summary.london.prep$total[9])
 
 # easy access vars for the text
 inc.ch <- 100*(summary[5,10]/summary[4,10] -1)
@@ -303,10 +395,11 @@ sub.gb.years %>%
                      "Surplus", "Surplus as proportion of income")) -> sum.gb
 
 # # save csv table 3
-# write.csv(sum.gb, here::here(paste0("outputs/csv-tables/scotland-",
-#                                     FunFisc(), "/scotland-", 
-#                                     FunFisc(), "-table-03.csv")),
-#           row.names = FALSE)
+write.csv(sum.gb, here::here(paste0("outputs/csv-tables/england-",
+                                          FunFisc(), "/england-",
+                                          FunFisc(), "-table-03.csv")),
+          row.names = FALSE)
+
 
 
 # same as before, but add % signs to bottom row for tabulation
@@ -374,14 +467,14 @@ sum.gb.change %>%
   sum.gb.change.tab
 
 # # save csv table 4
-# write.csv(sum.gb.change.tab, here::here(paste0("outputs/csv-tables/scotland-",
-#                                                FunFisc(), "/scotland-", 
-#                                                FunFisc(), "-table-04.csv")),
-#           row.names = FALSE)
+write.csv(sum.gb.change.tab, here::here(paste0("outputs/csv-tables/england-",
+                                    FunFisc(), "/england-",
+                                    FunFisc(), "-table-04.csv")),
+          row.names = FALSE)
+
 
 
 # prepare for tabulation with formatting
-
 sum.gb.change %>% 
   ungroup() %>% 
   mutate_at(vars(-country, -most.recent), 
@@ -431,75 +524,6 @@ la.data.all %>%
   mutate_at(vars(income.total:surplus.budget), list(~./1000)) %>% 
   mutate_all(function(x) ifelse(x == 0, NA, x)) -> eng.plot
 
-# prepare data for london/rest of england summary table. LAs only
-la.data.current %>% 
-  mutate(london = ifelse(auth.type == "L", "london", "rest")) %>% 
-  group_by(london) %>% 
-  summarise_at(vars(income.on, income.off, income.total,
-                    expend.on, expend.off, expend.total,
-                    surplus.on, surplus.off, surplus.total), 
-               list(~sum(., na.rm = TRUE))) %>% 
-  rownames_to_column %>%
-  gather(variable, value, -rowname) %>% 
-  mutate(order = row_number()) %>% 
-  group_by(variable) %>% 
-  mutate(order = first(order)) %>% 
-  spread(rowname, value) %>% 
-  arrange(order)  %>% 
-  filter(variable != "london") %>% 
-  mutate_at(vars(-variable), as.numeric) %>% 
-  select(-order) %>% 
-  ungroup()  %>% 
-  rename(london = `1`, rest = `2`) %>% 
-  mutate(total = london + rest,
-         prop = london/total*100, 
-         prop = paste(FunDec(prop, dp.tables), "\\%") )%>% 
-  mutate_at(vars(-variable, -prop), function(x) 
-    formatC(x/1000, format = "f", digits = 0, big.mark = ",")) -> summary.london.prep
-
-# prepare data for london/rest of england summary table including penalty and fee charges
-la.data %>% 
-  filter(year %in% c(current.year, current.year -1)) %>% 
-  mutate(london = ifelse(auth.type == "L", "london", "rest")) %>% 
-  group_by(london, year) %>% 
-  summarise_at(vars(income.pcn, income.fnp,income.on, income.off, income.total,
-                    expend.on, expend.off, expend.total,
-                    surplus.on, surplus.off, surplus.total), 
-               list(~sum(., na.rm = TRUE))) %>% 
-  rownames_to_column %>%
-  gather(variable, value, -rowname) %>% 
-  mutate(order = row_number()) %>% 
-  group_by(variable) %>% 
-  mutate(order = first(order)) %>% 
-  spread(rowname, value) %>% 
-  arrange(order)  %>% 
-  filter(variable != "london", variable != "year") %>% 
-  mutate_at(vars(-variable,), as.numeric) %>% 
-  select(-order) %>% 
-  ungroup()  %>% 
-  rename(london.last = `1`, london.this = `2`,
-         rest.last = `3`, rest.this = `4`) %>% 
-  mutate(prop.london.ch = london.this/london.last*100-100, 
-         prop.rest.ch = rest.this/rest.last*100-100) -> summary.london.prep.plus
-
-# prepare data for tabulation. 
-summary.london.prep %>% 
-  mutate(variable = c(rep(c("On-street", "Off-street", "Total"), 3))) %>% 
-  mutate(collapsed = c(rep("Income", 3), 
-                       rep("Expenditure", 3),
-                       rep("Surplus", 3))) %>% 
- mutate_at(vars(-collapsed), function(x)  ifelse(.$variable == "Total",
-                                                  paste0("\\textbf{", x, "}"), x)) %>% 
-  select(collapsed, variable:prop) -> eng.summary.london.formatted
-
-# easy access for variables in text
-lnd.prop.off <- 100*as.numeric(summary.london.prep$london[2])/
-  as.numeric(summary.london.prep$london[3])
-rest.prop.off <- 100*as.numeric(summary.london.prep$rest[2])/
-  as.numeric(summary.london.prep$rest[3])
-lnd.surplus <- as.numeric(summary.london.prep$london[9])
-lnd.prop.surplus <- 100*as.numeric(summary.london.prep$london[9])/
-  as.numeric(summary.london.prep$total[9])
 
 ###############################################################################
 ##                                                                          ###
@@ -542,6 +566,13 @@ la.data %>%
                            ifelse(is.infinite(change.4), NA, change.4))) -> 
   eng.income.london
 
+# # save csv table 5
+write.csv(  eng.income.london, here::here(paste0("outputs/csv-tables/england-",
+                                                 FunFisc(), "/england-",
+                                                 FunFisc(), "-table-05.csv")),
+            row.names = FALSE)
+
+
 # only non-london income
 la.data %>% 
   filter(year <= current.year) %>% 
@@ -560,6 +591,13 @@ la.data %>%
          change.4 = ifelse(is.nan(change.4), NA, 
                            ifelse(is.infinite(change.4), NA, change.4))) -> eng.income.rest
 
+# # save csv table 6
+write.csv(eng.income.rest, here::here(paste0("outputs/csv-tables/england-",
+                                                 FunFisc(), "/england-",
+                                                 FunFisc(), "-table-06.csv")),
+            row.names = FALSE)
+
+
 # all councils income for appendix
 la.data %>% 
   filter(year <= current.year) %>% 
@@ -576,18 +614,15 @@ la.data %>%
          change.4 = ifelse(is.nan(change.4), NA, 
                            ifelse(is.infinite(change.4), NA, change.4))) -> eng.income
 
+# # save csv table 14 in Appendix
+write.csv(eng.income, here::here(paste0("outputs/csv-tables/england-",
+                                             FunFisc(), "/england-",
+                                             FunFisc(), "-table-ap-14.csv")),
+          row.names = FALSE)
 
-eng.income %>% 
-  filter(!grepl("Total", auth.name)) -> e.g.icnome.353
 
-# # save csv table 5
-# write.csv(sco.income, here::here(paste0("outputs/csv-tables/scotland-",
-#                                         FunFisc(), "/scotland-", 
-#                                         FunFisc(), "-table-05.csv")),
-#           row.names = FALSE)
 
-# format table for kable london
-
+# format table for london
 eng.income.london %>% 
   mutate(auth.name = gsub("&", "\\\\&", auth.name),
          change = ifelse(is.na(change), "", paste(FunDec(change, dp.tables), "%")),
@@ -650,6 +685,9 @@ eng.income %>%
 
 
 # no income councils
+eng.income %>% 
+  filter(!grepl("Total", auth.name)) -> e.g.icnome.353
+
 eng.no.income <- nrow(filter(e.g.icnome.353, !!as.name(current.year) == 0))
 
 # split into increase/decrease and NA
@@ -813,7 +851,13 @@ la.data %>%
                               ifelse(is.infinite(prop.income), NA, prop.income))) %>% 
   select(-income.total) %>% 
   as_tibble() -> eng.expend.london
-  
+
+# # save csv table 7
+write.csv(eng.expend.london, here::here(paste0("outputs/csv-tables/england-",
+                                        FunFisc(), "/england-",
+                                        FunFisc(), "-table-07.csv")),
+          row.names = FALSE)
+
 
 # rest of england expenditure, with totals
 la.data %>% 
@@ -842,6 +886,12 @@ la.data %>%
   select(-income.total) -> eng.expend.rest
 
 
+# # save csv table 8
+write.csv(eng.expend.rest, here::here(paste0("outputs/csv-tables/england-",
+                                               FunFisc(), "/england-",
+                                               FunFisc(), "-table-08.csv")),
+          row.names = FALSE)
+
 
 # all england LAs expenditure, with totals
 la.data %>% 
@@ -868,11 +918,11 @@ la.data %>%
   select(-income.total) -> eng.expend
 
 
-# # save csv table 8
-# write.csv(sco.expend, here::here(paste0("outputs/csv-tables/scotland-",
-#                                         FunFisc(), "/scotland-", 
-#                                         FunFisc(), "-table-08.csv")),
-#           row.names = FALSE)
+# # save csv table 15 - appendix
+write.csv(eng.expend, here::here(paste0("outputs/csv-tables/england-",
+                                             FunFisc(), "/england-",
+                                             FunFisc(), "-table-ap-15.csv")),
+          row.names = FALSE)
 
 # format cells for tabulations for london
 eng.expend.london %>% 
@@ -916,8 +966,6 @@ eng.expend.rest %>%
                                                     eng.expend$change.4),dir = -1,
                                                   factor = 1)[[3]])) ->
   eng.expend.rest.formatted
-
-
 
 
 # format cells for tabulations for all of england for the appendix
@@ -1048,6 +1096,11 @@ la.data %>%
   arrange(desc(!!as.name(current.year))) %>% 
   bind_rows(expend.props.totals) -> eng.expend.props.london
 
+# # save csv table 9
+write.csv(eng.expend.props.london, here::here(paste0("outputs/csv-tables/england-",
+                                        FunFisc(), "/england-",
+                                        FunFisc(), "-table-09.csv")),
+          row.names = FALSE)
 
 # get propo of expenditure in income for rest of england 
 la.data %>% 
@@ -1060,6 +1113,11 @@ la.data %>%
   filter(!is.infinite(!!as.name(current.year))) %>% 
   bind_rows(expend.props.totals) -> eng.expend.props.rest
 
+# # save csv table 10
+write.csv(eng.expend.props.rest, here::here(paste0("outputs/csv-tables/england-",
+                                                     FunFisc(), "/england-",
+                                                     FunFisc(), "-table-10.csv")),
+          row.names = FALSE)
 
 # get propo of expenditure in income for all of england 
 la.data %>% 
@@ -1071,14 +1129,11 @@ la.data %>%
   arrange(desc(!!as.name(current.year))) %>% 
   bind_rows(expend.props.totals) -> eng.expend.props
 
-
-# # save csv table 9
-# write.csv(sco.expend.of.income, here::here(paste0("outputs/csv-tables/scotland-",
-#                                                   FunFisc(), "/scotland-", 
-#                                                   FunFisc(), "-table-09.csv")),
-#           row.names = FALSE)
-
-
+# # save csv table 16 apendix
+write.csv(eng.expend.props, here::here(paste0("outputs/csv-tables/england-",
+                                                   FunFisc(), "/england-",
+                                                   FunFisc(), "-table-ap-16.csv")),
+          row.names = FALSE)
 
 # format for tabulation london only
 eng.expend.props.london %>% 
@@ -1215,10 +1270,12 @@ bind_rows(london.surplus, london.surplus.totals) %>%
                          ifelse(is.infinite(change), NA, change))) %>% 
   mutate_at(vars(-auth.name, -change), list(~./1000)) -> london.surplus.totals.table
 
-## save csv table 10
-#write.csv(sco.surplus.totals.table, here::here(
-#  paste0("outputs/csv-tables/scotland-", FunFisc(), "/scotland-", 
-#         FunFisc(), "-table-10.csv")), row.names = FALSE)
+## save csv table 11
+write.csv(london.surplus.totals.table, here::here(
+  paste0("outputs/csv-tables/england-", FunFisc(), "/england-",
+         FunFisc(), "-table-11.csv")), row.names = FALSE)
+
+
 
 # format for tabulation
 london.surplus.totals.table  %>% 
@@ -1385,6 +1442,7 @@ la.data %>%
   spread(key = year, value = surplus.total) %>% 
   arrange(desc(.[[6]])) -> eng.rest.surplus.full
 
+
 # create totals row for surpluses and deficits. 
 la.data %>% 
   filter(auth.type != "L") %>% 
@@ -1414,9 +1472,8 @@ la.data %>%
               mutate(auth.name = c("All England excl. London")) -> eng.rest.surplus.total
 
 
-
 # bind both tables together
-bind_rows(eng.rest.surplus, eng.rest.sur.def) %>%
+bind_rows(eng.rest.surplus.full, eng.rest.sur.def) %>%
   bind_rows(eng.rest.surplus.total) %>% 
   mutate(change = FunPercent(!!as.name(current.year), !!as.name(current.year -1)) - 100)%>% 
   mutate(change = ifelse(abs(sign(!!as.name(current.year)) -
@@ -1424,10 +1481,17 @@ bind_rows(eng.rest.surplus, eng.rest.sur.def) %>%
                          change)) %>% 
   mutate(change = ifelse(is.nan(change), NA, 
                          ifelse(is.infinite(change), NA, change))) %>% 
-  mutate_at(vars(-auth.name, -change), list(~./1000))-> eng.rest.surplus.totals.table
+  mutate_at(vars(-auth.name, -change), list(~./1000)) -> eng.rest.surplus.totals.table
+
+## save csv table 12
+write.csv(eng.rest.surplus.totals.table, here::here(
+  paste0("outputs/csv-tables/england-", FunFisc(), "/england-",
+         FunFisc(), "-table-12.csv")), row.names = FALSE)
+
 
 # format for tabulation
 eng.rest.surplus.totals.table  %>% 
+  slice(1:20, (n()-2):(n())) %>%  
   mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
   mutate(change = ifelse(is.na(change), NA, 
                          paste(FunDec(change, dp.tables), "%"))) %>% 
@@ -1446,6 +1510,12 @@ la.data %>%
   select(auth.name, year, surplus.total) %>% 
   spread(key = year, value = surplus.total) %>% 
   arrange(desc(.[[6]]))  -> eng.surplus.full
+
+# # save csv table 13
+write.csv( cong.ch.prep, here::here(paste0("outputs/csv-tables/england-",
+                                           FunFisc(), "/england-",
+                                           FunFisc(), "-table-13.csv")),
+           row.names = FALSE)
 
 # get numbers of +/-/0 surplus change
 la.data %>% 
@@ -1491,10 +1561,12 @@ bind_rows(eng.surplus.full, rest.surplus.totals.full) %>%
                          ifelse(is.infinite(change), NA, change))) %>% 
   mutate_at(vars(-auth.name, -change), list(~./1000)) -> rest.surplus.totals.table.full
 
-## save csv table 10
-#write.csv(sco.surplus.totals.table, here::here(
-#  paste0("outputs/csv-tables/scotland-", FunFisc(), "/scotland-", 
-#         FunFisc(), "-table-10.csv")), row.names = FALSE)
+
+## save csv table 17 appendix
+write.csv(rest.surplus.totals.table.full, here::here(
+  paste0("outputs/csv-tables/england-", FunFisc(), "/england-",
+         FunFisc(), "-table-ap-17.csv")), row.names = FALSE)
+
 
 # format for tabulation
 rest.surplus.totals.table.full  %>% 
@@ -1712,16 +1784,26 @@ data %>%
   arrange(order) %>% 
   filter(variable != "year") %>% 
   select(-order) %>% 
-  ungroup()  -> cong.ch.prep
+  ungroup()  %>% 
+  mutate(variable = c("Income", "Expenditure", "Surplus", "Budgeted surplus", 
+                      "Expenditure as \\% of income"))  %>% 
+  rename_at(vars(-variable), list(~!!as.character((current.year-4):(current.year+1)))) -> 
+  cong.ch.prep
+
+
+# # save csv table 13
+write.csv( cong.ch.prep, here::here(paste0("outputs/csv-tables/england-",
+                                          FunFisc(), "/england-",
+                                          FunFisc(), "-table-13.csv")),
+          row.names = FALSE)
+
 
 cong.ch.prep %>% 
   mutate_at(vars(-variable),
             function(x) ifelse(is.na(x), NA,
-                               ifelse(.$variable == "prop.net.expen",
+                               ifelse(.$variable == "Expenditure as \\% of income",
                                 paste(FunDec(x, dp.tables), "\\%"),
-                                FunDec(x, 0)))) %>% 
-  mutate(variable = c("Income", "Expenditure", "Surplus", "Budgeted surplus", 
-                      "Expenditure as \\% of income")) -> cong.ch.formatted
+                                FunDec(x, 0)))) -> cong.ch.formatted
 
 # easy access variables for the text
 sur.c.c.curr <- pull(cong.ch.prep[3,6])

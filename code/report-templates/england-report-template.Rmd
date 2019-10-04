@@ -104,7 +104,7 @@ eng.summary.london.formatted %>%
          escape = F,
          longtable = T,
          align = c("r"),
-         caption = "Summary of parking accounts for England (£ millions)",
+         caption = "Summary of parking accounts for England by region (£ millions)",
          col.names = c("", "", "London", "Rest of England", "All of England",
                        "London percentage"),
          linesep = "") %>% 

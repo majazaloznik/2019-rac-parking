@@ -1151,6 +1151,16 @@ commit
 * commmit
 
 
+# Friday 4.10.2019
+
+* I need to make sure the csv files are saved in the England.R code *todo*
+* SUper annoying to make sure the csv tables have reasonable labels etc. but not be the formatted types used in the reports, because those are all as characters and loose all the decimal points. 
+* 1., 2., 3., 4., 5., 6., 14. 7., 8., 15. 9., 10., 16., 11., 12. 13. 17. 
+* NB: all the top 20 council tables are actually all of the non lodnon concils in the csv tables. but sorted, so you can just look at the top 20 if you like. 
+* commit
+
+* Next set up the update script for new data...
+
 
 
 
