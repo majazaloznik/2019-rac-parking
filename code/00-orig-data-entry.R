@@ -735,6 +735,7 @@ england.outturn.17.18 %>%
          title = paste0("{Local authority revenue expenditure and financing England: ", fiscyear,
          " to ", fiscyear + 1, ", individual local authority data - outturn}")) %>% 
   bind_rows(bib.master) -> bib.master
+
            
 # add England budget data
 england.budget.18.19 %>% 

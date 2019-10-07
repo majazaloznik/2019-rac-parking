@@ -9,6 +9,7 @@ header-includes:
   - \usepackage{leading}
   - \leading{12pt}
   - \usepackage[fontsize=11pt]{scrextend}
+  - \usepackage{color}
 ---
 
 
@@ -70,7 +71,7 @@ You should also have git installed and use it! Make sure you always have a worki
 
 # Data Management Pipeline
 
-```{r, echo = FALSE, out.width='85%', fig.cap = "Schematic overview of the data management pipeline", fig.pos = "H"}
+```{r, echo = FALSE, out.width='85%', fig.cap = "Schematic overview of the data management pipeline"}
 knitr::include_graphics("chart.png")
 ```
 
@@ -88,7 +89,7 @@ These `orig.xxx.rds` metadata files together with the files saved in `/data/01-r
 
 The `updating scripts` are the central point in a way. This is where you choose which year you want the report for and add any metadata that is required. The metadata allows the script to extract the right data from `/data/01-raw`, it updates the bibliography master file, and creates individual bibliographies for each report. Any newly extracted data is added to `master.rds`. 
 
-Once all this is done, the `updating script` makes a copy of the relevant `report-template` and compiles it. This Rmd file does not really do much calculation--the code chunks in the report rmds are exclusively tabulation and plotting--instead I moved the main work to separate analysis files: `scotland.R` and `wales.R`, and soon `england.R`. 
+Once all this is done, the `updating script` makes a copy of the relevant `report-template` and compiles it. This Rmd file does not really do much calculation--the code chunks in the report rmds are exclusively tabulation and plotting--instead I moved the main work to separate analysis files: `scotland.R` and `wales.R`, and  `england.R`. 
 
 These `sco|wal|eng.R` files are the real workhorses, taking the master data and reshaping it in every way required for the tables, the maps and the inline text in the report rmds. While they go along they also save the relevant tables as csv files. 
 
@@ -160,12 +161,12 @@ You have already produced a report, but you want to tweak it.
 * column: Gross Expenditure; row: Parking of vehicles -> `wal-exp-17-18.csv` 
 * column: Total Income; row: Parking of vehicles -> `wal-inc-17-18.csv`
 * column: Net current cost row: Total transport planning, highways, rows and transport -> `wal-trans-17-18.csv`
-4. Now open `wales-update-script.R` and scroll down to the *Mandatory inputs* section. 
+4. Now open `code/updating-scritps/wales-update-script.R` and scroll down to the *Mandatory inputs* section. 
 5. Change the `current.year` field. to the most recent year the data has become available for
 6. Make sure `add.new.data` is changed to `TRUE`.
 7. Make sure `recompile.rmd` is set to `FALSE`.
 8. Then continue to the *Manual input* section.
-9. Enter the filenames of the three files you have just downloaded. Just the name, not the path. 
+9. Enter the filenames of the three files you have just downloaded. Just the name, not the path.
 10. Update the access date.
 11. Now run through the whole file. The script will update the `master.rds` file with the new data as well as updating the bibliography to include the newly added data. Finally it will produce an .Rmd, a pdf and the csv tables. 
 12. If you wish to modify the report go to Section \@ref(modify).
@@ -175,10 +176,10 @@ You have already produced a report, but you want to tweak it.
 ## Preparing a new report based on new data: Scotland
 
 1. When the new parking data for Scotland becomes available, you need to download following files, while *taking note of the urls* where you got them
-2. *Income and expenditure* is available on this website:[Scottish Local Government Financial Statistics](https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats), look for the "Annex A by LA" link. Download the file to `/data/01-raw` e.g. as `sco.i.e.17-18.xlsx`
-3. *Abredeen data* is available on this website: [Annual accounts](https://www.aberdeencity.gov.uk/services/council-and-democracy/financial-information-and-procurement/annual-accounts).  Download the file for this year to `/data/01-raw` e.g. as `sco.abd.17-18.pdf`
-4. *PCN data* is available on this website: [Transport Scotland](https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2017-to-2018/). Search for the DPE report for the current year and download it to `/data/01-raw` e.g. as `sco.pcn.17-18.pdf`
-5. Now open `scotland-update-script.R` and scroll down to the *Mandatory inputs* section. 
+*  *Income and expenditure* is available on this website:[Scottish Local Government Financial Statistics](https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats), look for the "Annex A by LA" link. Download the file to `/data/01-raw` e.g. as `sco.i.e.17-18.xlsx`
+*  *Abredeen data* is available on this website: [Annual accounts](https://www.aberdeencity.gov.uk/services/council-and-democracy/financial-information-and-procurement/annual-accounts).  Download the file for this year to `/data/01-raw` e.g. as `sco.abd.17-18.pdf`
+*  *PCN data* is available on this website: [Transport Scotland](https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2017-to-2018/). Search for the DPE report for the current year and download it to `/data/01-raw` e.g. as `sco.pcn.17-18.pdf`
+5. Now open `code/updating-scritps/scotland-update-script.R` and scroll down to the *Mandatory inputs* section. 
 6. Change the `current.year` field. to the most recent year the data has become available for
 7. Make sure `add.new.data` is changed to `TRUE`.
 8. Make sure `recompile.rmd` is set to `FALSE`.
@@ -190,6 +191,37 @@ You have already produced a report, but you want to tweak it.
 14. Now run through the whole file. The script will update the `master.rds` file with the new data as well as updating the bibliography to include the newly added data. Finally it will produce an .Rmd, a pdf and the csv tables. 
 15. If you wish to modify the report go to Section \@ref(modify).
 16. When you are happy with the whole thing you should make a commit.
+
+
+## Preparing a new report based on new data: England
+
+1. When the new parking data for England becomes available, you need to download following files, while *taking note of the urls* where you got them:
+2.  *England Outturn Data* is available on this website:[Local Authority Revenue and expenditure](https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing): 
+* look for the link called *Local authority revenue expenditure and financing England: 20XX to 20XY individual local authority data - outturn* -- make sure it has both LA and outturn in the name
+* Selec the Excel file "Revenue outturn summary (RS) 20XX to 20XY"
+* Download the file to `/data/01-raw` e.g. as `eng.17-18.xlsx`
+* take note of the url for the excel file!
+3. *England budget data for the next fiscal year*  is available on the same site as the outturn data above, but make sure it's for the next fiscal year!
+* look for the link called *Local authority revenue expenditure and financing England: 20XY to 20ZZ budget individual local authority data*  -- make sure it has both LA and budget in the name, and is for the next fiscal year!
+* Select the Excel file "Revenue account (RA) budget 20XY to 20ZZ". 
+* Download the file to `/data/01-raw` e.g. as `eng.18-19-budget.xlsx`
+* take note of the url for the excel file!
+4. *Nottingham WPL* data is at their Finanical statements library (https://www.nottinghaminsight.org.uk/Document-Library/Document-Library/aAXD5ex)
+* Look for the current year's *Final statement of accounts 20XX-XY", which is a pdf file
+* Download it to `/data/01-raw` e.g. as `nhm-18-19.pdf`
+* take note of the url for the pdf file. 
+5. Now open `code/updating-scritps/england-update-script.R` and scroll down to the *Mandatory inputs* section. 
+6. Change the `current.year` field. to the most recent year the data has become available for
+7. Make sure `add.new.data` is changed to `TRUE`.
+8. Make sure `recompile.rmd` is set to `FALSE`.
+9. Then continue to the *Manual input* section.
+10. For each of the three files you will need to manually input all the information requested in the script. This includes bibliographical info like title, link, date accessed for the files. 
+11. Additionally for the Excel files you will need to open the files and find which cells/sheets the relevant data is on and input that as well, following the script carefully. 
+12. BE careful, these cells will probably stay pretty similar over the years, but may change as well, so make sure you update all the fields. 
+13. For the Nottingham WPL you have to first enter the same meta information about the source, then you have to manually enter the values for the incomes and expenditures, since it is impossible to extract these values programatically. 
+14. Now run through the whole file. The script will update the `master.rds` file with the new data as well as updating the bibliography to include the newly added data. Finally it will produce an .Rmd, a pdf and the csv tables. 
+15. If you wish to modify the report go to Section \@ref(modify).
+16. When you are happy with the whole thing you should make a commit!
 
 
 ## Formatting of the reports {#format}
@@ -233,7 +265,7 @@ The *colours* in the maps are also not easily hangable, so I hope you appreciate
 
 `|   \-- updating-scripts` \color{black}
 
-`|-- data` \color{orange}
+`|-- data` \color{red}
 
 `|   |-- 01-raw` \color{black}
 
@@ -280,16 +312,16 @@ Contains all the `.R` and `.Rmd` files. Additionally contains the bibliography f
 * `00-orig-data-entry.R` contains **manually** input data and metadata, including references for existing sources, manually input data from scanned pdfs, and lookup tables for when LA names have spelling variants and typos. *do not modify*
 * `01-orig-data-entry.R` contains code to **programatically** extract and clean data from all the original data sources and produce the `original.data.rds`, which immediately becomes the `master.rds`. *do not modify*
 * `functions.R` contain all the helper functions used by pretty much all the other `.R` files. *do not modify*
-* `scotland.R` and `wales.R` (and soon to come `england.R`) contain the code run by each .Rmd file. This code was originally in the `.Rmd` files themselves, but that made them extremely long an difficult to navigate, so I moved it out. *do not modify*
+* `scotland.R` and `wales.R` and `england.R` contain the code run by each .Rmd file. This code was originally in the `.Rmd` files themselves, but that made them extremely long an difficult to navigate, so I moved it out. *do not modify*
 * `xx-scratchpad.R` - my playground, ignore this, can be deleted in the future. 
 
 #### `updating-scritps`
 
-This folder contains the updating scripts for Scotland and Wales (and eventually England). These are R scripts that require you to first input some parameters, then when they are run they produce a new Rmd file, which is compiled into a pdf file and produces the csv tables as well. 
+This folder contains the updating scripts for Scotland and Wales and  England. These are R scripts that require you to first input some parameters, then when they are run they produce a new Rmd file, which is compiled into a pdf file and produces the csv tables as well. 
 
 #### `report-templates`
 
-This folder contains .Rmd report templates for Scotland and Wales (and eventually England). A copy is made automatically by the updating script. So if there is a typo in the report, this is where it originates from. 
+This folder contains .Rmd report templates for Scotland and Wales and England. A copy is made automatically by the updating script. So if there is a typo in the report, this is where it originates from. 
 
 #### `report-rmds`
 

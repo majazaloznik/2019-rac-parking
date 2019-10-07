@@ -1161,11 +1161,27 @@ commit
 
 * Next set up the update script for new data...
 
+# Modnay 7.10.2019
 
-
-
-
-
+OK, so now setting up the update script... 
+* I should probably be writing the instructions at the same time. 
+* hm, the instructions aren't compiling as they used to. seems to have been some update to tinytex or knitr or markdown.. e.g. it doens't like fig.pos = "H" anymore. Also \color{black}. 
+* added package color to fix that, but now doesn't recognise orange. weird.changed to red?
+* ok, inputs for all outturn data done
+* next inputs for budget data. OK
+* next nottingham WPL. OK
+* Now import the data. 
+* hmm issue. what happens if the current year and next budget year tables have different names for LAs? LIke the issue occured now with some Combined fire and rescue authorities. which doesn't really matter for now, but what if that happened with a council name? where is the lookup used anyway?
+* Ah, it's OK, they get used in the import of the data, so all good. 
+* it seems that for scotland and wales i calculated the surplus in the import/update, only for england did i move it to the .R script?
+* And the reason i should move them back is because that way they stay in master, and can be saved in the master csv file. Ah, no, it's fine, the i/e/s totals are already calculated before, so master is all good. 
+* OK, now all data has been read in the update. 
+* commit. ok, first check it works..oops, forgot WPL.. OK done. commit
+* OK, now when merging with master, there is the issue of the non LAs and non parks?
+* aah, all good, forgot to throw out all the las i don't need
+* ok, so master data is updated, only bibliography left now. DONE
+* finish updating user guide. DOME
+* Commit
 
 
 

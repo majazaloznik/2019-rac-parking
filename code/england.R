@@ -1511,12 +1511,6 @@ la.data %>%
   spread(key = year, value = surplus.total) %>% 
   arrange(desc(.[[6]]))  -> eng.surplus.full
 
-# # save csv table 13
-write.csv( cong.ch.prep, here::here(paste0("outputs/csv-tables/england-",
-                                           FunFisc(), "/england-",
-                                           FunFisc(), "-table-13.csv")),
-           row.names = FALSE)
-
 # get numbers of +/-/0 surplus change
 la.data %>% 
   filter(year <= current.year) %>% 

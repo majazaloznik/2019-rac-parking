@@ -26,7 +26,7 @@ current.year <- 2017
 # If you want to add new data for the current fiscal year then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable above
-add.new.data <- FALSE
+add.new.data <- TRUE
 
 # If you have already produced an .Rmd file by running this script, and have 
 # made changes to the .Rmd file and just want to recompile it switch to TRUE.
@@ -40,96 +40,152 @@ dp.tables <- 2
 
 
 ################################################################################
-# ## MANUAL DATA INPUT ###########################################################
-# ################################################################################
-# if (add.new.data){
-#   ## after dowloading the Scotland files into the data/01-raw folder, enter their
-#   ## metadata here:
-#   
-#   # Scottish Local Government Finance Statistics (Income and Expenditure data)####
-#   ################################################################################
-#   # title as it will appear in the references:
-#   sco.i.e.title <- "Scottish Local Government Finance Statistics 2016-17 Annex A by LA"
-#   
-#   # url of the file:
-#   sco.i.e.url <- "https://www2.gov.scot/Resource/0053/00536018.xlsx"
-#   
-#   # year published, as it will appear in the references:
-#   sco.i.e.year.published <- 2018
-#   
-#   ## replace with date of access to data:
-#   sco.i.e.date.accessed <- "13.03.2019"
-#   
-#   # path and name of file where you have saved it:
-#   sco.i.e.file <- "data/01-raw/orig.sco-16-17.xlsx"
-#   
-#   # which sheet has the first LA (Aberdeen city) on it?
-#   sco.i.e.start.sh <- 2
-#   
-#   # which sheet has the last LA (West Lothian) on it?
-#   sco.i.e.end.sh <- 33
-#   
-#   # which cell has the Parking "Gross Expenditure on a Funding Basis"?
-#   sco.i.e.exp.cell <- "B41"
-#   
-#   # which cell has the Parking "Gross Income on a Funding Basis"?
-#   sco.i.e.inc.cell <- "C41"
-#   
-#   # which cell has the Total Roads and Transport "Net revenue Expenditure on a funding basis"?
-#   sco.i.e.transp.cell <- "D34"
-#   
-#   # On individual LA sheets, which cell has the name of the LA?
-#   sco.i.e.auth.cell <- "A1"
-#   
-#   # Aberdeen city - separate data source if available? ###########################
-#   ################################################################################
-#   # title as it will appear in the references:
-#   sco.aberdeen.title <- "{Aberdeen City Council Annual Accounts 2016-17}"
-#   
-#   # url of the file:
-#   sco.aberdeen.url <- "https://www.aberdeencity.gov.uk/media/5702"
-#   
-#   # year published, as it will appear in the references:
-#   sco.aberdeen.year.published <- 2017
-#   
-#   ## replace with date of access to data:
-#   sco.aberdeen.date.accessed <- "4.4.2019"
-#   
-#   # How much parking Income did Aberdeen City report this year??
-#   sco.aberdeen.income.total <- 8040
-#   
-#   # How much parking Expenditure did Aberdeen City report this year??
-#   sco.aberdeen.expend.total <- 4821
-#   
-#   
-#   # Transport Scotland (PCN) data  ###############################################
-#   ################################################################################
-#   # title as it will appear in the references:
-#   sco.pdf.title <- "Decriminalised Parking Enforcement: Local Authorites’ Income
-# and Expenditure: 2016 to 2017"
-#   
-#   # url of the file:
-#   sco.pdf.url <- "https://www.transport.gov.scot/publication/
-# decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/"
-#   
-#   # year published, as it will appear in the references:
-#   sco.pdf.year.published <- 2017
-#   
-#   ## replace with date of access to data:
-#   sco.pdf.date.accessed <- "13.03.2019"
-#   
-#   # path and name of file where you have saved it:
-#   sco.pdf.file <- "data/01-raw/orig.sco-16-17-pcn.pdf"
-#   
-#   # which page in the report is the DPE table on?
-#   sco.pdf.dpe.tab <- 4
-#   
-#   # which page in the report is the number of PCNs table on?
-#   sco.pdf.pcn.tab <- 5
-#   
-#   # which page in the report is the income/expenditure table on?
-#   sco.pdf.i.e.tab <- 6
-# } 
+# ## MANUAL DATA INPUT #########################################################
+# ##############################################################################
+if (add.new.data){
+  ## after dowloading the three England files into the data/01-raw folder, 
+  ## enter their metadata here:
+
+  #############################################################################
+  # England outturn data (Income and Expenditure data)                        #
+  #############################################################################
+  # title as it will appear in the references:
+  eng.i.e.title <- "Local authority revenue expenditure and financing England: 2017-18, individual local authority data - outturn"
+
+  # url of the file:
+  eng.i.e.url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/659775/RO2_2016-17_data_by_LA.xlsx"
+
+  # year published, as it will appear in the references:
+  eng.i.e.year.published <- 2018
+
+  ## replace with date of access to data:
+  eng.i.e.date.accessed <- "07.10.2019"
+
+  # path and name of file where you have saved it:
+  eng.i.e.file <- "data/01-raw/orig.eng-17-18.xlsx"
+
+  # on which sheet is the LA data on?
+  eng.i.e.sh <- 3
+  
+  # on the LA sheet, which row is the first LA in?
+  eng.i.e.first <- 8
+  
+  # on the LA sheet, which row is the last row of the table?
+  eng.i.e.last <- 452
+  
+  # on the LA sheet, which column has the LA names
+  eng.i.e.la.name <- "C"
+  
+   # on the LA sheet, which column has the LA types or classes
+  eng.i.e.la.type <- "E"
+  
+  # on the LA sheet, which column is the ON-street parking Total Expenditure in?
+  eng.e.on <- "CU"
+    
+  # on the LA sheet, which column is the OFF-street parking Total Expenditure in?
+  eng.e.off <- "DB"
+  
+  # on the LA sheet, which column is the congestion charge Total Expenditure in?
+  eng.e.cc <- "BS"
+  
+  # on the LA sheet, which column is the ON-street parking Total Income in?
+  eng.i.on <- "CX"
+  
+  # on the LA sheet, which column is the OFF-street parking Total Income in?
+  eng.i.off <- "DE"
+  
+  # on the LA sheet, which column is the congestion charge Total Income in?
+  eng.i.cc <- "BV"
+  
+  # on the LA sheet, which column is the On-street parking: Penalty Charge Notice 
+  # income included in line 61? ?
+  eng.pen.on <- "FX"
+  
+  # on the SUMMARY sheet, which cell is the total On-street parking: Penalty 
+  # Charge Notice income included in line 61?
+  eng.pen.1 <- "H67"
+  
+  # on the SUMMARY sheet, which cell is the Total Expenditure for 
+  # On-street parking: Penalty Charge Notice income included in line 61?
+  eng.pen.1 <- "H67"
+
+  # on the SUMMARY sheet, which cell is the Net Current Expenditure for 
+  # TOTAL HIGHWAYS AND TRANSPORT SERVICES?
+  eng.tot.1 <- "K48"
+
+  #############################################################################
+  # England budget data - for the next fiscal year                            #
+  #############################################################################
+  # title as it will appear in the references:
+  eng.budg.title <- "Local authority revenue expenditure and financing England: 2018 to 2019 budget (Revenue Account budget)"
+  
+  # url of the file:
+  eng.budg.url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/720343/RA_2018-19_data_by_LA.xlsx"
+  
+  # year published, as it will appear in the references:
+  eng.budg.year.published <- 2018
+  
+  ## replace with date of access to data:
+  eng.budg.date.accessed <- "07.10.2019"
+  
+  # path and name of file where you have saved it:
+  eng.budg.file <- "data/01-raw/orig.eng-18-19-budget.xlsx"
+  
+  # on which sheet is the LA data on?
+  eng.budg.sh <- 3
+  
+  # on the LA sheet, which row is the first LA in?
+  eng.budg.first <- 8
+  
+  # on the LA sheet, which row is the last row of the table?
+  eng.budg.last <- 450
+  
+  # on the LA sheet, which column has the LA names?
+  eng.budg.la.name <- "C"
+  
+  # on the LA sheet, which column has the LA types or classes?
+  eng.budg.la.type <- "E"
+  
+  # on the LA sheet, which column has the parking services column?
+  eng.budg.la <- "V"
+  
+  # on the summary sheet, which cell has the TOTAL HIGHWAYS AND TRANSPORT SERVICES 
+  # (total of lines 210 to 280) budgeted net current expenditure
+  eng.budg.trans <- "E41"
+  
+  # on the summary sheet, which cell has the CONGESTION CHARGE 
+  # budgeted net current expenditure
+  eng.budg.cc <- "E31"
+  
+  
+  #############################################################################
+  # Nottingham WPL data                                                   #####
+  #############################################################################
+  # title as it will appear in the references:
+  eng.nhm.title <- "{Statement of Accounts}"
+
+  # url of the file:
+  eng.nhm.url <- "https://www.nottinghaminsight.org.uk/d/aAXEduG_"
+
+  # year published, as it will appear in the references:
+  eng.nhm.year.published <- 2018
+
+  ## replace with date of access to data:
+  eng.nhm.date.accessed <- "4.10.2019"
+
+  # page on which the table "Road Charging Schemes under the Transport Act 2000"
+  # can be found 
+  eng.nhm <- 86
+  
+  # income from WPL as shown in this table (in thousands, not in millions!):
+  eng.nhm.income.wpl <- 9178
+  
+  # expenditures for WPL as shown in this table (in thousands, not in millions!): 
+  eng.nhm.expend.wpl <- 219
+  
+  # that's all the manual entry done!
+}
+
 
 ################################################################################
 ################################################################################
@@ -159,173 +215,186 @@ orig.eng.name.lookup <- readRDS("data/01-raw/orig.eng.name.lookup.rds")
 report.name <- paste0("england-report-", current.year, "-",
                       current.year - 1999)
 
-# if (add.new.data){  
-#   ################################################################################
-#   ## AUTOMATIC DATA IMPORT AND CLEANING
-#   ################################################################################
-#   # loop through each sheet of the excel file to extract the income/expenditure data
-#   FunScotlandLoopIE(year = current.year,
-#                     file.name = sco.i.e.file,
-#                     start.sh =  sco.i.e.start.sh,
-#                     end.sh =  sco.i.e.end.sh,
-#                     exp.cell =  sco.i.e.exp.cell,
-#                     inc.cell =  sco.i.e.inc.cell,
-#                     transp.cell = sco.i.e.transp.cell,
-#                     auth.cell = sco.i.e.auth.cell) -> scotland.i.e.
-#   
-#   aberdeen <- data.frame(auth.name = "Aberdeen City",
-#                          year = current.year,
-#                          income.total = sco.aberdeen.income.total,
-#                          expend.total =  sco.aberdeen.expend.total)
-#   
-#   # slot in manual aberdeen city data
-#   scotland.i.e. %>% 
-#     filter(auth.name == "Aberdeen City") %>% 
-#     select(auth.name, transport.total, year) %>% 
-#     full_join(aberdeen) -> full.aberdeen
-#   
-#   # merge back with scotland i.e.
-#   scotland.i.e. %>% 
-#     filter(auth.name != "Aberdeen City") %>%
-#     bind_rows(full.aberdeen) -> scotland.i.e.
-#   
-#   # extract the dpe table from the pdf
-#   scotland.dpe <- extract_tables(sco.pdf.file, pages = sco.pdf.dpe.tab)
-#   
-#   # clean DPE type table
-#   scotland.dpe <- FunScotlandDPE(scotland.dpe, current.year)
-#   
-#   # extract PCN type table
-#   scotland.pcn <- extract_tables(sco.pdf.file,
-#                                  pages = sco.pdf.pcn.tab,
-#                                  output = "data.frame")[[1]]
-#   
-#   # clean PCN table
-#   scotland.pcn <- FunScotlandPCN(scotland.pcn, current.year)
-#   
-#   # extract TfS i.e. type table directly into a data.frame
-#   scotland.tfs.i.e <- extract_tables(sco.pdf.file,
-#                                      pages = sco.pdf.i.e.tab,
-#                                      output = "data.frame")[[1]]
-#   
-#   # clean TFS income expenditure table
-#   scotland.tfs.i.e <- FunScotlandTFSIE(scotland.tfs.i.e, current.year)
-#   
-#   # join all 3 tables from the pdf
-#   scotland.pdf <- full_join(full_join(scotland.dpe,
-#                                       scotland.pcn,by = c("auth.name", "year")),
-#                             scotland.tfs.i.e,  by = c("auth.name", "year"))
-#   
-#   # now merge income exp data from the Excel files with the pdf data
-#   update <- full_join(scotland.i.e., scotland.pdf)
-#   
-#   # add Scotland data and calculate surplus
-#   update %>%
-#     mutate(country = "Scotland",
-#            auth.type = "LA",
-#            surplus.total = income.total - expend.total) -> master.update
-#   
-#   # double check the update is OK:
-#   if (nrow(master.update) != 32) {
-#     paste("Something is wrong. The update should have 32 rows, but it has",
-#           nrow(master.update), "instead.")} else {
-#             "Everything checks out, the update has 32 rows"}
-#   
-#   ################################################################################
-#   ## Add (or overwrite) new rows to master #######################################
-#   ################################################################################
-#   
-#   # add update - if that year already exists, it will be overwritten!!!
-#   if (exists("master.update")){
-#     master %>%
-#       anti_join(master.update, by = c("country", "auth.name", "year")) %>%
-#       bind_rows(master.update) -> master}
-#   
-#   
-#   # save updated datafile to master
-#   saveRDS(master, "data/03-processed/master.rds")
-#   write.csv(master, "outputs/csv-tables/master.csv")
-#   
-#   ## IMPORT AND CLEAN RPI DATA ###################################################
-#   # if RPI file doesn't exist, or if it doesn't have today's date, download it again. 
-#   if (!file.exists("data/01-raw/rpi.csv") | 
-#       format(file.mtime("data/01-raw/rpi.csv"), "%d.%m.%Y") != 
-#       format(Sys.Date(), "%d.%m.%Y")) {
-#     url <- paste0("https://docs.google.com/spreadsheets/d/e/2PACX-1vTisg2eXAykXY-",
-#                   "jcDJRXBf7LlL8IBFRmwBgJGF6-kcFVTlx96kAurVWCohG1ryXMvtvD1dNvQ6otS2R",
-#                   "/pub?gid=543857295&single=true&output=csv")
-#     
-#     download.file(url, destfile = "data/01-raw/rpi.csv", method="curl")
-#   }
-#   
-#   # update RPI data acces date and year of publication in the bibliography
-#   bib.master %>%
-#     mutate(urldate = ifelse(content == "rpi",
-#                             as.character(format(Sys.Date(), "%d.%m.%Y")), urldate),
-#            year = ifelse(content == "rpi",
-#                          as.numeric(format(Sys.Date(), "%Y")), year)) ->
-#     bib.master
-#   ################################################################################
-#   # add new files to bibliography master #########################################
-#   ################################################################################
-#   # add new rows to bibliography #################################################
-#   # add i.e. source:
-#   sco.i.e.bib <- data.frame(fiscyear = current.year,
-#                             url = sco.i.e.url,
-#                             country = "Scotland",
-#                             content = "i.e",
-#                             bibtype = "misc",
-#                             year = sco.i.e.year.published,
-#                             author = "{Scottish Government}",
-#                             urldate = sco.i.e.date.accessed,
-#                             title = sco.i.e.title,
-#                             key = paste0("Scotland.i.e.", current.year))
-#   
-#   # add it to bib.master (overwriting if already exists)
-#   bib.master %>%
-#     anti_join(sco.i.e.bib, by = c("fiscyear", "country", "content")) %>%
-#     bind_rows(sco.i.e.bib) -> bib.master
-#   
-#   # add aberdeen data source:
-#   sco.aberdeen.bib <- data.frame(fiscyear = current.year,
-#                                  url = sco.aberdeen.url,
-#                                  country = "Scotland",
-#                                  content = "i.e.",
-#                                  bibtype = "misc",
-#                                  year = sco.aberdeen.year.published,
-#                                  author = "{Aberdeen City Council}",
-#                                  urldate = sco.aberdeen.date.accessed,
-#                                  title = sco.aberdeen.title,
-#                                  key = paste0("Scotland.abd.", current.year))
-#   
-#   
-#   # if exists add it to bib.master (overwriting if already exists)
-#   bib.master %>%
-#     anti_join(sco.aberdeen.bib, by = c("fiscyear", "country", "content")) %>%
-#     bind_rows(sco.aberdeen.bib) -> bib.master
-#   
-#   # add pdf source:
-#   sco.pdf.bib <- data.frame(fiscyear = current.year,
-#                             url = sco.pdf.url,
-#                             country = "Scotland",
-#                             content = "pcn",
-#                             bibtype = "misc",
-#                             year = sco.pdf.year.published,
-#                             author = "{Transport Scotland}",
-#                             urldate = sco.pdf.date.accessed,
-#                             title = sco.pdf.title,
-#                             key = paste0("Scotland.pdf.", current.year))
-#   
-#   # add it to bib.master (overwriting if already exists)
-#   bib.master %>%
-#     anti_join(sco.pdf.bib, by = c("fiscyear", "country", "content")) %>%
-#     bind_rows(sco.pdf.bib) -> bib.master
-#   
-#   
-#   
-#   # save updated datafile to master
-#   saveRDS(bib.master, "data/03-processed/bib.master.rds")
-# }
+if (add.new.data){  
+  ################################################################################
+  ## AUTOMATIC DATA IMPORT AND CLEANING
+  ################################################################################
+  # go through excel file to extract the income/expenditure data for LAs
+  FunEnglandOutturn(file = eng.i.e.file, 
+                    first = eng.i.e.first, 
+                    last = eng.i.e.last,
+                    e.sh = eng.i.e.sh, 
+                    e.on = eng.e.on, 
+                    e.off = eng.e.off, 
+                    e.cc = eng.e.cc,
+                    i.sh = eng.i.e.sh, 
+                    i.on = eng.i.on,
+                    i.off = eng.i.off,
+                    i.cc = eng.i.cc, 
+                    pen.sh = eng.i.e.sh, 
+                    pen.on = eng.pen.on,
+                    auth.name = eng.i.e.la.name, 
+                    auth.type = eng.i.e.la.type, 
+                    year = current.year)  -> england.i.e
+  
+  # go throught excel outturn file and extract totals 
+  FunEnglandOutturnTotals(file = eng.i.e.file, 
+                          transport.total = eng.tot.1,
+                          income.pcn = eng.pen.1, 
+                          year = current.year) %>% 
+    bind_rows() -> england.i.e.tot
+  england.i.e.tot$auth.name <- "England"
+  england.i.e.tot$auth.type <- "X"
+  
+  bind_rows( england.i.e,  england.i.e.tot) -> england.i.e
+
+  # go throught excel budget files and extract LA data
+  FunEnglandBudget(file = eng.budg.file, 
+                   first = eng.budg.first, 
+                   last = eng.budg.last, 
+                   sheet = eng.budg.sh,
+                   budg.la = eng.budg.la,
+                   auth.name = eng.budg.la.name,
+                   auth.type = eng.budg.la.type, 
+                   year = current.year) -> england.budget
+  
+
+  # go throught excel budget file and extract totals 
+  FunEnglandBudgetTransport(file = eng.budg.file, 
+                            budg.trans = eng.budg.trans,
+                            year = current.year) %>% 
+    bind_rows() -> england.budget.tot
+  england.budget.tot$auth.name <- "England"
+  england.budget.tot$auth.type <- "X"
+
+  bind_rows(england.budget,  england.budget.tot) -> england.budget
+  
+  # add nottingham wpl data
+  data.frame(year = current.year,
+        auth.name = "Nottingham",
+        income.wpl = eng.nhm.income.wpl,
+        expend.wpl = eng.nhm.expend.wpl) -> nhm
+    
+  england.i.e %>% 
+    filter(auth.type != "O" | 
+             grepl("National Park", auth.name) |
+             auth.name == "Greater London Authority") -> england.i.e
+  
+  england.budget %>% 
+    filter(auth.type != "O" | 
+             grepl("National Park", auth.name) |
+             auth.name == "Greater London Authority") -> england.budget
+  
+  # now merge income exp data from the Excel files with the pdf data
+  update <- full_join(england.i.e, england.budget) 
+  update <- full_join(update, nhm)
+  # add Scotland data and calculate surplus
+  update %>%
+    mutate(country = "England") -> master.update
+  
+  # double check the update is OK:
+  master.update %>% 
+    filter(!auth.type %in% c("O", "X", "GLA")) %>% 
+    nrow() -> nrows
+  
+  if (nrows != 353) {
+    paste("Something is wrong. The update should have data for 353 LAs, but it has",
+          nrows, "instead.")} else {
+            "Everything checks out, the update has 353 LA rows"}
+
+###############################################################################
+# Add (or overwrite) new rows to master #######################################
+###############################################################################
+
+  # add update - if that year already exists, it will be overwritten!!!
+  if (exists("master.update")){
+    master %>%
+      anti_join(master.update, by = c("country", "auth.name", "year")) %>% 
+      bind_rows(master.update) -> master}
+
+  # save updated datafile to master
+  saveRDS(master, "data/03-processed/master.rds")
+  write.csv(master, "outputs/csv-tables/master.csv")
+
+
+  ## IMPORT AND CLEAN RPI DATA ###################################################
+  # if RPI file doesn't exist, or if it doesn't have today's date, download it again.
+  if (!file.exists("data/01-raw/rpi.csv") |
+      format(file.mtime("data/01-raw/rpi.csv"), "%d.%m.%Y") !=
+      format(Sys.Date(), "%d.%m.%Y")) {
+    url <- paste0("https://docs.google.com/spreadsheets/d/e/2PACX-1vTisg2eXAykXY-",
+                  "jcDJRXBf7LlL8IBFRmwBgJGF6-kcFVTlx96kAurVWCohG1ryXMvtvD1dNvQ6otS2R",
+                  "/pub?gid=543857295&single=true&output=csv")
+
+    download.file(url, destfile = "data/01-raw/rpi.csv", method="curl")
+  }
+
+  # update RPI data acces date and year of publication in the bibliography
+  bib.master %>%
+    mutate(urldate = ifelse(content == "rpi",
+                            as.character(format(Sys.Date(), "%d.%m.%Y")), urldate),
+           year = ifelse(content == "rpi",
+                         as.numeric(format(Sys.Date(), "%Y")), year)) ->
+    bib.master
+  
+  ################################################################################
+  # add new files to bibliography master #########################################
+  ################################################################################
+  # add new rows to bibliography #################################################
+  # add i.e. source:
+  eng.i.e.bib <- data.frame(fiscyear = current.year,
+                            url = eng.i.e.url,
+                            country = "England",
+                            content = "i.e",
+                            bibtype = "misc",
+                            year = eng.i.e.year.published,
+                            author = "{Office for National Statistics}",
+                            urldate = eng.i.e.date.accessed,
+                            title = eng.i.e.title,
+                            key = paste0("England.i.e.", current.year))
+
+  # add it to bib.master (overwriting if already exists)
+  bib.master %>%
+    anti_join(sco.i.e.bib, by = c("fiscyear", "country", "content")) %>%
+    bind_rows(sco.i.e.bib) -> bib.master
+
+  # add budget. source:
+  eng.budg.bib <- data.frame(fiscyear = current.year,
+                            url = eng.budg.url,
+                            country = "England",
+                            content = "budget",
+                            bibtype = "misc",
+                            year = eng.budg.year.published,
+                            author = "{Office for National Statistics}",
+                            urldate = eng.budg.date.accessed,
+                            title = eng.budg.title,
+                            key = paste0("England.budg.", current.year))
+  
+  # add it to bib.master (overwriting if already exists)
+  bib.master %>%
+    anti_join(budg.i.e.bib, by = c("fiscyear", "country", "content")) %>%
+    bind_rows(budg.i.e.bib) -> bib.master
+  
+  # # add pnottingham df source:
+  eng.nhm.bib <- data.frame(fiscyear = current.year,
+                            url = eng.nhm.url,
+                            country = "England",
+                            content = "wpl",
+                            bibtype = "misc",
+                            year = eng.nhm.year.published,
+                            author = "{Nottingham City Council}",
+                            urldate = eng.nhm.date.accessed,
+                            title = eng.nhm.title,
+                            key = paste0("England.wpl.", current.year))
+
+  # add it to bib.master (overwriting if already exists)
+  bib.master %>%
+    anti_join(eng.nhm.bib, by = c("fiscyear", "country", "content")) %>%
+    bind_rows(eng.nhm.bib) -> bib.master
+
+  # save updated datafile to master
+  saveRDS(bib.master, "data/03-processed/bib.master.rds")
+} 
 
 # select england only bibliograpy #############################################
 # select a bibliography for the england report - only the rows needed
