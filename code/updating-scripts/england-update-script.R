@@ -26,7 +26,8 @@ current.year <- 2017
 # If you want to add new data for the current fiscal year then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable above
-add.new.data <- TRUE
+add.new.data <- FALSE
+
 
 # If you have already produced an .Rmd file by running this script, and have 
 # made changes to the .Rmd file and just want to recompile it switch to TRUE.
@@ -355,8 +356,8 @@ if (add.new.data){
 
   # add it to bib.master (overwriting if already exists)
   bib.master %>%
-    anti_join(sco.i.e.bib, by = c("fiscyear", "country", "content")) %>%
-    bind_rows(sco.i.e.bib) -> bib.master
+    anti_join(eng.i.e.bib, by = c("fiscyear", "country", "content")) %>%
+    bind_rows(eng.i.e.bib) -> bib.master
 
   # add budget. source:
   eng.budg.bib <- data.frame(fiscyear = current.year,
@@ -372,8 +373,8 @@ if (add.new.data){
   
   # add it to bib.master (overwriting if already exists)
   bib.master %>%
-    anti_join(budg.i.e.bib, by = c("fiscyear", "country", "content")) %>%
-    bind_rows(budg.i.e.bib) -> bib.master
+    anti_join(eng.budg.bib, by = c("fiscyear", "country", "content")) %>%
+    bind_rows(eng.budg.bib) -> bib.master
   
   # # add pnottingham df source:
   eng.nhm.bib <- data.frame(fiscyear = current.year,
@@ -419,9 +420,9 @@ saveRDS(bib.england, paste0("data/03-processed/", report.name, "-bib.rds"))
 # check if master data is available for current year?
 
 if(nrow(filter(master, country == "England", year == current.year)) == 0) {
-  paste0("There are no records for the year ", current.year) } else {
+  warning("There are no records for the year ", current.year) } else {
     if(nrow(filter(master, country == "England", year == current.year)) !=364) {
-      paste0("Something has gone wrong. There should be 364 rows for ", 
+      warning("Something has gone wrong. There should be 364 rows for ", 
              current.year, " but there are not. I suggest you revert to a ",
              "previous version of the repository and try again.")} else {
                
@@ -436,7 +437,7 @@ if(nrow(filter(master, country == "England", year == current.year)) == 0) {
                # compile the report (but check if file exists first)
                if(recompile.rmd & !file.exists(paste0("code/report-rmds/", 
                                                       report.name, ".Rmd"))){
-                 paste("The Rmd file does not exist. Rerun this script with",
+                 warning("The Rmd file does not exist. Rerun this script with ",
                        "recompile.rmd swithced to FALSE.")} else { 
                          
                          rmarkdown::render(paste0("code/report-rmds/", report.name, ".Rmd"),

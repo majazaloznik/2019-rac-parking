@@ -1041,13 +1041,13 @@ commit
 * still *not figured out the stripped rows..*
 * aaaa, labels mutliply defined happens because of repeated headers on each page!! SO all good, nothing to worry about, but also not sure how to remove the warning. maybe *open an issue with kableextra?*
 
-* *figure out how to get rid of/ or control the highlights on the links, the red is a bit much..*
+* figure out how to get rid of/ or control the highlights on the links, the red is a bit much.. OK, this is a viewer dependent issue. solved
 * OK, but draft England report is finished - following the Leibling original.  Commit. 
 
 # Wednesday 25.9.2019
 
 * go through England draft and compare with Wales and Scotland listing differnces. 
-* make sure Scotland and Wales long term trends in 2. Summary actually use all available data, not just the last 5 years. *todo*
+* make sure Scotland and Wales long term trends in 2. Summary actually use all available data, not just the last 5 years. todo. all good, slcotland only has five years, that's why it looked weird. 
 * OK, there are two summary tables in Scotland, one comparing the revenues and the other comparing them wiht RPI. Both of these should be repeated in England.  Let's try that then. 
 * OK, there might be an issue with the GB sum, since it should be for the most recent year available data exists for all the countries.. OK, GB is calculated for years where there are four entries. copied into scotland and wales as well. OK
 * second table, annual change etc also doesn't work if you don't have the same spread of years for each country... SO this needs to be rewritten a bit.. 
@@ -1062,7 +1062,7 @@ commit
 * how is GB average annual change in expenditure negative, when all the four countries are positive? Ah, it's OK, it's because they are for different periods. all good. 
 * commit
 * OK, Income. The other two reports list the numbers increased/decreased/stayed the same and the top 3 by income and top 3 year-on-year increases. They also have tables with both previous annual change and 4-year average annual change. Should i do this for top X councils?
-* damn, is there some issue with background colour generally? hasn't the highlighting of the tables disappeared for scotland and wales as well? *need another pdf viewer..*
+* damn, is there some issue with background colour generally? hasn't the highlighting of the tables disappeared for scotland and wales as well? need another pdf viewer... done. solves the red highlights, but not the background colour. 
 * careful, the total row in the income table (probably elsewhere as well) doesn't handle NAs..
 * meh, i need to escape the & signs from the start, not randomly when i need to in england auth.name. I've done that, but need to clean up old ones. ok
 * OK, and there is sht wrong, but not with the income table? confusing, that's the only thign i've changed.. i'll figure it out later. 
@@ -1082,18 +1082,18 @@ commit
 
 * no, first there is some text in income yet. OK that's done
 * OK, next is the expenditure tables from scotland or wales, let's have a look.
-* *add csv table code to all england tables* 
+* add csv table code to all england tables. done
 * OK, expenditure code in england.r OK
 * add text to template. OK
 * hmm, the total rows, should probably be also total london and total rest of UK? ok
 * also the expenditure as proportion of income, there is no text about it? add to querries. 
 * commit. 
 * ah, when i finished the surpluses i copied the code from scotland, but only used it for the tables, not for the text. let's add that as well. But they need to be split between london and rest of england presumably?
-* error: there was a sentence that said X councils, which didn't work if there was only one. fixed in scotland, *still need to fix in wales*
+* error: there was a sentence that said X councils, which didn't work if there was only one. fixed in scotland, still need to fix in wales. actually, there's a lot of places that needs to be fixed.. ok
 * text on deficits falling or rising is wrong, in all reports. OK. 
 * also there is an "increase" not automated in all reports *fix*
 * bottom two deficits only work if you have two councils with deficits!! fixed in england. scotland. wales. OK. 
-* *should probably double check this doens't happen anywhere else..*
+* should probably double check this doens't happen anywhere else.. where else could it happen? nah, it's fine 
 * surplus text for rest of england. OK. 
 * add table to appendix of all non london coucnils. OK
 * commit
@@ -1153,7 +1153,6 @@ commit
 
 # Friday 4.10.2019
 
-* I need to make sure the csv files are saved in the England.R code *todo*
 * SUper annoying to make sure the csv tables have reasonable labels etc. but not be the formatted types used in the reports, because those are all as characters and loose all the decimal points. 
 * 1., 2., 3., 4., 5., 6., 14. 7., 8., 15. 9., 10., 16., 11., 12. 13. 17. 
 * NB: all the top 20 council tables are actually all of the non lodnon concils in the csv tables. but sorted, so you can just look at the top 20 if you like. 
@@ -1182,6 +1181,28 @@ OK, so now setting up the update script...
 * ok, so master data is updated, only bibliography left now. DONE
 * finish updating user guide. DOME
 * Commit
+
+# Tuesday 8.10.2019
+
+* first go through all old issues to see what still needs to be done: 
+* make sure Scotland and Wales long term trends in 2. Summary actually use all available data, not just the last 5 years. todo. Wales was OK anyway. Scotland is fine as well.  
+* in all three countires, income, expenditure and surplus, there are sentences that use councils in plural when it could be only one. 9 fixes... at a minimum. OK, income done in all 3. ok, expenditure done for all three. OK, also wales surplus done, the others already were. Done. 
+* there are maps in Wales and Scotland that are not referenced in the text... Done for income. and for expenditure. OK
+* there is no error handling if you enter a year for which there is no data, there is simply no output.. Ah, OK, there was a message, but not a warning, so you didn't see it if you only sourced the file. fixed now in all three update scripts.OK. 
+* **tip** warning also acts as paste0() :)
+* should probably double check this doens't happen anywhere else..*where else could it happen? Nah, it's ok, everywhere else we've got only highest and lowest, and there are always highest 3 and lowest 2, it's only deficits that might not have lowest two, and that's now covered. 
+*  not figured out the stripped rows.. or the coloured ones. This is an issue with kableextra, commented on already open issue here: https://github.com/haozhu233/kableExtra/issues/427
+* one solution would be to just remove full_width see what happens..
+* no, that doesn' twork, because it just goes off the page. full width is good for wrpaping the headers. 
+* alternative is to install old verison of kableextra. tried 1.0.1, didn't work. i'll try 1.0.0 as well. same. weird. but there are a lot of other packages i need to update actually, all in the same field.. doesn't work unfortunately. 
+* *tip* figure out how to make sure you're on top of package updates.. 
+* actually, once i get the palettes to work again,*make sure the palettes are the same* across tables!
+* commit
+
+next: 
+
+* *Technical documentation - add sources info and finish it off (except for England calculations..)*
+
 
 
 

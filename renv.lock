@@ -217,10 +217,17 @@
     },
     "ellipsis": {
       "Package": "ellipsis",
-      "Version": "0.2.0",
+      "Version": "0.3.0",
       "Source": "CRAN",
       "Repository": "CRAN",
-      "Hash": "a945d084a8d079856ac566988b79416e"
+      "Hash": "d9e858795a1a4ebfe6960e4514449d40"
+    },
+    "english": {
+      "Package": "english",
+      "Version": "1.2-3",
+      "Source": "CRAN",
+      "Repository": "CRAN",
+      "Hash": "34cd199e59bfb2590f9da86f66a8a14f"
     },
     "evaluate": {
       "Package": "evaluate",

@@ -41,7 +41,7 @@ This note covers parking finances for the 22 local authorities in Wales. As in E
 [^1]: Contains public sector information licensed under the [Open Government Licence v3.0](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/). 
 
 
-The published data is less comprehensive than in England and does not split out on- and off-street parking or show penalty income separately. The figures do not include any commercial off-street parking. In `r FunFisc()`, `r FunN2W(surplus.bin[2])` councils showed surpluses and `r FunN2W(surplus.bin[1])` showed deficits. All councils are now receiving income from parking.
+The published data is less comprehensive than in England and does not split out on- and off-street parking or show penalty income separately. The figures do not include any commercial off-street parking. In `r FunFisc()`, `r FunN2W(surplus.bin[2])` `r ifelse(surplus.bin[2] == 1, "council", "councils")` showed surpluses and `r FunN2W(surplus.bin[1])` showed deficits. All councils are now receiving income from parking.
 
 # Summary
 
@@ -64,6 +64,7 @@ wal.summary.formatted %>%
                 latex_options =c("HOLD_position", "striped"), 
                 font_size = 10) %>% 
   column_spec(1:2, width = "3cm") 
+
 ```
 
 Table \@ref(tab:summary) shows the summary accounts for local authorities in Wales of the incomes and expenditures arising from parking charges and penalty income both for on- and off-street parking. The income has 
@@ -183,7 +184,8 @@ FunMap(wal.income, which = 1, shp = uc, country = "^W",  dir = 1)
 Total council parking income from all sources in `r FunFisc()` was £`r FunDec(wal.summary[1, 6], dp.text)` million, `r FunDec(wal.summary$change[1], dp.text)` % `r ifelse (wal.summary$change[1] > 0, "higher", "lower")` than `r FunFisc(1)`. Note that this includes penalty income, which is not shown separately, but does not include off-street income received by commercial off-street parking facilities. Table \@ref(tab:income) ranks the Welsh councils in terms of parking income. 
 
 
-In Wales as a whole `r FunFirstup(FunN2W(income.bin["poz"]))` councils increased their income over the past year and `r FunN2W(income.bin["neg"])` decreased their income. `r if(!is.na(income.bin["zero"])) paste("Another", FunN2W(income.bin["zero"]), "councils' incomes stayed the same.")` `r if(!is.na(income.bin["na"])) paste("There are", FunN2W(income.bin["na"]), "councils that did not report income data in this or the previous fiscal year, so we cannot define the change.")` The changes from `r FunFisc(1)` are mapped[^2] in Figure \@ref(fig:mapincome).
+In Wales as a whole `r FunFirstup(FunN2W(income.bin["poz"]))` `r ifelse(income.bin["poz"] == 1, "council", "councils")` increased their income over the past year and `r FunN2W(income.bin["neg"])` decreased their income. `r if(!is.na(income.bin["zero"])) paste("Another", ifelse ( income.bin["zero"] == 1, "single",FunN2W(income.bin["zero"])), ifelse ( income.bin["zero"] == 1, "council's income", "councils' incomes"), "stayed the same.")`
+ `r if(!is.na(income.bin["na"])) paste(ifelse(income.bin["na"] == 1, paste("There is", FunN2W(income.bin["na"]), "council"), paste("There are", FunN2W(income.bin["na"]), "councils")), "that did not report income data in this or the previous fiscal year, so we cannot define the change.")` The changes from `r FunFisc(1)` are mapped[^2] in Figure \@ref(fig:mapincome). The annualised changes over the previous four years are plotted in  Figure \@ref(fig:mapincome4), using the same colour palette. 
 
 [^2]:  Boundary data for this and all further maps is from `r wal.bib.map`. Contains public sector information licensed under the [Open Government Licence v3.0.](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
 
@@ -235,7 +237,7 @@ Table \@ref(tab:expenditure) ranks the councils in terms of expenditure on parki
 Overall expenditure has `r ifelse( wal.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(wal.expend.t[2]), dp.text)` million (`r FunDec(abs(wal.expend.t[1]), dp.text)` %) after a `r ifelse( wal.expend.t[3] > 0, paste0("rise of £", FunDec(wal.expend.t[3], dp.text), " million last year"), paste0("fall of £", FunDec(abs(wal.expend.t[3]), dp.text), "m last year"))`. 
 
 
-In Wales as a whole `r FunFirstup(FunN2W(expend.bin["poz"]))` councils increased their parking expenditures over the past year and `r FunN2W(expend.bin["neg"])` decreased them. `r if(!is.na(expend.bin["zero"])) paste("Another", FunN2W(expend.bin["zero"]), "councils' expenditures  stayed the same.")` `r if(!is.na(expend.bin["na"])) paste("There are also", FunN2W(expend.bin["na"]), "councils that did not report expenditure data in this or the previous fiscal year, so we cannot define the change.")`The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:mapexpend).
+In Wales as a whole `r FunFirstup(FunN2W(expend.bin["poz"]))` `r ifelse(expend.bin["poz"] == 1, "council", "councils")` increased their expenditures over the past year and `r FunN2W(expend.bin["neg"])` decreased them. `r if(!is.na(expend.bin["zero"])) paste("Another", ifelse ( expend.bin["zero"] == 1, "single",FunN2W(expend.bin["zero"])), ifelse ( expend.bin["zero"] == 1, "council's expenditure", "councils' expenditures"), "stayed the same.")` `r if(!is.na(expend.bin["na"])) paste(ifelse(expend.bin["na"] == 1, paste("There is", FunN2W(expend.bin["na"]), "council"), paste("There are", FunN2W(expend.bin["na"]), "councils")), "that did not report expenditure data in this or the previous fiscal year, so we cannot define the change.")` The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:mapexpend).  The average annual changes over the previous four years are plotted in  Figure \@ref(fig:mapexpend4), using the same colour palette. 
 
 The largest increase in expenditure occured in `r wal.expend.change.top3[1,2]` where it increased by `r FunDec(wal.expend.change.top3$change[1], dp.text)` %
 while `r wal.expend.change.top3[2,2]` and `r wal.expend.change.top3[3,2]` increased  by `r FunDec(wal.expend.change.top3$change[2], dp.text)` % and `r FunDec(wal.expend.change.top3$change[3], dp.text)` % respectively`r if(nrow(wal.expend.excluded.top) > 0) paste0(" (excluding ", FunMultiText(wal.expend.excluded.top$auth.name), " with expenditure under £30,000)")`. The biggest decreases were in `r wal.expend.change.bottom2[2,2]` (`r FunDec(abs(wal.expend.change.bottom2$change[2]), dp.text)` %), and `r wal.expend.change.bottom2[1,2]` (`r FunDec(abs(wal.expend.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(wal.expend.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(wal.expend.excluded.bottom$auth.name), " with expenditure under £30,000)")`.
@@ -317,7 +319,9 @@ wal.expend.of.income.formatted %>%
 
 Table \@ref(tab:surplustab) shows the parking surpluses from from `r FunFisc(4)` to `r FunFisc()` and the change from `r FunFisc(1)` to `r FunFisc()`. It also shows the proportion that parking surpluses represent of total transport expenditure.
 
-The total *surpluses* for Wales amounted to £`r FunDec((wal.surplus.totals.table[24, 6]/1000), dp.text)` million between `r  wal.poz.surplus ` authorities of which `r paste0(names(wal.surplus.top3)[1], ", ", names(wal.surplus.top3)[2], ", and ", names(wal.surplus.top3)[3])` contributed `r  FunDec(wal.surplus.top3[1], dp.text)`%. `r FunFirstup(FunN2W(surplus.bin[1]))` councils made a loss with the total of parking deficits `r ifelse(wal.surplus.totals.table[23,6] > wal.surplus.totals.table[23,5], "falling", "rising")` to £`r FunDec(-wal.surplus.totals.table[23,6]/1000, dp.text)` million from £`r FunDec(-wal.surplus.totals.table[23,5]/1000, dp.text)` million last year.
+The total *surpluses* for Wales amounted to £`r FunDec((wal.surplus.totals.table[24, 6]/1000), dp.text)` million between `r  wal.poz.surplus ` authorities of which `r paste0(names(wal.surplus.top3)[1], ", ", names(wal.surplus.top3)[2], ", and ", names(wal.surplus.top3)[3])` contributed `r  FunDec(wal.surplus.top3[1], dp.text)`%. 
+
+``r FunFirstup(FunN2W(surplus.bin["neg"]))` `r ifelse(surplus.bin["neg"] == 1, "council", "councils")` made a loss with the total of parking deficits `r ifelse(wal.surplus.totals.table[23,6] > wal.surplus.totals.table[23,5], "falling", "rising")` to £`r FunDec(-wal.surplus.totals.table[23,6]/1000, dp.text)` million from £`r FunDec(-wal.surplus.totals.table[23,5]/1000, dp.text)` million last year.
 
 Overall, parking contributed £`r FunDec((wal.surplus.totals.table[25, 6]/1000), dp.text)` million to local authority finances in Wales in `r FunFisc()` compared with £`r FunDec((wal.surplus.totals.table[25, 5]/1000), dp.text)` million in `r FunFisc()`, an increase of `r FunDec((wal.surplus.totals.table[25, 7]), dp.text)` %. 
 

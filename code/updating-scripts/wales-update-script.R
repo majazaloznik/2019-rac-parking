@@ -191,9 +191,9 @@ saveRDS(bib.wales, paste0("data/03-processed/", report.name, "-bib.rds"))
 # check if master data is available for current year?
 
 if(nrow(filter(master, country == "Wales", year == current.year)) == 0) {
-  paste0("There are no records for the year ", current.year) } else {
+  warning("There are no records for the year ", current.year) } else {
     if(nrow(filter(master, country == "Wales", year == current.year)) != 22) {
-      paste0("Something has gone wrong. There should be 22 rows for ", 
+      warning("Something has gone wrong. There should be 22 rows for ", 
              current.year, " but there are not. I suggest you revert to a ",
              "previous version of the repository and try again.")} else {
                
@@ -206,7 +206,7 @@ if(nrow(filter(master, country == "Wales", year == current.year)) == 0) {
                # compile the report (but check if file exists first)
                if(recompile.rmd & !file.exists(paste0("code/report-rmds/", 
                                                       report.name, ".Rmd"))){
-                 paste("The Rmd file does not exist. Rerun this script with",
+                 warning("The Rmd file does not exist. Rerun this script with ",
                        "recompile.rmd swithced to FALSE.")} else { 
                          
                          

@@ -251,7 +251,8 @@ eng.income.london.formatted %>%
 ```
 
 
-In England as a whole `r FunFirstup(FunN2W(income.bin["poz"]))` councils increased their income over the past year and `r FunN2W(income.bin["neg"])` decreased their income. `r if(!is.na(income.bin["zero"])) paste("Another", FunN2W(income.bin["zero"]), "councils' incomes stayed the same.")` `r if(!is.na(income.bin["na"])) paste("There are", FunN2W(income.bin["na"]), "councils that did not report income data in this or the previous fiscal year, so we cannot define the change.")`
+In England as a whole `r FunFirstup(FunN2W(income.bin["poz"]))` `r ifelse(income.bin["poz"] == 1, "council", "councils")` increased their income over the past year and `r FunN2W(income.bin["neg"])` decreased their income. `r if(!is.na(income.bin["zero"])) paste("Another", ifelse ( income.bin["zero"] == 1, "single",FunN2W(income.bin["zero"])), ifelse ( income.bin["zero"] == 1, "council's income", "councils' incomes"), "stayed the same.")`
+ `r if(!is.na(income.bin["na"])) paste(ifelse(income.bin["na"] == 1, paste("There is", FunN2W(income.bin["na"]), "council"), paste("There are", FunN2W(income.bin["na"]), "councils")), "that did not report income data in this or the previous fiscal year, so we cannot define the change.")`
 
 The top three English councils by income were `r paste0(names(eng.income.top3)[1], ", ", names(eng.income.top3)[2], ", and ", names(eng.income.top3)[3])`, and between them accounted for `r FunDec(eng.income.top3[1], dp.text)` % of parking income. 
 
@@ -298,7 +299,7 @@ Table \@ref(tab:expendtablondon) ranks the London boroughs in terms of expenditu
 Overall expenditure has `r ifelse( eng.expend.t[2] > 0, "risen", "fallen")` by £`r FunDec(abs(eng.expend.t[2]), dp.text)` million (`r FunDec(abs(eng.expend.t[1]), dp.text)` %) after a `r ifelse( eng.expend.t[3] > 0, paste0("rise of £", FunDec(eng.expend.t[3], dp.text), " million last year"), paste0("fall of £", FunDec(abs(eng.expend.t[3]), dp.text), " million last year"))`. 
 
 
-In England as a whole `r FunFirstup(FunN2W(expend.bin["poz"]))` councils increased their parking expenditures over the past year and `r FunN2W(expend.bin["neg"])` decreased them. `r if(!is.na(expend.bin["zero"])) paste("Another", FunN2W(expend.bin["zero"]), "councils' expenditures  stayed the same.")` `r if(!is.na(expend.bin["na"])) paste("There are also", FunN2W(expend.bin["na"]), "councils that did not report expenditure data in this or the previous fiscal year, so we cannot define the change.")`
+In England as a whole `r FunFirstup(FunN2W(expend.bin["poz"]))` `r ifelse(expend.bin["poz"] == 1, "council", "councils")` increased their expenditures over the past year and `r FunN2W(expend.bin["neg"])` decreased them. `r if(!is.na(expend.bin["zero"])) paste("Another", ifelse ( expend.bin["zero"] == 1, "single",FunN2W(expend.bin["zero"])), ifelse ( expend.bin["zero"] == 1, "council's expenditure", "councils' expenditures"), "stayed the same.")` `r if(!is.na(expend.bin["na"])) paste(ifelse(expend.bin["na"] == 1, paste("There is", FunN2W(expend.bin["na"]), "council"), paste("There are", FunN2W(expend.bin["na"]), "councils")), "that did not report expenditure data in this or the previous fiscal year, so we cannot define the change.")`
 
 
 The top three English councils by expenditure `r paste0(names(eng.expend.top3)[1], ", ", names(eng.expend.top3)[2], ", and ", names(eng.expend.top3)[3])`, and between them accounted for `r FunDec(eng.expend.top3[1], dp.text)` % of parking expenditure in the country.  

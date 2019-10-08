@@ -18,7 +18,7 @@
 
 # which fiscal year do you want to produce a report for?
 # NB: the current year is the year in which the fiscal year starts
-current.year <- 2016
+current.year <- 2017
 
 # if you want to produce a report based on current data - but for a previous year
 # set add.new.data to FALSE. Run the rest of the script.
@@ -351,9 +351,9 @@ if (add.new.data){
 # check if master data is available for current year?
 
 if(nrow(filter(master, country == "Scotland", year == current.year)) == 0) {
-  paste0("There are no records for the year ", current.year) } else {
+  warning("There are no records for the year ", current.year) } else {
     if(nrow(filter(master, country == "Scotland", year == current.year)) !=32) {
-      paste0("Something has gone wrong. There should be 32 rows for ", 
+      warning("Something has gone wrong. There should be 32 rows for ", 
              current.year, " but there are not. I suggest you revert to a ",
              "previous version of the repository and try again.")} else {
                
@@ -368,7 +368,7 @@ if(nrow(filter(master, country == "Scotland", year == current.year)) == 0) {
                # compile the report (but check if file exists first)
                if(recompile.rmd & !file.exists(paste0("code/report-rmds/", 
                                                      report.name, ".Rmd"))){
-                 paste("The Rmd file does not exist. Rerun this script with",
+                 warning("The Rmd file does not exist. Rerun this script with ",
                        "recompile.rmd swithced to FALSE.")} else { 
                          
                          rmarkdown::render(paste0("code/report-rmds/", report.name, ".Rmd"),
