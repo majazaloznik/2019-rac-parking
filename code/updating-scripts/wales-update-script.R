@@ -19,14 +19,14 @@
 ################################################################################
 # which fiscal year do you want to produce a report for?
 # NB: the current year is the year in which the fiscal year starts
-current.year <- 2017
+current.year <- 2018
 
 # if you want to produce a report based on current data - but for a previous year
 # set add.new.data to FALSE. Run the rest of the script.
-# If you want to add new data from GS, TS and Aberdeen council, then change to 
+# If you want to add new data that has been publihsed then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable. 
-add.new.data <- FALSE
+add.new.data <- TRUE
 
 # If you have already produced an .Rmd file by running this script, and have 
 # made changes to the .Rmd file and just want to recompile it switch to TRUE.
@@ -45,12 +45,12 @@ dp.tables <- 2
 if (add.new.data){
   ## after dowloading the Wales files into the data/01-raw folder, enter their
   ## correct filenames here:
-  wal.income.file <-"orig.wal.inc.17.csv"
-  wal.expenditure.file <-"orig.wal.exp.17.csv"
-  wal.transport.file <-"orig.wal.trans.17.csv"
+  wal.income.file <-"wal-inc-18-19.csv"
+  wal.expenditure.file <-"wal-exp-18-19.csv"
+  wal.transport.file <-"wal-trans-18-19.csv"
   
   ## replace with date of access to data:
-  new.date.accessed <- "15.03.2019"
+  new.date.accessed <- "22.10.2019"
 }
 ################################################################################
 ################################################################################

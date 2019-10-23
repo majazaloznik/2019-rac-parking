@@ -266,14 +266,12 @@ FunWalesReshape <- function(DF) {
   var <- substring(var, 5)
   DF %>% 
     gather(key = year, value = !!var, 2:(ncol(DF))) %>% 
-    separate(year, into = c("X", "year"), sep = "(?<=[A-Z])(?=[0-9])", 
-             perl = TRUE) %>%  
+    separate(year, into = c("X", "year"), sep = "(?<=[A-Z])(?=[0-9])")%>%  
     separate (year, into = c("year", "XX"), extra = "drop") %>%  
     mutate(year = as.integer(year)) %>% 
     select(-X, -XX) %>% 
     rename(auth.name = X.1) %>% 
     mutate(auth.name = sub("\\s+$", "", auth.name))
-  
 }
 
 # function to capitalise the first letter in a workd
