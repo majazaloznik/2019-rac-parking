@@ -36,7 +36,7 @@ recompile.rmd <- FALSE
 
 # number of decimal places in text and tables:
 dp.text <- 1
-dp.tables <- 2
+dp.tables <- 1
 
 
 ################################################################################

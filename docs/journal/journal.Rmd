@@ -1211,7 +1211,9 @@ next:
 * if expenditure change in < 50,000, then that reads as 0.0 million, which looks shit. in that case i'll swhitch it to thousands. 
 * hm, there are some odd looking percentages in the england expenditure chapter? ah, ok, it was thousands somewhere, needed to take that into account, all good.
 * ok, all of Ivo's comments are ok now. 
-
+* commit
+* Wales comments from Ivo, removes two tables. 
+* commit
 
 
 
