@@ -730,7 +730,7 @@ england.outturn.17.18 %>%
                content = "i.e",
                bibtype = "misc",
                year = c(2010:2017, 2017, 2019),
-               author = "{Office for National Statistics}",
+                 author = "{UK Government}",
          urldate = "10.03.2019",
          title = paste0("{Local authority revenue expenditure and financing England: ", fiscyear,
          " to ", fiscyear + 1, ", individual local authority data - outturn}")) %>% 
@@ -746,7 +746,7 @@ england.budget.18.19 %>%
          content = "budget",
          bibtype = "misc",
          year  = c(NA, NA, 2011, 2011, 2012:2018),
-         author = "{Office for National Statistics}",
+         author = "{UK Government}",
          urldate = "10-03-2019",
          title = paste0("{Local authority revenue expenditure and financing England: ", fiscyear,
                        " to ", fiscyear + 1, ", budget (Revenue Account budget)}")) %>% 

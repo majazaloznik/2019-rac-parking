@@ -100,6 +100,7 @@ if (add.new.data){
   
   # reshape all three dfs - you can ignore the warnigns here!
   wal.expend.total<- FunWalesReshape(wal.expend.total)
+  
   wal.income.total<- FunWalesReshape(wal.income.total)
   wal.transport.total<- FunWalesReshape(wal.transport.total)
   

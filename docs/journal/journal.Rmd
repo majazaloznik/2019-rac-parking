@@ -1203,6 +1203,14 @@ next:
 
 * *Technical documentation - add sources info and finish it off (except for England calculations..)*
 
+# Monday 18.11.2019
+
+* how are the LAs matched. via authority name. the reason is probably that i did scotland first and there were no codes in the Excel files there. due to inconsistencies in naming i set up a lookup table for common miss-spellings and alternative spellings for English and Scottish LAs, so when the data is imported they get automatically changed to the same ones we have throughout. you're right though, ONS codes for England would be better, i can change that. i can't for scotland, since they aren't there, and they aren't in the Wales data either, although it doesn't matter much there, since the data is most systematically clean and consistent. 
+
+* going through Ivo's comments. A lot of deletions, all fine.
+* if expenditure change in < 50,000, then that reads as 0.0 million, which looks shit. in that case i'll swhitch it to thousands. 
+* hm, there are some odd looking percentages in the england expenditure chapter? ah, ok, it was thousands somewhere, needed to take that into account, all good.
+* ok, all of Ivo's comments are ok now. 
 
 
 

@@ -1,0 +1,40 @@
+---
+title: "RAC Parking Report Automation---Queries for England, round 4"
+author: mz
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  pdf_document: default
+---
+  
+  
+1. So we are ignoring whatever DL did with the trading accounts?
+  
+3. Should the introductory paragraph also include the source of the Nottingham WPL? In the other reports as well it seems the first paragraph introduces the data sources. 
+
+4. So removing the parks is easy, but how exactly do i remove the Nottingham WPL? e.g. for 2017 I have the following data for Nottingham city
+
+* income from on street parking: 5,113 (penalties = 1855, fees and permits = 3258)
+* income from off street parking: 15,445
+* -> total income = 20,558
+* expenditure on street parking: 1,117
+* expenditure off street parking: 4,907
+-> total expenditure = 6,024
+* and of course the surpluses: on street: 3,996 , off street: 10,538 and total surplus: 14,534.
+
+WPL data is:
+
+* wpl income: 9,178
+* wpl expenditure: 219
+* and of course there is a surplus: 8,959
+
+So what do i do with this? Do I subtract the WPL income, expenditure and surplus from the off-street income, expenditure and surplus? e.g.  the new off street parking subtracting the levy would then be 15,445 - 9,178 = 6,267? and then i use this number in calculating the totals etc?
+
+
+5. The summary table for England compares the parking surpluses with "All England transport expenditure". The surpluses are for the 353 LAs only. So no national parks, and no GLA. But the total transport expenditure is inclusive of these authorities. Is that cool? Basically did Leibling do it correctly by comparing surpluses for 353 LAs to the transport expenditure for LAs and national parks?
+
+8. In the *Income* chapter 2017-18 there is the claim that "Penalty income in London was £241 million". According to the outturn excel tables the "On-street parking: Penalty Charge Notice income included in line 61" was £293million for London Boroughs. What do i do with these inconsistencies between DL and me? At the same time the income for the rest of England is reported as being £134 mill and in the excel table it's down as £135. Which is better but still not OK. 
+
+  
+  20. *Income* The other two reports list the numbers increased/decreased/stayed the same and the top 3 by income and top 3 year-on-year increases. They also have tables with both previous annual change and 4-year average annual change. I've now approx replicated this, except that I don't know what to do about the tables. Should i do this for top X councils? SHould I add the full table to the appendix? Currently I've kept a table for all London borughs and a table for the top 20 non London councils. The full table for all 353 LAs is in the Appendix. Same for all three headings. That OK?
+
+  
