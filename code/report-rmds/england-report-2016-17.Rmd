@@ -18,7 +18,7 @@ header-includes:
   - \newcommand{\elandscape}{\end{landscape}}
   - \usepackage{flafter}
 params:
-  current.year: 2016
+  current.year: 2017
   dp.text: 1
   dp.tables: 2
 bibliography: england.bib
@@ -40,11 +40,9 @@ nocite: |
 # Introduction
 
 
-This report uses the MHCLG (formerly DCLG) tables on parking income and expenditure for the period from `r FunFisc(4)` to `r FunFisc()`. All councils are required to report their financial information to government, in a consistent format, although there may be some differences in interpretation of what that format is and what it covers. Earlier, councils also submitted budgets for the `r FunFisc(-1)` financial year but on a less detailed basis. These figures are included where appropriate. The figures have to be on an as-received cash basis without any provision for bad debts or any allowance for capital charges (interest or deprecation).
+This report uses the MHCLG (formerly DCLG) tables on parking income and expenditure for the period from `r FunFisc(4)` to `r FunFisc()` (`r  eng.bib.main.i.e`). All councils are required to report their financial information to government, in a consistent format, although there may be some differences in interpretation of what that format is and what it covers. Earlier, councils also submitted budgets for the `r FunFisc(-1)` financial year but on a less detailed basis (`r eng.bib.next.budget`). These figures are included where appropriate. The figures have to be on an as-received cash basis without any provision for bad debts or any allowance for capital charges (interest or deprecation).
 
-This report covers the 353 local authorities in England but excludes `r FunN2W(n.nat.parks)`  national parks which declare income from parking and show a total surplus of £`r FunDec(surplus.nat.parks/1000, 1)` million. 
-
-It also excludes the Nottingham workplace parking levy which is estimated to have generated £1r FunDec(surplus.wpl/1000,1)` million surplus in `r FunFisc()`. 
+This report covers the 353 local authorities in England but excludes `r FunN2W(n.nat.parks)`  national parks which declare income from parking and show a total surplus of £`r FunDec(surplus.nat.parks/1000, dp.text)` million. It also excludes the Nottingham workplace parking levy which is estimated to have generated £`r FunDec(surplus.wpl/1000, dp.text)` million surplus in `r FunFisc()`. 
 
 The income and cost headings used in this analysis are: 
 
@@ -52,18 +50,574 @@ The income and cost headings used in this analysis are:
 2. Off-street income, expenditure 
 3. Total transport income, expenditure 
 
-\color{red} These headings do not always agree with accounts published by local authorities because of their different treatment of overheads and allocation of surpluses to other transport projects. Furthermore six local authorities include off-street parking in their internal trading accounts which leads to further inconsistencies. These trading figures have been added to the revenue accounts. \color{black}
+These headings do not always agree with accounts published by local authorities because of their different treatment of overheads and allocation of surpluses to other transport projects.
+
+
+\newpage
+
+# Summary
+
+```{r sumtab, echo = FALSE, message = FALSE, warning = FALSE}
+# print summary data
+eng.summary.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = 2, 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Summary of parking accounts for England (£ millions)",
+         col.names = c("", "", yearz, 
+                       paste0(FunFisc(), " budget"),
+                       paste0(FunFisc(-1), " budget"),
+                       paste0("Change ", current.year, "-", 
+                                             current.year-1999, " on ", current.year-1, "-", current.year-1999-1)),
+       #  format.args = list(big.mark = ","),
+         linesep = "") %>% 
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "1.6cm") %>% 
+  column_spec(2, width = "2.4cm") %>% 
+  column_spec(8:9, width = "1.2cm") %>% 
+  column_spec(10, width = "1.2cm")  %>% 
+  row_spec(c(4, 7), extra_latex_after = "\\cline{2-7} \\cline{10-10}") %>% 
+  row_spec(c(10),  extra_latex_after = "\\cline{2-10}") %>% 
+  row_spec(11, bold = TRUE) %>% 
+  footnote(symbol = "Cells may not add up exactly due to rounding.")
+```
+
+Total income from parking in `r FunFisc()` in England was £`r FunDec(pull(summary[5,10]/1000), 2)` billion, `r FunDec(inc.ch, dp.text)` % `r ifelse(inc.ch < 0, "lower", "higher")` than in `r FunFisc(1)`. On-street income `r ifelse(inc.on.ch < 0, "fell", "rose")` by `r FunDec(inc.on.ch, dp.text)` % and off-street income `r ifelse(sign(inc.on.ch) == sign(inc.off.ch), "", ifelse(inc.off.ch < 0, "fell", "rose"))` by `r FunDec(inc.off.ch, dp.text)` % . Expenditure `r ifelse(exp.on.ch < 0, "fell", "rose")` by `r FunDec(exp.on.ch, dp.text)` % for on-street and `r ifelse(sign(exp.on.ch) == sign(exp.off.ch), "", ifelse(exp.off.ch < 0, "fell", "rose"))` by `r FunDec(exp.off.ch, dp.text)` % off-street parking. As a result, the combined surplus from both on- and off-street parking was £`r FunDec(pull(summary[5,12]), 0)` million, `r FunDec(sur.ch, dp.text)`% `r ifelse(sur.ch < 0, "lower", "higher")`  than the previous financial year and `r FunDec(sur.ch4, dp.text)`% `r ifelse(sur.ch4 < 0, "lower", "higher")`  than four years ago. 
+
+Local authorities `r ifelse(sur.budg.diff > 0, "exceeded", "fell short of")` their `r FunFisc()` budgeted surplus of £`r FunDec(summary$surplus.total[6], 0)` million by `r FunDec(sur.budg.diff, dp.text)` %. Their budgeted surplus for this next financial year (`r FunFisc(-1)`) is £`r FunDec(summary$surplus.total[7], 0)` million, `r FunDec(sur.budg.inc, dp.text)`% `r ifelse(sur.budg.inc < 0, "lower", "higher")`   than the actual for `r FunFisc()`. If the `r FunFisc(-1)` budget `r ifelse(sur.budg.diff > 0, "is exceeded", "falls short")` by the same proportion as the `r FunFisc()` outcome, then total parking surpluses would amount to £`r FunDec(sur.hyp, 0)` million.
+
+The on-street parking surpluses must by law be used for transport projects. Overall, local transport net expenditure in `r FunFisc()` `r ifelse(abs(tran.ch) < 0.5, "remained relatively unchanged at", ifelse(tran.ch < 0, "fell to", "increased to"))`  £`r FunDec(summary$transport.total[5]/1000, 1)` billion. Without the contribution from parking surpluses, net expenditure would have been `r FunDec(summary$prop.net.expen[5], dp.text)`% higher.
+
+\newpage
+```{r sumtablondon, echo = FALSE, message = FALSE, warning = FALSE}
+# print summary data
+eng.summary.london.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = 2, 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Summary of parking accounts for England by region (£ millions)",
+         col.names = c("", "", "London", "Rest of England", "All of England",
+                       "London percentage"),
+         linesep = "") %>% 
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "2cm") %>% 
+  column_spec(2, width = "2cm")  %>% 
+    row_spec(c(2,5, 8),  extra_latex_after = "\\cline{2-6}") 
+```
+
+
+```{r fig1, echo = FALSE, fig.cap = "Parking revenues--England", fig.pos = "H", fig.showtext=TRUE,}
+old.par <- par(mar = c(5.1, 4.1, 3.1, 2.1))
+plot(eng.plot$year, eng.plot$income.total, 
+     ylim = c(0, max(eng.plot$income.total, na.rm = TRUE) ), 
+     type = "l",
+     lwd = 2,
+     col = viridis(3)[1],
+     bty = "n",
+     xlab = "Fiscal Year",
+     ylab = "£ (millions)",
+     axes = FALSE, family = "meri", cex.lab = 0.8)
+axis(1, at = eng.plot$year, 
+     labels = rep("", length(eng.plot$year),
+                  family = "meri", cex.axis = 0.6, las = 2, srt = 45))
+text(eng.plot$year, par("usr")[3] - 0.5, 
+     labels = paste0(eng.plot$year, "-", eng.plot$year-1999), 
+     srt = 45, adj = c(1.2,1.5), xpd = TRUE, family = "meri", cex = 0.6)
+axis(2, las = 2, family = "meri", cex.axis = 0.6 )
+grid(nx = NA, ny = NULL, lty = "93")
+lines(eng.plot$year, eng.plot$surplus.budget, 
+      type = "l",
+      lwd = 2, lty = "63",
+      col = viridis(3)[3])
+lines(eng.plot$year, eng.plot$expend.total, 
+      type = "l",
+      lwd = 2,
+      col = viridis(3)[2])
+lines(eng.plot$year, eng.plot$surplus.total, 
+      type = "l",
+      lwd = 2,
+      col = viridis(3)[3])
+
+par(family = "meri")
+legend("bottomright",
+       legend = c("Income", "Expenditure", "Surplus", "Budgeted surplus"),
+       bty = "n",
+       col = viridis(3)[c(1,2,3,3)], 
+       lwd = 2, cex = 0.8, lty = c("99","99","99","63"), xpd = TRUE)
+par(old.par)
+```
+
+\renewcommand{\arraystretch}{1.2}
+
+Only `r FunDec(lnd.prop.off, dp.text)` % of London boroughs’ parking income comes from off-street car parking as most off-street parking is commercially run. For the rest of England `r FunDec(rest.prop.off, dp.text)` % of income is from off-street parking. 
+
+
+```{r compare, echo = FALSE}
+# pring comparison table for all three countrires
+sum.gb.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         col.names = c("", "England without London", "London", 
+                       "Scotland", "Wales", "Great Britain"),
+         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain (£ millions, latest year available)"), 
+         format.args = list(big.mark = ","),
+         linesep = "") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("hold_position", "striped", "repeat_header"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "5cm") %>% 
+  row_spec(c(1, 4), hline_after = TRUE)
+```
+
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, Wales, and Scotland for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and the previous year, with the average annual change over the four-year period starting in `r FunFisc(4)` (or the most recent four-year period for which data is available). In the last year the surpluses for London have increased by `r FunDec(lond.ann, dp.text)` %, which is `r ifelse(lond.ann < lond.4av, "less", "more")` than the average annual increase observed over the preceding four years, which was `r FunDec(lond.4av, dp.text)` %. For the rest of England excluding London the surpluses have increased by `r FunDec(rest.ann, dp.text)` %, which is `r ifelse(rest.ann < rest.4av, "less", "more")` than the four-year average annual increase at `r FunDec(rest.4av, dp.text)` %.
+
+On average, parking surpluses in Great Britain have risen by about `r FunDec(gb.ann, dp.text)` % annually over the four years compared with `r FunDec(rpi.annual.gb, dp.text)` % annually for the Retail Prices Index during the same period (`r eng.bib.rpi`).`r ifelse(gb.mr.year != current.year,  paste0("^[The most recent data available for Great Britain as a whole is from the year ", FunFisc(current.year-gb.mr.year), " and all calculations are therefore performed for the four years previous i.e. from ", FunFisc(current.year-gb.mr.year+4), ".]"), "")`
+
+
+```{r change}
+# print change over 5 years. 
+sum.gb.change.tab.formatted  %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         col.names = c("",  "England without London", "London", 
+                       "Scotland", "Wales", "Great Britain"),
+         caption = paste0("Changes in parking income and expenditure over previous four years (from most recent year available) across the nations of Great Britain"), 
+         format.args = list(big.mark = ","),
+         linesep = "") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "6cm") %>% 
+  # column_spec(6, width = "1.8cm") %>% 
+  row_spec(c(1,3,5), hline_after = TRUE)
+```
+
+\newpage
+
+# Income 
+
+Parking income is derived from three main sources: meter income, residents’  business permits, and penalties. Other sources are towing and storage charges although relatively few councils operate pounds now. Total income in `r FunFisc()` was £`r formatC(inc.tot, big.mark = ",")` million, `r FunDec(inc.ch, dp.text)`% higher than in `r FunFisc(1)`. In London boroughs the total income was £`r FunDec(inc.london.tot, 0)` million, `r FunDec(inc.london.tot.ch, dp.text)` % more than in the previous year, while the total for the rest of England was £`r FunDec(inc.rest.tot, 0)`million, `r FunDec(inc.rest.tot.ch, dp.text)` % more than in the previous year. 
+
+Income from on-street tickets and permits was £`r FunDec(inc.fnp, 0)` million, (`r ifelse(inc.fnp.ch>0, "up", "down")` `r FunDec(inc.fnp.ch, dp.text)` %), and a further £`r FunDec(inc.pcn, 0)` million came from on-street penalty charges (`r ifelse(inc.pcn.ch>0, "up", "down")` `r FunDec(inc.pcn.ch, dp.text)` %) and £`r FunDec(inc.off, 0)` million (`r ifelse(inc.off.ch>0, "up", "down")` `r FunDec(inc.off.ch, dp.text)` %)from off-street charges and penalties. Note that this does not include off-street income received by commercial off-street parking facilities. Table \@ref(tab:incometablondon) shows the incomes for all the London boroughs for the previous 5 years, their most recent annual change and the average annual change in income over the preceding 5 years. Table \@ref(tab:incometabrest) has the same information for the top 20 councils outside of London. For a full table of all the local authrities in London see Table \@ref(tab:incometab)  in the Appendix. 
+
+Penalty income in London was £`r FunDec(inc.london.pcn, 0)` million, `r FunDec(inc.london.pcn.ch, dp.text)` % `r ifelse(inc.london.pcn > 0, "higher", "lower")` than in 2016-17. Penalty income in the rest of England was £`r FunDec(inc.rest.pcn, 0)` million, `r FunDec(inc.rest.pcn.ch, dp.text)` % `r ifelse(inc.rest.pcn > 0, "higher", "lower")` than the previous year.
+
+```{r incometablondon, echo = FALSE, message = FALSE, warning = FALSE}
+eng.income.london.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(dp.tables, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Parking income for London boroughs (£ millions)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)),
+                       paste0("Average annual change since ", FunFisc(4)))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("hold_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.5cm") %>% 
+  column_spec(7, width = "1.5cm") %>% 
+  column_spec(8, width = "1.5cm") %>% 
+  row_spec(c(33, 35), hline_after = TRUE)
+
+```
+
+
+In England as a whole `r FunFirstup(FunN2W(income.bin["poz"]))` `r ifelse(income.bin["poz"] == 1, "council", "councils")` increased their income over the past year and `r FunN2W(income.bin["neg"])` decreased their income. `r if(!is.na(income.bin["zero"])) paste("Another", ifelse ( income.bin["zero"] == 1, "single",FunN2W(income.bin["zero"])), ifelse ( income.bin["zero"] == 1, "council's income", "councils' incomes"), "stayed the same.")`
+ `r if(!is.na(income.bin["na"])) paste(ifelse(income.bin["na"] == 1, paste("There is", FunN2W(income.bin["na"]), "council"), paste("There are", FunN2W(income.bin["na"]), "councils")), "that did not report income data in this or the previous fiscal year, so we cannot define the change.")`
+
+The top three English councils by income were `r paste0(names(eng.income.top3)[1], ", ", names(eng.income.top3)[2], ", and ", names(eng.income.top3)[3])`, and between them accounted for `r FunDec(eng.income.top3[1], dp.text)` % of parking income. 
+
+The three councils which had the largest year-on-year percentage increases in income were `r eng.income.change.top3[1,2]` (up `r FunDec(eng.income.change.top3$change[1], dp.text)` %), `r eng.income.change.top3[2,2]` (up `r FunDec(eng.income.change.top3$change[2], dp.text)` %) and `r eng.income.change.top3[3,2]` (up `r FunDec(eng.income.change.top3$change[3], dp.text)` %).
+`r if(nrow(eng.income.excluded.top) > 0) paste0(FunMultiText(eng.income.excluded.top$auth.name), " showed a larger percentage change but parking income was under £30,000.")` The biggest decreases were in `r eng.income.change.bottom2[2,2]` (`r FunDec(abs(eng.income.change.bottom2$change[2]), dp.text)` %), and `r eng.income.change.bottom2[1,2]` (`r FunDec(abs(eng.income.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(eng.income.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(eng.income.excluded.bottom$auth.name), " where income was under £30,000)")`.
 
 
 
+```{r incometabrest, echo = FALSE, message = FALSE, warning = FALSE}
+eng.income.rest.formatted %>% 
+  slice(1:20, (n()-2):n()) %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(dp.tables, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Parking income for the rest of England outside London, top 20 councils (£ millions)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)),
+                       paste0("Average annual change since ", FunFisc(4)))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("hold_position", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.5cm") %>% 
+  column_spec(7, width = "1.5cm") %>% 
+  column_spec(8, width = "1.5cm") %>% 
+  row_spec(c(20, 22), hline_after = TRUE)
+
+```
 
 
 
+# Expenditure
+
+Overall expenditure on parking rose to £`r FunDec(exp.tot,0)` million, up `r FunDec(exp.ch , dp.text)` % from `r FunFisc(1)` for both on-street and off-street. Expenditure in London went `r ifelse( exp.london.tot.ch > 0, "up", "down")` by `r FunDec(exp.london.tot.ch, dp.text)` % and `r ifelse(sign(exp.london.tot.ch == exp.rest.tot.ch), "", ifelse(exp.rest.tot.ch > 0, "up", "down"))` by `r FunDec(exp.rest.tot.ch, dp.text)` % in the rest of England. Expenditure represents `r FunDec(exp.prop.inc.on, dp.text)` % of income for on-street parking and `r FunDec(exp.prop.inc.off, dp.text)` % for off-street. 
+
+Table \@ref(tab:expendtablondon) ranks the London boroughs in terms of expenditure on parking while Table  \@ref(tab:expendtabrest) lists the top 20 English councils outside London. See Table \@ref(tab:expendtab) in the Appendix for a comprehensive list of all 353 local authorities in England. 
+
+
+Overall expenditure has `r ifelse( eng.expend.t[2] > 0, "risen", "fallen")` by £`r ifelse(abs(eng.expend.t[2]) <= 0.05, paste(FunDec(abs(eng.expend.t[2]*1000), 0), "thousand"), paste(FunDec(abs(eng.expend.t[2]), 0), "million"))` (`r FunDec(abs(eng.expend.t[1]), dp.text)` %) after a `r ifelse( eng.expend.t[3] > 0, ifelse(abs(eng.expend.t[3]) <= 0.05, paste0("rise of £", FunDec(eng.expend.t[3]*1000, 0), " thousand last year"), paste0("rise of £", FunDec(eng.expend.t[3], 0), " million last year")), ifelse(abs(eng.expend.t[3]) <= 0.05, paste0("fall of £", FunDec(eng.expend.t[3]*1000, 0), " thousand last year"), paste0("fall of £", FunDec(eng.expend.t[3], 0), " million last year")))`.
+
+
+In England as a whole `r FunFirstup(FunN2W(expend.bin["poz"]))` `r ifelse(expend.bin["poz"] == 1, "council", "councils")` increased their expenditures over the past year and `r FunN2W(expend.bin["neg"])` decreased them. `r if(!is.na(expend.bin["zero"])) paste("Another", ifelse ( expend.bin["zero"] == 1, "single",FunN2W(expend.bin["zero"])), ifelse ( expend.bin["zero"] == 1, "council's expenditure", "councils' expenditures"), "stayed the same.")` `r if(!is.na(expend.bin["na"])) paste(ifelse(expend.bin["na"] == 1, paste("There is", FunN2W(expend.bin["na"]), "council"), paste("There are", FunN2W(expend.bin["na"]), "councils")), "that did not report expenditure data in this or the previous fiscal year, so we cannot define the change.")`
+
+
+The top three English councils by expenditure `r paste0(names(eng.expend.top3)[1], ", ", names(eng.expend.top3)[2], ", and ", names(eng.expend.top3)[3])`, and between them accounted for `r FunDec(eng.expend.top3[1], dp.text)` % of parking expenditure in the country.  
+
+The largest increase in expenditure in England occured in `r eng.expend.change.top3[1,2]` where it increased by `r FunDec(eng.expend.change.top3$change[1], dp.text)` %
+while `r eng.expend.change.top3[2,2]` and `r eng.expend.change.top3[3,2]` increased  by `r FunDec(eng.expend.change.top3$change[2], dp.text)` % and `r FunDec(eng.expend.change.top3$change[3], dp.text)` % respectively`r if(nrow(eng.expend.excluded.top) > 0) paste0(" (excluding ", FunMultiText(eng.expend.excluded.top$auth.name), " with expenditure under £30,000)")`. The biggest decreases were in `r eng.expend.change.bottom2[2,2]` (`r FunDec(abs(eng.expend.change.bottom2$change[2]), dp.text)` %), and `r eng.expend.change.bottom2[1,2]` (`r FunDec(abs(eng.expend.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(eng.expend.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(eng.expend.excluded.bottom$auth.name), " with expenditure under £30,000)")`.
+
+In the final columns Tables \@ref(tab:expendtablondon) and  \@ref(tab:expendtabrest) also show the proportion of income taken up by costs in each authority for `r FunFisc()`. For London boroughs as a group `r FunDec(prop.income.summary[1], dp.text)` % of their parking income was used for expenditure, while for the other authorities in England was  `r FunDec(prop.income.summary[2], dp.text)` %, and for England as a whole the number was `r FunDec(prop.income.summary[3], dp.text)` %. 
+
+```{r expendtablondon, echo = FALSE, message = FALSE, warning = FALSE}
+eng.expend.london.formatted %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         digits = dp.tables, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure for London boroughs (£ millions)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)), 
+                       paste0("Average annual change since ", FunFisc(4)),
+                       "Expenditure as proportion of income")) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+    column_spec(7, width = "1.4cm") %>%
+    column_spec(8, width = "1.4cm") %>%
+  column_spec(9, width = "1.4cm") %>% 
+  row_spec(c(33,35), hline_after = TRUE)
+```
 
 
 
+```{r expendtabrest, echo = FALSE, message = FALSE, warning = FALSE}
+eng.expend.rest.formatted %>% 
+  slice(1:20, (n()-2):n()) %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         digits = dp.tables, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure for the rest of England outside London, top 20 councils (£ millions)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)), 
+                       paste0("Average annual change since ", FunFisc(4)),
+                       "Expenditure as proportion of income")) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+    column_spec(7, width = "1.4cm") %>%
+    column_spec(8, width = "1.4cm") %>%
+  column_spec(9, width = "1.4cm") %>% 
+  row_spec(c(20,22), hline_after = TRUE)
+```
+
+
+Table \@ref(tab:expendprop) shows the proportion of income taken up by expenditure over the previous four years for London and table \@ref(tab:expendprop2) for the top 20 councils outside London. For data for all English councils, see Table \@ref(tab:expendprop3) in the Appendix. 
+
+```{r expendprop}
+eng.expend.props.london.formatted %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure as proportion of parking income for London boroughs",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz)) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+    column_spec(7, width = "1.5cm") %>%
+    column_spec(8, width = "1.5cm") %>%
+  column_spec(9, width = "1.5cm") %>% 
+  row_spec(c(33, 35), hline_after = TRUE) %>% 
+  footnote(symbol = "Empty cells indicate the council reported no income and/or no expenditure")
+```
+
+
+```{r expendprop2}
+eng.expend.props.rest.formatted %>% 
+  slice(1:20, (n()-2):n()) %>% 
+  kable( "latex", 
+         booktabs = TRUE,
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure as proportion of parking income for the rest of England, top 20 councils",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz)) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  row_spec(c(20, 22), hline_after = TRUE) %>% 
+  footnote(symbol = "Empty cells indicate the council reported no income and/or no expenditure")
+```
+
+\newpage
+# Surpluses 
+
+In total, councils in England made a surplus of £`r FunDec(sur.tot,0)` million in `r FunFisc()`, `r FunDec(sur.ch, dp.text)` % `r ifelse(sur.ch > 0, "higher", "lower")` than in `r FunFisc(1)`. Of this total, £`r FunDec(sur.london, 0)` million (`r FunDec(sur.london.prop, dp.text)` %) came from London and £`r FunDec(sur.rest, 0)` million from the rest of England. This excludes a £`r FunDec(surplus.nat.parks/1000, dp.text)` million surplus from parking in National Parks and a £`r FunDec(surplus.wpl/1000, dp.text)` million surplus from the Nottingham workplace parking levy.
+
+
+The total *surpluses* for London amounted to £`r FunDec((london.surplus.totals.table.sur), dp.text)` million between `r  london.poz.surplus ` authorities, of which the top three--`r paste0(names(london.surplus.top3)[1], ", ", names(london.surplus.top3)[2], ", and ", names(london.surplus.top3)[3])`--accounted for `r FunDec(london.surplus.top3[1],  dp.text)` %.  `r FunFirstup(FunN2W(surplus.bin["neg"]))` `r ifelse(surplus.bin["neg"] == 1, "council", "councils")` made a loss with the total of parking deficits `r ifelse(london.surplus.totals.table.def > london.surplus.totals.table.def.last, "falling", "rising")` to £`r FunDec(-london.surplus.totals.table.def, dp.text)` million from £`r FunDec(-london.surplus.totals.table.def.last, dp.text)` million last year (see Table \@ref(tab:surlondtab)). 
+
+Overall, parking contributed £`r FunDec(london.surplus.totals.table.tot, dp.text)` million to local authority finances in London in `r FunFisc()` compared with £`r FunDec(london.surplus.totals.table.tot.last, dp.text)` million in `r FunFisc()`, an increase of `r FunDec(london.surplus.totals.table.tot.ch, dp.text)` %. 
+
+`r london.surplus.change.top3[1,2]` increased their surplus by `r FunDec(london.surplus.change.top3$change[1], dp.text)` %
+while `r london.surplus.change.top3[2,2]` and `r london.surplus.change.top3[3,2]` increased  by `r FunDec(london.surplus.change.top3$change[2], dp.text)` % and `r FunDec(london.surplus.change.top3$change[3], dp.text)` % respectively`r if(nrow(london.surplus.excluded.top) > 0) paste0(" (excluding ", FunMultiText(london.surplus.excluded.top$auth.name), " with a surplus under £30,000)")`. The biggest decreases were in `r london.surplus.change.bottom2[2,2]` (`r FunDec(abs(london.surplus.change.bottom2$change[2]), dp.text)` %), and `r london.surplus.change.bottom2[1,2]` (`r FunDec(abs(london.surplus.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(london.surplus.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(london.surplus.excluded.bottom$auth.name), " with a surplus under £30,000)")`.
+
+`r ifelse(nrow(london.deficit.valid) == 0, "None of the London boroughs has had a deficit two years in a row", paste0(london.deficit.change.top3[1,2], " increased their deficits by ", FunDec(london.deficit.change.top3$change[1], dp.text)," % while ", london.deficit.change.top3[2,2], " and ",  london.deficit.change.top3[3,2], " increased  by ", FunDec(london.deficit.change.top3$change[2], dp.text), " % and ", FunDec(london.deficit.change.top3$change[3], dp.text), " % respectively ",  if(nrow(london.deficit.excluded.top) > 0) paste0(" (excluding ", FunMultiText(london.deficit.excluded.top$auth.name), " with a deficit under £30,000)"), " The biggest decreases were in ",  london.deficit.change.bottom2[2,2], " (", FunDec(abs(london.deficit.change.bottom2$change[2]), dp.text), " %), and ", london.deficit.change.bottom2[1,2], "  (",  FunDec(abs(london.deficit.change.bottom2$change[1]), dp.text), " %)", if(nrow(london.deficit.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(london.deficit.excluded.bottom$auth.name), " with a deficit under £30,000)")))`
 
 
 
+```{r surlondtab}
+# print summary data
+london.surplus.totals.table.formatted %>% 
+  kable("latex", 
+         booktabs = T, 
+         digits = 0, 
+         longtable = T,
+         escape = F,
+         align = c("r"),
+         caption = "Parking surpluses (and deficits) for London (£ millions)",
+       # format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", current.year, "-", current.year-1999, 
+                              " on ", current.year-1, "-", current.year-1999-1))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.5cm") %>% 
+  row_spec(c(33, 35), hline_after = TRUE) %>% 
+  footnote(symbol = "Where the change in surplus is actually a change in deficit, the values are in italics")
+```
 
+```{r surengtab}
+# print surpluses for non london councils 
+eng.rest.surplus.totals.table.formatted %>% 
+  kable("latex", 
+         booktabs = T, 
+         digits = 0, 
+         longtable = T,
+         escape = F,
+         align = c("r"),
+         caption = "Parking surpluses (on-street and off-street) for top 20 councils outside London (£ millions)",
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", current.year, "-", current.year-1999, 
+                              " on ", current.year-1, "-", current.year-1999-1))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  row_spec(c(20, 22), hline_after = TRUE) 
+```
+
+
+The total surplus from parking outside London of £`r FunDec(sur.rest,0)` million in `r FunFisc()` was  `r FunDec(sur.rest.tot.ch, dp.text)` % `r ifelse(sur.rest.tot.ch > 0, "higher", "lower")` than in  `r FunFisc(1)`. `r sur.rest.top.la` was the highest earning council outside London, ranking as the `r ordinal(sur.rest.top.rank)` largest  nationally, and with a surplus in `r FunFisc()` of £`r FunDec(sur.rest.top.amount, dp.text)` million, `r FunDec(abs(sur.rest.top.ch), dp.text)` % `r ifelse(sur.rest.top.ch > 0, "higher", "lower")` than in `r FunFisc(1)`. Table \@ref(tab:surengtab) lists the top 20 councils outside of London. The full table for all English councils is available in the Apendix as Table \@ref(tab:surrestfull) . 
+
+The total *surpluses* outside London amounted to £`r FunDec((rest.surplus.totals.table.tot), dp.text)` million between `r  rest.poz.surplus ` authorities, of which the top three--`r paste0(names(rest.surplus.top3)[1], ", ", names(rest.surplus.top3)[2], ", and ", names(rest.surplus.top3)[3])`--accounted for `r FunDec(rest.surplus.top3[1],  dp.text)` %.  `r FunFirstup(FunN2W(surplus.bin.rest["neg"]))` `r ifelse(surplus.bin.rest["neg"] == 1, "council", ifelse(surplus.bin.rest["neg"] == 0, "No councils", "councils"))` made a loss with the total of parking deficits `r ifelse(rest.surplus.totals.table.def > rest.surplus.totals.table.def.last, "falling", "rising")` to £`r FunDec(-rest.surplus.totals.table.def, dp.text)` million from £`r FunDec(-rest.surplus.totals.table.def.last, dp.text)` million last year. 
+
+
+`r rest.surplus.change.top3[1,2]` increased their surplus by `r FunDec(rest.surplus.change.top3$change[1], dp.text)` %
+while `r rest.surplus.change.top3[2,2]` and `r rest.surplus.change.top3[3,2]` increased  by `r FunDec(rest.surplus.change.top3$change[2], dp.text)` % and `r FunDec(rest.surplus.change.top3$change[3], dp.text)` % respectively`r if(nrow(rest.surplus.excluded.top) > 0) paste0(" (excluding ", FunMultiText(rest.surplus.excluded.top$auth.name), " with a surplus under £30,000)")`. The biggest decreases were in `r rest.surplus.change.bottom2[2,2]` (`r FunDec(abs(rest.surplus.change.bottom2$change[2]), dp.text)` %), and `r rest.surplus.change.bottom2[1,2]` (`r FunDec(abs(rest.surplus.change.bottom2$change[1]), dp.text)`  %)`r if(nrow(rest.surplus.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(rest.surplus.excluded.bottom$auth.name), " with a surplus under £30,000)")`.
+
+`r ifelse(nrow(rest.deficit.valid) == 0, "None of the councils has had a deficit two years in a row", paste0(rest.deficit.change.top3[1,2], " increased their deficits by ", FunDec(rest.deficit.change.top3$change[1], dp.text)," % while ", rest.deficit.change.top3[2,2], " and ",  rest.deficit.change.top3[3,2], " increased  by ", FunDec(rest.deficit.change.top3$change[2], dp.text), " % and ", FunDec(rest.deficit.change.top3$change[3], dp.text), " % respectively ",  if(nrow(rest.deficit.excluded.top) > 0) paste0(" (excluding ", FunMultiText(rest.deficit.excluded.top$auth.name), " with a deficit under £30,000)"), " The biggest decreases were in ",  rest.deficit.change.bottom2[2,2], " (", FunDec(abs(rest.deficit.change.bottom2$change[2]), dp.text), " %), and ", rest.deficit.change.bottom2[1,2], "  (",  FunDec(abs(rest.deficit.change.bottom2$change[1]), dp.text), " %)", if(nrow(rest.deficit.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(rest.deficit.excluded.bottom$auth.name), " with a deficit under £30,000)")))`
+
+
+# Comparison with budgets for `r FunFisc()` and `r FunFisc(-1)`
+
+The total budgeted parking surplus for `r FunFisc()` was £`r FunDec(budg.curr, 0)`  million compared with the actual outturn of £`r FunDec(sur.tot, 0)` million (excluding national parks and \color{red}trading\color{black}). In total `r budg.over` councils exceeded their budgets by a total of £`r FunDec(budg.over.amount,0)` million and `r budg.under`  were below budget by a total of £`r FunDec(abs(budg.under.amount),0)` million.  
+
+For `r FunFisc(-1)`, the total parking surplus is budgeted to be £`r FunDec(budg.next,0)` million compared with the `r FunFisc()` outturn of £`r FunDec(sur.curr, 0)` million (excluding national parks and trading).
+
+
+# Congestion charge
+
+The central London congestion charge raised £`r FunDec(sur.c.c.curr,0)`  million in `r FunFisc()` net of expenditure compared with £`r FunDec(sur.c.c.last,0)`  million the previous year. This was  below the budget of £`r FunDec(budg.c.c.curr,0)` million. For `r FunFisc(-1)` TfL is budgeting £`r FunDec(budg.c.c.next,0)` million. It is a relatively expensive charge to collect with `r FunDec(prop.net.expen, dp.text)` % of the income spent on collection in the current fiscal year. 
+
+\renewcommand{\arraystretch}{1.3}
+
+```{r congchtab, echo = FALSE, message = FALSE, warning = FALSE}
+# print summary data
+cong.ch.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = dp.tables, 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Summary of London congestion charge (£ millions)",
+         col.names = c("", yearz, paste0("\\multirow{1}{*}[0pt]{",FunFisc(-1),"}")),
+         linesep = "") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position"), 
+                font_size = 10)  %>% 
+  column_spec(1, width = "4.5cm") %>% 
+  row_spec(4, italic = TRUE)  %>% 
+  row_spec(2,  extra_latex_after = "\\cline{1-6}") %>% 
+    row_spec(c(3,4),  extra_latex_after = "\\cline{1-7}") 
+```
+\renewcommand{\arraystretch}{1.2}
+
+\newpage
+# Appendix 
+
+## Income data
+```{r incometab, echo = FALSE, message = FALSE, warning = FALSE}
+eng.income.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         caption = "Parking income for England (£,000)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)),
+                       paste0("Average annual change since ", FunFisc(4)))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("hold_position", "striped", "repeat_header"), 
+                font_size = 8) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  column_spec(7, width = "1.5cm") %>% 
+  column_spec(8, width = "1.5cm") %>% 
+  row_spec(c(353, 355), hline_after = TRUE)
+
+```
+
+\newpage
+## Expenditure data
+
+```{r expendtab, echo = FALSE, message = FALSE, warning = FALSE}
+eng.expend.formatted %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         digits = 0, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure(£,000)",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", FunFisc(), 
+                              " on ", FunFisc(1)), 
+                       paste0("Average annual change since ", FunFisc(4)),
+                       "Expenditure as proportion of income")) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 8) %>% 
+  column_spec(1, width = "3.9cm") %>% 
+    column_spec(7, width = "1.5cm") %>%
+    column_spec(8, width = "1.5cm") %>%
+  column_spec(9, width = "2cm") %>% 
+  row_spec(c(353,355), hline_after = TRUE)
+```
+
+
+\newpage
+
+```{r expendprop3}
+eng.expend.props.formatted %>% 
+  kable( "latex", 
+         booktabs = TRUE, 
+         digits = 0, 
+         escape = FALSE,
+         longtable = TRUE,
+         align = c("r"),
+         caption = "Parking expenditure as proportion of parking income for all of England",
+         format.args = list(big.mark = ","),
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz)) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 8) %>% 
+  column_spec(1, width = "3.9cm") %>% 
+  row_spec(c(353, 355), hline_after = TRUE) %>% 
+  footnote(symbol = "Empty cells indicate the council reported no income and/or no expenditure")
+```
+
+\newpage
+## Surpluses
+
+
+```{r surrestfull}
+# print surpluses for non london councils 
+rest.surplus.totals.table.full.formatted %>% 
+  kable("latex", 
+         booktabs = T, 
+         digits = 0, 
+         longtable = T,
+         escape = F,
+         align = c("r"),
+         caption = "Parking surpluses (on-street and off-street) for all English councils (£ millions)",
+         linesep = "",
+         col.names = c("\\multirow{1}{*}[0pt]{Local Authority}", yearz, 
+                       paste0("Change ", current.year, "-", current.year-1999, 
+                              " on ", current.year-1, "-", current.year-1999-1))) %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "4.2cm") %>% 
+  row_spec(c(353,355), hline_after = TRUE) 
+```
 ## References {-}

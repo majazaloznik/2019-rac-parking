@@ -154,6 +154,8 @@ la.name <- c(rep("B", 6), rep("C", 4))
 
 la.type <- c(rep("D", 6), rep("E", 4))
 
+la.code <- rep("A", 10)
+
 e.sh <- c(3, 3, 3, 3, 3, 3, 3, 3, 3, 3) 
 
 e.on <- c("CU", "BH", "BH", "BH", "BH", "BH", "BE", "CU", "CU", "CU")
@@ -179,7 +181,7 @@ pen.1 <- c("G64", "G64", "G64", "G64", "G65", "G65", "I68", "H67", "H67", "H67")
 tot.1 <- c("J45", "J45", "J45", "J45", "J46", "J46", "L49", "K48", "K48", "K48")
 
 england.outturn.17.18 <- data.frame(fisc.year, year,link, rows, las, first,
-                              e.sh, e.on, e.off, la.name, la.type,
+                              e.sh, e.on, e.off, la.name, la.type, la.code,
                               i.sh, i.on, i.off, e.cc, i.cc,
                               pen.sh,pen.on, pen.1, tot.1, file.name)
 
@@ -222,6 +224,8 @@ la.name <- c(rep("B", 9), rep("C", 2))
 
 la.type <- c(rep("D", 9), rep("E", 2))
 
+la.code <- rep("A", 11)
+
 rows <- c(0, 0, 443, 444, 444, 444, 444, 444, 443, 446, 443)
 
 las <- c( 0, 0,353, 353,353, 353, 353, 353, 353, 353, 353)
@@ -235,7 +239,7 @@ budg.la <- c("-", "-", "U", "V", "V", "V", "U", "U", "U",  "V", "V")
 budg.cong.ch <- c("-", "-", "E24", "E25", "E25", "E25", "F31", "F30", "E31", "E31", "E31") 
 
 england.budget.18.19 <- data.frame(fisc.year, year, file.name, link, rows, first, las,
-                             budg.trans, budg.la, budg.cong.ch, la.name, la.type)
+                             budg.trans, budg.la, budg.cong.ch, la.name, la.type, la.code)
 
 ## commented out to stop overwriting!
 saveRDS(england.budget.18.19, "data/01-raw/orig.eng.meta.budget.18.rds")

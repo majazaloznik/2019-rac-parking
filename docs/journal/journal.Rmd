@@ -1215,7 +1215,27 @@ next:
 * Wales comments from Ivo, removes two tables. 
 * commit
 
+# Tuesday 19.1.2019
 
+* finish wales comments form yesterday. ok. send to ivo, commit. 
+* ONS codes for matching england data in import. instead of names. 
+* this means adding the column in the 00-data-entry file first. 
+* OK, added la.code for the "E-code" of the LAs in the england outturn and budget files. 
+* OK, now 01-original-data-import
+* add auth.code to master table. and add to relevant functions. 
+* OK, 01-original-data-import is now ok as well. so all should be fine. ok. 
+* ah, careful, GLA has it's own E-code E5100, now should be fine. 
+* now running the England report i'm getting an odd error 
+```
+Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath = DLLpath, ...):
+ unable to load shared object '/home/mz/.local/share/renv/cache/v4/R-3.6/x86_64-pc-linux-gnu/sf/0.7-6/cb1ce05d12fc9d41090f9eb539674780/sf/libs/sf.so':
+  /lib/libc.so.6: version `GLIBC_2.30' not found (required by /lib/libnspr4.so)
+```
+* try install.packages("sf"), see if that helps. OK, that and restarting it all helped.
+* OK, so ons code matching is done, in actual fact it matches on code and name, so double up, which is maybe overkill, not sure if i should remove that. maybe i should actually. that way i avoid issues if a name change happens that isn't in the lookup tables either. 
+* But no, if i don't use all the common variables, then they get duplicated. so it's ok as it is. 
+* commit
+  
 
 ### Wales (based on 17/18) #####################################################
 

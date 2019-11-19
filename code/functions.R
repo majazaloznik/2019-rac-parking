@@ -17,6 +17,7 @@ FunEnglandOutturn <- function(file =file,
                               pen.on = pen.on,
                               auth.name = auth.name,
                               auth.type = auth.type,
+                              auth.code = auth.code,
                               year = year) {
   cell.range <- paste0(auth.name, first-1, ":",auth.name, last)
   auth.name <- read_excel(file, e.sh, cell.range)
@@ -26,6 +27,9 @@ FunEnglandOutturn <- function(file =file,
   cell.range <- paste0(auth.type, first-1, ":",auth.type, last)
   auth.type <- read_excel(file, e.sh, cell.range)
   colnames(auth.type) <- "auth.type"
+  cell.range <- paste0(auth.code, first-1, ":",auth.code, last)
+  auth.code <- read_excel(file, e.sh, cell.range)
+  colnames(auth.code) <- "auth.code"
   cell.range <- paste0(e.on, first-1, ":", e.on, last)
   expend.on <- read_excel(file, e.sh, cell.range)
   colnames(expend.on) <- "expend.on"
@@ -63,7 +67,7 @@ FunEnglandOutturn <- function(file =file,
     income.pcn <- ifelse(!grepl("^-?[0-9.]+$", income.pcn$income.pcn), NA, 
                          suppressWarnings(as.numeric(income.pcn$income.pcn)))} 
   else {income.pcn <- NA }
-  df <- data.frame(auth.name, auth.type,expend.on, expend.off, 
+  df <- data.frame(auth.name, auth.type, auth.code, expend.on, expend.off, 
                    income.on, income.off, income.pcn, 
                    expend.cong.ch, income.cong.ch,
                    year = year)
@@ -120,6 +124,7 @@ FunEnglandBudget <- function(file =file,
                              budg.la = budg.la,
                              auth.name = auth.name,
                              auth.type = auth.type,
+                             auth.code = auth.code,
                              year = year) {
   cell.range <- paste0(auth.name, first-1, ":",auth.name, last)
   auth.name <- read_excel(file, sheet, cell.range)
@@ -129,12 +134,15 @@ FunEnglandBudget <- function(file =file,
   cell.range <- paste0(auth.type, first-1, ":",auth.type, last)
   auth.type <- read_excel(file, sheet, cell.range)
   colnames(auth.type) <- "auth.type"
+  cell.range <- paste0(auth.code, first-1, ":",auth.code, last)
+  auth.code <- read_excel(file, sheet, cell.range)
+  colnames(auth.code) <- "auth.code"
   cell.range <- paste0(budg.la, first-1, ":", budg.la, last)
   surplus.budget <- read_excel(file, sheet, cell.range)
   colnames(surplus.budget) <- "surplus.budget"
   surplus.budget <- ifelse(!grepl("^-?[0-9.]+$", surplus.budget$surplus.budget), NA, 
                            suppressWarnings(as.numeric(surplus.budget$surplus.budget)))
-  df <- data.frame(auth.name, auth.type, surplus.budget,
+  df <- data.frame(auth.name, auth.type, auth.code, surplus.budget,
                    year = year)
   df <- df %>%  mutate(auth.type = ifelse(auth.name == "Greater London Authority", 
                                   "GLA", auth.type))

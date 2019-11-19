@@ -38,6 +38,7 @@ original.data <- data.frame(country = character(),
                             year = integer(),
                             auth.type = character(),
                             auth.name = character(),
+                            auth.code = character(),
                             income.on = integer(),
                             income.off = integer(),
                             income.pcn = integer(),
@@ -73,6 +74,7 @@ for (row in 2:nrow(orig.eng.meta.outturn.17)){
   last = orig.eng.meta.outturn.17$rows[row] + orig.eng.meta.outturn.17$first[row] - 1
   auth.name = orig.eng.meta.outturn.17$la.name[row]
   auth.type = orig.eng.meta.outturn.17$la.type[row]
+  auth.code = orig.eng.meta.outturn.17$la.code[row]
   e.sh = orig.eng.meta.outturn.17$e.sh[row]
   e.on = orig.eng.meta.outturn.17$e.on[row]
   e.off =  orig.eng.meta.outturn.17$e.off[row]
@@ -86,7 +88,7 @@ for (row in 2:nrow(orig.eng.meta.outturn.17)){
   year = orig.eng.meta.outturn.17$year[row]
   x <- FunEnglandOutturn(file, first, last, e.sh, e.on, e.off, e.cc,
                          i.sh, i.on, i.off,i.cc, pen.sh, pen.on,
-                         auth.name, auth.type, year)
+                         auth.name, auth.type, auth.code, year)
   england.outturn <- bind_rows(england.outturn, x)
 }
 
@@ -106,6 +108,7 @@ for (row in 2:nrow(orig.eng.meta.outturn.17)){
 }
 england.outturn.totals$auth.name <- "England"
 england.outturn.totals$auth.type <- "X"
+england.outturn.totals$auth.code <- "E"
 
 ## 1.2 ENGLAND budget data #####################################################
 # initialise data frame
@@ -118,12 +121,13 @@ for (row in 3:nrow(orig.eng.meta.budget.18)){
   last = orig.eng.meta.budget.18$rows[row] + orig.eng.meta.budget.18$first[row] - 1
   auth.name = orig.eng.meta.budget.18$la.name[row]
   auth.type = orig.eng.meta.budget.18$la.type[row]
+  auth.code = orig.eng.meta.budget.18$la.code[row]
   sheet = 3
   budg.la = orig.eng.meta.budget.18$budg.la[row]
   year = orig.eng.meta.budget.18$year[row]
   x <- FunEnglandBudget(file, first, last, sheet,
                         budg.la,auth.name,
-                        auth.type, year)
+                        auth.type, auth.code, year)
   england.budget <- bind_rows(england.budget, x)
 }
 
@@ -141,6 +145,9 @@ for (row in 3:nrow(orig.eng.meta.budget.18)){
 }
 england.budget.trans$auth.name <- "England"
 england.budget.trans$auth.type <- "X"
+england.budget.trans$auth.code <- "E"
+
+
 
 ## 1.2.1. ENGLAND budget congestion charge #############################################
 # initialise data frame
@@ -156,6 +163,7 @@ for (row in 3:nrow(orig.eng.meta.budget.18)){
 }
 england.budget.cong.ch$auth.name <- "Greater London Authority"
 england.budget.cong.ch$auth.type <- "GLA"
+england.budget.cong.ch$auth.code <- "E5100"
 
 ## 2.3. MERGE all england data together ########################################
 # remove authorities we're not interested in:
@@ -350,3 +358,4 @@ saveRDS(original.data, "data/03-processed/master.rds")
 write.csv(original.data, "outputs/csv-tables/master.csv")
 
 # rm(list=setdiff(ls(), "original.data"))
+
