@@ -1236,6 +1236,24 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 * But no, if i don't use all the common variables, then they get duplicated. so it's ok as it is. 
 * commit
   
+* Now get the england update script ready for new data. 
+* hm, did i already do this?
+* then test it with the new england data. and then revert to the old repo, so they can try it out themselves. 
+  
+  
+# Wednesday 20.11.2019
+
+
+* ok, so all looks good, commit now with 2017-2018 england data. 
+
+
+
+
+
+
+
+
+
 
 ### Wales (based on 17/18) #####################################################
 

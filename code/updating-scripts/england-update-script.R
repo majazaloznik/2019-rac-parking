@@ -26,7 +26,7 @@ current.year <- 2017
 # If you want to add new data for the current fiscal year then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable above
-add.new.data <- FALSE
+add.new.data <- TRUE
 
 
 # If you have already produced an .Rmd file by running this script, and have 
@@ -79,6 +79,9 @@ if (add.new.data){
   
    # on the LA sheet, which column has the LA types or classes
   eng.i.e.la.type <- "E"
+  
+  # on the LA sheet, which column has the E-code for the LAs
+  eng.i.e.la.code <- "A"
   
   # on the LA sheet, which column is the ON-street parking Total Expenditure in?
   eng.e.on <- "CU"
@@ -146,6 +149,9 @@ if (add.new.data){
   
   # on the LA sheet, which column has the LA types or classes?
   eng.budg.la.type <- "E"
+  
+  # on the LA sheet, which column has the E-code for the LAs?
+  eng.budg.la.code <- "A"
   
   # on the LA sheet, which column has the parking services column?
   eng.budg.la <- "V"
@@ -236,6 +242,7 @@ if (add.new.data){
                     pen.on = eng.pen.on,
                     auth.name = eng.i.e.la.name, 
                     auth.type = eng.i.e.la.type, 
+                    auth.code = eng.i.e.la.code,
                     year = current.year)  -> england.i.e
   
   # go throught excel outturn file and extract totals 
@@ -257,6 +264,7 @@ if (add.new.data){
                    budg.la = eng.budg.la,
                    auth.name = eng.budg.la.name,
                    auth.type = eng.budg.la.type, 
+                   auth.code = eng.budg.la.code,
                    year = current.year) -> england.budget
   
 
