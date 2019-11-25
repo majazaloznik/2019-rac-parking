@@ -42,17 +42,17 @@ nocite: |
 
 This report uses the MHCLG (formerly DCLG) tables on parking income and expenditure for the period from `r FunFisc(4)` to `r FunFisc()` (`r  eng.bib.main.i.e`). All councils are required to report their financial information to government, in a consistent format, although there may be some differences in interpretation of what that format is and what it covers. Earlier, councils also submitted budgets for the `r FunFisc(-1)` financial year but on a less detailed basis (`r eng.bib.next.budget`). These figures are included where appropriate. The figures have to be on an as-received cash basis without any provision for bad debts or any allowance for capital charges (interest or deprecation).
 
-This report covers the 353 local authorities in England but excludes `r FunN2W(n.nat.parks)`  national parks which declare income from parking and show a total surplus of £`r FunDec(surplus.nat.parks/1000, dp.text)` million. It also excludes the Nottingham workplace parking levy which is estimated to have generated £`r FunDec(surplus.wpl/1000, dp.text)` million surplus in `r FunFisc()`. 
+This report cover the 353 local authorities in England but excludes the national parks which declare parking income. 
 
 The income and cost headings used in this analysis are: 
 
-1. On-street income, expenditure and income from penalty charges 
+1. On-street income, expenditure
 2. Off-street income, expenditure 
 3. Total transport income, expenditure 
 
-These headings do not always agree with accounts published by local authorities because of their different treatment of overheads and allocation of surpluses to other transport projects.
+\color{red}PHIL: \color{black}The accuracy of this analysis depends on the accuracy with which local authorities complete the annual financial returns they make to central government and upon which this assessment is based.
 
-
+\color{red}IVO: \color{black}These headings do not always agree with accounts published by local authorities because of their different treatment of overheads and allocation of surpluses to other transport projects.
 \newpage
 
 # Summary
@@ -77,14 +77,14 @@ eng.summary.formatted %>%
   collapse_rows(columns = 1, latex_hline = "major", valign = "middle") %>% 
   kable_styling(full_width = TRUE, 
                 latex_options =c("HOLD_position"), 
-                font_size = 10) %>% 
+                font_size = 9) %>% 
   column_spec(1, width = "1.6cm") %>% 
   column_spec(2, width = "2.4cm") %>% 
   column_spec(8:9, width = "1.2cm") %>% 
   column_spec(10, width = "1.2cm")  %>% 
-  row_spec(c(4, 7), extra_latex_after = "\\cline{2-7} \\cline{10-10}") %>% 
-  row_spec(c(10),  extra_latex_after = "\\cline{2-10}") %>% 
-  row_spec(11, bold = TRUE) %>% 
+  row_spec(c(2, 5), extra_latex_after = "\\cline{2-7} \\cline{10-10}") %>% 
+  row_spec(c(8),  extra_latex_after = "\\cline{2-10}") %>% 
+  row_spec(9, bold = TRUE) %>% 
   footnote(symbol = "Cells may not add up exactly due to rounding.")
 ```
 
@@ -163,6 +163,9 @@ par(old.par)
 
 Only `r FunDec(lnd.prop.off, dp.text)` % of London boroughs’ parking income comes from off-street car parking as most off-street parking is commercially run. For the rest of England `r FunDec(rest.prop.off, dp.text)` % of income is from off-street parking. 
 
+\color{red}PHIL: \color{black}The parking surplus in London was £`r FunDec(lnd.surplus, dp.text)` million, `r FunDec(lnd.prop.surplus, dp.text)`% of the total for England. Incoming commuters and visitors will contribute to parking fees and penalties which are much higher than in the rest of England.
+
+\color{red}IVO: \color{black}[deleted whole para]
 
 ```{r compare, echo = FALSE}
 # pring comparison table for all three countrires
@@ -218,9 +221,8 @@ sum.gb.change.tab.formatted  %>%
 
 Parking income is derived from three main sources: meter income, residents’  business permits, and penalties. Other sources are towing and storage charges although relatively few councils operate pounds now. Total income in `r FunFisc()` was £`r formatC(inc.tot, big.mark = ",")` million, `r FunDec(inc.ch, dp.text)`% higher than in `r FunFisc(1)`. In London boroughs the total income was £`r FunDec(inc.london.tot, 0)` million, `r FunDec(inc.london.tot.ch, dp.text)` % more than in the previous year, while the total for the rest of England was £`r FunDec(inc.rest.tot, 0)`million, `r FunDec(inc.rest.tot.ch, dp.text)` % more than in the previous year. 
 
-Income from on-street tickets and permits was £`r FunDec(inc.fnp, 0)` million, (`r ifelse(inc.fnp.ch>0, "up", "down")` `r FunDec(inc.fnp.ch, dp.text)` %), and a further £`r FunDec(inc.pcn, 0)` million came from on-street penalty charges (`r ifelse(inc.pcn.ch>0, "up", "down")` `r FunDec(inc.pcn.ch, dp.text)` %) and £`r FunDec(inc.off, 0)` million (`r ifelse(inc.off.ch>0, "up", "down")` `r FunDec(inc.off.ch, dp.text)` %)from off-street charges and penalties. Note that this does not include off-street income received by commercial off-street parking facilities. Table \@ref(tab:incometablondon) shows the incomes for all the London boroughs for the previous 5 years, their most recent annual change and the average annual change in income over the preceding 5 years. Table \@ref(tab:incometabrest) has the same information for the top 20 councils outside of London. For a full table of all the local authrities in London see Table \@ref(tab:incometab)  in the Appendix. 
+Table \@ref(tab:incometablondon) shows the incomes for all the London boroughs for the previous 5 years, their most recent annual change and the average annual change in income over the preceding 5 years. Table \@ref(tab:incometabrest) has the same information for the top 20 councils outside of London. For a full table of all the local authrities in London see Table \@ref(tab:incometab)  in the Appendix. 
 
-Penalty income in London was £`r FunDec(inc.london.pcn, 0)` million, `r FunDec(inc.london.pcn.ch, dp.text)` % `r ifelse(inc.london.pcn > 0, "higher", "lower")` than in 2016-17. Penalty income in the rest of England was £`r FunDec(inc.rest.pcn, 0)` million, `r FunDec(inc.rest.pcn.ch, dp.text)` % `r ifelse(inc.rest.pcn > 0, "higher", "lower")` than the previous year.
 
 ```{r incometablondon, echo = FALSE, message = FALSE, warning = FALSE}
 eng.income.london.formatted %>% 
@@ -483,13 +485,7 @@ while `r rest.surplus.change.top3[2,2]` and `r rest.surplus.change.top3[3,2]` in
 
 `r ifelse(nrow(rest.deficit.valid) == 0, "None of the councils has had a deficit two years in a row", paste0(rest.deficit.change.top3[1,2], " increased their deficits by ", FunDec(rest.deficit.change.top3$change[1], dp.text)," % while ", rest.deficit.change.top3[2,2], " and ",  rest.deficit.change.top3[3,2], " increased  by ", FunDec(rest.deficit.change.top3$change[2], dp.text), " % and ", FunDec(rest.deficit.change.top3$change[3], dp.text), " % respectively ",  if(nrow(rest.deficit.excluded.top) > 0) paste0(" (excluding ", FunMultiText(rest.deficit.excluded.top$auth.name), " with a deficit under £30,000)"), " The biggest decreases were in ",  rest.deficit.change.bottom2[2,2], " (", FunDec(abs(rest.deficit.change.bottom2$change[2]), dp.text), " %), and ", rest.deficit.change.bottom2[1,2], "  (",  FunDec(abs(rest.deficit.change.bottom2$change[1]), dp.text), " %)", if(nrow(rest.deficit.excluded.bottom) > 0) paste0(" (excluding ", FunMultiText(rest.deficit.excluded.bottom$auth.name), " with a deficit under £30,000)")))`
 
-
-# Comparison with budgets for `r FunFisc()` and `r FunFisc(-1)`
-
-The total budgeted parking surplus for `r FunFisc()` was £`r FunDec(budg.curr, 0)`  million compared with the actual outturn of £`r FunDec(sur.tot, 0)` million (excluding national parks and \color{red}trading\color{black}). In total `r budg.over` councils exceeded their budgets by a total of £`r FunDec(budg.over.amount,0)` million and `r budg.under`  were below budget by a total of £`r FunDec(abs(budg.under.amount),0)` million.  
-
-For `r FunFisc(-1)`, the total parking surplus is budgeted to be £`r FunDec(budg.next,0)` million compared with the `r FunFisc()` outturn of £`r FunDec(sur.curr, 0)` million (excluding national parks and trading).
-
+\newpage
 
 # Congestion charge
 

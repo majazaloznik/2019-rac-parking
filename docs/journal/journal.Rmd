@@ -1303,11 +1303,15 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * OK, there was an errror because the budgeted trasnport variable for all of england got lost,but that's fixed now. 
 
-* *there is now a missing reference in the first paragraph* 
+* there is now a missing reference in the first paragraph. OK
 
 * OK, let's go through Phil's comments first. 
 
-* Phil commenting on report that i'd already updated with ivo's comments. SO e.g. they had differente sentences in the end of the summary. Now Phil's. *mention*
+* Phil commenting on report that i'd already updated with ivo's comments. SO e.g. they had differente sentences in the end of the summary. Now Phil's. mention. OK
+
+* OK, now remove two summary rows. OK
+
+* last thing, there is a problem with the congestion charge for 2019.. I forgot to add it completely. Also, the 19/20 budget does not report the budgeted surlus for GLA, alhtough that might not be super important. 
 
 
 

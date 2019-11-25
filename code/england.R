@@ -232,6 +232,11 @@ summary %>%
                        "All England transport", "")) %>% 
   select(collapsed, variable:change) -> summary.prep
 
+# remove first two rows, decided we don't need them anymore (26.11.2019)
+summary.prep %>% 
+  filter(!variable %in% c("Fees \\& permits", "Penalties")) -> summary.prep
+
+
 # # save csv table 1
 write.csv(summary.prep, here::here(paste0("outputs/csv-tables/england-",
                                     FunFisc(), "/england-",

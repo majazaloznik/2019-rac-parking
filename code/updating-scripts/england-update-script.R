@@ -26,7 +26,7 @@ current.year <- 2018
 # If you want to add new data for the current fiscal year then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable above
-add.new.data <- FALSE
+add.new.data <- TRUE
 
 
 # If you have already produced an .Rmd file by running this script, and have 
@@ -242,8 +242,19 @@ if (add.new.data){
   england.budget.tot$auth.name <- "England"
   england.budget.tot$auth.type <- "X"
   
-  bind_rows(england.budget,  england.budget.tot) -> england.budget
+  # also for budgeted congestion total 
+  FunEnglandBudgetCongestion(file = eng.budg.file ,
+                            budg.cong.ch = eng.budg.cc,
+                            year = current.year + 1,
+                            sheet = 2 ) %>% 
+    bind_rows() -> england.budget.cc
+  england.budget.cc$auth.name <- "Greater London Authority"
+  england.budget.cc$auth.type <- "GLA"
+   full_join(england.budget, england.budget.cc) -> england.budget
   
+   # all budget data together
+   bind_rows(england.budget,  england.budget.tot) -> england.budget
+   
   # remove non-national park authorities 
   england.budget %>% 
     filter(auth.type != "O" | 
@@ -313,7 +324,7 @@ if (add.new.data){
   # join last year's budget data with current outturn
   left_join(england.i.e, select(master, c("country", "auth.name",
                                           "year", "surplus.budget",
-                                          "budg.trans")), 
+                                          "budg.cong.ch")), 
             by = c("country", "auth.name", "year")) -> current.update
 
   ###############################################################################
@@ -368,7 +379,7 @@ if (add.new.data){
                             content = "i.e",
                             bibtype = "misc",
                             year = eng.i.e.year.published,
-                            author = "{Office for National Statistics}",
+                            author = "{UK Government}",
                             urldate = eng.i.e.date.accessed,
                             title = eng.i.e.title,
                             key = paste0("England.i.e.", current.year))
@@ -379,16 +390,16 @@ if (add.new.data){
     bind_rows(eng.i.e.bib) -> bib.master
 
   # add budget. source:
-  eng.budg.bib <- data.frame(fiscyear = current.year,
+  eng.budg.bib <- data.frame(fiscyear = current.year + 1,
                             url = eng.budg.url,
                             country = "England",
                             content = "budget",
                             bibtype = "misc",
                             year = eng.budg.year.published,
-                            author = "{Office for National Statistics}",
+                            author = "{UK Government}",
                             urldate = eng.budg.date.accessed,
                             title = eng.budg.title,
-                            key = paste0("England.budg.", current.year))
+                            key = paste0("England.budg.", current.year + 1))
   
   # add it to bib.master (overwriting if already exists)
   bib.master %>%
