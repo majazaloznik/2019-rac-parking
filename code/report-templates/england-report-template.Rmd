@@ -42,15 +42,15 @@ nocite: |
 
 This report uses the MHCLG (formerly DCLG) tables on parking income and expenditure for the period from `r FunFisc(4)` to `r FunFisc()` (`r  eng.bib.main.i.e`). All councils are required to report their financial information to government, in a consistent format, although there may be some differences in interpretation of what that format is and what it covers. Earlier, councils also submitted budgets for the `r FunFisc(-1)` financial year but on a less detailed basis (`r eng.bib.next.budget`). These figures are included where appropriate. The figures have to be on an as-received cash basis without any provision for bad debts or any allowance for capital charges (interest or deprecation).
 
-This report covers the 353 local authorities in England but excludes `r FunN2W(n.nat.parks)`  national parks which declare income from parking and show a total surplus of £`r FunDec(surplus.nat.parks/1000, dp.text)` million. It also excludes the Nottingham workplace parking levy which is estimated to have generated £`r FunDec(surplus.wpl/1000, dp.text)` million surplus in `r FunFisc()`. 
+This report cover the 353 local authorities in England but excludes the national parks which declare parking income. 
 
 The income and cost headings used in this analysis are: 
 
-1. On-street income, expenditure and income from penalty charges 
+1. On-street income, expenditure
 2. Off-street income, expenditure 
 3. Total transport income, expenditure 
 
-These headings do not always agree with accounts published by local authorities because of their different treatment of overheads and allocation of surpluses to other transport projects.
+The accuracy of this analysis depends on the accuracy with which local authorities complete the annual financial returns they make to central government and upon which this assessment is based.
 
 
 \newpage
@@ -413,7 +413,11 @@ eng.expend.props.rest.formatted %>%
 In total, councils in England made a surplus of £`r FunDec(sur.tot,0)` million in `r FunFisc()`, `r FunDec(sur.ch, dp.text)` % `r ifelse(sur.ch > 0, "higher", "lower")` than in `r FunFisc(1)`. Of this total, £`r FunDec(sur.london, 0)` million (`r FunDec(sur.london.prop, dp.text)` %) came from London and £`r FunDec(sur.rest, 0)` million from the rest of England. This excludes a £`r FunDec(surplus.nat.parks/1000, dp.text)` million surplus from parking in National Parks and a £`r FunDec(surplus.wpl/1000, dp.text)` million surplus from the Nottingham workplace parking levy.
 
 
-The total *surpluses* for London amounted to £`r FunDec((london.surplus.totals.table.sur), dp.text)` million between `r  london.poz.surplus ` authorities, of which the top three--`r paste0(names(london.surplus.top3)[1], ", ", names(london.surplus.top3)[2], ", and ", names(london.surplus.top3)[3])`--accounted for `r FunDec(london.surplus.top3[1],  dp.text)` %.  `r FunFirstup(FunN2W(surplus.bin["neg"]))` `r ifelse(surplus.bin["neg"] == 1, "council", "councils")` made a loss with the total of parking deficits `r ifelse(london.surplus.totals.table.def > london.surplus.totals.table.def.last, "falling", "rising")` to £`r FunDec(-london.surplus.totals.table.def, dp.text)` million from £`r FunDec(-london.surplus.totals.table.def.last, dp.text)` million last year (see Table \@ref(tab:surlondtab)). 
+The total *surpluses* for London amounted to £`r FunDec((london.surplus.totals.table.sur), dp.text)` million between `r  london.poz.surplus ` authorities, of which the top three--`r paste0(names(london.surplus.top3)[1], ", ", names(london.surplus.top3)[2], ", and ", names(london.surplus.top3)[3])`--accounted for `r FunDec(london.surplus.top3[1],  dp.text)` %.  
+
+FunFirstup(FunN2W(surplus.bin["neg"]))
+
+`r ifelse(is.na(surplus.bin["neg"]), "No lodnon councils made a loss last year", paste(ifelse( surplus.bin["neg"] == 1, paste(FunFirstup(FunN2W(surplus.bin["neg"])) , "council"), paste("In London", FunFirstup(FunN2W(surplus.bin["neg"])) , "councils")), "made a loss with the total of parking deficits",  ifelse(london.surplus.totals.table.def > london.surplus.totals.table.def.last, "falling", "rising"), "to £", FunDec(-london.surplus.totals.table.def, dp.text), "million from £",  FunDec(-london.surplus.totals.table.def.last, dp.text), "million last year"))` (see Table \@ref(tab:surlondtab).
 
 Overall, parking contributed £`r FunDec(london.surplus.totals.table.tot, dp.text)` million to local authority finances in London in `r FunFisc()` compared with £`r FunDec(london.surplus.totals.table.tot.last, dp.text)` million in `r FunFisc()`, an increase of `r FunDec(london.surplus.totals.table.tot.ch, dp.text)` %. 
 
@@ -577,6 +581,7 @@ eng.expend.formatted %>%
 \newpage
 
 ```{r expendprop3}
+
 eng.expend.props.formatted %>% 
   kable( "latex", 
          booktabs = TRUE, 
@@ -594,11 +599,11 @@ eng.expend.props.formatted %>%
   column_spec(1, width = "3.9cm") %>% 
   row_spec(c(353, 355), hline_after = TRUE) %>% 
   footnote(symbol = "Empty cells indicate the council reported no income and/or no expenditure")
+
 ```
 
 \newpage
 ## Surpluses
-
 
 ```{r surrestfull}
 # print surpluses for non london councils 

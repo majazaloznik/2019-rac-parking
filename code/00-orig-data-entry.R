@@ -561,7 +561,8 @@ england.name.lookup <- c("City of Nottingham" = "Nottingham",
                          "South Buckinghamshire" = "South Bucks",
                          "South Downs National Park" = "South Downs National Park Authority",
                          "Telford & the Wrekin" = "Telford and Wrekin",
-                         "Telford and the Wrekin" = "Telford and Wrekin")
+                         "Telford and the Wrekin" = "Telford and Wrekin",
+                         "Folkestone and Hythe" = "Shepway")
 
 saveRDS(england.name.lookup, "data/01-raw/orig.eng.name.lookup.rds")
 

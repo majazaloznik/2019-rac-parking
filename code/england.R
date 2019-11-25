@@ -10,7 +10,7 @@
 ################################################################################
 
 ## preliminaries ###############################################################
-current.year <-   params$current.year
+current.year <-  2018# params$current.year
 # knitr options
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
 knitr::opts_chunk$set(fig.pos = 'H')
@@ -51,8 +51,8 @@ report.name <- paste0("england-report-", current.year, "-",
 bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
 
 # pass parameters for decimal points in text and tables
-dp.text <-   params$dp.text
-dp.tables <-   params$dp.tables
+dp.text <-  1#  params$dp.text
+dp.tables <-  1#  params$dp.tables
 
 # create folder for csv tables if it does not exist already
 suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/england-", 
@@ -76,8 +76,10 @@ data.full %>%
   filter(year >= current.year -4 & year <= current.year + 1) -> data
 
 # data for current year only
+# but make sure the misnamed/merged LAs aren't there though
 data %>% 
-  filter(year == current.year) -> data.current
+  filter(year == current.year, 
+         !is.na(income.on)) -> data.current
 
 # data for 353 LAs only for all available years
 data.full %>% 
@@ -279,7 +281,9 @@ la.data.current %>%
   rename(london = `1`, rest = `2`) %>% 
   mutate(total = london + rest,
          prop = london/total*100, 
-         prop = paste(FunDec(prop, dp.tables), "\\%") )%>% 
+         prop = paste(FunDec(prop, dp.tables), "\\%") ) -> summary.london.prep.num
+
+summary.london.prep.num %>% 
   mutate_at(vars(-variable, -prop), function(x) 
     formatC(x/1000, format = "f", digits = 0, big.mark = ",")) %>% 
   mutate(variable = c(rep(c("On-street", "Off-street", "Total"), 3))) %>% 
@@ -287,6 +291,7 @@ la.data.current %>%
                        rep("Expenditure", 3),
                        rep("Surplus", 3)))   %>% 
   select(collapsed, variable:prop)-> summary.london.prep
+
 
 # # save csv table 2
 write.csv(summary.london.prep, here::here(paste0("outputs/csv-tables/england-",
@@ -326,13 +331,18 @@ la.data %>%
 
 
 # easy access for variables in text
-lnd.prop.off <- 100*as.numeric(summary.london.prep$london[2])/
-  as.numeric(summary.london.prep$london[3])
-rest.prop.off <- 100*as.numeric(summary.london.prep$rest[2])/
-  as.numeric(summary.london.prep$rest[3])
-lnd.surplus <- as.numeric(summary.london.prep$london[9])
-lnd.prop.surplus <- 100*as.numeric(summary.london.prep$london[9])/
-  as.numeric(summary.london.prep$total[9])
+summary.london.prep.num
+
+lnd.prop.off <- 100*as.numeric(summary.london.prep.num$london[2])/
+  as.numeric(summary.london.prep.num$london[3])
+
+rest.prop.off <- 100*as.numeric(summary.london.prep.num$rest[2])/
+  as.numeric(summary.london.prep.num$rest[3])
+
+lnd.surplus <- as.numeric(summary.london.prep.num$london[9])/1000
+
+lnd.prop.surplus <- 100*as.numeric(summary.london.prep.num$london[9])/
+  as.numeric(summary.london.prep.num$total[9])
 
 # easy access vars for the text
 inc.ch <- 100*(summary[5,10]/summary[4,10] -1)
@@ -1127,6 +1137,7 @@ la.data %>%
   mutate(expend.prop = expend.total/income.total*100) %>% 
   select(auth.name, year, expend.prop) %>%
   spread(key = year, value = expend.prop) %>% 
+  mutate_at(vars(-auth.name), function(x) ifelse(is.infinite(x), NA, x)) %>%
   arrange(desc(!!as.name(current.year))) %>% 
   bind_rows(expend.props.totals) -> eng.expend.props
 
@@ -1148,7 +1159,7 @@ eng.expend.props.london %>%
   eng.expend.props.london.formatted
 
 
-# format for tabulation rest of england
+# format for tabulation rest of england 
 eng.expend.props.rest %>% 
   mutate(auth.name = gsub("&", "\\\\&", auth.name)) %>% 
   mutate_at(vars(-auth.name), function(x) ifelse(is.infinite(x), NA, x)) %>% 

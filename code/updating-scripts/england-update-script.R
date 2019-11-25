@@ -19,14 +19,14 @@
 
 # which fiscal year do you want to produce a report for?
 # NB: the current year is the year in which the fiscal year starts
-current.year <- 2017
+current.year <- 2018
 
 # if you want to produce a report based on current data - but for a previous year
 # set add.new.data to FALSE. Run the rest of the script.
 # If you want to add new data for the current fiscal year then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable above
-add.new.data <- TRUE
+add.new.data <- FALSE
 
 
 # If you have already produced an .Rmd file by running this script, and have 
@@ -51,19 +51,19 @@ if (add.new.data){
   # England outturn data (Income and Expenditure data)                        #
   #############################################################################
   # title as it will appear in the references:
-  eng.i.e.title <- "Local authority revenue expenditure and financing England: 2017-18, individual local authority data - outturn"
+  eng.i.e.title <- "Local authority revenue expenditure and financing England: 2018-19, individual local authority data - outturn"
 
   # url of the file:
-  eng.i.e.url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/659775/RO2_2016-17_data_by_LA.xlsx"
+  eng.i.e.url <- "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/846282/RO2_2018-19_data_by_LA.xlsx"
 
   # year published, as it will appear in the references:
-  eng.i.e.year.published <- 2018
+  eng.i.e.year.published <- 2019
 
   ## replace with date of access to data:
-  eng.i.e.date.accessed <- "07.10.2019"
+  eng.i.e.date.accessed <- "20.11.2019"
 
   # path and name of file where you have saved it:
-  eng.i.e.file <- "data/01-raw/orig.eng-17-18.xlsx"
+  eng.i.e.file <- "data/01-raw/orig.eng-18-19.xlsx"
 
   # on which sheet is the LA data on?
   eng.i.e.sh <- 3
@@ -72,7 +72,7 @@ if (add.new.data){
   eng.i.e.first <- 8
   
   # on the LA sheet, which row is the last row of the table?
-  eng.i.e.last <- 452
+  eng.i.e.last <- 451
   
   # on the LA sheet, which column has the LA names
   eng.i.e.la.name <- "C"
@@ -86,17 +86,17 @@ if (add.new.data){
   # on the LA sheet, which column is the ON-street parking Total Expenditure in?
   eng.e.on <- "CU"
     
-  # on the LA sheet, which column is the OFF-street parking Total Expenditure in?
-  eng.e.off <- "DB"
-  
-  # on the LA sheet, which column is the congestion charge Total Expenditure in?
-  eng.e.cc <- "BS"
-  
   # on the LA sheet, which column is the ON-street parking Total Income in?
   eng.i.on <- "CX"
   
+  # on the LA sheet, which column is the OFF-street parking Total Expenditure in?
+  eng.e.off <- "DB"
+  
   # on the LA sheet, which column is the OFF-street parking Total Income in?
   eng.i.off <- "DE"
+  
+  # on the LA sheet, which column is the congestion charge Total Expenditure in?
+  eng.e.cc <- "BS"
   
   # on the LA sheet, which column is the congestion charge Total Income in?
   eng.i.cc <- "BV"
@@ -105,14 +105,10 @@ if (add.new.data){
   # income included in line 61? ?
   eng.pen.on <- "FX"
   
-  # on the SUMMARY sheet, which cell is the total On-street parking: Penalty 
-  # Charge Notice income included in line 61?
+  # on the SUMMARY sheet, which cell is the total "On-street parking: Penalty 
+  # Charge Notice income included in line 61?"
   eng.pen.1 <- "H67"
   
-  # on the SUMMARY sheet, which cell is the Total Expenditure for 
-  # On-street parking: Penalty Charge Notice income included in line 61?
-  eng.pen.1 <- "H67"
-
   # on the SUMMARY sheet, which cell is the Net Current Expenditure for 
   # TOTAL HIGHWAYS AND TRANSPORT SERVICES?
   eng.tot.1 <- "K48"
@@ -121,19 +117,19 @@ if (add.new.data){
   # England budget data - for the next fiscal year                            #
   #############################################################################
   # title as it will appear in the references:
-  eng.budg.title <- "Local authority revenue expenditure and financing England: 2018 to 2019 budget (Revenue Account budget)"
+  eng.budg.title <- "Local authority revenue expenditure and financing England: 2019 to 2020 budget (Revenue Account budget)"
   
   # url of the file:
-  eng.budg.url <- "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/720343/RA_2018-19_data_by_LA.xlsx"
+  eng.budg.url <- "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/812517/RA_2019-20_data_by_LA.xlsx"
   
   # year published, as it will appear in the references:
-  eng.budg.year.published <- 2018
+  eng.budg.year.published <- 2019
   
   ## replace with date of access to data:
-  eng.budg.date.accessed <- "07.10.2019"
+  eng.budg.date.accessed <- "20.11.2019"
   
   # path and name of file where you have saved it:
-  eng.budg.file <- "data/01-raw/orig.eng-18-19-budget.xlsx"
+  eng.budg.file <- "data/01-raw/orig.eng-19-20-budget.xlsx"
   
   # on which sheet is the LA data on?
   eng.budg.sh <- 3
@@ -142,7 +138,7 @@ if (add.new.data){
   eng.budg.first <- 8
   
   # on the LA sheet, which row is the last row of the table?
-  eng.budg.last <- 450
+  eng.budg.last <- 442
   
   # on the LA sheet, which column has the LA names?
   eng.budg.la.name <- "C"
@@ -169,26 +165,26 @@ if (add.new.data){
   # Nottingham WPL data                                                   #####
   #############################################################################
   # title as it will appear in the references:
-  eng.nhm.title <- "{Statement of Accounts}"
+  eng.nhm.title <- "{Draft Statement of Accounts}"
 
   # url of the file:
-  eng.nhm.url <- "https://www.nottinghaminsight.org.uk/d/aAXEduG_"
+  eng.nhm.url <- "https://www.nottinghaminsight.org.uk/d/a1uCEFc"
 
   # year published, as it will appear in the references:
-  eng.nhm.year.published <- 2018
+  eng.nhm.year.published <- 2019
 
   ## replace with date of access to data:
-  eng.nhm.date.accessed <- "4.10.2019"
+  eng.nhm.date.accessed <- "20.11.2019"
 
   # page on which the table "Road Charging Schemes under the Transport Act 2000"
   # can be found 
-  eng.nhm <- 86
+  eng.nhm <- 96
   
   # income from WPL as shown in this table (in thousands, not in millions!):
-  eng.nhm.income.wpl <- 9178
+  eng.nhm.income.wpl <- 10114
   
   # expenditures for WPL as shown in this table (in thousands, not in millions!): 
-  eng.nhm.expend.wpl <- 219
+  eng.nhm.expend.wpl <- 577
   
   # that's all the manual entry done!
 }
@@ -226,6 +222,36 @@ if (add.new.data){
   ################################################################################
   ## AUTOMATIC DATA IMPORT AND CLEANING
   ################################################################################
+  # go throught excel budget files and extract LA data
+  FunEnglandBudget(file = eng.budg.file, 
+                   first = eng.budg.first, 
+                   last = eng.budg.last, 
+                   sheet = eng.budg.sh,
+                   budg.la = eng.budg.la,
+                   auth.name = eng.budg.la.name,
+                   auth.type = eng.budg.la.type, 
+                   auth.code = eng.budg.la.code,
+                   year = current.year+1) -> england.budget
+  
+  
+  # go throught excel budget file and extract totals 
+  FunEnglandBudgetTransport(file = eng.budg.file, 
+                            budg.trans = eng.budg.trans,
+                            year = current.year+1) %>% 
+    bind_rows() -> england.budget.tot
+  england.budget.tot$auth.name <- "England"
+  england.budget.tot$auth.type <- "X"
+  
+  bind_rows(england.budget,  england.budget.tot) -> england.budget
+  
+  # remove non-national park authorities 
+  england.budget %>% 
+    filter(auth.type != "O" | 
+             grepl("National Park", auth.name) |
+             auth.name == "Greater London Authority") %>% 
+    mutate(country = "England") -> england.budget
+  
+  
   # go through excel file to extract the income/expenditure data for LAs
   FunEnglandOutturn(file = eng.i.e.file, 
                     first = eng.i.e.first, 
@@ -254,72 +280,57 @@ if (add.new.data){
   england.i.e.tot$auth.name <- "England"
   england.i.e.tot$auth.type <- "X"
   
-  bind_rows( england.i.e,  england.i.e.tot) -> england.i.e
-
-  # go throught excel budget files and extract LA data
-  FunEnglandBudget(file = eng.budg.file, 
-                   first = eng.budg.first, 
-                   last = eng.budg.last, 
-                   sheet = eng.budg.sh,
-                   budg.la = eng.budg.la,
-                   auth.name = eng.budg.la.name,
-                   auth.type = eng.budg.la.type, 
-                   auth.code = eng.budg.la.code,
-                   year = current.year) -> england.budget
-  
-
-  # go throught excel budget file and extract totals 
-  FunEnglandBudgetTransport(file = eng.budg.file, 
-                            budg.trans = eng.budg.trans,
-                            year = current.year) %>% 
-    bind_rows() -> england.budget.tot
-  england.budget.tot$auth.name <- "England"
-  england.budget.tot$auth.type <- "X"
-
-  bind_rows(england.budget,  england.budget.tot) -> england.budget
-  
-  # add nottingham wpl data
-  data.frame(year = current.year,
-        auth.name = "Nottingham",
-        income.wpl = eng.nhm.income.wpl,
-        expend.wpl = eng.nhm.expend.wpl) -> nhm
-    
+  # remove non-national parks
   england.i.e %>% 
     filter(auth.type != "O" | 
              grepl("National Park", auth.name) |
              auth.name == "Greater London Authority") -> england.i.e
   
-  england.budget %>% 
-    filter(auth.type != "O" | 
-             grepl("National Park", auth.name) |
-             auth.name == "Greater London Authority") -> england.budget
+  # add nottingham wpl data
+  data.frame(year = current.year,
+             auth.name = "Nottingham",
+             income.wpl = eng.nhm.income.wpl,
+             expend.wpl = eng.nhm.expend.wpl) -> nhm
   
-  # now merge income exp data from the Excel files with the pdf data
-  update <- full_join(england.i.e, england.budget) 
-  update <- full_join(update, nhm)
-  # add Scotland data and calculate surplus
-  update %>%
-    mutate(country = "England") -> master.update
+  # now merge outturn, and nhm pdf data
+  england.i.e <- full_join(england.i.e, nhm)
+  england.i.e <- bind_rows(england.i.e,  england.i.e.tot)
+  england.i.e %>% 
+    mutate(country = "England") -> england.i.e
   
   # double check the update is OK:
-  master.update %>% 
-    filter(!auth.type %in% c("O", "X", "GLA")) %>% 
+  england.i.e %>% 
+    filter(!auth.type %in% c("O", "X", "GLA"),
+           year == current.year) %>% 
     nrow() -> nrows
   
   if (nrows != 353) {
     paste("Something is wrong. The update should have data for 353 LAs, but it has",
           nrows, "instead.")} else {
-            "Everything checks out, the update has 353 LA rows"}
+            "Everything checks out, the update has 353 LA rows for this year"}
+  
+  
+  # join last year's budget data with current outturn
+  left_join(england.i.e, select(master, c("country", "auth.name",
+                                          "year", "surplus.budget",
+                                          "budg.trans")), 
+            by = c("country", "auth.name", "year")) -> current.update
 
-###############################################################################
-# Add (or overwrite) new rows to master #######################################
-###############################################################################
-
-  # add update - if that year already exists, it will be overwritten!!!
-  if (exists("master.update")){
-    master %>%
-      anti_join(master.update, by = c("country", "auth.name", "year")) %>% 
-      bind_rows(master.update) -> master}
+  ###############################################################################
+  # Add (or overwrite) new rows to master #######################################
+  ###############################################################################
+  
+  # remove  current year data from master if exists, then add it anew 
+  # i.e. overwrite previously added data for current year assuming it was in error
+  
+  master %>% 
+    anti_join(current.update, by = c("country", "auth.name", "year")) %>% 
+    bind_rows(current.update) -> master
+  
+  # now add the budget data as well. overwriting it if it exists already
+  master %>% 
+    anti_join(england.budget, by = c("country", "auth.name", "year")) %>% 
+    bind_rows(england.budget) -> master
 
   # save updated datafile to master
   saveRDS(master, "data/03-processed/master.rds")
@@ -426,15 +437,14 @@ saveRDS(bib.england, paste0("data/03-processed/", report.name, "-bib.rds"))
 ## COMPILE REPORT 
 ################################################################################
 # check if master data is available for current year?
+new.rows <- nrow(filter(master, country == "England", year == current.year, !is.na(income.on)))
+budg.rows <- nrow(filter(master, country == "England", year == current.year+ 1, ))
 
-if(nrow(filter(master, country == "England", year == current.year)) == 0) {
+if(new.rows == 0) {
   warning("There are no records for the year ", current.year) } else {
-    if(nrow(filter(master, country == "England", year == current.year)) !=364) {
-      warning("Something has gone wrong. There should be 364 rows for ", 
-             current.year, " but there are not. I suggest you revert to a ",
-             "previous version of the repository and try again.")} else {
-               
-               
+    warning("There are ", new.rows," records for ", FunFisc(), " and ",
+            budg.rows, " records for the ", FunFisc(-1), " budget.")
+
                if(!recompile.rmd){
                  # create a fresh copy from the england report template
                  file.copy("code/report-templates/england-report-template.Rmd",
@@ -461,9 +471,10 @@ if(nrow(filter(master, country == "England", year == current.year)) == 0) {
                          # remove log file (comment this out if there are issues and look at the log
                          # file for clues?
                          suppressWarnings(file.remove(paste0("code/report-rmds/", report.name, ".log")))
-                       }
+                       
              }
   }
+
 # # the report are saved to /outputs/reports/
 ################################################################################
 ################################################################################

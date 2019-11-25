@@ -1246,6 +1246,71 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * ok, so all looks good, commit now with 2017-2018 england data. 
 
+* *change outturn name of file from RS to RO2 or whatever*
+
+* wpl there's an extra * instead of "
+
+* what if it's not the final statememnt, but the draft one? for the budget?
+
+* OK, so problem: folkstone and hythe being called shepway. should i add it to the lookup tables? or should i change the full_merge to not look at auth.name. but then i have two columns with auth.name, which isn't good. so lookup table. 
+
+* should this go into the instructions as well? what to do if this happens?
+
+* add folkstone and hythe = shepway to lookup table in 00
+
+* but where is it being run? ok, i think it's fine, it's in the funcitons
+
+* but what abotu this: the budget file has e.g. e1203 for dorset, but this doens't exist in the outturn file. instead there are four dorset rows there. 
+
+* bournemouth christchirch and poole have merged in 2019. the 2018/2019 data is for all three separately. but the 2018/2019 budgeted is for them merged as is the 2019/2020 one. so should i add up the three 2018 ones? 
+
+* same thing with somerset Wet and Taunton, which were tautnotn deane and west somerset
+
+* same thing with East suffolk and west suffolk which used to be some combination of sufolk, mid sufolk and sufolk coastal. 
+
+* all of this maybe doens't matter if i just remove the controls for the numbers of LAs that get imported. but then you're flying blind, i mean how do you know there haven't been any changes like the shepway one?
+
+* I mean the matching doesn't matter anyway, the budgets are never directly compared except for the country as a whole?
+
+* ok, running the script, there is an issue with summary.london.prep where i try to extract numeric from charater, but in this example it has a thousands separator, so it goest to NA
+
+* ok, there is an issue with the second appendix expenditure table. not sure what thouhg.
+
+* but there is also the issue if ranking the LAs with "inf" as largest, which is not true, so fix that. OK. 
+
+* ugh, also the "new" LAs are still problematic, they show up in the appendix tables and mess up the totals hlines if nothing else. need to make sure the tables only have the relevant rows in them, so ones with "income" or whatever data is necessary. 
+
+* still cannot figure out what is wrong with the second expenditure table. trying to see if it's a specific row now. It's not any specific row, but 353 rows is ok, more is not. 
+* removing the cellspec also doesn't make a difference, 355 is ok then, what about if i put cellspec(colours back), yeah, also ok. so 355 is fine. but 1:357 isn't. and 1:356 is ok. wtf. what about 2:357? that's ok. 2: 358? also ok!? hm, this stopped happening? weird, but OK. 
+
+* ffs. maybe i should first make sure i remove the "new" LAs from all of these tables anyway. and then worry about this if it still persisits. OK
+
+* OK, also in england 2017/18 the budget sum is NA now, need to fix that as well. OK, that's fine on a clean start. but what happens if i add the 2018/19 data, that's probbaly the issue, becuase there are now rows with 2018, but an NA budget value... 
+
+* OK, so when i get new outturn data, it should match the previous year's budget LAs. if it doesn't, you end up with NAs, potentially for both the outturn and budget data, since we are doing a full join. 
+
+* So in 2017 there were 353 LAs outturn reports in England and for the 2018-19 budget year the same 353 reported as well. this was ok. 
+
+# Monday 25.11.2019
+
+* So what do i do with new data then. if the new 2018 outturns are not the same as the 2018 budget. OK. the outturns win. but what about the NAs? I think this is OK. 
+
+* or if the 2019 budget data is not for the same 353 LAs we'll get outturn data next year. Which it isn't, there are only 343 LAs in the budget data for 2019, so there are 10 missing. Actually there are 15 additional ones in 2018 and five additional ones in 2019..
+
+* But there's another problem. because i have the 2018 England row with the budget data only, and then in 2018 i add the 2018 row with the transport totals. My current method for adding new data is to first antijoin by c("country", "auth.name", "year"), so that i would overwrite the data if it's already there, and then bind rows with the new ones. OK, this has all now been redone. Now when you add new data for England, it doesn't matter what the budget data was, the new rows will be the ones from the new outturn data. Then the budget data for next year is simply appended on. 
+
+* *if the budget data for next year is not reported for all LAs, like for 2019, there should probably be a note made of this?* 
+
+* OK, there was an errror because the budgeted trasnport variable for all of england got lost,but that's fixed now. 
+
+* *there is now a missing reference in the first paragraph* 
+
+* OK, let's go through Phil's comments first. 
+
+* Phil commenting on report that i'd already updated with ivo's comments. SO e.g. they had differente sentences in the end of the summary. Now Phil's. *mention*
+
+
+
 
 
 
