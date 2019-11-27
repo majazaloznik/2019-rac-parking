@@ -160,32 +160,6 @@ if (add.new.data){
   # budgeted net current expenditure
   eng.budg.cc <- "E31"
   
-  
-  #############################################################################
-  # Nottingham WPL data                                                   #####
-  #############################################################################
-  # title as it will appear in the references:
-  eng.nhm.title <- "{Draft Statement of Accounts}"
-
-  # url of the file:
-  eng.nhm.url <- "https://www.nottinghaminsight.org.uk/d/a1uCEFc"
-
-  # year published, as it will appear in the references:
-  eng.nhm.year.published <- 2019
-
-  ## replace with date of access to data:
-  eng.nhm.date.accessed <- "20.11.2019"
-
-  # page on which the table "Road Charging Schemes under the Transport Act 2000"
-  # can be found 
-  eng.nhm <- 96
-  
-  # income from WPL as shown in this table (in thousands, not in millions!):
-  eng.nhm.income.wpl <- 10114
-  
-  # expenditures for WPL as shown in this table (in thousands, not in millions!): 
-  eng.nhm.expend.wpl <- 577
-  
   # that's all the manual entry done!
 }
 
@@ -297,14 +271,8 @@ if (add.new.data){
              grepl("National Park", auth.name) |
              auth.name == "Greater London Authority") -> england.i.e
   
-  # add nottingham wpl data
-  data.frame(year = current.year,
-             auth.name = "Nottingham",
-             income.wpl = eng.nhm.income.wpl,
-             expend.wpl = eng.nhm.expend.wpl) -> nhm
   
-  # now merge outturn, and nhm pdf data
-  england.i.e <- full_join(england.i.e, nhm)
+  # now merge outturn data
   england.i.e <- bind_rows(england.i.e,  england.i.e.tot)
   england.i.e %>% 
     mutate(country = "England") -> england.i.e
@@ -345,7 +313,11 @@ if (add.new.data){
 
   # save updated datafile to master
   saveRDS(master, "data/03-processed/master.rds")
-  write.csv(master, "outputs/csv-tables/master.csv")
+  
+  # save to output csv, but without wpl variable
+  master %>% 
+    select(-expend.wpl, -income.wpl) %>% 
+    write.csv( "outputs/csv-tables/master.csv")
 
 
   ## IMPORT AND CLEAN RPI DATA ###################################################
@@ -405,23 +377,6 @@ if (add.new.data){
   bib.master %>%
     anti_join(eng.budg.bib, by = c("fiscyear", "country", "content")) %>%
     bind_rows(eng.budg.bib) -> bib.master
-  
-  # # add pnottingham df source:
-  eng.nhm.bib <- data.frame(fiscyear = current.year,
-                            url = eng.nhm.url,
-                            country = "England",
-                            content = "wpl",
-                            bibtype = "misc",
-                            year = eng.nhm.year.published,
-                            author = "{Nottingham City Council}",
-                            urldate = eng.nhm.date.accessed,
-                            title = eng.nhm.title,
-                            key = paste0("England.wpl.", current.year))
-
-  # add it to bib.master (overwriting if already exists)
-  bib.master %>%
-    anti_join(eng.nhm.bib, by = c("fiscyear", "country", "content")) %>%
-    bind_rows(eng.nhm.bib) -> bib.master
 
   # save updated datafile to master
   saveRDS(bib.master, "data/03-processed/bib.master.rds")
@@ -430,7 +385,9 @@ if (add.new.data){
 # select england only bibliograpy #############################################
 # select a bibliography for the england report - only the rows needed
 bib.master %>%
-  filter(fiscyear > current.year - 5, country  == "England" | country == "GB") %>%
+  filter(fiscyear > current.year - 5, !content %in% c("wpl", "map", "pcn")) %>%
+  group_by(country) %>%
+  filter(country %in% c("Wales", "England") | country == "Scotland" & fiscyear == max(fiscyear)) %>%
   mutate(refs = paste0("@", key)) %>%
   column_to_rownames("key") -> bib.england
 

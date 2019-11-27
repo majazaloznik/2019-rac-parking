@@ -1315,11 +1315,29 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 
 
+# Wednesday 26.11.2019
+
+* Ivo's updates from 25.11. 
+
+* Damn, i fixed the NA budget for 2018, but it's wrong again!? where did i loose that? *fix it again*
+
+* remove nottingham references in bibliography. OK
+
+* WPL code is still in the script, and the existing data is in the tables in case this ever needs to be revisited. it won't show in the reports anywhere. but i'll remove it from the output csv just in case. ok.
+
+* throw out map references as well in england. ok.
+
+* but we're missing scotland and wales references for the comparison. fixed.
+
+* also fixed for Scotland and wales to make sure they have the references only for the most recent year for the other two countires. ok.
+
+* commit
 
 
+* also, the comparison table is missing in the wales report,  *should be put back in. *
 
 
-
+* *add bac scotland 2017-2018 data into my repo!*
 
 
 

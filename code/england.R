@@ -110,11 +110,6 @@ bib %>%
          content == "budget") %>% 
   pull(refs) -> eng.bib.next.budget
 
-# wpl nottinggan reference
-bib %>% 
-  filter(country == "England", fiscyear == current.year, content == "wpl") %>% 
-  pull(refs) -> eng.bib.wpl
-
 # map reference
 bib %>% 
   filter( content == "map") %>% 

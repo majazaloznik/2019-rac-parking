@@ -331,6 +331,8 @@ if (add.new.data){
   # select a bibliography for the scotland report - only the rows needed
   bib.master %>%
     filter(fiscyear > current.year - 5, !content %in% c("budget", "wpl")) %>%
+   group_by(country) %>%
+   filter(country %in% c("Wales", "Scotland") | country == "England" & fiscyear == max(fiscyear)) %>%
     mutate(refs = paste0("@", key)) %>%
     column_to_rownames("key") -> bib.scotland
   
