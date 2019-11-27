@@ -242,9 +242,16 @@ original.scotland.i.e %>%
 scotland.dpe.16 <- extract_tables(here::here(orig.sco.meta.pdf$file.name[4]), 
                     pages = orig.sco.meta.pdf$dpe.tab[4])
 
+# extract DPE type table for 2017/18
+scotland.dpe.17 <- extract_tables(here::here(orig.sco.meta.pdf$file.name[5]), 
+                                  pages = orig.sco.meta.pdf$dpe.tab[5])
 
 # clean DPE type table for 2016/17 # don't worry about the warnings
 scotland.dpe.16 <- FunScotlandDPE(scotland.dpe.16, 2016)
+
+# clean DPE type table for 2017/18 # don't worry about the warnings
+scotland.dpe.17 <- FunScotlandDPE(scotland.dpe.17, 2017)
+
 
 ## 2.2.2 Scotland PCN table ###################################################
 
@@ -253,11 +260,16 @@ scotland.pcn.14.15.16 <- extract_tables(here::here(orig.sco.meta.pdf$file.name[4
                                       pages = orig.sco.meta.pdf$pcn.tab[4],
                      output = "data.frame")[[1]]
 
+# extract PCN type table for 17/18 directly into a data.frame
+scotland.pcn.17 <- extract_tables(here::here(orig.sco.meta.pdf$file.name[5]), 
+                                  pages = orig.sco.meta.pdf$pcn.tab[5],
+                                  output = "data.frame")[[1]]
 
 # clean PCN tables for 14/15, 15/16, 16/17
 scotland.pcn.14 <- FunScotlandPCN(scotland.pcn.14.15.16, 2014)
 scotland.pcn.15 <- FunScotlandPCN(scotland.pcn.14.15.16, 2015)
 scotland.pcn.16 <- FunScotlandPCN(scotland.pcn.14.15.16, 2016)
+scotland.pcn.17 <- FunScotlandPCN(scotland.pcn.17, 2017)
 
 # manually correct Argyll and Bute's number following Leibling
 scotland.pcn.16  %>% 
@@ -271,9 +283,13 @@ scotland.tfs.i.e.16 <- extract_tables(here::here(orig.sco.meta.pdf$file.name[4])
                                         pages = orig.sco.meta.pdf$e.i.tab[4],
                                         output = "data.frame")[[1]]
 
+scotland.tfs.i.e.17 <- extract_tables(here::here(orig.sco.meta.pdf$file.name[5]), 
+                                      pages = orig.sco.meta.pdf$e.i.tab[5],
+                                      output = "data.frame")[[1]]
 
-# clean TFS income expenditure tables for 16/17
+# clean TFS income expenditure tables for 16/17 and 17/18
 scotland.tfs.i.e.16 <- FunScotlandTFSIE(scotland.tfs.i.e.16, 2016)
+scotland.tfs.i.e.17 <- FunScotlandTFSIE(scotland.tfs.i.e.17, 2017)
 
 ## 2.3. Merge all Scotland data together #######################################
 
@@ -303,12 +319,17 @@ scotland.pdf.16 <- full_join(full_join(scotland.dpe.16,
                                        scotland.pcn.16,by = c("auth.name", "year")),
                              scotland.tfs.i.e.16,  by = c("auth.name", "year"))
 
+scotland.pdf.17 <- full_join(full_join(scotland.dpe.17,
+                                       scotland.pcn.17,by = c("auth.name", "year")),
+                             scotland.tfs.i.e.17,  by = c("auth.name", "year"))
+
+
 # now row bind all pdf data together
 original.scotland.pdf <- bind_rows(scotland.pdf.13,
                                    scotland.pdf.14,
                                    scotland.pdf.15,
-                                   scotland.pdf.16)
-
+                                   scotland.pdf.16,
+                                   scotland.pdf.17)
 
 # now merge income exp data from the Excel files with the pdf data
 

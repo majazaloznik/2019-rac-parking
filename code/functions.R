@@ -155,7 +155,8 @@ FunEnglandBudget <- function(file =file,
 # function for extracting Scotlandn income and expenditure from relevant cells
 FunScotlandLACels <- function(file, sheet, expend.total, income.total, 
                               transport.total, auth.cell) {
-  auth.name <- colnames(read_excel(file, sheet, auth.cell))
+  #auth.name <- colnames(read_excel(file, sheet, auth.cell))
+  auth.name <- excel_sheets(file.name)[sheet]
   expend.total <- colnames(read_excel(file, sheet, expend.total))
   income.total <- colnames(read_excel(file, sheet, income.total))
   transport.total <- colnames(read_excel(file, sheet, transport.total))
@@ -183,8 +184,6 @@ FunScotlandLoopIE <- function(year,
   for (sheet in start.sh:end.sh){
     x <- FunScotlandLACels(file.name, sheet, exp.cell, inc.cell, transp.cell, auth.cell)
     names(x) <- colnames(df)
-    if(year == 2016) 
-      x[1] <- gsub("^.+?, |, 2016-17", "", x[1])
     df <- bind_rows(df, x)
   }
   

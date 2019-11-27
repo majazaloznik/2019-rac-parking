@@ -1333,11 +1333,15 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * commit
 
+* *add back scotland 2017-2018 data into my repo!* This means adding stuff back to 00-original data entry, downloading the three files again. LOL, this first didn't work, why? because the outturn data file has in the mean time been updated, to now match the template from previous years. not how it was a few months ago.. anyway, all good now. 
+
+* ffs, no, it's not, because they removed the name of the authority in the 2017/18 excel sheets, they used to be in the A1 or A2 cell, now they're not. maybe i can read them from the name of the worksheets? and what if they change it again?! OK, read from sheet name now. 
+
+* now test scotland 2017/18. 
 
 * also, the comparison table is missing in the wales report,  *should be put back in. *
 
 
-* *add bac scotland 2017-2018 data into my repo!*
 
 
 

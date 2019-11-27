@@ -308,47 +308,49 @@ saveRDS(wpl, "data/01-raw/orig.eng.nott.wpl.17.rds")
 ## 3. SCOTLAND DATA SOURCES ####################################################
 ## 3.1 SCOTLAND incomes and expenditures #######################################
 
-fisc.year <- c( "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17")
+
+fisc.year <- c( "2011/12","2012/13", "2013/14", "2014/15", "2015/16", "2016/17", 
+                "2017/18")
 
 year <- as.numeric(substr(fisc.year, 1, 4))
 
-report <- c("yes", "-", "yes", "yes", "yes", "-")
+report <- c("yes", "-", "yes", "yes", "yes", "-", "-")
 
 file.name <- c("", 
                "data/01-raw/orig.sco-12-13.xlsx",
                "data/01-raw/orig.sco-13-14.xlsx",
                "data/01-raw/orig.sco-14-15.xlsx",
                "data/01-raw/orig.sco-15-16.xlsx",
-               "data/01-raw/orig.sco-16-17.xlsx")
+               "data/01-raw/orig.sco-16-17.xlsx",
+               "data/01-raw/orig.sco-17-18.xlsx")
 
 link <- c("--", 
           "\\href{https://www2.gov.scot/Resource/0044/00446440.xlsx}{xlsx}", 
           "\\href{https://www2.gov.scot/Resource/0047/00475683.xlsx}{xlsx}",
           "\\href{https://www2.gov.scot/Resource/0049/00494926.xlsx}{xlsx}",
           "\\href{https://www2.gov.scot/Resource/0051/00515383.xlsx}{xlsx}",
-          "\\href{https://www2.gov.scot/Resource/0053/00536018.xlsx}{xlsx}")
+          "\\href{https://www2.gov.scot/Resource/0053/00536018.xlsx}{xlsx}",
+          "\\href{https://www2.gov.scot/Resource/0054/00546675.xlsx}{xlsx}")
 
-start.sh <- c(NA,2,2,2,2,2)
+start.sh <- c(NA,2,2,2,2,2,2)
 
-end.sh<- c(NA,33,33,33,33,33)
+end.sh<- c(NA,33,33,33,33,33,33)
 
-exp.cell <- c("-", "F57", "F40", "E40", "B41", "B41")
+exp.cell <- c("-", "F57", "F40", "E40", "B41", "B41", "B41")
 
-inc.cell <- c("-", "G57", "G40", "F40", "C41", "C41")
+inc.cell <- c("-", "G57", "G40", "F40", "C41", "C41", "C41")
 
-t.exp.cell <- c("-", "H50", "H33", "G33", "D34", "D34") #(net expenditure)
+t.exp.cell <- c("-", "H50", "H33", "G33", "D34", "D34", "D34") #(net expenditure)
 
-# t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34") # gross revenue expenditure
+# t.exp.cell <- c("-", "F50", "F33", "E33", "B34", "B34", "U13") # gross revenue expenditure
 
-auth.cell <- c("-", "A2", "A2", "A2", "A2", "A1")
+auth.cell <- c("-", "A2", "A2", "A2", "A2", "A1", "A1")
 scotland.i.e. <- data.frame(fisc.year,year,report, file.name, link, 
                             start.sh, end.sh, exp.cell,
                             inc.cell, t.exp.cell, 
                             auth.cell)
-
-
 # save
-saveRDS(scotland.i.e., "data/01-raw/orig.sco.meta.i.e.rds")
+saveRDS(scotland.i.e., "data/01-raw/orig.sco.meta.i.e.rds") #
 
 ## 3.1.5  Aberdeen incomes and expenditures MANUAL #############################
 
@@ -379,11 +381,17 @@ aberdeen.16 <- data.frame(auth.name = "Aberdeen City",
                           expend.total =  4821) 
 
 
+aberdeen.17 <- data.frame(auth.name = "Aberdeen City",
+                          year = 2017,
+                          income.total = 8397,
+                          expend.total =  5075)
+
 bind_rows(aberdeen.12,
           aberdeen.13,
           aberdeen.14,
           aberdeen.15,
-          aberdeen.16) -> aberdeen
+          aberdeen.16,
+          aberdeen.17) -> aberdeen
 
 aberdeen %>%  
   mutate(surplus.total = income.total - expend.total) -> aberdeen
@@ -394,25 +402,26 @@ saveRDS(aberdeen, "data/01-raw/orig.sco.aberdeen.rds")
 
 ## 3.2 SCOTLAND penalty notice charges #########################################
 
-fisc.year <- c( "2011/12","2012/13", "2013/14/15/16", "2016/17")
+fisc.year <- c( "2011/12","2012/13", "2013/14/15/16", "2016/17", "2017/18")
 
 year <- as.numeric(substr(fisc.year, 1, 4))
 
-file.type <- c("--","--", "scan", "pdf")
+file.type <- c("--","--", "scan", "pdf", "pdf")
 
-file.name <- c("--","--", "data/01-raw/orig.sco-13-14-15-16-pcn.pdf", 
-               "data/01-raw/orig.sco-16-17-pcn.pdf")
+file.name <- c("--","--", "data/01-raw/orig.sco-13-14-15-16-pcn.pdf", "data/01-raw/orig.sco-16-17-pcn.pdf", 
+               "data/01-raw/orig.sco-17-18-pcn.pdf")
 
 link <- c("--", 
           "--",
           "\\href{http://www.parliament.scot/S5_Rural/Meeting%20Papers/20161221_REC_Committee_Public_Paper.pdf}{pdf}",
-          "\\href{https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/}{pdf}")
+          "\\href{https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016-to-2017/}{pdf}",
+          "\\href{https://www.transport.gov.scot/media/43636/decriminalised-parking-enforcement-income-expenditure-annual-report-2017-18.pdf}{pdf}")
 
-dpe.tab <- c(NA, NA, NA, 4)
+dpe.tab <- c(NA, NA, NA, 4, 4)
 
-pcn.tab <- c(NA, NA, NA, 5)
+pcn.tab <- c(NA, NA, NA, 5, 5)
 
-e.i.tab <- c(NA, NA, NA, 6)
+e.i.tab <- c(NA, NA, NA, 6, 6)
 
 scotland.pdf <- data.frame(fisc.year, year,file.name, file.type, link, dpe.tab,pcn.tab, e.i.tab)
 
@@ -646,7 +655,7 @@ scotland.pdf %>%
          country = "Scotland",
          content = "pcn",
          bibtype = "misc",
-         year = c(2016, 2017),
+         year = c(2016, 2017, 2018),
          author = "{Transport Scotland}",
          urldate = "10.03.2019",
          title = paste("{Decriminalised Parking Enforcement: Local Authorites'",
