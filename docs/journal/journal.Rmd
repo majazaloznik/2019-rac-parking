@@ -1319,7 +1319,6 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * Ivo's updates from 25.11. 
 
-* Damn, i fixed the NA budget for 2018, but it's wrong again!? where did i loose that? *fix it again*
 
 * remove nottingham references in bibliography. OK
 
@@ -1333,16 +1332,32 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * commit
 
-* *add back scotland 2017-2018 data into my repo!* This means adding stuff back to 00-original data entry, downloading the three files again. LOL, this first didn't work, why? because the outturn data file has in the mean time been updated, to now match the template from previous years. not how it was a few months ago.. anyway, all good now. 
+* add back scotland 2017-2018 data into my repo! This means adding stuff back to 00-original data entry, downloading the three files again. LOL, this first didn't work, why? because the outturn data file has in the mean time been updated, to now match the template from previous years. not how it was a few months ago.. anyway, all good now. 
 
 * ffs, no, it's not, because they removed the name of the authority in the 2017/18 excel sheets, they used to be in the A1 or A2 cell, now they're not. maybe i can read them from the name of the worksheets? and what if they change it again?! OK, read from sheet name now. 
 
-* now test scotland 2017/18. 
+* still not ok, also the dpe status table for 2017 is fucked. argh, 01-import needs to be fixed as well. 
+
+* now test scotland 2017/18. ok, seems fine.
+
+* commit
+
+* *note to self*: make removal of countr/data eminently reversible i.e. revert immediately and have Ivo download the intermediate repo version. 
+
+* Damn, i fixed the NA budget for 2018, but it's wrong again!? where did i loose that? fix it again. OK, so it's transport total that's missing for 2018, seems to be overwritten? This is the england total. OK
 
 * also, the comparison table is missing in the wales report,  *should be put back in. *
 
+* *there's sth wrong with the tables in tech documentation..*
 
 
+# Thursday 28.11.2019
+
+* OK, fix the total transport for england that got overwritten with the merge of the new data. DONE.
+
+* fix column widths in summary england table to make sure % sign is in same row. OK. 
+
+* commit. 
 
 
 

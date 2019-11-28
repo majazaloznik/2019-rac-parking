@@ -10,7 +10,7 @@
 ################################################################################
 
 ## preliminaries ###############################################################
-current.year <-  2018# params$current.year
+current.year <-   params$current.year
 # knitr options
 knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = FALSE)
 knitr::opts_chunk$set(fig.pos = 'H')
@@ -51,8 +51,8 @@ report.name <- paste0("england-report-", current.year, "-",
 bib <- readRDS(here::here(paste0("data/03-processed/", report.name, "-bib.rds")))
 
 # pass parameters for decimal points in text and tables
-dp.text <-  1#  params$dp.text
-dp.tables <-  1#  params$dp.tables
+dp.text <-   params$dp.text
+dp.tables <-  params$dp.tables
 
 # create folder for csv tables if it does not exist already
 suppressWarnings(dir.create(here::here(paste0("outputs/csv-tables/england-", 

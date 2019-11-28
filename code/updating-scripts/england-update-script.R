@@ -26,7 +26,7 @@ current.year <- 2018
 # If you want to add new data for the current fiscal year then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable above
-add.new.data <- TRUE
+add.new.data <- FALSE
 
 
 # If you have already produced an .Rmd file by running this script, and have 
@@ -292,7 +292,7 @@ if (add.new.data){
   # join last year's budget data with current outturn
   left_join(england.i.e, select(master, c("country", "auth.name",
                                           "year", "surplus.budget",
-                                          "budg.cong.ch")), 
+                                          "budg.cong.ch", "budg.trans")), 
             by = c("country", "auth.name", "year")) -> current.update
 
   ###############################################################################
@@ -387,7 +387,7 @@ if (add.new.data){
 bib.master %>%
   filter(fiscyear > current.year - 5, !content %in% c("wpl", "map", "pcn")) %>%
   group_by(country) %>%
-  filter(country %in% c("Wales", "England") | country == "Scotland" & fiscyear == max(fiscyear)) %>%
+  filter(country %in% c("Wales", "England", "GB") | country == "Scotland" & fiscyear == max(fiscyear)) %>%
   mutate(refs = paste0("@", key)) %>%
   column_to_rownames("key") -> bib.england
 

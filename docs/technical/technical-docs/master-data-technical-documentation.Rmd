@@ -36,6 +36,7 @@ master %>%
     "Year (in which fiscal year begins)",
     "Type of authority: LA, National Park, Greater London Authority or country (England)",
     "Name of authority",
+    "ONS code of authority",
     "Income from on-street parking, only reported for England (£ thousand)",
     "Income from off-street parking, only reported for England(£ thousand)",
     "Income from Penalty Charge Notices (£ thousand)",
@@ -52,6 +53,7 @@ master %>%
     "The estimated surplus as in the budget, only reported by England from 2010/11 onward",
     "Total transport net expenditures",
     "Budgeted net transport expenditures", 
+    "Budgeted congestion charge",
     "Whether or not a Decriminalised Parking Enforcement (DPE) regime is operated in the (Scottish) LA",
     "Which year did the DPE regime start operating in the (Scottish) LA",
     "Number of Penalty Charge Notices (PCN) issued",
@@ -64,9 +66,6 @@ master %>%
   column_spec(1, width = "3cm", monospace = TRUE) 
 
 ```
-
-
-
 
 # Rows
 
@@ -103,7 +102,6 @@ master %>%
    column_spec(1, width = "3.5cm")
 
 ```
-
 
 # Sources
 
