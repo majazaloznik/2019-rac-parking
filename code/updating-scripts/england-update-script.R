@@ -406,7 +406,7 @@ saveRDS(bib.england, paste0("data/03-processed/", report.name, "-bib.rds"))
 ################################################################################
 # check if master data is available for current year?
 new.rows <- nrow(filter(master, country == "England", year == current.year, !is.na(income.on)))
-budg.rows <- nrow(filter(master, country == "England", year == current.year+ 1, ))
+budg.rows <- nrow(filter(master, country == "England", year == current.year+ 1))
 
 if(new.rows == 0) {
   warning("There are no records for the year ", current.year) } else {

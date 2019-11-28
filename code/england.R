@@ -92,7 +92,9 @@ data %>%
 data.current %>% 
   filter(!auth.type %in% c("X", "GLA", "O")) -> la.data.current
 
-
+# number of councils 
+la.data.current %>% 
+  nrow() -> no.councils
 # extract some useful variables like bib references and column headers ########
 # current main I.E. reference
 bib %>% 
@@ -389,7 +391,8 @@ master %>%
 
 # extract most recent year, calculate proportion and reshape
 sub.gb.years %>% 
-  filter(year == min(current.year, max(year)))  %>% 
+  filter(income > 0) %>% 
+  filter(year == max(year))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
          surplus = surplus/1000, 
@@ -414,7 +417,8 @@ write.csv(sum.gb, here::here(paste0("outputs/csv-tables/england-",
 
 # same as before, but add % signs to bottom row for tabulation
 sub.gb.years %>% 
-  filter(year == min(current.year, max(year)))  %>% 
+  filter(income > 0) %>% 
+  filter(year == max(year))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
          surplus = FunDec(surplus/1000, dp.tables), 

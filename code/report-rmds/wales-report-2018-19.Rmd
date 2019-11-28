@@ -111,6 +111,56 @@ par(old.par)
 ```
 
 
+```{r compare, echo = FALSE}
+# print comparison between countries table
+sum.gb.formatted %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         col.names = c("", "England without London", "London", 
+                       "Scotland", "Wales", "Great Britain"),
+         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain (£ millions, latest year available)"), 
+         format.args = list(big.mark = ","),
+         linesep = "") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 10) %>% 
+  column_spec(1, width = "5cm") %>% 
+  row_spec(c(1, 4), hline_after = TRUE)
+```
+
+
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, Wales, and Scotland for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and the previous year, with the average annual change over the four-year period starting in `r FunFisc(4)` (or the most recent four-year period for which data is available). In the last year the surpluses for Wales have increased by `r FunDec(wal.ann, dp.text)` %, which is `r ifelse(wal.ann < wal.4av, "less", "more")` than the average annual increase observed over the preceding four years, which was `r FunDec(wal.4av, dp.text)` %. 
+
+On average, parking surpluses in Great Britain have risen by about `r FunDec(gb.ann, dp.text)` % annually over the four years compared with `r FunDec(rpi.annual.gb, dp.text)` % annually for the Retail Prices Index during the same period (`r wal.bib.rpi`).`r ifelse(gb.mr.year != current.year,  paste0("^[The most recent data available for Great Britain as a whole is from the year ", FunFisc(current.year-gb.mr.year), " and all calculations are therefore performed for the four years previous i.e. from ", FunFisc(current.year-gb.mr.year+4), ".]"), "")`
+
+
+
+```{r change}
+# print change over 5 years. 
+sum.gb.change.tab.formatted  %>% 
+  kable( "latex", 
+         booktabs = T, 
+         digits = c(rep(0, 6), 2), 
+         escape = F,
+         longtable = T,
+         align = c("r"),
+         col.names = c("",  "England without London", "London", 
+                       "Scotland", "Wales", "Great Britain"),
+         caption = paste0("Changes in parking income and expenditure over previous four years (from most recent year available) across the nations of Great Britain"), 
+         format.args = list(big.mark = ","),
+         linesep = "") %>% 
+  kable_styling(full_width = TRUE, 
+                latex_options =c("HOLD_position", "striped", "repeat_header"), 
+                font_size = 9) %>% 
+  column_spec(1, width = "6cm") %>% 
+  # column_spec(6, width = "1.8cm") %>% 
+  row_spec(c(1,3,5), hline_after = TRUE)
+```
+
 
 # Income
 

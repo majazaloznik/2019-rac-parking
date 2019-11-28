@@ -220,7 +220,8 @@ master %>%
 
 # extract most recent year, calculate proportion and reshape
 sub.gb.years %>% 
-  filter(year == min(current.year, max(year)))  %>% 
+  filter(income > 0) %>% 
+  filter(year == max(year))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
          surplus = surplus/1000, 
@@ -243,7 +244,8 @@ write.csv(sum.gb, here::here(paste0("outputs/csv-tables/scotland-",
 
 # same as before, but add % signs to bottom row for tabulation
 sub.gb.years %>% 
-  filter(year == min(current.year, max(year)))  %>% 
+  filter(income > 0) %>% 
+  filter(year == max(year))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
          surplus = FunDec(surplus/1000, dp.tables), 
@@ -258,9 +260,6 @@ sub.gb.years %>%
   mutate(country = c("Fiscal year", "Parking income", "Parking expenditure", 
                      "Surplus", "Surplus as proportion of income")) -> 
   sum.gb.formatted
-
-
-
 
 
 # table annual and average changes ############################################

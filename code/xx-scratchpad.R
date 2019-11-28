@@ -1,3 +1,17 @@
+# la's not matching for england outturn and budget
+
+not.budg <- anti_join(n,b, by = "auth.code") %>% 
+  select(year, auth.name, auth.code)
+
+
+not.this.year <- anti_join(b,n, by = "auth.code") %>% 
+  filter(!is.na(auth.code)) %>% 
+  select(year, auth.name, auth.code)
+
+
+b %>% 
+  filter(auth.type != "O") %>% 
+  nrow()
 ## mapping test ###############################################################
 library(tidyverse)
 library(sf)

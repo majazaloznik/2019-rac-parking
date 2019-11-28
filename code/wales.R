@@ -168,7 +168,8 @@ master %>%
 
 # extract most recent year, calculate proportion and reshape
 sub.gb.years %>% 
-  filter(year == min(current.year, max(year)))  %>% 
+  filter(income > 0) %>% 
+  filter(year == max(year))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
          surplus = FunDec(surplus/1000, dp.tables), 
@@ -192,7 +193,8 @@ write.csv(sum.gb, here::here(paste0("outputs/csv-tables/wales-",
 
 # same as before, but this time add % formatting to the bottom row
 sub.gb.years %>% 
-  filter(year == min(current.year, max(year)))  %>% 
+  filter(income > 0) %>% 
+  filter(year == max(year))  %>% 
   mutate(prop.of.income = surplus/income,
          year = paste0("(", year, "-", year-1999, ")"),
          surplus = FunDec(surplus/1000, dp.tables), 

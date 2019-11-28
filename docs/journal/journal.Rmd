@@ -1299,7 +1299,7 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * But there's another problem. because i have the 2018 England row with the budget data only, and then in 2018 i add the 2018 row with the transport totals. My current method for adding new data is to first antijoin by c("country", "auth.name", "year"), so that i would overwrite the data if it's already there, and then bind rows with the new ones. OK, this has all now been redone. Now when you add new data for England, it doesn't matter what the budget data was, the new rows will be the ones from the new outturn data. Then the budget data for next year is simply appended on. 
 
-* *if the budget data for next year is not reported for all LAs, like for 2019, there should probably be a note made of this?* 
+* if the budget data for next year is not reported for all LAs, like for 2019, there should probably be a note made of this? all good.
 
 * OK, there was an errror because the budgeted trasnport variable for all of england got lost,but that's fixed now. 
 
@@ -1350,7 +1350,6 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * *there's sth wrong with the tables in tech documentation..*
 
-
 # Thursday 28.11.2019
 
 * OK, fix the total transport for england that got overwritten with the merge of the new data. DONE.
@@ -1359,6 +1358,46 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * commit. 
 
+* OK, now add the comparison table to wales. 
+
+* check how many LAs the the budget data for next year is  reported for. 345 of them 
+
+These 15 are missing in the budget:
+
+   year           auth.name auth.code
+1  2018               Poole     E1201
+2  2018         Bournemouth     E1202
+3  2018              Dorset     E1221
+4  2018        Christchurch     E1232
+5  2018         East Dorset     E1233
+6  2018        North Dorset     E1234
+7  2018             Purbeck     E1236
+8  2018         West Dorset     E1237
+9  2018 Weymouth & Portland     E1238
+10 2018       Taunton Deane     E3333
+11 2018       West Somerset     E3335
+12 2018        Forest Heath     E3532
+13 2018      St Edmundsbury     E3535
+14 2018     Suffolk Coastal     E3536
+15 2018             Waveney     E3537
+
+and these five are new:
+
+1 2019                              Dorset     E1203
+2 2019 Bournemouth, Christchurch and Poole     E1204
+3 2019           Somerset West and Taunton     E3336
+4 2019                        East Suffolk     E3538
+5 2019                        West Suffolk     E3539
+
+But these seem to have all been merged, so all good. 
+
+* return two wales tables back.
+
+* found a mistake, in the comparison tables, when it looked at most recent year, it actually looked at most recent not newer than report. but that's wrong, it can be newer. fixed in scotland, wales and england, all good. checked to make sure the bibliographies are correct as well!ok. 
+
+* commit.
+
+* send to ivo. 
 
 
 ### Wales (based on 17/18) #####################################################

@@ -42,7 +42,7 @@ nocite: |
 
 This report uses the MHCLG (formerly DCLG) tables on parking income and expenditure for the period from `r FunFisc(4)` to `r FunFisc()` (`r  eng.bib.main.i.e`). All councils are required to report their financial information to government, in a consistent format, although there may be some differences in interpretation of what that format is and what it covers. Earlier, councils also submitted budgets for the `r FunFisc(-1)` financial year but on a less detailed basis (`r eng.bib.next.budget`). These figures are included where appropriate. The figures have to be on an as-received cash basis without any provision for bad debts or any allowance for capital charges (interest or deprecation).
 
-This report cover the 353 local authorities in England but excludes the national parks which declare parking income. 
+This report covers `r no.councils` local authorities in England but excludes the national parks which declare parking income. 
 
 The income and cost headings used in this analysis are: 
 
