@@ -170,8 +170,7 @@ FunScotlandLoopIE <- function(year,
                               end.sh,
                               exp.cell,
                               inc.cell,
-                              transp.cell,
-                              auth.cell) {
+                              transp.cell) {
   
   
   # prepare empty data frame for the data
@@ -182,7 +181,7 @@ FunScotlandLoopIE <- function(year,
 
   # loop through all the sheets
   for (sheet in start.sh:end.sh){
-    x <- FunScotlandLACels(file.name, sheet, exp.cell, inc.cell, transp.cell, auth.cell)
+    x <- FunScotlandLACels(file.name, sheet, exp.cell, inc.cell, transp.cell)
     names(x) <- colnames(df)
     df <- bind_rows(df, x)
   }

@@ -1015,7 +1015,7 @@ OK, so I'll now start working through england.R and the report template. The upd
 * ah, and the surplus changes need to be split between surpluses and deficits.. This was not done in the originals.. 
 * bloody NAs and formatting these tables, such a faff every time. 
 * OK, london surplus table done.
-* Now the england one, top 20. looks like i could deduce Nottingham from there? *later*
+* Now the england one, top 20. looks like i could deduce Nottingham from there? later. No, no WPL now. 
 * the package `english` has the function `ordinal` for writing out ordinal numbers, nice. 
 * finished surpluses. 
 * start on budget comparison. 
@@ -1246,9 +1246,9 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * ok, so all looks good, commit now with 2017-2018 england data. 
 
-* *change outturn name of file from RS to RO2 or whatever*
+* change outturn name of file from RS to RO2 or whatever.ok
 
-* wpl there's an extra * instead of "
+* wpl there's an extra * instead of ".
 
 * what if it's not the final statememnt, but the draft one? for the budget?
 
@@ -1346,7 +1346,7 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * Damn, i fixed the NA budget for 2018, but it's wrong again!? where did i loose that? fix it again. OK, so it's transport total that's missing for 2018, seems to be overwritten? This is the england total. OK
 
-* also, the comparison table is missing in the wales report,  *should be put back in. *
+* also, the comparison table is missing in the wales report,  should be put back in.OK
 
 * *there's sth wrong with the tables in tech documentation..*
 
@@ -1397,7 +1397,22 @@ But these seem to have all been merged, so all good.
 
 * commit.
 
-* send to ivo. 
+* send to ivo.
+
+# Friday 29.11.2019
+
+* Ah, having changed the scotland data input to read the names of the LAs from the worksheet names, i need to remove the input for the cell with the LA name, especially since they probably won't exist in the future. OK
+
+* clean up user manual. 
+
+* remove all references to WPL in user manual and update script. ok. 
+
+* commit
+
+* *move code to "do not touch" folder*
+
+
+
 
 
 ### Wales (based on 17/18) #####################################################

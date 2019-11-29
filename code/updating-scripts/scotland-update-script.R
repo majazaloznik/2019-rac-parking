@@ -78,8 +78,6 @@ if (add.new.data){
   # which cell has the Total Roads and Transport "Net revenue Expenditure on a funding basis"?
   sco.i.e.transp.cell <- "D34"
   
-  # On individual LA sheets, which cell has the name of the LA?
-  sco.i.e.auth.cell <- "A1"
   
   # Aberdeen city - separate data source if available? ###########################
   ################################################################################
@@ -170,8 +168,7 @@ if (add.new.data){
                     end.sh =  sco.i.e.end.sh,
                     exp.cell =  sco.i.e.exp.cell,
                     inc.cell =  sco.i.e.inc.cell,
-                    transp.cell = sco.i.e.transp.cell,
-                    auth.cell = sco.i.e.auth.cell) -> scotland.i.e.
+                    transp.cell = sco.i.e.transp.cell) -> scotland.i.e.
   
   aberdeen <- data.frame(auth.name = "Aberdeen City",
                          year = current.year,
