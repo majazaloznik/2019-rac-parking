@@ -35,7 +35,7 @@ font_add(family = "meri", regular = here::here("data/01-raw/fonts/merriweather.g
 showtext_auto()
 
 # source functions
-source(here::here("code/functions.R"))
+source(here::here("code/do-not-touch-scripts/functions.R"))
 
 # load data and shapefiles
 master <- readRDS(here::here("data/03-processed/master.rds"))

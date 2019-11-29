@@ -1,7 +1,7 @@
 ---
 title: "RAC Parking report automation - A user's guide"
 author: "mz"
-date: "5 April 2019"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   bookdown::pdf_document2:
     number_sections: true
@@ -37,11 +37,11 @@ Additionally have a look at the folder structure in the appendix and note:
 
 # Prerequisites
 
-This was tested on R version 3.5.3, with Rstudio 1.1.463. I do not know how it will behave on older platforms, so maybe just update both.
+This was tested on R version `r paste0(R.Version()$major,".", R.Version()$minor)`, with Rstudio 1.2.5001. I do not know how it will behave on older platforms, so maybe just update both.
 
-The following packages need to be installed, and you might as well install them in advance, there is no error checking in the code, so the scripts will probably fail quite unceremoniously. 
+The following packages need to be installed, but the repository has `renv` initialised, which should take care of this for you, ensuring you have all the packages and that they are the versions that I had when I handed over the repository to you. This means that even if you update your packages elsewhere, the project will still use the packages where this last worked, since there is no need to update them once the thing is up and running. Fingers crossed this works. 
 
-For your convenience here they are in no particular order to copy/paste:
+But here's the list anyway. 
 
 ```
 install.packages("tidyr")
@@ -64,8 +64,8 @@ install.packages("knitr")
 ```
 
 Additionally, for you to be able to compile to pdf, you **need to have LaTeX installed**. Now it seems that there is a way to do this simply using TinyTex https://yihui.name/tinytex/. I have not tried this, but the guy that wrote it is a legend and I would trust him with my life. 
-
 You should also have git installed and use it! Make sure you always have a working copy of this repository committed, so you can revert to it in case anything gets messed up. TBH I always get a bit confused with git collaborations, so fingers crossed we don't do anything too complicated. 
+
 
 # Data Management Pipeline
 
@@ -75,25 +75,25 @@ knitr::include_graphics("chart.png")
 
 ## The pipeline
 
-This section describes the diagram at the start of this document i.e. how all the scripts and files work together. I'll try to do this in a semi-chronological manner.
+This section describes the diagram at the start of this document i.e. how all the scripts and files work together. I'll try to do this in a semi-chronological manner. But most importantly: you should only ever look at and modify the files in the green nodes. And definitely do not modify the purple ones, that's why they live in the folder `code/do-not-touch-scripts"
 
-`00-orig-daya-entry.R` is where all the original manual data entry happened. 
+`00-orig-daya-entry.R` is where all the original manual data entry happened. *Do not touch.*
 
 This script outputs to `bib.master.rds` which started out as the original bibliography, but now gets updated by each updated script (if there is anything new). At the same time the updating scripts also read from the master bibliography file to prepare the subset required for each report. 
 
-`00-orig-data-entry.R` also produced a set of `orig.xxx.rds` files which contained such things as the filenames of the raw data files, and the locations of relevant cells in each excel spreadsheet, or metadata. It also contains the manually entered data like the Aberdeen City data, which is in a scanned pdf file. 
+`00-orig-data-entry.R` also produced a set of `orig.xxx.rds` files which contained such things as the file names of the raw data files, and the locations of relevant cells in each excel spreadsheet, or metadata. It also contains the manually entered data like the Aberdeen City data, which is in a scanned pdf file. 
 
-These `orig.xxx.rds` metadata files together with the files saved in `/data/01-raw` are the main input for the `01-orig-data-import.R` file, which is where the first big import and clean of the data happened. This includes reading cells from individual sheets in Excel files and merging them together, and reading tables out of pdfs.. This produced a big table with *all* the parking data needed for the reports. This table has a *pitstop* in `original.data.rds`, but ends up being `master.rds`, the table that gets updated with new data by the `updating scripts`
+These `orig.xxx.rds` metadata files together with the files saved in `/data/01-raw` are the main input for the `01-orig-data-import.R` file, which is where the first big import and clean of the data happened. This includes reading cells from individual sheets in Excel files and merging them together, and reading tables out of pdfs.. This produced a big table with *all* the parking data needed for the reports. This table has a *pit stop* in `original.data.rds`, but ends up being `master.rds`, the table that gets updated with new data by the `updating scripts`
 
 The `updating scripts` are the central point in a way. This is where you choose which year you want the report for and add any metadata that is required. The metadata allows the script to extract the right data from `/data/01-raw`, it updates the bibliography master file, and creates individual bibliographies for each report. Any newly extracted data is added to `master.rds`. 
 
 Once all this is done, the `updating script` makes a copy of the relevant `report-template` and compiles it. This Rmd file does not really do much calculation--the code chunks in the report rmds are exclusively tabulation and plotting--instead I moved the main work to separate analysis files: `scotland.R` and `wales.R`, and  `england.R`. 
 
-These `sco|wal|eng.R` files are the real workhorses, taking the master data and reshaping it in every way required for the tables, the maps and the inline text in the report rmds. While they go along they also save the relevant tables as csv files. 
+These `sco|wal|eng.R` files are the real workhorses, taking the master data and reshaping it in every way required for the tables, the maps and the inline text in the report rmds. While they go along they also save the relevant tables as csv files. *Do not touch.*
 
 The compilation of the report ends up producing a .pdf file, and that's it. 
 
-All along all of the .R script files use the functions that are stored in `functions.R`
+All along all of the .R script files use the functions that are stored in `functions.R`. *Do not touch.*
 
 Don't worry if it's a bit complicated, you only really need to worry about the two green nodes: the updating scripts and the report-rmds. Instructions on how to use them follow below. 
 
@@ -164,7 +164,7 @@ You have already produced a report, but you want to tweak it.
 6. Make sure `add.new.data` is changed to `TRUE`.
 7. Make sure `recompile.rmd` is set to `FALSE`.
 8. Then continue to the *Manual input* section.
-9. Enter the filenames of the three files you have just downloaded. Just the name, not the path.
+9. Enter the file names of the three files you have just downloaded. Just the name, not the path.
 10. Update the access date.
 11. Now run through the whole file. The script will update the `master.rds` file with the new data as well as updating the bibliography to include the newly added data. Finally it will produce an .Rmd, a pdf and the csv tables. 
 12. If you wish to modify the report go to Section \@ref(modify).
@@ -175,7 +175,7 @@ You have already produced a report, but you want to tweak it.
 
 1. When the new parking data for Scotland becomes available, you need to download following files, while *taking note of the urls* where you got them
 *  *Income and expenditure* is available on this website:[Scottish Local Government Financial Statistics](https://www2.gov.scot/Topics/Statistics/Browse/Local-Government-Finance/PubScottishLGFStats), look for the "Annex A by LA" link. Download the file to `/data/01-raw` e.g. as `sco.i.e.17-18.xlsx`
-*  *Abredeen data* is available on this website: [Annual accounts](https://www.aberdeencity.gov.uk/services/council-and-democracy/financial-information-and-procurement/annual-accounts).  Download the file for this year to `/data/01-raw` e.g. as `sco.abd.17-18.pdf`
+*  *Aberdeen data* is available on this website: [Annual accounts](https://www.aberdeencity.gov.uk/services/council-and-democracy/financial-information-and-procurement/annual-accounts).  Download the file for this year to `/data/01-raw` e.g. as `sco.abd.17-18.pdf`
 *  *PCN data* is available on this website: [Transport Scotland](https://www.transport.gov.scot/publication/decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2017-to-2018/). Search for the DPE report for the current year and download it to `/data/01-raw` e.g. as `sco.pcn.17-18.pdf`
 5. Now open `code/updating-scritps/scotland-update-script.R` and scroll down to the *Mandatory inputs* section. 
 6. Change the `current.year` field. to the most recent year the data has become available for
@@ -196,7 +196,7 @@ You have already produced a report, but you want to tweak it.
 1. When the new parking data for England becomes available, you need to download following files, while *taking note of the urls* where you got them:
 2.  *England Outturn Data* is available on this website:[Local Authority Revenue and expenditure](https://www.gov.uk/government/collections/local-authority-revenue-expenditure-and-financing): 
 * look for the link called *Local authority revenue expenditure and financing England: 20XX to 20XY individual local authority data - outturn* -- make sure it has both LA and outturn in the name
-* Selec the Excel file "Revenue outturn highways and transport services (RO2) 20XX to 20XY"
+* Select the Excel file "Revenue outturn highways and transport services (RO2) 20XX to 20XY"
 * Download the file to `/data/01-raw` e.g. as `eng.17-18.xlsx`
 * take note of the url for the excel file!
 3. *England budget data for the next fiscal year*  is available on the same site as the outturn data above, but make sure it's for the next fiscal year!
@@ -243,14 +243,16 @@ Another note on the **citation style**: when you are entering the metadata in th
 
 Changing *fonts* is generally a pretty tricky operation, so I have made no plans for that being an option. The one thing I was able to do was to change the fonts in the plots to something nicer than the default. Unfortunately that does not work in the maps for some reason. 
 
-The *colours* in the maps are also not easily hangable, so I hope you appreciate them as they are. Just to explain what I did, the palettes are calculated for each pair of maps in order to encompass the whole range for both the current change and the average change over four years making the maps, and the relevant two columns in the table directly comparable. Furthermore the colour palette splits at zero, proportionately to the minimum and maximum keeping the gradient smooth. And I took a chunk out at zero meaning the *good* side always starts slightly greenish and the *bad* side starts slightly orangish, making it clear which ones are positive and which negative. 
+The *colours* in the maps are also not easily changeable, so I hope you appreciate them as they are. Just to explain what I did, the palettes are calculated for each pair of maps in order to encompass the whole range for both the current change and the average change over four years making the maps, and the relevant two columns in the table directly comparable. Furthermore the colour palette splits at zero, proportionately to the minimum and maximum keeping the gradient smooth. And I took a chunk out at zero meaning the *good* side always starts slightly greenish and the *bad* side starts slightly orangish, making it clear which ones are positive and which negative. 
 
 
 \newpage
 # Appendix: Folder structure {-}
 
 \color{black}
-`|-- code` \color{green}
+`|-- code` 
+
+`|   |-- do-not-touch-scripts` \color{green}
 
 `|   |-- report-rmds` \color{black}
 
@@ -300,13 +302,13 @@ This is a quick overview of what is what in the repository folder structure.
 
 Contains all the `.R` and `.Rmd` files. Additionally contains the bibliography files and bib style file, which have to be in the same folder as the Rmds. 
 
-#### Top level
+#### do-not-touch-scripts
 
 * `00-orig-data-entry.R` contains **manually** input data and metadata, including references for existing sources, manually input data from scanned pdfs, and lookup tables for when LA names have spelling variants and typos. *do not modify*
 * `01-orig-data-entry.R` contains code to **programatically** extract and clean data from all the original data sources and produce the `original.data.rds`, which immediately becomes the `master.rds`. *do not modify*
 * `functions.R` contain all the helper functions used by pretty much all the other `.R` files. *do not modify*
 * `scotland.R` and `wales.R` and `england.R` contain the code run by each .Rmd file. This code was originally in the `.Rmd` files themselves, but that made them extremely long an difficult to navigate, so I moved it out. *do not modify*
-* `xx-scratchpad.R` - my playground, ignore this, can be deleted in the future. 
+* `xx-scratchpad.R` - my playground, ignore this, will be deleted if it hasn't been already. 
 
 #### `updating-scritps`
 
@@ -354,7 +356,7 @@ Not important
 
 #### `journal`
 
-Contains the journal of this analysis as well as the queries sent during it's course.
+Contains the journal of this analysis as well as the queries sent during its course.
 
 #### `original-reports`
 

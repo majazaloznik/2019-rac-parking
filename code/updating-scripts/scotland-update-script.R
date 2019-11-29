@@ -139,7 +139,7 @@ decriminalised-parking-enforcement-local-authorities-income-and-expenditure-2016
 ################################################################################
 ## LOAD PACKAGES AND DATA ######################################################
 ################################################################################
-source("code/functions.R")
+source("code/do-not-touch-scripts/functions.R")
 library(tidyr)
 library(dplyr)
 library(tibble)

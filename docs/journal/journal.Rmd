@@ -1409,8 +1409,15 @@ But these seem to have all been merged, so all good.
 
 * commit
 
-* *move code to "do not touch" folder*
+* add reference to renv into user manual.OK
 
+* move code to "do not touch" folder. and update user manual to reflect this. ok
+
+* test. OK. 
+
+* spell check user manual. ok. 
+
+* commit.. 
 
 
 

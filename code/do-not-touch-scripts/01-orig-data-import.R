@@ -26,7 +26,7 @@ library(dplyr)
 library(readxl)
 library(tabulizer)
 options(stringsAsFactors = FALSE)
-source("code/functions.R")
+source("code/do-not-touch-scripts/functions.R")
 
 # import manually input data - metadata and name lookup tables
 myfiles <- list.files(path = "data/01-raw", pattern =  "^orig.*\\.rds", full.names = TRUE)

@@ -23,7 +23,7 @@ csl: apa-with-notes.csl
 ---
   
 ```{r setup, echo = FALSE, message= FALSE, warning=FALSE}
-source(here::here("code/wales.R"))
+source(here::here("code/do-not-touch-scripts/wales.R"))
 ```
 
 ---
