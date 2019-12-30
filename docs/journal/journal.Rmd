@@ -1348,7 +1348,7 @@ Error: package or namespace load failed for ‘sf’ in dyn.load(file, DLLpath =
 
 * also, the comparison table is missing in the wales report,  should be put back in.OK
 
-* *there's sth wrong with the tables in tech documentation..*
+* there's sth wrong with the tables in tech documentation... ok now. 
 
 # Thursday 28.11.2019
 
@@ -1456,9 +1456,9 @@ Hmm, no, not really, but running `sudo R CMD javareconf" a few times and restart
 
 * back to Ivo's comments from last week. 
 
-* up/down. increased/decreased.. if negative should be absolute. i guess i didn't make sure all of them were. so i'll have to *go through the whole thing and double check*. Done for England. Wales done
+* up/down. increased/decreased.. if negative should be absolute. i guess i didn't make sure all of them were. so i'll have to go through the whole thing and double check. Done for England. Wales done. scotland as well., ok
 
-* fixed the expenditure code that switches between thousands and millions if the numbers are too low. *check other reports for same code*
+* fixed the expenditure code that switches between thousands and millions if the numbers are too low. check other reports for same code. none
 
 * also there are some points where 1000 millions need to be changed to billions. OK, england done. 
 
@@ -1468,10 +1468,13 @@ Hmm, no, not really, but running `sudo R CMD javareconf" a few times and restart
 
 * sth odd happening with the references, there is a ref correctly spelled with England capitalised, but it is in small caps in the pdfs. Hope no one notices. 
 
+* Ah, ok, figured it out, the ref manager automatically uses lower case titles unless you put the title in {{}} double brackets.. fixed. 
+
 * commit. 
 
-* now check scotland as well. 
+* now check scotland as well. OK. 
 
+* commit. 
 
 
 ### Wales (based on 17/18) #####################################################

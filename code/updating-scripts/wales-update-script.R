@@ -26,7 +26,7 @@ current.year <- 2018
 # If you want to add new data that has been publihsed then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable. 
-add.new.data <- TRUE
+add.new.data <- FALSE
 
 # If you have already produced an .Rmd file by running this script, and have 
 # made changes to the .Rmd file and just want to recompile it switch to TRUE.

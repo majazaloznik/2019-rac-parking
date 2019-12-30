@@ -88,11 +88,11 @@ cex = 0.8)
 # Summary 
 
 Table \@ref(tab:sumtab) and Figure \@ref(fig:fig1) show the summary accounts for local authorities in Scotland for fiscal years `r FunFisc(4)` to `r FunFisc()`. The income has 
-`r ifelse(sco.summary$change[1] < -0.05, paste("fallen by", FunDec(-sco.summary$change[1], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[1], dp.text), "%"),"stayed approximately the same"))`, the expenditure has 
-`r ifelse(sco.summary$change[2] < -0.05, paste("fallen by", FunDec(-sco.summary$change[2], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[2], dp.text), "%"),"stayed approximately the same"))`, and the surplus has
-`r ifelse(sco.summary$change[3] < -0.05, paste("fallen by", FunDec(-sco.summary$change[3], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[3], dp.text), "%"),"stayed approximately the same"))`
+`r ifelse(sco.summary$change[1] < -0.05, paste("fallen by", FunDec(-sco.summary$change[1], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(abs(sco.summary$change[1]), dp.text), "%"),"stayed approximately the same"))`, the expenditure has 
+`r ifelse(sco.summary$change[2] < -0.05, paste("fallen by", FunDec(-sco.summary$change[2], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(abs(sco.summary$change[2]), dp.text), "%"),"stayed approximately the same"))`, and the surplus has
+`r ifelse(sco.summary$change[3] < -0.05, paste("fallen by", FunDec(-sco.summary$change[3], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(abs(sco.summary$change[3]), dp.text), "%"),"stayed approximately the same"))`
 compared to the previous fiscal year. Total transport expenditures have
-`r ifelse(sco.summary$change[4] < -0.05, paste("fallen by", FunDec(-sco.summary$change[4], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(sco.summary$change[4], dp.text), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(FunDec(sco.summary[5, 6], dp.text), "%")` of net transport expenditure. Parking makes a 
+`r ifelse(sco.summary$change[4] < -0.05, paste("fallen by", FunDec(-sco.summary$change[4], dp.text), "%"), ifelse(sco.summary$change[1] > 0.05, paste("increased by", FunDec(abs(sco.summary$change[4]), dp.text), "%"),"stayed approximately the same"))` and the surplus now represents `r paste(FunDec(sco.summary[5, 6], dp.text), "%")` of net transport expenditure. Parking makes a 
 `r ifelse(sco.summary[5, 6] < eng.trans - 0.05 , "smaller", ifelse(sco.summary[5, 6] > eng.trans + 0.05,  "larger","similar"))` contribution to overall transport expenditure in Scotland compared with England where it is `r FunDec(eng.trans, dp.text)` % of total transport.
 
 \newpage 
@@ -184,10 +184,10 @@ sum.gb.formatted %>%
 ```
 
 
-Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and the previous year, with the average annual change over the four-year period starting in `r FunFisc(4)` (or the most recent four-year period for which data is available). In the last year the surpluses for Scotland have increased by `r FunDec(sco.ann, dp.text)` %, which is `r ifelse(sco.ann < sco.4av, "less", "more")` than the average annual increase observed over the preceding four years, which was `r FunDec(sco.4av, dp.text)` %. 
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, and Wales for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and the previous year, with the average annual change over the four-year period starting in `r FunFisc(4)` (or the most recent four-year period for which data is available). In the last year the surpluses for Scotland have `r ifelse(sco.ann >= 0, "increased", "decreased")` by `r FunDec(sco.ann, dp.text)` %, which is `r ifelse(sco.ann < sco.4av, "less", "more")` than the average annual increase observed over the preceding four years, which was `r FunDec(sco.4av, dp.text)` %. 
 
 
-On average, parking surpluses in Great Britain have risen by about `r FunDec(gb.ann, dp.text)` % annually over the four years compared with `r FunDec(rpi.annual.gb, dp.text)` % annually for the Retail Prices Index during the same period (`r sco.bib.rpi`).`r ifelse(gb.mr.year != current.year,  paste0("^[The most recent data available for Great Britain as a whole is from the year ", FunFisc(current.year-gb.mr.year), " and all calculations are therefore performed for the four years previous i.e. from ", FunFisc(current.year-gb.mr.year+4), ".]"), "")`
+On average, parking surpluses in Great Britain have `r ifelse(gb.ann > 0, "increased", "decreased")` by about `r FunDec(abs(gb.ann), dp.text)` % annually over the four years compared with `r FunDec(rpi.annual.gb, dp.text)` % annually for the Retail Prices Index during the same period (`r sco.bib.rpi`).`r ifelse(gb.mr.year != current.year,  paste0("^[The most recent data available for Great Britain as a whole is from the year ", FunFisc(current.year-gb.mr.year), " and all calculations are therefore performed for the four years previous i.e. from ", FunFisc(current.year-gb.mr.year+4), ".]"), "")`
 
 \newpage
 
@@ -214,10 +214,9 @@ sum.gb.change.tab.formatted  %>%
 ```
 
 
-
 #  Income
 
-Total council parking income from all sources in Scotland for `r FunFisc()` was £`r FunDec(sco.summary[1, 6], dp.text)` million, `r FunDec(sco.summary$change[1], dp.text)` % `r ifelse (sco.summary$change[1] > 0, "higher", "lower")` than `r FunFisc(1)`. Note that this includes meter and penalty income for on- and off-street parking, but does not include income received by private parking companies.  Table \@ref(tab:incometab) ranks the Scottish councils in terms of parking income. 
+Total council parking income from all sources in Scotland for `r FunFisc()` was £`r FunDec(sco.summary[1, 6], dp.text)` million, `r FunDec(abs(sco.summary$change[1]), dp.text)` % `r ifelse (sco.summary$change[1] > 0, "higher", "lower")` than `r FunFisc(1)`. Note that this includes meter and penalty income for on- and off-street parking, but does not include income received by private parking companies.  Table \@ref(tab:incometab) ranks the Scottish councils in terms of parking income. 
 
 In Scotland as a whole `r FunFirstup(FunN2W(income.bin["poz"]))` `r ifelse(income.bin["poz"] == 1, "council", "councils")` increased their income over the past year and `r FunN2W(income.bin["neg"])` decreased their income. `r if(!is.na(income.bin["zero"])) paste("Another", ifelse ( income.bin["zero"] == 1, "single",FunN2W(income.bin["zero"])), ifelse ( income.bin["zero"] == 1, "council's income", "councils' incomes"), "stayed the same.")`
  `r if(!is.na(income.bin["na"])) paste(ifelse(income.bin["na"] == 1, paste("There is", FunN2W(income.bin["na"]), "council"), paste("There are", FunN2W(income.bin["na"]), "councils")), "that did not report income data in this or the previous fiscal year, so we cannot define the change.")` The changes from `r FunFisc(1)` are mapped in Figure \@ref(fig:incomefig). The annualised changes over the previous four years are plotted in  Figure \@ref(fig:incomefig4), using the same colour palette. 
@@ -259,7 +258,7 @@ sco.income.formatted %>%
 FunMap(sco.income, which = 1, shp = uc, country = "^S",  dir = 1)
 ```
 
-Table \@ref(tab:pcntab) shows the number of PCNs issued council by council in Scotland for the years `r FunFisc(x)` to `r FunFisc()`, with the average income per PCN for  `r FunFisc()`. The total number of PCNs has `r ifelse(sco.pcn.numbers.annual > 0, "increased", "decreased")` by around `r FunDec(sco.pcn.numbers.annual, dp.text)` % a year on average. The average recovery per PCN was £`r FunDec(sco.pcn.tot.average, dp.text)` in `r FunFisc()`.
+Table \@ref(tab:pcntab) shows the number of PCNs issued council by council in Scotland for the years `r FunFisc(x)` to `r FunFisc()`, with the average income per PCN for  `r FunFisc()`. The total number of PCNs has `r ifelse(sco.pcn.numbers.annual > 0, "increased", "decreased")` by around `r FunDec(abs(sco.pcn.numbers.annual), dp.text)` % a year on average. The average recovery per PCN was £`r FunDec(sco.pcn.tot.average, dp.text)` in `r FunFisc()`.
 
 ```{r incomefig4, fig.cap = paste("Map of average annual change in parking income over the past four years from", FunFisc(4), "to", FunFisc(), "(ref:foo)"), fig.height = 4}
 # map expenditure change

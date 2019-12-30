@@ -26,7 +26,7 @@ current.year <- 2018
 # If you want to add new data for the current fiscal year then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable above
-add.new.data <- TRUE
+add.new.data <- FALSE
 
 
 # If you have already produced an .Rmd file by running this script, and have 
@@ -353,7 +353,7 @@ if (add.new.data){
                             year = eng.i.e.year.published,
                             author = "{UK Government}",
                             urldate = eng.i.e.date.accessed,
-                            title = eng.i.e.title,
+                            title = paste0("{",eng.i.e.title, "}"),
                             key = paste0("England.i.e.", current.year))
 
   # add it to bib.master (overwriting if already exists)
@@ -370,7 +370,7 @@ if (add.new.data){
                             year = eng.budg.year.published,
                             author = "{UK Government}",
                             urldate = eng.budg.date.accessed,
-                            title = eng.budg.title,
+                            title = paste0("{",eng.budg.title, "}"),
                             key = paste0("England.budg.", current.year + 1))
   
   # add it to bib.master (overwriting if already exists)
