@@ -1456,11 +1456,22 @@ Hmm, no, not really, but running `sudo R CMD javareconf" a few times and restart
 
 * back to Ivo's comments from last week. 
 
-* up/down. increased/decreased.. if negative should be absolute. i guess i didn't make sure all of them were. so i'll have to *go through the whole thing and double check*. Done for England.
+* up/down. increased/decreased.. if negative should be absolute. i guess i didn't make sure all of them were. so i'll have to *go through the whole thing and double check*. Done for England. Wales done
 
 * fixed the expenditure code that switches between thousands and millions if the numbers are too low. *check other reports for same code*
 
 * also there are some points where 1000 millions need to be changed to billions. OK, england done. 
+
+* some small errors in england as well. 
+
+* Now check through wales. done .
+
+* sth odd happening with the references, there is a ref correctly spelled with England capitalised, but it is in small caps in the pdfs. Hope no one notices. 
+
+* commit. 
+
+* now check scotland as well. 
+
 
 
 ### Wales (based on 17/18) #####################################################

@@ -26,7 +26,7 @@ current.year <- 2018
 # If you want to add new data for the current fiscal year then change to 
 # TRUE and proceed through the script. Alyways make sure the data you are entering 
 # matches the current.year variable above
-add.new.data <- FALSE
+add.new.data <- TRUE
 
 
 # If you have already produced an .Rmd file by running this script, and have 
