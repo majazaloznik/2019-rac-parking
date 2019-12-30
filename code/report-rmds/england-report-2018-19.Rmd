@@ -77,9 +77,9 @@ eng.summary.formatted %>%
                 latex_options =c("HOLD_position"), 
                 font_size = 9) %>% 
   column_spec(1, width = "1.6cm") %>% 
-  column_spec(2, width = "2.4cm") %>% 
-  column_spec(3:7, width = "1.1cm") %>% 
-  column_spec(8:9, width = "1.2cm") %>% 
+  column_spec(2, width = "2.3cm") %>% 
+  column_spec(3:7, width = "1cm") %>% 
+  column_spec(8:9, width = "1.1cm") %>% 
   column_spec(10, width = "1.2cm")  %>% 
   row_spec(c(2, 5), extra_latex_after = "\\cline{2-7} \\cline{10-10}") %>% 
   row_spec(c(8),  extra_latex_after = "\\cline{2-10}") %>% 
@@ -87,9 +87,9 @@ eng.summary.formatted %>%
   footnote(symbol = "Cells may not add up exactly due to rounding.")
 ```
 
-Total income from parking in `r FunFisc()` in England was £`r FunDec(pull(summary[5,10]/1000), 2)` billion, `r FunDec(inc.ch, dp.text)` % `r ifelse(inc.ch < 0, "lower", "higher")` than in `r FunFisc(1)`. On-street income `r ifelse(inc.on.ch < 0, "fell", "rose")` by `r FunDec(inc.on.ch, dp.text)` % and off-street income `r ifelse(sign(inc.on.ch) == sign(inc.off.ch), "", ifelse(inc.off.ch < 0, "fell", "rose"))` by `r FunDec(inc.off.ch, dp.text)` % . Expenditure `r ifelse(exp.on.ch < 0, "fell", "rose")` by `r FunDec(exp.on.ch, dp.text)` % for on-street and `r ifelse(sign(exp.on.ch) == sign(exp.off.ch), "", ifelse(exp.off.ch < 0, "fell", "rose"))` by `r FunDec(exp.off.ch, dp.text)` % off-street parking. As a result, the combined surplus from both on- and off-street parking was £`r FunDec(pull(summary[5,12]), 0)` million, `r FunDec(sur.ch, dp.text)`% `r ifelse(sur.ch < 0, "lower", "higher")`  than the previous financial year and `r FunDec(sur.ch4, dp.text)`% `r ifelse(sur.ch4 < 0, "lower", "higher")`  than four years ago. 
+Total income from parking in `r FunFisc()` in England was £`r FunDec(pull(summary[5,10]/1000), 2)` billion, `r FunDec(abs(inc.ch), dp.text)` % `r ifelse(inc.ch < 0, "lower", "higher")` than in `r FunFisc(1)`. On-street income `r ifelse(inc.on.ch < 0, "fell", "rose")` by `r FunDec(abs(inc.on.ch), dp.text)` % and off-street income `r ifelse(sign(inc.on.ch) == sign(inc.off.ch), "", ifelse(inc.off.ch < 0, "fell", "rose"))` by `r FunDec(abs(inc.off.ch), dp.text)` % . Expenditure `r ifelse(exp.on.ch < 0, "fell", "rose")` by `r FunDec(abs(exp.on.ch), dp.text)` % for on-street and `r ifelse(sign(exp.on.ch) == sign(exp.off.ch), "", ifelse(exp.off.ch < 0, "fell", "rose"))` by `r FunDec(abs(exp.off.ch), dp.text)` % off-street parking. As a result, the combined surplus from both on- and off-street parking was £`r FunDec(pull(summary[5,12]), 0)` million, `r FunDec(abs(sur.ch), dp.text)`% `r ifelse(sur.ch < 0, "lower", "higher")`  than the previous financial year and `r FunDec(abs(sur.ch4), dp.text)`% `r ifelse(sur.ch4 < 0, "lower", "higher")`  than four years ago. 
 
-Local authorities `r ifelse(sur.budg.diff > 0, "exceeded", "fell short of")` their `r FunFisc()` budgeted surplus of £`r FunDec(summary$surplus.total[6], 0)` million by `r FunDec(sur.budg.diff, dp.text)` %. Their budgeted surplus for this next financial year (`r FunFisc(-1)`) is £`r FunDec(summary$surplus.total[7], 0)` million, `r FunDec(sur.budg.inc, dp.text)`% `r ifelse(sur.budg.inc < 0, "lower", "higher")`   than the actual for `r FunFisc()`. If the `r FunFisc(-1)` budget `r ifelse(sur.budg.diff > 0, "is exceeded", "falls short")` by the same proportion as the `r FunFisc()` outcome, then total parking surpluses would amount to £`r FunDec(sur.hyp, 0)` million.
+Local authorities `r ifelse(sur.budg.diff > 0, "exceeded", "fell short of")` their `r FunFisc()` budgeted surplus of £`r FunDec(summary$surplus.total[6], 0)` million by `r FunDec(abs(sur.budg.diff), dp.text)` %. Their budgeted surplus for this next financial year (`r FunFisc(-1)`) is £`r FunDec(summary$surplus.total[7], 0)` million, `r FunDec(abs(sur.budg.inc), dp.text)`% `r ifelse(sur.budg.inc < 0, "lower", "higher")`   than the actual for `r FunFisc()`. If the `r FunFisc(-1)` budget `r ifelse(sur.budg.diff > 0, "is exceeded", "falls short")` by the same proportion as the `r FunFisc()` outcome, then total parking surpluses would amount to £`r FunDec(sur.hyp, 0)` million.
 
 The on-street parking surpluses must by law be used for transport projects. Overall, local transport net expenditure in `r FunFisc()` `r ifelse(abs(tran.ch) < 0.5, "remained relatively unchanged at", ifelse(tran.ch < 0, "fell to", "increased to"))`  £`r FunDec(summary$transport.total[5]/1000, 1)` billion. Without the contribution from parking surpluses, net expenditure would have been `r FunDec(summary$prop.net.expen[5], dp.text)`% higher.
 
@@ -172,7 +172,7 @@ sum.gb.formatted %>%
          align = c("r"),
          col.names = c("", "England without London", "London", 
                        "Scotland", "Wales", "Great Britain"),
-         caption = paste0("Comparison of parking income and expenditure in across the nations of Great Britain (£ millions, latest year available)"), 
+         caption = paste0("Comparison of parking income and expenditure across the nations of Great Britain (£ millions, latest year available)"), 
          format.args = list(big.mark = ","),
          linesep = "") %>% 
   kable_styling(full_width = TRUE, 
@@ -182,7 +182,7 @@ sum.gb.formatted %>%
   row_spec(c(1, 4), hline_after = TRUE)
 ```
 
-Table \@ref(tab:compare) provides a comparison with London, England excluding London, Wales, and Scotland for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and the previous year, with the average annual change over the four-year period starting in `r FunFisc(4)` (or the most recent four-year period for which data is available). In the last year the surpluses for London have increased by `r FunDec(lond.ann, dp.text)` %, which is `r ifelse(lond.ann < lond.4av, "less", "more")` than the average annual increase observed over the preceding four years, which was `r FunDec(lond.4av, dp.text)` %. For the rest of England excluding London the surpluses have increased by `r FunDec(rest.ann, dp.text)` %, which is `r ifelse(rest.ann < rest.4av, "less", "more")` than the four-year average annual increase at `r FunDec(rest.4av, dp.text)` %.
+Table \@ref(tab:compare) provides a comparison with London, England excluding London, Wales, and Scotland for the most recent available data, while Table \@ref(tab:change) compares the changes between `r FunFisc()` and the previous year, with the average annual change over the four-year period starting in `r FunFisc(4)` (or the most recent four-year period for which data is available). In the last year the surpluses for London have `r ifelse(lond.ann < 0, "decreased", "increased")` by `r FunDec(abs(lond.ann), dp.text)` %, which is `r ifelse(lond.ann < lond.4av, "less", "more")` than the average annual increase observed over the preceding four years, which was `r FunDec(lond.4av, dp.text)` %. For the rest of England excluding London the surpluses have  `r ifelse(rest.ann < 0, "decreased", "increased")` by `r FunDec(abs(rest.ann), dp.text)` %, which is `r ifelse(rest.ann < rest.4av, "less", "more")` than the four-year average annual increase at `r FunDec(rest.4av, dp.text)` %.
 
 On average, parking surpluses in Great Britain have risen by about `r FunDec(gb.ann, dp.text)` % annually over the four years compared with `r FunDec(rpi.annual.gb, dp.text)` % annually for the Retail Prices Index during the same period (`r eng.bib.rpi`).`r ifelse(gb.mr.year != current.year,  paste0("^[The most recent data available for Great Britain as a whole is from the year ", FunFisc(current.year-gb.mr.year), " and all calculations are therefore performed for the four years previous i.e. from ", FunFisc(current.year-gb.mr.year+4), ".]"), "")`
 
@@ -213,7 +213,7 @@ sum.gb.change.tab.formatted  %>%
 
 # Income 
 
-Parking income is derived from three main sources: meter income, residents’  business permits, and penalties. Other sources are towing and storage charges although relatively few councils operate pounds now. Total income in `r FunFisc()` was £`r formatC(inc.tot, big.mark = ",")` million, `r FunDec(inc.ch, dp.text)`% higher than in `r FunFisc(1)`. In London boroughs the total income was £`r FunDec(inc.london.tot, 0)` million, `r FunDec(inc.london.tot.ch, dp.text)` % more than in the previous year, while the total for the rest of England was £`r FunDec(inc.rest.tot, 0)`million, `r FunDec(inc.rest.tot.ch, dp.text)` % more than in the previous year. 
+Parking income is derived from three main sources: meter income, residents’  business permits, and penalties. Other sources are towing and storage charges although relatively few councils operate pounds now. Total income in `r FunFisc()` was £`r formatC(inc.tot, big.mark = ",")` million, `r FunDec(inc.ch, dp.text)`% higher than in `r FunFisc(1)`. In London boroughs the total income was £`r ifelse(inc.london.tot >= 1000, paste(FunDec(inc.london.tot/1000, 0), "billion"), paste(FunDec(inc.london.tot, 0), "million"))`, `r FunDec(inc.london.tot.ch, dp.text)` % more than in the previous year, while the total for the rest of England was £`r ifelse(inc.rest.tot >= 1000, paste(FunDec(inc.rest.tot/1000, 1), "billion"), paste(FunDec(inc.rest.tot, 0), "million"))`, `r FunDec(inc.rest.tot.ch, dp.text)` % more than in the previous year. 
 
 Table \@ref(tab:incometablondon) shows the incomes for all the London boroughs for the previous 5 years, their most recent annual change and the average annual change in income over the preceding 5 years. Table \@ref(tab:incometabrest) has the same information for the top 20 councils outside of London. For a full table of all the local authrities in London see Table \@ref(tab:incometab)  in the Appendix. 
 
@@ -284,7 +284,7 @@ eng.income.rest.formatted %>%
 
 # Expenditure
 
-Overall expenditure on parking rose to £`r FunDec(exp.tot,0)` million, up `r FunDec(exp.ch , dp.text)` % from `r FunFisc(1)` for both on-street and off-street. Expenditure in London went `r ifelse( exp.london.tot.ch > 0, "up", "down")` by `r FunDec(exp.london.tot.ch, dp.text)` % and `r ifelse(sign(exp.london.tot.ch == exp.rest.tot.ch), "", ifelse(exp.rest.tot.ch > 0, "up", "down"))` by `r FunDec(exp.rest.tot.ch, dp.text)` % in the rest of England. Expenditure represents `r FunDec(exp.prop.inc.on, dp.text)` % of income for on-street parking and `r FunDec(exp.prop.inc.off, dp.text)` % for off-street. 
+Overall expenditure on parking `r ifelse( exp.ch > 0, "rose", "fell")` to £`r FunDec(exp.tot,0)` million, `r ifelse( exp.ch > 0, "up", "down")` `r FunDec(abs(exp.ch) , dp.text)` % from `r FunFisc(1)` for both on-street and off-street. Expenditure in London went `r ifelse( exp.london.tot.ch > 0, "up", "down")` by `r FunDec(abs(exp.london.tot.ch), dp.text)` % and `r ifelse(sign(exp.london.tot.ch == exp.rest.tot.ch), "", ifelse(exp.rest.tot.ch > 0, "up", "down"))` by `r FunDec(abs(exp.rest.tot.ch), dp.text)` % in the rest of England. Expenditure represents `r FunDec(exp.prop.inc.on, dp.text)` % of income for on-street parking and `r FunDec(exp.prop.inc.off, dp.text)` % for off-street. 
 
 Table \@ref(tab:expendtablondon) ranks the London boroughs in terms of expenditure on parking while Table  \@ref(tab:expendtabrest) lists the top 20 English councils outside London. See Table \@ref(tab:expendtab) in the Appendix for a comprehensive list of all 353 local authorities in England. 
 
@@ -405,7 +405,7 @@ eng.expend.props.rest.formatted %>%
 \newpage
 # Surpluses 
 
-In total, councils in England made a surplus of £`r FunDec(sur.tot,0)` million in `r FunFisc()`, `r FunDec(sur.ch, dp.text)` % `r ifelse(sur.ch > 0, "higher", "lower")` than in `r FunFisc(1)`. Of this total, £`r FunDec(sur.london, 0)` million (`r FunDec(sur.london.prop, dp.text)` %) came from London and £`r FunDec(sur.rest, 0)` million from the rest of England. This excludes a £`r FunDec(surplus.nat.parks/1000, dp.text)` million surplus from parking in National Parks. Money from any workplace parking levy schemes is excluded from the analysis for the sake of clear comparison between local authorities.  It is currently unique to Nottingham.
+In total, councils in England made a surplus of £`r FunDec(sur.tot,0)` million in `r FunFisc()`, `r FunDec(abs(sur.ch), dp.text)` % `r ifelse(sur.ch > 0, "higher", "lower")` than in `r FunFisc(1)`. Of this total, £`r FunDec(sur.london, 0)` million (`r FunDec(sur.london.prop, dp.text)` %) came from London and £`r FunDec(sur.rest, 0)` million from the rest of England. This excludes a £`r FunDec(surplus.nat.parks/1000, dp.text)` million surplus from parking in National Parks. Money from any workplace parking levy schemes is excluded from the analysis for the sake of clear comparison between local authorities.  It is currently unique to Nottingham.
 
 
 The total *surpluses* for London amounted to £`r FunDec((london.surplus.totals.table.sur), dp.text)` million between `r  london.poz.surplus ` authorities, of which the top three--`r paste0(names(london.surplus.top3)[1], ", ", names(london.surplus.top3)[2], ", and ", names(london.surplus.top3)[3])`--accounted for `r FunDec(london.surplus.top3[1],  dp.text)` %.  
@@ -466,7 +466,7 @@ eng.rest.surplus.totals.table.formatted %>%
 ```
 
 
-The total surplus from parking outside London of £`r FunDec(sur.rest,0)` million in `r FunFisc()` was  `r FunDec(sur.rest.tot.ch, dp.text)` % `r ifelse(sur.rest.tot.ch > 0, "higher", "lower")` than in  `r FunFisc(1)`. `r sur.rest.top.la` was the highest earning council outside London, ranking as the `r ordinal(sur.rest.top.rank)` largest  nationally, and with a surplus in `r FunFisc()` of £`r FunDec(sur.rest.top.amount, dp.text)` million, `r FunDec(abs(sur.rest.top.ch), dp.text)` % `r ifelse(sur.rest.top.ch > 0, "higher", "lower")` than in `r FunFisc(1)`. Table \@ref(tab:surengtab) lists the top 20 councils outside of London. The full table for all English councils is available in the Apendix as Table \@ref(tab:surrestfull) . 
+The total surplus from parking outside London of £`r FunDec(sur.rest,0)` million in `r FunFisc()` was  `r FunDec(abs(sur.rest.tot.ch), dp.text)` % `r ifelse(sur.rest.tot.ch > 0, "higher", "lower")` than in  `r FunFisc(1)`. `r sur.rest.top.la` was the highest earning council outside London, ranking as the `r ordinal(sur.rest.top.rank)` largest  nationally, and with a surplus in `r FunFisc()` of £`r FunDec(sur.rest.top.amount, dp.text)` million, `r FunDec(abs(sur.rest.top.ch), dp.text)` % `r ifelse(sur.rest.top.ch > 0, "higher", "lower")` than in `r FunFisc(1)`. Table \@ref(tab:surengtab) lists the top 20 councils outside of London. The full table for all English councils is available in the Apendix as Table \@ref(tab:surrestfull) . 
 
 The total *surpluses* outside London amounted to £`r FunDec((rest.surplus.totals.table.tot), dp.text)` million between `r  rest.poz.surplus ` authorities, of which the top three--`r paste0(names(rest.surplus.top3)[1], ", ", names(rest.surplus.top3)[2], ", and ", names(rest.surplus.top3)[3])`--accounted for `r FunDec(rest.surplus.top3[1],  dp.text)` %.  `r FunFirstup(FunN2W(surplus.bin.rest["neg"]))` `r ifelse(surplus.bin.rest["neg"] == 1, "council", ifelse(surplus.bin.rest["neg"] == 0, "No councils", "councils"))` made a loss with the total of parking deficits `r ifelse(rest.surplus.totals.table.def > rest.surplus.totals.table.def.last, "falling", "rising")` to £`r FunDec(-rest.surplus.totals.table.def, dp.text)` million from £`r FunDec(-rest.surplus.totals.table.def.last, dp.text)` million last year. 
 

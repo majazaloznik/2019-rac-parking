@@ -1007,8 +1007,8 @@ eng.expend %>%
 # calculate change and prop of income for ENglandtotal row. 
 eng.expend %>% 
   filter(auth.name == "Total for all of England") %>% 
-  mutate(current.change = (.[[6]]-.[[5]])/1000,
-         last.change = (.[[5]]-.[[4]])/1000) %>% 
+  mutate(current.change = (.[[6]]-.[[5]]),
+         last.change = (.[[5]]-.[[4]])) %>% 
   select(change, current.change, last.change) -> eng.expend.t
 
 # count councils with +/- change

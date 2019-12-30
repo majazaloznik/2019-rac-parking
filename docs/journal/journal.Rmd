@@ -1417,9 +1417,50 @@ But these seem to have all been merged, so all good.
 
 * spell check user manual. ok. 
 
-* commit.. 
+* commit.
+
+* see what was wrong with the tables in the techincal documentationn Oh, it' using ---- to do a hline, this doens't work anymore!? Try updating the package first. OK, so this is a pandoc issue, will apparently start working again when 2.8 is out. see [here](https://stackoverflow.com/questions/58397380/error-producing-pdf-when-markdown-contains-a-horizontal-rule-or) or [here](https://chat.stackexchange.com/transcript/41?m=52094810#52094810). just remove the hline for now, who cares. 
+
+* only thing left now is the colours/shading in the tables. 
+
+* try a minrepex. hmm, seems like i cannot get striped to work in kableextra if it's latex? weird. to be continued. 
+
+# Monday 2.12.2019
+
+* didn't striped tables work once upon a time? check. Yes, they did. 
+* OK, this got broken, see [here](https://github.com/haozhu233/kableExtra/issues/372), looks like it won't get fixed. using manual width of columns would be the only way around it, because the problem is in "full width", but doing htis manually would be too complicated i think... Noone seems to have noticed anyway?
+
+* *tip* careful with kableextra, especially since it depends on the latex package tabu, which has not been under active development since 2011.. it's great otherwise, but when bug happen, they tend to not have fixes. not sure what the alternative is. Just
 
 
+# Tuesday 24.12.2019
+
+renv error. opened issue https://github.com/rstudio/renv/issues/309
+
+# Monday 30.12.2019
+
+No response to renv error issue. Instead re-initialised renv. hopefully that works. 
+Hmm, no, not really, but running `sudo R CMD javareconf" a few times and restarting the computer seems to have done the trick.
+
+* Now compiling england gives an error though `Environment cslreferences undefined.`, which shouldn't happen, since i didn't change anything.. 
+
+* following this issue [here](https://github.com/rstudio/rmarkdown/issues/1649) i added `template: null` to the YAML and the error went away. 
+
+* but that's not a solution, it messes up the formatting, especially the font size and page width.. 
+
+* the issue is apparently [here](https://stackoverflow.com/questions/59193797/pandocs-environment-cslreferences-undefined-when-knitting-rmarkdown-to-pdf-in-r)
+
+* so first i'll try updating rmarkdown. 
+
+* ok, this now seems to work.
+
+* back to Ivo's comments from last week. 
+
+* up/down. increased/decreased.. if negative should be absolute. i guess i didn't make sure all of them were. so i'll have to *go through the whole thing and double check*. Done for England.
+
+* fixed the expenditure code that switches between thousands and millions if the numbers are too low. *check other reports for same code*
+
+* also there are some points where 1000 millions need to be changed to billions. OK, england done. 
 
 
 ### Wales (based on 17/18) #####################################################
