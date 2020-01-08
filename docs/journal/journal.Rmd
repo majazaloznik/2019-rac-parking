@@ -1482,6 +1482,10 @@ A few more comments from Phil. Mainly typos, two explanations emailed back.
 
 * commit. 
 
+Add footnote and change higher to lower. 
+
+* commit. 
+
 ### Wales (based on 17/18) #####################################################
 
 #### 1. Introduction

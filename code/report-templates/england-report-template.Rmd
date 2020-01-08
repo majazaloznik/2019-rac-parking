@@ -40,7 +40,7 @@ nocite: |
 # Introduction
 
 
-This report uses the MHCLG (formerly DCLG) tables on parking income and expenditure for the period from `r FunFisc(4)` to `r FunFisc()` (`r  eng.bib.main.i.e`). All councils are required to report their financial information to government, in a consistent format, although there may be some differences in interpretation of what that format is and what it covers. Earlier, councils also submitted budgets for the `r FunFisc(-1)` financial year but on a less detailed basis (`r eng.bib.next.budget`). These figures are included where appropriate. The figures have to be on an as-received cash basis without any provision for bad debts or any allowance for capital charges (interest or deprecation).
+This report uses the MHCLG (formerly DCLG) tables on parking income and expenditure for the period from `r FunFisc(4)` to `r FunFisc()` (`r  eng.bib.main.i.e`). All councils are required to report their financial information to government, in a consistent format, although there may be some differences in interpretation of what that format is and what it covers. Earlier, councils also submitted budgets for the `r FunFisc(-1)` financial year but on a less detailed basis (`r eng.bib.next.budget`). These figures are included where appropriate. The figures have to be on an as-received cash basis without any provision for bad debts or any allowance for capital charges (interest or deprecation).^[The report also includes calculations using data on income, expenditure and budgets for preivious financial years (`r eng.bib.previous.i.e`, `r eng.bib.previous.budget`).]
 
 This report covers `r no.councils` local authorities in England but excludes the national parks which declare parking income. 
 
@@ -91,7 +91,7 @@ Total income from parking in `r FunFisc()` in England was £`r FunDec(pull(summa
 
 Local authorities `r ifelse(sur.budg.diff > 0, "exceeded", "fell short of")` their `r FunFisc()` budgeted surplus of £`r FunDec(summary$surplus.total[6], 0)` million by `r FunDec(abs(sur.budg.diff), dp.text)` %. Their budgeted surplus for this next financial year (`r FunFisc(-1)`) is £`r FunDec(summary$surplus.total[7], 0)` million, `r FunDec(abs(sur.budg.inc), dp.text)`% `r ifelse(sur.budg.inc < 0, "lower", "higher")`   than the actual for `r FunFisc()`. If the `r FunFisc(-1)` budget `r ifelse(sur.budg.diff > 0, "is exceeded", "falls short")` by the same proportion as the `r FunFisc()` outcome, then total parking surpluses would amount to £`r FunDec(sur.hyp, 0)` million.
 
-The on-street parking surpluses must by law be used for transport projects. Overall, local transport net expenditure in `r FunFisc()` `r ifelse(abs(tran.ch) < 0.5, "remained relatively unchanged at", ifelse(tran.ch < 0, "fell to", "increased to"))`  £`r FunDec(summary$transport.total[5]/1000, 1)` billion. Without the contribution from parking surpluses, net expenditure would have been `r FunDec(summary$prop.net.expen[5], dp.text)`% higher.
+The on-street parking surpluses must by law be used for transport projects. Overall, local transport net expenditure in `r FunFisc()` `r ifelse(abs(tran.ch) < 0.5, "remained relatively unchanged at", ifelse(tran.ch < 0, "fell to", "increased to"))`  £`r FunDec(summary$transport.total[5]/1000, 1)` billion. Without the contribution from parking surpluses, net expenditure would have been `r FunDec(summary$prop.net.expen[5], dp.text)`% lower.
 
 \newpage
 ```{r sumtablondon, echo = FALSE, message = FALSE, warning = FALSE}

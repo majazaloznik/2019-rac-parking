@@ -112,6 +112,18 @@ bib %>%
          content == "budget") %>% 
   pull(refs) -> eng.bib.next.budget
 
+# all except current main I.E. referece
+bib %>% 
+  filter(country == "England", fiscyear < current.year , 
+         content == "i.e") %>% 
+  pull(refs) -> eng.bib.previous.i.e
+
+# all except next budget referece
+bib %>% 
+  filter(country == "England", fiscyear < current.year + 1, 
+         content == "budget") %>% 
+  pull(refs) -> eng.bib.previous.budget
+
 # map reference
 bib %>% 
   filter( content == "map") %>% 
