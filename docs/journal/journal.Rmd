@@ -1476,6 +1476,11 @@ Hmm, no, not really, but running `sudo R CMD javareconf" a few times and restart
 
 * commit. 
 
+# Wednesday 8.1.2020
+
+A few more comments from Phil. Mainly typos, two explanations emailed back. 
+
+* commit. 
 
 ### Wales (based on 17/18) #####################################################
 
